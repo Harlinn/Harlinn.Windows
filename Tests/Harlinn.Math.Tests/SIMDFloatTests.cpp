@@ -21,6 +21,16 @@
 
 using namespace Harlinn::Common::Core;
 namespace SIMD = Harlinn::Math::SIMD;
+using SIMDf2 = SIMD::Traits<float, 2>;
+using SIMDf3 = SIMD::Traits<float, 3>;
+using SIMDf4 = SIMD::Traits<float, 4>;
+using SIMDf5 = SIMD::Traits<float, 5>;
+using SIMDf6 = SIMD::Traits<float, 6>;
+using SIMDf7 = SIMD::Traits<float, 7>;
+using SIMDf8 = SIMD::Traits<float, 8>;
+
+template<typename T, size_t N>
+using Traits = SIMD::Traits<T, N>;
 
 namespace
 {
@@ -3639,5 +3649,432 @@ BOOST_AUTO_TEST_CASE( AnyNotEqualTest1 )
 }
 
 
+
+BOOST_AUTO_TEST_CASE( AllEqual_Float4_Equal )
+{
+    using T = SIMD::Traits<float, 4>;
+    auto a = T::Set( 4.0f, 3.0f, 2.0f, 1.0f );
+    auto b = T::Set( 4.0f, 3.0f, 2.0f, 1.0f );
+
+    bool result = T::AllEqual( a, b );
+    BOOST_TEST( result );
+}
+
+BOOST_AUTO_TEST_CASE( AllEqual_Float4_DifferentLane )
+{
+    using T = SIMD::Traits<float, 4>;
+    auto a = T::Set( 4.0f, 3.0f, 2.0f, 1.0f );
+    auto b = T::Set( 4.0f, 3.1f, 2.0f, 1.0f ); // difference in one lane
+
+    bool result = T::AllEqual( a, b );
+    BOOST_TEST( result == false );
+}
+
+BOOST_AUTO_TEST_CASE( AllEqual_Float3_IgnoresUnusedLane )
+{
+    // Traits<float,3> uses a 128-bit SIMD register but only compares the low 3 elements.
+    using T3 = SIMD::Traits<float, 3>;
+    using T4 = SIMD::Traits<float, 4>; // use T4 to construct vectors where the highest lane differs
+
+    // Construct two __m128 values where the lowest three elements are equal,
+    // but the highest (unused by N=3) differs.
+    auto v1 = T4::Set( 9.0f, 3.0f, 2.0f, 1.0f ); // elements: [1,2,3,9]
+    auto v2 = T4::Set( 8.0f, 3.0f, 2.0f, 1.0f ); // elements: [1,2,3,8]
+
+    // AllEqual for N=3 should ignore the highest lane (index 3) and therefore be true.
+    bool result = T3::AllEqual( v1, v2 );
+    BOOST_TEST( result );
+}
+
+BOOST_AUTO_TEST_CASE( AllEqual_Float8_EqualAndDifferent )
+{
+    using T8 = SIMD::Traits<float, 8>;
+
+    // Create two identical 8-lane vectors
+    auto a = T8::Set( 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f );
+    auto b = T8::Set( 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f );
+
+    bool resEqual = T8::AllEqual( a, b );
+    BOOST_TEST( resEqual );
+
+    // Change one lane
+    auto c = T8::Set( 8.0f, 7.0f, 6.5f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f );
+
+    bool resDifferent = T8::AllEqual( a, c );
+    BOOST_TEST( resDifferent == false );
+}
+
+BOOST_AUTO_TEST_CASE( AllEqual_Float4_Exact )
+{
+    using Traits4 = SIMD::Traits<float, 4>;
+    auto a = Traits4::Set( 4.0f, 3.0f, 2.0f, 1.0f );
+    auto b = Traits4::Set( 4.0f, 3.0f, 2.0f, 1.0f );
+    auto eps = Traits4::Fill( 0.0f );
+
+    bool result = Traits4::AllEqual( a, b, eps );
+    BOOST_TEST( result );
+}
+
+BOOST_AUTO_TEST_CASE( AllEqual_Float4_WithinEpsilon )
+{
+    using Traits4 = SIMD::Traits<float, 4>;
+    auto a = Traits4::Set( 1.0f, 2.0f, 3.0f, 4.0f );
+    auto b = Traits4::Set( 1.005f, 1.995f, 3.002f, 3.998f );
+    // per-lane epsilons
+    auto eps = Traits4::Set( 0.01f, 0.01f, 0.01f, 0.01f );
+
+    bool result = Traits4::AllEqual( a, b, eps );
+    BOOST_TEST( result );
+}
+
+BOOST_AUTO_TEST_CASE( AllEqual_Float4_OneLaneOutsideEpsilon )
+{
+    using Traits4 = SIMD::Traits<float, 4>;
+    auto a = Traits4::Set( 1.0f, 2.0f, 3.0f, 4.0f );
+    auto b = Traits4::Set( 1.0f, 2.2f, 3.0f, 4.0f );
+    auto eps = Traits4::Set( 0.05f, 0.05f, 0.05f, 0.05f );
+
+    bool result = Traits4::AllEqual( a, b, eps );
+    BOOST_TEST( !result );
+}
+
+BOOST_AUTO_TEST_CASE( AllEqual_Float8_Mixed )
+{
+    using Traits8 = SIMD::Traits<float, 8>;
+    // Create two vectors where all lanes differ by <= epsilon except lane 6
+    auto a = Traits8::Set( 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f );
+    auto b = Traits8::Set( 1.001f, 1.999f, 3.0005f, 3.999f, 5.0001f, 6.0f, 7.1f, 7.999f );
+    auto eps = Traits8::Fill( 0.01f ); // broadcast epsilon to all lanes
+
+    bool result = Traits8::AllEqual( a, b, eps );
+    BOOST_TEST( !result ); // lane 6 exceeds epsilon -> expect false
+
+    // now reduce difference in lane 6
+    auto b2 = Traits8::Set( 1.001f, 1.999f, 3.0005f, 3.999f, 5.0001f, 6.0f, 7.005f, 7.999f );
+    bool result2 = Traits8::AllEqual( a, b2, eps );
+    BOOST_TEST( result2 );
+}
+
+BOOST_AUTO_TEST_CASE( ExactEqual_Float4 )
+{
+    using T = SIMD::Traits<float, 4>;
+    auto v1 = T::Set( 4.0f, 3.0f, 2.0f, 1.0f ); // lowest element = 1.0f
+    auto v2 = v1;
+    auto eps = T::Fill( 0.0f );
+
+    bool result = T::AnyEqual( v1, v2, eps );
+    BOOST_TEST( result );
+}
+
+BOOST_AUTO_TEST_CASE( WithinEpsilon_Float4 )
+{
+    using T = SIMD::Traits<float, 4>;
+    auto v1 = T::Set( 4.0f, 3.0f, 2.0f, 1.0f );
+    // make only the lowest element differ by 0.001 -> within epsilon 0.01
+    auto v2 = T::Set( 4.0f, 3.0f, 2.0f, 1.001f );
+    auto eps = T::Fill( 0.01f );
+
+    bool result = T::AnyEqual( v1, v2, eps );
+    BOOST_TEST( result ); // at least one lane equal within epsilon
+}
+
+BOOST_AUTO_TEST_CASE( NoneWithinEpsilon_Float4 )
+{
+    using T = SIMD::Traits<float, 4>;
+    auto v1 = T::Set( 4.0f, 3.0f, 2.0f, 1.0f );
+    auto v2 = T::Set( 14.0f, 13.0f, 12.0f, 11.0f );
+    auto eps = T::Fill( 0.001f );
+
+    bool result = T::AnyEqual( v1, v2, eps );
+    BOOST_TEST( result == false );
+}
+
+BOOST_AUTO_TEST_CASE( MixedWithinEpsilon_Float8 )
+{
+    using T = SIMD::Traits<float, 8>;
+    // Create v1 = [1,2,3,4,5,6,7,8] (value1 = lowest element)
+    auto v1 = T::Set( 8.f, 7.f, 6.f, 5.f, 4.f, 3.f, 2.f, 1.f );
+    // Create v2 with element 0 (lowest) differing by 0.005 and others far off
+    auto v2 = T::Set( 800.f, 700.f, 600.f, 500.f, 400.f, 300.f, 200.f, 1.005f );
+    auto eps = T::Fill( 0.01f ); // allows the lowest lane to match
+
+    bool result = T::AnyEqual( v1, v2, eps );
+    BOOST_TEST( result ); // true because lowest lane difference <= epsilon
+}
+
+BOOST_AUTO_TEST_CASE( NoneWithinEpsilon_Float8 )
+{
+    using T = SIMD::Traits<float, 8>;
+    auto v1 = T::Set( 8.f, 7.f, 6.f, 5.f, 4.f, 3.f, 2.f, 1.f );
+    auto v2 = T::Set( 18.f, 17.f, 16.f, 15.f, 14.f, 13.f, 12.f, 11.f );
+    auto eps = T::Fill( 0.0001f );
+
+    bool result = T::AnyEqual( v1, v2, eps );
+    BOOST_TEST( result == false );
+}
+
+BOOST_AUTO_TEST_CASE( AnyEqual_Float4_AllDifferent )
+{
+    using T4 = SIMD::Traits<float, 4>;
+    auto a = T4::Set( 1.f, 2.f, 3.f, 4.f );
+    auto b = T4::Set( 5.f, 6.f, 7.f, 8.f );
+    bool result = T4::AnyEqual( a, b );
+    BOOST_TEST( result == false );
+}
+
+BOOST_AUTO_TEST_CASE( AnyEqual_Float4_OneMatch )
+{
+    using T4 = SIMD::Traits<float, 4>;
+    auto a = T4::Set( 1.f, 2.f, 3.f, 4.f );
+    auto b = T4::Set( 9.f, 9.f, 9.f, 4.f );
+    bool result = T4::AnyEqual( a, b );
+    BOOST_TEST( result == true );
+}
+
+BOOST_AUTO_TEST_CASE( AnyEqual_Float8_AllDifferent )
+{
+    using T8 = SIMD::Traits<float, 8>;
+    auto a = T8::Set( 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f );
+    auto b = T8::Set( 10.f, 11.f, 12.f, 13.f, 14.f, 15.f, 16.f, 17.f );
+    bool result = T8::AnyEqual( a, b );
+    BOOST_TEST( result == false );
+}
+
+BOOST_AUTO_TEST_CASE( AnyEqual_Float8_MultipleMatches )
+{
+    using T8 = SIMD::Traits<float, 8>;
+    auto a = T8::Set( 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f );
+    auto b = T8::Set( 1.f, 11.f, 3.f, 13.f, 14.f, 6.f, 16.f, 17.f ); // matches at lanes 0,2,5
+    bool result = T8::AnyEqual( a, b );
+    BOOST_TEST( result == true );
+}
+
+BOOST_AUTO_TEST_CASE( Equal_AllElements_128bit )
+{
+    // v = {1,2,3,4}
+    auto v1 = SIMDf4::Set( 4.f, 3.f, 2.f, 1.f );
+    auto v2 = SIMDf4::Set( 4.f, 3.f, 2.f, 1.f );
+
+    auto r = SIMDf4::Equal( v1, v2 );
+
+    // All lanes equal -> AllTrue should be true.
+    BOOST_TEST( bool( SIMDf4::AllTrue( r ) ) == true );
+}
+
+BOOST_AUTO_TEST_CASE( Equal_Partial_128bit )
+{
+    // v1 = {1,2,3,4}
+    // v2 = {1,99,3,4} -> second lane differs
+    auto v1 = SIMDf4::Set( 4.f, 3.f, 2.f, 1.f );
+    auto v2 = SIMDf4::Set( 4.f, 3.f, 99.f, 1.f ); // note ordering is (w,z,y,x)
+
+    auto r = SIMDf4::Equal( v1, v2 );
+
+    // Not all lanes equal, but some are -> AnyTrue true, AllTrue false
+    BOOST_TEST( bool( SIMDf4::AnyTrue( r ) ) == true );
+    BOOST_TEST( bool( SIMDf4::AllTrue( r ) ) == false );
+}
+
+BOOST_AUTO_TEST_CASE( Equal_Masked_Size3_Ignores_UpperLane )
+{
+    // Build raw __m128 values so the highest lane can differ while lower 3 lanes are same.
+    // _mm_set_ps sets elements as (e3,e2,e1,e0) -> lanes: [e0,e1,e2,e3]
+    __m128 v1 = _mm_set_ps( 999.f, 3.f, 2.f, 1.f );
+    __m128 v2 = _mm_set_ps( -999.f, 3.f, 2.f, 1.f );
+
+    // Call Traits<float,3>::Equal which should mask out the 4th lane (index 3)
+    auto r = SIMDf3::Equal( v1, v2 );
+
+    // Lower 3 lanes equal -> AllTrue should be true despite differing highest lane
+    BOOST_TEST( bool( SIMDf3::AllTrue( r ) ) == true );
+}
+
+BOOST_AUTO_TEST_CASE( Equal_AllElements_256bit )
+{
+    // For N=8 use 256-bit vectors
+    auto v1 = SIMDf8::Set( 8.f, 7.f, 6.f, 5.f, 4.f, 3.f, 2.f, 1.f );
+    auto v2 = SIMDf8::Set( 8.f, 7.f, 6.f, 5.f, 4.f, 3.f, 2.f, 1.f );
+
+    auto r = SIMDf8::Equal( v1, v2 );
+
+    BOOST_TEST( bool( SIMDf8::AllTrue( r ) ) == true );
+}
+
+BOOST_AUTO_TEST_CASE( Equal_Partial_256bit )
+{
+    auto v1 = SIMDf8::Set( 8.f, 7.f, 6.f, 5.f, 4.f, 3.f, 2.f, 1.f );
+    // change element at index 5 (zero-based)
+    auto v2 = SIMDf8::Set( 8.f, 7.f, 6.f, 5.f, 4.f, 999.f, 2.f, 1.f );
+
+    auto r = SIMDf8::Equal( v1, v2 );
+
+    BOOST_TEST( bool( SIMDf8::AnyTrue( r ) ) == true );
+    BOOST_TEST( bool( SIMDf8::AllTrue( r ) ) == false );
+}
+
+BOOST_AUTO_TEST_CASE( AllTrue_Short_N4_AllSet )
+{
+    using T = SIMD::Traits<float, 4>;
+    auto v = T::Fill( -1.0f ); // all lanes negative -> sign bits set
+    bool all = T::AllTrue( v );
+    BOOST_TEST( all );
+}
+
+BOOST_AUTO_TEST_CASE( AllTrue_Short_N4_NotAll )
+{
+    using T = SIMD::Traits<float, 4>;
+    // Set: _mm_set_ps(value4, value3, value2, value1)
+    // Make lowest element positive so not all lanes have sign bit set
+    auto v = T::Set( -1.0f, -1.0f, -1.0f, 1.0f );
+    bool all = T::AllTrue( v );
+    BOOST_TEST( !all );
+}
+
+BOOST_AUTO_TEST_CASE( AllTrue_Short_N3_AllSet )
+{
+    using T = SIMD::Traits<float, 3>;
+    // For N==3, Set(value3,value2,value1) yields _mm_set_ps(0.f, value3, value2, value1)
+    // Ensure lower three elements are negative
+    auto v = T::Set( -1.0f, -1.0f, -1.0f );
+    bool all = T::AllTrue( v );
+    BOOST_TEST( all );
+}
+
+BOOST_AUTO_TEST_CASE( AllTrue_Short_N1_Varies )
+{
+    using T = SIMD::Traits<float, 1>;
+    auto vTrue = T::Set( -1.0f ); // lowest element negative
+    bool allTrue = T::AllTrue( vTrue );
+    BOOST_TEST( allTrue );
+
+    auto vFalse = T::Set( 1.0f ); // lowest element positive
+    bool allFalse = T::AllTrue( vFalse );
+    BOOST_TEST( !allFalse );
+}
+
+BOOST_AUTO_TEST_CASE( AllTrue_Long_N8_AllSet )
+{
+    using T = SIMD::Traits<float, 8>;
+    auto v = T::Fill( -1.0f ); // all 8 lanes negative -> sign bits set
+    bool all = T::AllTrue( v );
+    BOOST_TEST( all );
+}
+
+BOOST_AUTO_TEST_CASE( AllTrue_Long_N5_Partial )
+{
+    using T = SIMD::Traits<float, 5>;
+    // For N==5, Set(value5,...,value1) places the 5 provided values in the lowest 5 lanes.
+    // Provide negative values for the first 5 lanes so AllTrue should return true.
+    auto v = T::Set( -1.0f, -1.0f, -1.0f, -1.0f, -1.0f );
+    bool all = T::AllTrue( v );
+    BOOST_TEST( all );
+
+    // Now make one of the lower 5 lanes positive -> should be false
+    auto vNotAll = T::Set( -1.0f, -1.0f, -1.0f, -1.0f, 1.0f );
+    bool all2 = T::AllTrue( vNotAll );
+    BOOST_TEST( !all2 );
+}
+
+BOOST_AUTO_TEST_CASE( AnyTrue_Short_FullCapacity )
+{
+    using T = Traits<float, 4>;
+    // all zeros -> no sign bits set
+    auto vZero = T::Set( 0.f, 0.f, 0.f, 0.f );
+    bool actualZero = T::AnyTrue( vZero );
+    bool expectedZero = false;
+    BOOST_TEST( actualZero == expectedZero );
+
+    // negative in any lane -> sign bit set -> true
+    auto vNeg = T::Set( -1.f, 0.f, 0.f, 0.f );
+    bool actualNeg = T::AnyTrue( vNeg );
+    bool expectedNeg = true;
+    BOOST_TEST( actualNeg == expectedNeg );
+}
+
+BOOST_AUTO_TEST_CASE( AnyTrue_Short_PartialMask_N2 )
+{
+    using T = Traits<float, 2>;
+    // Construct a vector where only the high lanes (outside the first 2 lanes) are negative.
+    // _mm_set_ps sets elements as (e3,e2,e1,e0)
+    __m128 vHighNeg = _mm_set_ps( -1.f, 0.f, 0.f, 0.f ); // negative in e3 (outside first 2)
+    bool actualHighNeg = T::AnyTrue( vHighNeg );
+    bool expectedHighNeg = false; // masked to first 2 lanes -> should be false
+    BOOST_TEST( actualHighNeg == expectedHighNeg );
+
+    // Negative in lane 1 (within first 2 lanes) -> true
+    __m128 vLowNeg = _mm_set_ps( 0.f, 0.f, -1.f, 0.f ); // negative in e1 (inside first 2)
+    bool actualLowNeg = T::AnyTrue( vLowNeg );
+    bool expectedLowNeg = true;
+    BOOST_TEST( actualLowNeg == expectedLowNeg );
+}
+
+BOOST_AUTO_TEST_CASE( AnyTrue_Long_PartialMask_N5 )
+{
+    using T = Traits<float, 5>;
+    // negative in highest lane (e7) which is outside the first 5 lanes -> should be ignored by mask
+    __m256 vHighNeg = _mm256_set_ps( -1.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f ); // negative at e7
+    bool actualHighNeg = T::AnyTrue( vHighNeg );
+    bool expectedHighNeg = false; // masked to first 5 lanes -> should be false
+    BOOST_TEST( actualHighNeg == expectedHighNeg );
+
+    // negative in lane 2 (within first 5 lanes) -> true
+    __m256 vLowNeg = _mm256_set_ps( 0.f, 0.f, -1.f, 0.f, 0.f, 0.f, 0.f, 0.f ); // negative at e5? careful mapping:
+    // To ensure a negative within the lower 5 lanes, set e2 negative (third lowest):
+    // _mm256_set_ps(e7,e6,e5,e4,e3,e2,e1,e0)
+    // Construct explicitly with negative in e2:
+    __m256 vExplicit = _mm256_set_ps( 0.f, 0.f, 0.f, 0.f, 0.f, -1.f, 0.f, 0.f ); // negative at e2 (counting from lowest)
+    bool actualLowNeg2 = T::AnyTrue( vExplicit );
+    bool expectedLowNeg2 = true;
+    BOOST_TEST( actualLowNeg2 == expectedLowNeg2 );
+}
+
+BOOST_AUTO_TEST_CASE( AnyTrue_Long_FullCapacity_N8 )
+{
+    using T = Traits<float, 8>;
+    // all zeros -> false
+    auto vZero = _mm256_set_ps( 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f );
+    bool actualZero = T::AnyTrue( vZero );
+    bool expectedZero = false;
+    BOOST_TEST( actualZero == expectedZero );
+
+    // negative in any lane -> true
+    auto vNeg = _mm256_set_ps( -1.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f );
+    bool actualNeg = T::AnyTrue( vNeg );
+    bool expectedNeg = true;
+    BOOST_TEST( actualNeg == expectedNeg );
+}
+
+BOOST_AUTO_TEST_CASE( Less_Float4 ) // Tests Traits<float,4>::Less and MoveMask
+{
+    using Traits4 = Traits<float, 4>;
+    alignas( Traits4::AlignAs ) std::array<float, 4> a{ 1.0f, 2.0f, 3.0f, 4.0f };
+    alignas( Traits4::AlignAs ) std::array<float, 4> b{ 1.0f, 1.5f, 3.5f, 4.0f };
+
+    auto va = Traits4::Load( a );
+    auto vb = Traits4::Load( b );
+
+    auto cmp = Traits4::Less( va, vb );
+    int mask = Traits4::MoveMask( cmp );
+
+    // Expected: comparisons a[i] < b[i] => [1<1:false, 2<1.5:false, 3<3.5:true, 4<4:false]
+    // Only index 2 is true -> mask bit 2 set => mask == 1 << 2 == 4
+    BOOST_TEST( mask == 4 );
+}
+
+BOOST_AUTO_TEST_CASE( Less_Float8 ) // Tests Traits<float,8>::Less and MoveMask (256-bit path)
+{
+    using Traits8 = Traits<float, 8>;
+    alignas( Traits8::AlignAs ) std::array<float, 8> a{ 0.f, 1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f };
+    alignas( Traits8::AlignAs ) std::array<float, 8> b{ 1.f, 1.f, 2.f, 2.f, 4.f, 4.f, 7.f, 7.f };
+
+    auto va = Traits8::Load( a );
+    auto vb = Traits8::Load( b );
+
+    auto cmp = Traits8::Less( va, vb );
+    int mask = Traits8::MoveMask( cmp );
+
+    // Expected true at indices 0 and 6 -> mask = (1<<0) | (1<<6) = 1 + 64 = 65
+    BOOST_TEST( mask == 65 );
+}
 
 BOOST_AUTO_TEST_SUITE_END( )
