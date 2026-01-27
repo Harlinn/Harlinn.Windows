@@ -28,6 +28,32 @@ namespace Harlinn::ODBC
     class DataReader;
     struct ParameterDescription;
 
+    /// <summary>
+    /// Represents a fixed-size string used for database I/O that integrates with ODBC
+    /// indicator semantics (SQL_NULL_DATA).
+    /// </summary>
+    /// <typeparam name="CharT">
+    /// Character type of the string. Must be either <c>char</c> or <c>wchar_t</c>.
+    /// </typeparam>
+    /// <typeparam name="maxSize">
+    /// Maximum number of characters (not including terminating null) the string can hold.
+    /// </typeparam>
+    /// <remarks>
+    /// This class derives from `Harlinn::Common::Core::FixedString<CharT, maxSize, true>` and adds:
+    /// <list type="bullet">
+    /// <item><description>
+    /// Indicator/NULL handling compatible with ODBC by storing SQL indicator in the underlying size field.
+    /// </description></item>
+    /// <item><description>
+    /// Convenience constructors and assignment from span-like types.
+    /// </description></item>
+    /// <item><description>
+    /// Binary serialization helpers <c>WriteTo</c> and <c>ReadFrom</c> for stream I/O.
+    /// </description></item>
+    /// </list>
+    /// The stored size is reinterpreted as an ODBC <c>SQLLEN</c> indicator via <c>Indicator()</c>. When the indicator equals
+    /// <c>SQL_NULL_DATA</c>, the object represents a NULL database value. Otherwise it behaves like a normal fixed string.
+    /// </remarks>
     template<typename CharT, size_t maxSize>
         requires std::is_same_v<CharT, char> || std::is_same_v<CharT, wchar_t>
     class FixedDBString : public Harlinn::Common::Core::FixedString<CharT, maxSize, true>
@@ -43,24 +69,65 @@ namespace Harlinn::ODBC
         using Base::data;
         using Base::CheckSize;
     public:
+        /// <summary>
+        /// Default-constructs an empty, non-null FixedDBString.
+        /// </summary>
         constexpr FixedDBString( ) noexcept = default;
 
+        /// <summary>
+        /// Constructs a FixedDBString from a character pointer and explicit size.
+        /// </summary>
+        /// <param name="str">
+        /// Pointer to character data.
+        /// </param>
+        /// <param name="size">
+        /// Number of characters in <paramref name="str"/>.
+        /// </param>
         explicit FixedDBString( const CharType* str, size_t size )
             : Base( str, size )
         { }
 
+        /// <summary>
+        /// Constructs a FixedDBString from a null-terminated C string.
+        /// </summary>
+        /// <param name="str">Null-terminated character string.</param>
         FixedDBString( const CharType* str )
             : Base( str )
         { }
 
-        template<SimpleSpanLike T>
+        /// <summary>
+        /// Constructs a FixedDBString from a contiguous container (like <c>std::vector</c>, <c>std::array</c>, 
+        /// or <c>std::basic_string</c>) whose value_type matches the character type (<typeparamref name="CharType"/>).
+        /// </summary>
+        /// <typeparam name="T">
+        /// A contiguous container type with element type equal to <typeparamref name="CharType"/>.
+        /// </typeparam>
+        /// <param name="str">
+        /// The source container whose contents will be used to initialize the string.
+        /// </param>
+        /// <remarks>
+        /// This constructor forwards to the base <c>FixedString</c> constructor which will copy at most
+        /// <c>maxSize</c> characters and ensure null-termination. The caller is responsible for ensuring
+        /// the container's size does not exceed the capacity.
+        /// </remarks>
+        template<ContiguousContainerLike T>
             requires std::is_same_v<typename T::value_type, CharType>
         explicit FixedDBString( const T& str )
             : Base( str )
         { }
 
 
-        template<SimpleSpanLike T>
+        /// <summary>
+        /// Assigns the contents of a contiguous container to this FixedDBString.
+        /// </summary>
+        /// <typeparam name="T">A contiguous container type with element type equal to <typeparamref name="CharType"/>.</typeparam>
+        /// <param name="str">The source container whose contents will replace the current contents.</param>
+        /// <returns>Reference to this <c>FixedDBString</c>.</returns>
+        /// <remarks>
+        /// The assignment copies the container contents into the fixed buffer via <c>Base::Assign</c>.
+        /// If the container's size exceeds capacity, <c>Base::Assign</c> is expected to handle sizing/checking.
+        /// </remarks>
+        template<ContiguousContainerLike T>
             requires std::is_same_v<typename T::value_type, CharT>
         FixedDBString& operator = ( const T& str )
         {
@@ -68,7 +135,25 @@ namespace Harlinn::ODBC
             return *this;
         }
 
-        template<SimpleSpanLike T>
+        /// <summary>
+        /// Assigns an optional contiguous container to this FixedDBString. If the optional has no value,
+        /// the FixedDBString is set to represent SQL NULL (indicator = <c>SQL_NULL_DATA</c>).
+        /// </summary>
+        /// <typeparam name="T">
+        /// A contiguous container type with element type equal to <typeparamref name="CharType"/>.
+        /// </typeparam>
+        /// <param name="str">
+        /// The optional container whose contents will replace the current contents if present.
+        /// </param>
+        /// <returns>
+        /// Reference to this <c>FixedDBString</c>.
+        /// </returns>
+        /// <remarks>
+        /// When <paramref name="str"/> has_value() the contained data is copied into the fixed buffer.
+        /// When not present, the string is set to an empty (zero-length) representation and the internal
+        /// size field is set to <c>SQL_NULL_DATA</c> (via bit-cast to the underlying <c>size_t</c>).
+        /// </remarks>
+        template<ContiguousContainerLike T>
             requires std::is_same_v<typename T::value_type, CharT>
         FixedDBString& operator = ( const std::optional<T>& str )
         {
@@ -85,17 +170,57 @@ namespace Harlinn::ODBC
             return *this;
         }
 
+        /// <summary>
+        /// Returns a pointer to the ODBC indicator (SQLLEN) that is stored in the underlying size field.
+        /// </summary>
+        /// <returns>
+        /// Pointer to an <c>SQLLEN</c> representing the indicator for this value. When the indicator equals
+        /// <c>SQL_NULL_DATA</c> the string represents a NULL database value.
+        /// </returns>
+        /// <remarks>
+        /// The implementation reinterprets the address of the internal size field (<c>size_</c>) as an <c>SQLLEN*</c>.
+        /// Use this pointer when binding the value to ODBC APIs that expect an indicator/length pointer.
+        /// </remarks>
         SQLLEN* Indicator( )
         {
             auto* ptr = &size_;
             return reinterpret_cast< SQLLEN* >( ptr );
         }
 
+        /// <summary>
+        /// Determines whether this FixedDBString represents a NULL database value.
+        /// </summary>
+        /// <returns><c>true</c> if the internal indicator equals <c>SQL_NULL_DATA</c>; otherwise <c>false</c>.</returns>
+        /// <remarks>
+        /// Uses a <c>std::bit_cast</c> to reinterpret the stored <c>size_t</c> as an <c>SQLLEN</c> indicator.
+        /// </remarks>
         [[nodiscard]] constexpr bool IsNull( ) const
         {
             return std::bit_cast< SQLLEN >( Base::size_ ) == SQL_NULL_DATA;
         }
 
+        /// <summary>
+        /// Serializes this FixedDBString to a binary writer.
+        /// </summary>
+        /// <typeparam name="StreamT">
+        /// Stream writer type used by <c>IO::BinaryWriter</c>.
+        /// </typeparam>
+        /// <param name="destination">
+        /// Binary writer that will receive the serialized data.
+        /// </param>
+        /// <remarks>
+        /// Serialization format:
+        /// <list type="number">
+        /// <item><description>
+        /// Write a boolean indicating whether the value is NOT NULL.
+        /// </description></item>
+        /// <item><description>
+        /// If not null, write a 7-bit encoded size (in bytes) and then the raw character bytes.
+        /// </description></item>
+        /// </list>
+        /// This format preserves NULL semantics via the boolean flag and 
+        /// writes the byte-length of the character data.
+        /// </remarks>
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -108,6 +233,34 @@ namespace Harlinn::ODBC
                 destination.Write( data( ), sz );
             }
         }
+
+
+        /// <summary>
+        /// Deserializes a FixedDBString from a binary reader.
+        /// </summary>
+        /// <typeparam name="StreamT">
+        /// Stream reader type used by <c>IO::BinaryReader</c>.
+        /// </typeparam>
+        /// <param name="source">
+        /// Binary reader providing the serialized data.
+        /// </param>
+        /// <remarks>
+        /// Expects the format written by <see cref="WriteTo"/>:
+        /// <list type="number">
+        /// <item><description>
+        /// Read a boolean indicating whether the value is NOT NULL.
+        /// </description></item>
+        /// <item><description>
+        /// If not null, read a 7-bit encoded size (in bytes), validate/convert 
+        /// it to a character count, read the bytes and set the internal size 
+        /// and null-terminator.
+        /// </description></item>
+        /// <item><description>
+        /// If null, set the internal indicator to <c>SQL_NULL_DATA</c> and the 
+        /// first character to the terminating null.
+        /// </description></item>
+        /// </list>
+        /// </remarks>
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
@@ -134,6 +287,45 @@ namespace Harlinn::ODBC
     using FixedDBAnsiString = FixedDBString<char, maxSize>;
 
 
+    /// <summary>
+    /// Represents a fixed-size binary buffer used for database I/O that integrates with ODBC
+    /// indicator semantics (SQL_NULL_DATA).
+    /// </summary>
+    /// <typeparam name="maxSize">
+    /// Maximum number of bytes the buffer can hold.
+    /// </typeparam>
+    /// <remarks>
+    /// This class derives from `Harlinn::Common::Core::FixedBinary<maxSize>` and provides:
+    /// <list type="bullet">
+    /// <item><description>
+    /// ODBC-compatible indicator handling by storing the SQL indicator in the underlying size field.
+    /// Use <c>Indicator()</c> to obtain an <c>SQLLEN*</c> suitable for ODBC bindings.
+    /// </description></item>
+    /// <item><description>
+    /// A convenience assignment operator from an <c>std::optional</c> of a contiguous byte container
+    /// which sets the internal indicator to <c>SQL_NULL_DATA</c> when the optional has no value.
+    /// </description></item>
+    /// <item><description>
+    /// Binary serialization helpers <c>WriteTo</c> and <c>ReadFrom</c> for use with <c>IO::BinaryWriter</c>
+    /// and <c>IO::BinaryReader</c>. The format preserves NULL semantics using an initial boolean flag,
+    /// followed by the byte-length and raw bytes when not null.
+    /// </description></item>
+    /// </list>
+    /// Notes:
+    /// <list type="bullet">
+    /// <item><description>
+    /// The stored <c>size_</c> is reinterpreted as an <c>SQLLEN</c> indicator (via <c>std::bit_cast</c>).
+    /// When it equals <c>SQL_NULL_DATA</c>, the object represents a NULL database value.
+    /// </description></item>
+    /// <item><description>
+    /// When assigning from an empty optional, the first data byte is set to zero and the internal
+    /// size/indicator is set to <c>SQL_NULL_DATA</c>.
+    /// </description></item>
+    /// <item><description>
+    /// Use <c>Indicator()</c> when binding this buffer to ODBC APIs that expect an indicator/length pointer.
+    /// </description></item>
+    /// </list>
+    /// </remarks>
     template<size_t maxSize>
     class FixedDBBinary : public Harlinn::Common::Core::FixedBinary<maxSize>
     {
@@ -146,18 +338,51 @@ namespace Harlinn::ODBC
         using Base::data;
         using Base::CheckSize;
     public:
+        /// <summary>
+        /// Returns a pointer to the ODBC indicator (SQLLEN) that is stored in the underlying size field.
+        /// </summary>
+        /// <returns>
+        /// Pointer to an <c>SQLLEN</c> representing the indicator for this value. When the indicator equals
+        /// <c>SQL_NULL_DATA</c> the buffer represents a NULL database value.
+        /// </returns>
+        /// <remarks>
+        /// The implementation takes the address of the internal <c>size_</c> field and reinterprets it as an
+        /// <c>SQLLEN*</c>. Use this pointer when binding the buffer to ODBC APIs that expect an indicator/length pointer.
+        /// </remarks>
         SQLLEN* Indicator( )
         {
             auto* ptr = &size_;
             return reinterpret_cast< SQLLEN* >( ptr );
         }
 
+        /// <summary>
+        /// Determines whether this FixedDBBinary represents a NULL database value.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c> if the internal indicator equals <c>SQL_NULL_DATA</c>; otherwise <c>false</c>.
+        /// </returns>
+        /// <remarks>
+        /// Uses <c>std::bit_cast</c> to reinterpret the stored <c>size_t</c> as an <c>SQLLEN</c> indicator.
+        /// </remarks>
         [[nodiscard]] constexpr bool IsNull( ) const
         {
             return std::bit_cast< SQLLEN >( Base::size_ ) == SQL_NULL_DATA;
         }
 
-        template<SimpleSpanLike T>
+        /// <summary>
+        /// Assigns an optional contiguous container of bytes to this FixedDBBinary.
+        /// </summary>
+        /// <typeparam name="T">A contiguous container type with element type equal to <c>Byte</c>.</typeparam>
+        /// <param name="str">
+        /// The optional container whose contents will replace the current contents if present.
+        /// </param>
+        /// <returns>Reference to this <c>FixedDBBinary</c>.</returns>
+        /// <remarks>
+        /// When <paramref name="str"/> has_value() the contained data is copied into the fixed buffer.
+        /// When not present, the first data byte is set to zero and the internal size/indicator is set to
+        /// <c>SQL_NULL_DATA</c> (via bit-cast to the underlying <c>size_t</c>), representing a NULL database value.
+        /// </remarks>
+        template<ContiguousContainerLike T>
             requires std::is_same_v<typename T::value_type, Byte>
         FixedDBBinary& operator = ( const std::optional<T>& str )
         {
@@ -175,6 +400,28 @@ namespace Harlinn::ODBC
         }
 
 
+        /// <summary>
+        /// Serializes this FixedDBBinary to a binary writer.
+        /// </summary>
+        /// <typeparam name="StreamT">
+        /// Stream writer type used by <c>IO::BinaryWriter</c>.
+        /// </typeparam>
+        /// <param name="destination">
+        /// Binary writer that will receive the serialized data.
+        /// </param>
+        /// <remarks>
+        /// Serialization format:
+        /// <list type="number">
+        /// <item><description>
+        /// Write a boolean indicating whether the value is NOT NULL.
+        /// </description></item>
+        /// <item><description>
+        /// If not null, write the size (number of bytes) and then the raw bytes.
+        /// </description></item>
+        /// </list>
+        /// This format preserves NULL semantics via the initial boolean flag 
+        /// and writes the byte-length of the binary data.
+        /// </remarks>
         template<IO::StreamWriter StreamT>
         void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
         {
@@ -187,6 +434,31 @@ namespace Harlinn::ODBC
                 destination.Write( data( ), sz );
             }
         }
+        
+        /// <summary>
+        /// Deserializes a FixedDBBinary from a binary reader.
+        /// </summary>
+        /// <typeparam name="StreamT">
+        /// Stream reader type used by <c>IO::BinaryReader</c>.
+        /// </typeparam>
+        /// <param name="source">
+        /// Binary reader providing the serialized data.
+        /// </param>
+        /// <remarks>
+        /// Expects the format written by <see cref="WriteTo"/>:
+        /// <list type="number">
+        /// <item><description>
+        /// Read a boolean indicating whether the value is NOT NULL.
+        /// </description></item>
+        /// <item><description>
+        /// If not null, read the size (in bytes), validate and set 
+        /// the internal size, then read the bytes.
+        /// </description></item>
+        /// <item><description>
+        /// If null, set the internal indicator to <c>SQL_NULL_DATA</c> and the first data byte to zero.
+        /// </description></item>
+        /// </list>
+        /// </remarks>
         template<IO::StreamReader StreamT>
         void ReadFrom( IO::BinaryReader<StreamT>& source )
         {
@@ -209,6 +481,52 @@ namespace Harlinn::ODBC
 
     namespace Internal
     {
+        
+        /// <summary>
+        /// Represents a database-aware value container that pairs a value of type <typeparamref name="T"/>
+        /// with an ODBC-compatible indicator (<c>SQLLEN</c>) used to represent SQL NULL semantics.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The stored value type.
+        /// </typeparam>
+        /// <remarks>
+        /// <para>
+        /// DBValue stores an internal <c>SQLLEN</c> indicator (<c>indicator_</c>) and a value of type
+        /// <typeparamref name="T"/> (<c>value_</c>). When <c>indicator_</c> equals <c>SQL_NULL_DATA</c>
+        /// the object represents a NULL database value; otherwise the object contains a valid value
+        /// and the indicator is zero. This design makes DBValue suitable for use as a bind buffer
+        /// for ODBC parameter and column operations where a pointer to an indicator/length value is required.
+        /// </para>
+        /// <para>
+        /// Key features:
+        /// <list type="bullet">
+        /// <item><description>
+        /// Construction from a raw value, from <c>std::optional&lt;T&gt;</c>, or from <c>nullptr_t</c>.
+        /// </description></item>
+        /// <item><description>
+        /// Assignment operators for raw values and optionals; resetting to NULL.
+        /// </description></item>
+        /// <item><description>
+        /// Comparison operators that consider both indicator and value.
+        /// </description></item>
+        /// <item><description>
+        /// Accessors: <c>Indicator()</c> returns an <c>SQLLEN*</c> for ODBC bindings,
+        /// <c>data()</c> returns pointer(s) to the value (null when representing SQL NULL).
+        /// </description></item>
+        /// <item><description>Conversion to <c>std::optional&lt;T&gt;</c>, <c>IsNull()</c> and <c>has_value()</c>, and
+        /// <c>value()</c> which throws <c>std::bad_optional_access</c> if the object is NULL.
+        /// </description></item>
+        /// <item><description>
+        /// Binary serialization helpers <c>WriteTo</c> and <c>ReadFrom</c> that preserve NULL semantics.
+        /// </description></item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// Use DBValue whenever an ODBC call requires both a buffer for the value and an indicator
+        /// pointer to express NULL or length information. The <c>Indicator()</c> pointer can be
+        /// passed directly to ODBC APIs.
+        /// </para>
+        /// </remarks>
         template <typename T>
         class DBValue
         {
@@ -218,33 +536,66 @@ namespace Harlinn::ODBC
             mutable SQLLEN indicator_ = SQL_NULL_DATA;
             mutable T value_ = {};
         public:
+            /// <summary>
+            /// Default-constructs a <see cref="DBValue"/>. The constructed object represents SQL NULL.
+            /// </summary>
             constexpr DBValue( ) = default;
 
+            /// <summary>
+            /// Constructs a <see cref="DBValue"/> that contains a concrete value.
+            /// </summary>
+            /// <param name="value">The value to store. The indicator is set to indicate non-NULL.</param>
             DBValue(const value_type& value) noexcept
                 : indicator_(0), value_( value )
             { }
 
+            /// <summary>
+            /// Constructs a <see cref="DBValue"/> from an <see cref="std::optional{T}"/>.
+            /// </summary>
+            /// <param name="value">
+            /// An optional containing the value. If <paramref name="value"/> has no value, the resulting
+            /// <see cref="DBValue"/> represents SQL NULL.
+            /// </param>
             DBValue( const std::optional<value_type>& value ) noexcept
                 : indicator_( value.has_value( ) ? 0 : SQL_NULL_DATA ), value_( value.has_value( ) ? value.value( ) : value_type{} )
             {
             }
 
+            /// <summary>
+            /// Constructs a <see cref="DBValue"/> that represents SQL NULL.
+            /// </summary>
+            /// <param name="null">
+            /// Must be <c>nullptr</c> to indicate a null construction.
+            /// </param>
             DBValue( nullptr_t ) noexcept
                 : indicator_( SQL_NULL_DATA ), value_{}
             { }
 
+            /// <summary>
+            /// Resets the <see cref="DBValue"/> to represent SQL NULL.
+            /// </summary>
             constexpr void reset( ) noexcept
             {
                 indicator_ = SQL_NULL_DATA;
                 value_ = {};
             }
 
+            /// <summary>
+            /// Assigns SQL NULL to this <see cref="DBValue"/>.
+            /// </summary>
+            /// <param name="null">Must be <c>nullptr</c>.</param>
+            /// <returns>Reference to this object.</returns>
             constexpr DBValue& operator=( nullptr_t ) noexcept
             {
                 reset( );
                 return *this;
             }
 
+            /// <summary>
+            /// Assigns a concrete value to this <see cref="DBValue"/>, marking it non-NULL.
+            /// </summary>
+            /// <param name="value">The value to assign.</param>
+            /// <returns>Reference to this object.</returns>
             constexpr DBValue& operator = ( const value_type& value ) noexcept
             {
                 indicator_ = 0;
@@ -252,6 +603,14 @@ namespace Harlinn::ODBC
                 return *this;
             }
 
+            /// <summary>
+            /// Assigns an <see cref="std::optional{T}"/> to this <see cref="DBValue"/>.
+            /// </summary>
+            /// <param name="value">
+            /// If <paramref name="value"/> has a value it will be stored and the indicator set to non-NULL.
+            /// If it has no value the object will represent SQL NULL.
+            /// </param>
+            /// <returns>Reference to this object.</returns>
             constexpr DBValue& operator = ( const std::optional<value_type>& value ) noexcept
             {
                 if ( value.has_value( ) )
@@ -267,16 +626,32 @@ namespace Harlinn::ODBC
             }
 
 
+            /// <summary>
+            /// Compares two <see cref="DBValue"/> instances. Both the indicator and the stored value are compared.
+            /// </summary>
+            /// <param name="other">The other <see cref="DBValue"/> to compare with.</param>
+            /// <returns><c>true</c> if both indicator and value are equal; otherwise <c>false</c>.</returns>
             bool operator == ( const DBValue& other ) const
             {
                 return indicator_ == other.indicator_ && value_ == other.value_;
             }
 
+            /// <summary>
+            /// Inequality comparison for two <see cref="DBValue"/> instances.
+            /// </summary>
+            /// <param name="other">The other <see cref="DBValue"/> to compare with.</param>
+            /// <returns><c>true</c> if either indicator or value differ; otherwise <c>false</c>.</returns>
             bool operator != ( const DBValue& other ) const
             {
                 return indicator_ != other.indicator_ || value_ != other.value_;
             }
 
+            /// <summary>
+            /// Converts this <see cref="DBValue"/> to an <see cref="std::optional{T}"/>.
+            /// </summary>
+            /// <returns>
+            /// An optional containing the stored value when the indicator denotes non-NULL; otherwise an empty optional.
+            /// </returns>
             operator std::optional<T> ( ) const
             {
                 if ( has_value( ) )
@@ -287,35 +662,59 @@ namespace Harlinn::ODBC
             }
 
 
-            [[nodiscard]] 
+            /// <summary>
+            /// Returns a pointer to the internal ODBC indicator (<c>SQLLEN</c>) for use with ODBC binds.
+            /// </summary>
+            /// <returns>Pointer to the internal <c>SQLLEN</c> indicator.</returns>
+            [[nodiscard]]
             SQLLEN* Indicator( ) const noexcept
             {
                 return &indicator_;
             }
+            /// <summary>
+            /// Returns a pointer to the stored value if not NULL; otherwise returns <c>nullptr</c>.
+            /// </summary>
+            /// <returns>Pointer to the value or <c>nullptr</c> when representing SQL NULL.</returns>
             [[nodiscard]]
             const T* data( ) const noexcept
             {
                 return IsNull( ) == false ? &value_ : nullptr;
             }
+            /// <summary>
+            /// Returns a pointer to the stored value for writing.
+            /// </summary>
+            /// <returns>Pointer to the stored value.</returns>
             [[nodiscard]]
             T* data( ) noexcept
             {
                 return &value_;
             }
 
-
+            /// <summary>
+            /// Determines whether this <see cref="DBValue"/> represents SQL NULL.
+            /// </summary>
+            /// <returns><c>true</c> if indicator equals <c>SQL_NULL_DATA</c>; otherwise <c>false</c>.</returns>
             [[nodiscard]] 
             constexpr bool IsNull( ) const noexcept
             {
                 return indicator_ == SQL_NULL_DATA;
             }
 
+            /// <summary>
+            /// Determines whether the container has a value (i.e., is not SQL NULL).
+            /// </summary>
+            /// <returns><c>true</c> when indicator is not <c>SQL_NULL_DATA</c>; otherwise <c>false</c>.</returns>
             [[nodiscard]]
             bool has_value( ) const noexcept
             {
                 return indicator_ != SQL_NULL_DATA;
             }
 
+            /// <summary>
+            /// Returns the stored value by const reference.
+            /// </summary>
+            /// <returns>Reference to the stored value.</returns>
+            /// <exception cref="std::bad_optional_access">Thrown when the object represents SQL NULL.</exception>
             [[nodiscard]]
             const value_type& value( ) const
             {
@@ -326,6 +725,22 @@ namespace Harlinn::ODBC
                 throw std::bad_optional_access{};
             }
 
+            /// <summary>
+            /// Serializes this <see cref="DBValue"/> to a binary writer, preserving NULL semantics.
+            /// </summary>
+            /// <typeparam name="StreamT">Stream writer type used by <c>IO::BinaryWriter</c>.</typeparam>
+            /// <param name="destination">Binary writer that will receive the serialized data.</param>
+            /// <remarks>
+            /// Format:
+            /// <list type="number">
+            /// <item><description>
+            /// Write a boolean indicating whether the value is NOT NULL.
+            /// </description></item>
+            /// <item><description>
+            /// If not null, write the contained <typeparamref name="T"/> using the writer's serialization.
+            /// </description></item>
+            /// </list>
+            /// </remarks>
             template<IO::StreamWriter StreamT>
             void WriteTo( IO::BinaryWriter<StreamT>& destination ) const
             {
@@ -336,6 +751,15 @@ namespace Harlinn::ODBC
                     destination.Write( value_ );
                 }
             }
+
+            /// <summary>
+            /// Deserializes a <see cref="DBValue"/> from a binary reader.
+            /// </summary>
+            /// <typeparam name="StreamT">Stream reader type used by <c>IO::BinaryReader</c>.</typeparam>
+            /// <param name="source">Binary reader providing the serialized data.</param>
+            /// <remarks>
+            /// Expects the format written by <see cref="WriteTo"/>.
+            /// </remarks>
             template<IO::StreamReader StreamT>
             void ReadFrom( IO::BinaryReader<StreamT>& source )
             {
@@ -354,31 +778,148 @@ namespace Harlinn::ODBC
         };
     }
 
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;bool&gt;</c>.
+    /// Represents a database-aware boolean value paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// When the internal indicator equals <c>SQL_NULL_DATA</c> the value represents SQL NULL.
+    /// See <c>Internal::DBValue</c> for accessors and serialization helpers.
+    /// </summary>
     using DBBoolean = Internal::DBValue<bool>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;SByte&gt;</c>.
+    /// Represents a database-aware signed byte value paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBSByte = Internal::DBValue<SByte>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;Byte&gt;</c>.
+    /// Represents a database-aware unsigned byte value paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBByte = Internal::DBValue<Byte>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;Int16&gt;</c>.
+    /// Represents a database-aware 16-bit signed integer paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBInt16 = Internal::DBValue<Int16>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;UInt16&gt;</c>.
+    /// Represents a database-aware 16-bit unsigned integer paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBUInt16 = Internal::DBValue<UInt16>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;Int32&gt;</c>.
+    /// Represents a database-aware 32-bit signed integer paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBInt32 = Internal::DBValue<Int32>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;UInt32&gt;</c>.
+    /// Represents a database-aware 32-bit unsigned integer paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBUInt32 = Internal::DBValue<UInt32>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;Int64&gt;</c>.
+    /// Represents a database-aware 64-bit signed integer paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBInt64 = Internal::DBValue<Int64>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;UInt64&gt;</c>.
+    /// Represents a database-aware 64-bit unsigned integer paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBUInt64 = Internal::DBValue<UInt64>;
 
+    /// <summary>
+    /// Template alias for enum value containers used for database I/O.
+    /// </summary>
+    /// <typeparam name="T">An enumeration type. The alias resolves to <c>Internal::DBValue&lt;T&gt;</c>.</typeparam>
     template<typename T>
         requires std::is_enum_v<T>
     using DBEnum = Internal::DBValue<T>;
 
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;float&gt;</c>.
+    /// Represents a database-aware single-precision floating point value paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBSingle = Internal::DBValue<float>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;double&gt;</c>.
+    /// Represents a database-aware double-precision floating point value paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBDouble = Internal::DBValue<double>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;DateTime&gt;</c>.
+    /// Represents a database-aware date/time value (Harlinn::Common::Core::DateTime) paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBDateTime = Internal::DBValue<DateTime>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;TimeSpan&gt;</c>.
+    /// Represents a database-aware time interval value paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBTimeSpan = Internal::DBValue<TimeSpan>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;Guid&gt;</c>.
+    /// Represents a database-aware GUID/UUID value paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBGuid = Internal::DBValue<Guid>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;Currency&gt;</c>.
+    /// Represents a database-aware currency value paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBCurrency = Internal::DBValue<Currency>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;WideString&gt;</c>.
+    /// Represents a database-aware wide (UTF-16) string value paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBWideString = Internal::DBValue<WideString>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;AnsiString&gt;</c>.
+    /// Represents a database-aware ANSI/byte string value paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// </summary>
     using DBAnsiString = Internal::DBValue<AnsiString>;
+
+    /// <summary>
+    /// Alias for <c>Internal::DBValue&lt;Binary&gt;</c>.
+    /// Represents a database-aware binary buffer (<c>Binary</c>) paired with an ODBC indicator (<c>SQLLEN</c>).
+    /// Use <c>Indicator()</c> on the underlying object when binding to ODBC APIs.
+    /// </summary>
     using DBBinary = Internal::DBValue<Binary>;
 
 
+    /// <summary>
+    /// Identifies the type of ODBC handle.
+    /// </summary>
+    /// <remarks>
+    /// This enumeration maps directly to the native ODBC handle type constants and is used
+    /// throughout the API when allocating, freeing, or querying diagnostics for ODBC handles.
+    /// Use the appropriate value when calling ODBC functions that require a handle type.
+    /// </remarks>
+    /// <list type="bullet">
+    /// <item><description>
+    /// <c>Environment</c> - Corresponds to <c>SQL_HANDLE_ENV</c>; represents an ODBC environment handle.
+    /// </description></item>
+    /// <item><description>
+    /// <c>Connection</c> - Corresponds to <c>SQL_HANDLE_DBC</c>; represents an ODBC connection handle.
+    /// </description></item>
+    /// <item><description>
+    /// <c>Statement</c> - Corresponds to <c>SQL_HANDLE_STMT</c>; represents an ODBC statement handle.
+    /// </description></item>
+    /// <item><description>
+    /// <c>Descriptor</c> - Corresponds to <c>SQL_HANDLE_DESC</c>; represents an ODBC descriptor handle.
+    /// </description></item>
+    /// </list>
     enum class HandleType : SQLSMALLINT
     {
         Environment = SQL_HANDLE_ENV,
@@ -388,6 +929,42 @@ namespace Harlinn::ODBC
     };
 
 
+    /// <summary>
+    /// Represents ODBC function return codes as a strongly-typed enumeration.
+    /// </summary>
+    /// <remarks>
+    /// Each enumerator maps directly to the corresponding native ODBC <c>SQLRETURN</c> constant.
+    /// The underlying type is <c>SQLRETURN</c> so values can be passed directly to ODBC APIs
+    /// or compared against ODBC constants. Use the free helpers <c>Succeeded(Result)</c> and
+    /// <c>Failed(Result)</c> to test for success/failure semantics (they use the ODBC
+    /// <c>SQL_SUCCEEDED</c> macro semantics).
+    /// </remarks>
+    /// <list type="bullet">
+    /// <item><description><c>
+    /// InvalidHandle</c> - <c>SQL_INVALID_HANDLE</c>: The handle passed to an ODBC function was not valid.
+    /// </description></item>
+    /// <item><description><c>
+    /// Error</c> - <c>SQL_ERROR</c>: A general error occurred.
+    /// </description></item>
+    /// <item><description><c>
+    /// Success</c> - <c>SQL_SUCCESS</c>: The ODBC function completed successfully.
+    /// </description></item>
+    /// <item><description><c>
+    /// SuccessWithInfo</c> - <c>SQL_SUCCESS_WITH_INFO</c>: The function completed successfully but generated additional warnings/information.
+    /// </description></item>
+    /// <item><description><c>
+    /// StillExecuting</c> - <c>SQL_STILL_EXECUTING</c>: The operation is still executing (used for asynchronous operations).
+    /// </description></item>
+    /// <item><description><c>
+    /// NeedData</c> - <c>SQL_NEED_DATA</c>: The driver needs more data (used with parameter-data-at-execute).
+    /// </description></item>
+    /// <item><description><c>
+    /// NoData</c> - <c>SQL_NO_DATA</c>: No more data (e.g. end of results or no rows fetched).
+    /// </description></item>
+    /// <item><description>
+    /// <c>ParameterDataAvailable</c> - <c>SQL_PARAM_DATA_AVAILABLE</c>: Parameter data is available (used with parameter-data-at-execute).
+    /// </description></item>
+    /// </list>
     enum class Result : SQLRETURN
     {
         InvalidHandle = SQL_INVALID_HANDLE,
@@ -400,12 +977,39 @@ namespace Harlinn::ODBC
         ParameterDataAvailable = SQL_PARAM_DATA_AVAILABLE
     };
 
-    // test for not Result::InvalidHandle and not Result::Error
+    /// <summary>
+    /// Returns true when the specified ODBC <c>Result</c> value indicates success.
+    /// </summary>
+    /// <param name="result">The ODBC function return code as an <c>ODBC::Result</c> enum value.</param>
+    /// <returns>
+    /// <c>true</c> when the result satisfies the ODBC <c>SQL_SUCCEEDED</c> semantics
+    /// (for example, <c>SQL_SUCCESS</c> or <c>SQL_SUCCESS_WITH_INFO</c>); otherwise <c>false</c>.
+    /// </returns>
+    /// <remarks>
+    /// This helper casts the strongly-typed <c>ODBC::Result</c> to the native <c>SQLRETURN</c> type
+    /// and invokes the native <c>SQL_SUCCEEDED</c> macro. Use this function for concise,
+    /// portable success checks throughout the ODBC wrapper API.
+    /// </remarks>
     inline constexpr bool Succeeded( Result result )
     {
         return SQL_SUCCEEDED( static_cast<SQLRETURN>( result ) );
     }
 
+    /// <summary>
+    /// Returns true when the specified ODBC <c>Result</c> value indicates failure.
+    /// </summary>
+    /// <param name="result">
+    /// The ODBC function return code as an <c>ODBC::Result</c> enum value.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> when the result does not satisfy the ODBC <c>SQL_SUCCEEDED</c> semantics
+    /// (for example, <c>SQL_ERROR</c> or <c>SQL_INVALID_HANDLE</c>); otherwise <c>false</c>.
+    /// </returns>
+    /// <remarks>
+    /// This helper is the complement of <see cref="Succeeded"/> and is equivalent to
+    /// evaluating <c>!Succeeded(result)</c>.
+    /// Use it for concise, portable failure checks throughout the ODBC wrapper API.
+    /// </remarks>
     inline constexpr bool Failed( Result result )
     {
         return Succeeded( result ) == false;
@@ -460,18 +1064,72 @@ namespace Harlinn::ODBC
     };
 
 
+    /// <summary>
+    /// Specifies the orientation for fetching rows from a result set.
+    /// </summary>
+    /// <remarks>
+    /// These values map directly to the native ODBC <c>SQL_FETCH_*</c> constants and are used
+    /// by ODBC fetch APIs such as <c>SQLFetch</c> and <c>SQLFetchScroll</c> (see <c>Statement::FetchScroll</c>).
+    /// Use <c>FetchOrientation::Next</c> for sequential forward-only fetches. Other orientations
+    /// enable positioned or relative fetching when the driver and statement support scrollable cursors.
+    /// </remarks>
+    /// <seealso cref="SQLFetch"/>
+    /// <seealso cref="SQLFetchScroll"/>
     enum class FetchOrientation : SQLUSMALLINT
     {
+        /// <summary>
+        /// Fetch the next row in sequence. Maps to <c>SQL_FETCH_NEXT</c>.
+        /// </summary>
         Next = SQL_FETCH_NEXT,
+        /// <summary>
+        /// Fetch the first row of the result set. Maps to <c>SQL_FETCH_FIRST</c>.
+        /// </summary>
         First = SQL_FETCH_FIRST,
+        /// <summary>
+        /// Fetch the last row of the result set. Maps to <c>SQL_FETCH_LAST</c>.
+        /// </summary>
         Last = SQL_FETCH_LAST,
+        /// <summary>
+        /// Fetch the previous row relative to the current cursor position. Maps to <c>SQL_FETCH_PRIOR</c>.
+        /// </summary>
         Prior = SQL_FETCH_PRIOR,
+        /// <summary>
+        /// Fetch the row at an absolute position from the start of the result set. Maps to <c>SQL_FETCH_ABSOLUTE</c>.
+        /// </summary>
         Absolute = SQL_FETCH_ABSOLUTE,
+        /// <summary>
+        /// Fetch the row at a position relative to the current cursor. Maps to <c>SQL_FETCH_RELATIVE</c>.
+        /// </summary>
         Relative = SQL_FETCH_RELATIVE,
+        /// <summary>
+        /// Driver-defined first fetch for user cursors. Maps to <c>SQL_FETCH_FIRST_USER</c>.
+        /// </summary>
         FirstForUser = SQL_FETCH_FIRST_USER,
-        FirstForSystem =SQL_FETCH_FIRST_SYSTEM
+        /// <summary>
+        /// Driver-defined first fetch for system cursors. Maps to <c>SQL_FETCH_FIRST_SYSTEM</c>.
+        /// </summary>
+        FirstForSystem = SQL_FETCH_FIRST_SYSTEM
     };
 
+    /// <summary>
+    /// Specifies whether a column or parameter accepts SQL NULL values.
+    /// </summary>
+    /// <remarks>
+    /// This enumeration maps directly to the ODBC nullable indicators:
+    /// <list type="bullet">
+    /// <item><description><c>
+    /// Nullable::No</c> — corresponds to <c>SQL_NO_NULLS</c>; the column/parameter does not accept NULL values.
+    /// </description></item>
+    /// <item><description><c>
+    /// Nullable::Yes</c> — corresponds to <c>SQL_NULLABLE</c>; the column/parameter accepts NULL values.
+    /// </description></item>
+    /// <item><description><c>
+    /// Nullable::Unknown</c> — corresponds to <c>SQL_NULLABLE_UNKNOWN</c>; it is unknown whether the column/parameter accepts NULL values.
+    /// </description></item>
+    /// </list>
+    /// Use this enum when reading descriptor/column/parameter metadata (for example via <c>DescribeColumn</c> or <c>DescribeParameter</c>)
+    /// to make nullable semantics explicit and type-safe in the C++ API.
+    /// </remarks>
     enum class Nullable : SQLSMALLINT
     {
         No = SQL_NO_NULLS,
@@ -1605,6 +2263,165 @@ namespace Harlinn::ODBC
         inline Result GetData( SQLUSMALLINT columnOrParameterNumber, NativeType targetValueDataType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrTargetValueActualLength ) const;
 
     protected:
+        /// <summary>
+        /// Called after a successful fetch of a row.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Override this method in derived reader classes to perform per-row processing for data
+        /// that cannot (or should not) be bound ahead-of-time with the <c>Bind*</c> helpers.
+        /// Typical reasons to retrieve data here instead of binding:
+        /// </para>
+        /// <list type="bullet">
+        /// <item><description>
+        /// Variable-length LOBs (large text or binary) where the application prefers to pull the value only when needed.
+        /// </description></item>
+        /// <item><description>
+        /// Columns where the native driver/column type prevents stable column binding (for example database-specific streaming access).
+        /// </description></item>
+        /// <item><description>
+        /// Ad-hoc per-row conversion or aggregation that depends on other columns' values.
+        /// </description></item>
+        /// </list>
+        /// <para>
+        /// The <c>DataReader::Read()</c> implementation calls this method after a successful call
+        /// to <c>Fetch()</c>. Implementations should assume the statement is positioned at the
+        /// current row and may call the <c>Get*</c> helpers (for example <c>GetDBWideString</c>,
+        /// <c>GetDBBinary</c>, <c>GetGuid</c>) or use <c>GetData</c> directly to retrieve columns
+        /// that were not or cannot be bound with <c>Bind*</c>.
+        /// </para>
+        /// <para>
+        /// Be mindful of performance and memory: retrieving very large LOBs for every row can be
+        /// expensive. When processing multiple rows consider streaming/processing each value and
+        /// releasing memory promptly (for example append to a file or process and discard).
+        /// </para>
+        /// </remarks>
+        /// <example>
+        /// <para>Example: single-row result where large text and binary columns are retrieved in <c>AfterFetch</c>.</para>
+        /// <code language="cpp">
+        /// class SingleRowReader : public ODBC::DataReader
+        /// {
+        /// 
+        /// protected:
+        ///     Int32 int32Value_ = 0;
+        ///     ODBC::DBWideString largeText_;
+        ///     ODBC::DBBinary payload_;
+        ///     ODBC::DBGuid rowId_;
+        /// public:
+        ///     SingleRowReader(const Statement* statement)
+        ///         : ODBC::DataReader(statement)
+        ///     {
+        ///         // Bind Int32 column ahead-of-time
+        ///         BindColumn( 0, &int32Value_ );
+        ///     }
+        ///     Int32 GetInt32Value() const { return int32Value_; }
+        ///     const ODBC::DBWideString& GetLargeText() const { return largeText_; }
+        ///     const ODBC::DBBinary& GetPayload() const { return payload_; }
+        ///     const ODBC::DBGuid& GetRowId() const { return rowId_; }
+        /// protected:
+        ///     void AfterFetch() override
+        ///     {
+        ///         // Column 1: large NVARCHAR / NTEXT-like column -> DBWideString
+        ///         largeText_ = GetDBWideString( 1 );
+        ///
+        ///         // Column 2: binary LOB -> DBBinary
+        ///         payload_ = GetDBBinary( 2 );
+        ///
+        ///         // Column 3: GUID -> DBGuid
+        ///         rowId_ = GetDBGuid( 3 );
+        ///
+        ///
+        ///         // At this point largeText_, payload_ and rowId_ contain the current row's values
+        ///         // (or represent SQL NULL). Caller can inspect members after Read() returns.
+        ///     }
+        /// };
+        /// 
+        /// // Usage:
+        /// auto reader = statement.ExecuteReader<SingleRowReader>( L"SELECT Int32Col, LargeText, Payload, RowId FROM SingleRowTable" );
+        /// if ( reader->Read() )
+        /// {
+        ///     // Read bound Int32 value:
+        ///     auto int32Value = reader->GetInt32Value();
+        ///     // Read value assigned in AfterFetch.
+        ///     auto& text = reader->GetLargeText();
+        /// }
+        /// </code>
+        /// </example>
+        /// <example>
+        /// <para>Example: processing multiple rows where some columns are retrieved on-demand in <c>AfterFetch</c>.</para>
+        /// <code language="cpp">
+        /// class StreamProcessingReader : public ODBC::DataReader
+        /// {
+        /// public:
+        ///     // Collect extracted results or process incrementally.
+        ///     std::vector&lt;ODBC::WideString&gt; names_;
+        /// protected:
+        ///     void AfterFetch() override
+        ///     {
+        ///         // For each fetched row, retrieve variable-length column(s) via Get* helpers.
+        ///         // This avoids binding large variable-length buffers for every row.
+        ///         // Column 1: name (NVARCHAR)
+        ///         auto name = GetWideString( 1 );
+        ///
+        ///         // Column 2: optional binary blob - retrieve only if some condition applies.
+        ///         SQLLEN length = ColumnLength( 2 );
+        ///         if ( length > 0 )
+        ///         {
+        ///             auto blob = GetBinary( 2 );
+        ///             // Process blob immediately (e.g., compute hash, write to file) to avoid keeping in memory.
+        ///         }
+        ///
+        ///         // Process or store the small/important values.
+        ///         names_.push_back( std::move( name ) );
+        ///     }
+        /// };
+        /// 
+        /// // Usage: iterate all rows and process in AfterFetch.
+        /// auto reader = statement.ExecuteReader&lt;StreamProcessingReader&gt;( L"SELECT Name, Blob FROM ManyRows" );
+        /// while ( reader->Read() )
+        /// {
+        ///     // AfterFetch was called for the current row; aggregated results are available on the reader.
+        /// }
+        /// // After the loop, reader->names_ contains collected names.
+        /// </code>
+        /// </example>
+        /// <example>
+        /// <para>Example: when a column cannot be bound (driver limitations) use <c>GetData</c> directly.</para>
+        /// <code language="cpp">
+        /// class SpecialDriverReader : public ODBC::DataReader
+        /// {
+        /// protected:
+        ///     void AfterFetch() override
+        ///     {
+        ///         // Suppose column 1 is a driver-specific streaming column that cannot be bound.
+        ///         // Use GetData with NativeType::Binary and repeatedly call it to obtain the entire payload.
+        ///         constexpr size_t ChunkSize = 8192;
+        ///         std::vector&lt;Byte&gt; buffer;
+        ///         buffer.resize( ChunkSize );
+        ///         SQLLEN indicator = 0;
+        ///         auto rc = GetData( 1, NativeType::Binary, buffer.data(), static_cast<SQLLEN>( buffer.size() ), &indicator );
+        ///         if ( indicator == SQL_NULL_DATA )
+        ///         {
+        ///             // handle NULL
+        ///             return;
+        ///         }
+        ///         if ( indicator == SQL_NO_TOTAL )
+        ///         {
+        ///             // read chunks until SQL_SUCCESS
+        ///             do
+        ///             {
+        ///                 // process current chunk in buffer...
+        ///                 rc = GetData( 1, NativeType::Binary, buffer.data(), static_cast<SQLLEN>( buffer.size() ), &indicator );
+        ///             } while ( rc != Result::Success );
+        ///         }
+        ///         else
+        ///         {
+        ///             // indicator contains total byte count - allocate and read remainder if needed
+        ///         }
+        ///     }
+        /// };
+        /// </code>
+        /// </example>
         virtual void AfterFetch( )
         {
 
