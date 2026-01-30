@@ -336,6 +336,7 @@ int main( int argc, char* argv [] )
 {
     try
     {
+        CoInitializeEx( nullptr, COINIT_APARTMENTTHREADED );
         auto application = std::make_shared<Harlinn::Windows::Application>( );
         application->Start( );
 
@@ -354,6 +355,8 @@ int main( int argc, char* argv [] )
         auto result = application->Run( form, messageLoop );
 
         application->Stop( );
+
+        CoUninitialize( );
 
         return result;
     }
