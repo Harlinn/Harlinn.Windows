@@ -1,0 +1,85 @@
+# Chapter 1 — Introduction and Scope (Development Plan)
+
+Goal
+- Produce a concise, practical chapter that orients readers to the `HODBC.h` wrapper, explains design and usage philosophy, lists prerequisites, and includes a minimal runnable example plus exercises.
+
+Learning outcomes
+- Explain why use `HODBC.h` instead of raw ODBC (RAII, typed enums, DB-aware containers).
+- Identify core API surface: `Result`, `HandleType`, `Internal::DBValue<T>`, `FixedDB*` types, `SqlHandle<>`, `Statement`, `DataReader`.
+- Build and run a minimal connect-and-select example against Microsoft SQL Server.
+- Understand NULL/indicator semantics and common gotchas (byte/char length units, `SQL_NULL_DATA`, `08003` handling).
+
+Target audience and prerequisites
+- Audience: C++ developers working with SQL Server via ODBC and maintainers of `Harlinn.ODBC`.
+- Required environment:
+  - C++23 toolchain (MSVC x64) and Visual Studio on Windows 11.
+  - Microsoft ODBC Driver for SQL Server installed.
+  - Access to a test SQL Server instance (or instructions for a local test DB).
+  - Repository checked out; examples under `Examples\ODBC\*`.
+- Security note: do not hard-code credentials — show environment-variable or config-based patterns for connection strings.
+
+Chapter structure (sections and brief contents)
+1. Overview (purpose, elevator pitch): 3–4 short paragraphs explaining intent and advantages of using `HODBC.h` over raw ODBC.
+2. Repository orientation: exact paths for `HODBC.h`, `Harlinn.ODBC\Documentation\Readme.md`, and example projects such as `Examples\ODBC\HODBCBasicInsert01`.
+3. Design principles & API philosophy: RAII (`SqlHandle<>`), DB-aware containers (`Internal::DBValue<T>`, `FixedDBWideString<N>`, `FixedDBBinary<N>` and `Indicator()`), strongly-typed enums, diagnostics/exceptions (`Internal::ThrowException`, `Internal::GetSqlState`).
+4. Quick API tour: concise annotated list of key symbols and one-line descriptions with cross-references to `HODBC.h`.
+5. Minimal runnable example: single-file snippet that reads a connection string from `HODBC_TEST_CONN` environment variable, creates `Environment` and `Connection`, executes a simple `SELECT`, and demonstrates `DBWideString` / `DBInt32` retrieval and `IsNull()` checks.
+6. Practical gotchas and mapping notes: buffer-size math, indicator semantics, `SQL_NO_TOTAL`, `SQL_NULL_DATA`, header quirks (e.g., `BindSingle` comment), `Time2` and `TIMESTAMPOFFSET` mapping, `08003` handling in `SqlHandle::Close()`.
+7. Exercises & verification steps: build+run, read `NVARCHAR` and `VARBINARY`, trigger bad SQL to inspect diagnostics.
+8. Deliverables & locations: `Harlinn.ODBC\Documentation\Chapters\01_Introduction.md`, example under `Examples\ODBC\DocsExamples\Intro01_ConnectAndSelect`, optional gated test under `Tests\Harlinn.ODBC.Tests`.
+9. Acceptance criteria and checklist.
+
+Design notes and examples
+- Indicator / buffer byte-length note (MathJax):
+
+  For a fixed wide string buffer with `maxSize` characters (excluding null) the bind size in bytes is:
+
+  $$\text{bindSizeInBytes} = (\text{maxSize} + 1) \times \mathrm{sizeof}(\texttt{wchar\_t})$$
+
+- Small mermaid diagram (chapter flow):
+
+```mermaid
+flowchart LR
+  A[Reader goals] --> B[Find code `HODBC.h` & examples]
+  B --> C[Understand design: RAII, DBValue, enums]
+  C --> D[Run minimal example]
+  D --> E[Practice: binds, LOB streaming, diagnostics]
+  E --> F[Proceed to detailed chapters]
+```
+
+Implementation tasks (concrete steps)
+1. Draft chapter markdown at `Harlinn.ODBC\Documentation\Chapters\01_Introduction.md`.
+2. Create minimal example folder and file:
+   - `Examples\ODBC\DocsExamples\Intro01_ConnectAndSelect\Intro01.cpp` (single-file runnable example reading `HODBC_TEST_CONN`).
+   - `Examples\ODBC\DocsExamples\Intro01_ConnectAndSelect\README.md` (env var and secure notes).
+3. Build & smoke-test example with MSVC x64 (C++23). Gate CI test if no connection available.
+4. Add optional gated Boost.Test integration test in `Tests\Harlinn.ODBC.Tests` that runs when `HODBC_TEST_CONN` is present.
+5. Peer review and apply feedback.
+6. Link chapter file from `Harlinn.ODBC\Documentation\Readme.md` and update TOC if needed.
+
+Acceptance criteria
+- `Harlinn.ODBC\Documentation\Chapters\01_Introduction.md` exists and is linked from `Readme.md`.
+- Minimal example compiles with MSVC x64 / C++23 and runs when valid connection is provided via env var.
+- Chapter includes API tour, minimal example, prerequisites, gotchas, exercises, and pointers to later chapters.
+- Examples and tests adhere to repo rules: C++23, XML-style doc snippets for public APIs in examples, naming conventions, and Boost.Test for tests.
+
+Estimated effort
+- Draft chapter: 3–5 hours.
+- Implement + test example: 1–3 hours (depends on test DB availability).
+- Review & polish: 1–2 hours.
+- Total: ~5–10 hours.
+
+Deliverables checklist
+- [ ] Create `Harlinn.ODBC\Documentation\Chapters\01_Introduction.md` with final prose.
+- [ ] Create example `Intro01.cpp` and `README.md` under `Examples\ODBC\DocsExamples\Intro01_ConnectAndSelect`.
+- [ ] Add optional gated Boost.Test under `Tests\Harlinn.ODBC.Tests`.
+- [ ] Ensure examples compile with MSVC x64 / C++23 and follow style rules.
+- [ ] Link chapter from `Harlinn.ODBC\Documentation\Readme.md`.
+
+Notes and repo rules to follow
+- Use C++23 for all example code.
+- Public API snippets in the chapter must use XML-style `///` comments when declaring new public symbols.
+- Use PascalCase for types, camelCase for parameters, and private fields with trailing underscore.
+- Run `clang-format` / `clang-tidy` and follow project-specific rules before committing.
+
+If you want, I will now create the chapter draft file `Harlinn.ODBC\Documentation\Chapters\01_Introduction.md` and a minimal example `Intro01.cpp`.

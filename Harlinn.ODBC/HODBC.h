@@ -2426,95 +2426,456 @@ namespace Harlinn::ODBC
         {
 
         }
+        /// <summary>
+        /// Fetches the next row from the result set associated with this <see cref="DataReader"/>.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="ODBC::Result"/> value indicating the outcome of the fetch operation.
+        /// Returns <c>ODBC::Result::Success</c> if a row was successfully fetched, or 
+        /// <c>ODBC::Result::NoData</c> if there are no more rows.
+        /// </returns>
+        /// <remarks>
+        /// This method delegates to the underlying <see cref="Statement"/> object's <c>Fetch()</c> method.
+        /// If the fetch is successful, <see cref="AfterFetch()"/> is called to allow derived classes to 
+        /// process the row.
+        /// </remarks>
         inline Result Fetch( ) const;
-        inline Result FetchScroll( ODBC::FetchOrientation fetchOrientation, SQLLEN fetchOffset ) const;
         
+        /// <summary>
+        /// Fetches a row from the result set using the specified orientation and 
+        /// offset (maps to <c>SQLFetchScroll</c>).
+        /// </summary>
+        /// <param name="fetchOrientation">
+        /// The fetch orientation (for example <see cref="FetchOrientation::Next"/>, <see cref="FetchOrientation::Absolute"/>).
+        /// </param>
+        /// <param name="fetchOffset">
+        /// Fetch offset used for oriented fetches (meaning depends on <paramref name="fetchOrientation"/>).
+        /// </param>
+        /// <returns>
+        /// An <see cref="ODBC::Result"/> indicating the outcome of the fetch operation 
+        /// (for example <c>Result::Success</c> or <c>Result::NoData</c>).
+        /// </returns>
+        /// <remarks>
+        /// Use this when scrollable or positioned fetches are required and the 
+        /// driver/statement support scrolling cursors.
+        /// </remarks>
+        inline Result FetchScroll( ODBC::FetchOrientation fetchOrientation, SQLLEN fetchOffset ) const;
+    public:
+        /// <summary>
+        /// Binds an application buffer to a result set column for 
+        /// subsequent fetch operations (maps to <c>SQLBindCol</c>).
+        /// </summary>
+        /// <param name="columnNumber">
+        /// One-based column ordinal to bind.
+        /// </param>
+        /// <param name="targetType">
+        /// Native C data type of the target buffer (see <see cref="NativeType"/>).
+        /// </param>
+        /// <param name="targetValue">
+        /// Pointer to the target buffer that will receive column data.
+        /// </param>
+        /// <param name="targetValueMaxLength">
+        /// Maximum length in bytes of the target buffer.
+        /// </param>
+        /// <param name="nullIndicatorOrLength">
+        /// Pointer to indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> or the length/indicator per ODBC rules.
+        /// </param>
+        /// <returns>
+        /// An <see cref="ODBC::Result"/> describing success or failure of the bind operation.
+        /// </returns>
+        /// <remarks>
+        /// Bound buffers are populated by the driver during subsequent fetches. When binding variable-length
+        /// data ensure the buffer and indicator semantics match the expected column data (for example use an
+        /// indicator pointer to receive actual lengths or NULL indicator).
+        /// </remarks>
         inline Result BindColumn( SQLUSMALLINT columnNumber, NativeType targetType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrLength ) const;
 
 
+        /// <summary>
+        /// Binds a boolean application buffer to the specified result set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">Pointer to a boolean buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This is a convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Boolean"/>.
+        /// The bound buffer size is <c>sizeof(bool)</c>. On failure the underlying ODBC error is reported via the library's exception helpers.
+        /// </remarks>
         Result BindBoolean( SQLUSMALLINT columnNumber, bool* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::Boolean, targetAddress, sizeof( bool ), nullIndicatorOrActualLength );
         }
 
+        /// <summary>
+        /// Binds a signed-byte (SByte) application buffer to the specified result set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">Pointer to an <c>SByte</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This is a convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::SByte"/>.
+        /// The bound buffer size is <c>sizeof(SByte)</c>. On failure the underlying ODBC error is reported via the library's exception helpers.
+        /// </remarks>
         Result BindSByte( SQLUSMALLINT columnNumber, SByte* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::SByte, targetAddress, sizeof( SByte ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds an unsigned-byte (Byte) application buffer to the specified result set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">Pointer to a <c>Byte</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This is a convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Byte"/>.
+        /// The bound buffer size is <c>sizeof(Byte)</c>. On failure the underlying ODBC error is reported via the library's exception helpers.
+        /// </remarks>
         Result BindByte( SQLUSMALLINT columnNumber, Byte* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::Byte, targetAddress, sizeof( Byte ), nullIndicatorOrActualLength );
         }
 
+        /// <summary>
+        /// Binds a 16-bit signed integer application buffer to the specified result set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">Pointer to an <c>Int16</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Int16"/>.
+        /// The bound buffer size is <c>sizeof(Int16)</c>. On failure the underlying ODBC error is reported via the library's exception helpers.
+        /// </remarks>
         Result BindInt16( SQLUSMALLINT columnNumber, Int16* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::Int16, targetAddress, sizeof( Int16 ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a 16-bit unsigned integer application buffer to the specified result set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">Pointer to a <c>UInt16</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::UInt16"/>.
+        /// The bound buffer size is <c>sizeof(UInt16)</c>. On failure the underlying ODBC error is reported via the library's exception helpers.
+        /// </remarks>
         Result BindUInt16( SQLUSMALLINT columnNumber, UInt16* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::UInt16, targetAddress, sizeof( UInt16 ), nullIndicatorOrActualLength );
         }
 
+        /// <summary>
+        /// Binds a 32-bit signed integer application buffer to the specified result set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">Pointer to an <c>Int32</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Int32"/>.
+        /// The bound buffer size is <c>sizeof(Int32)</c>. On failure the underlying ODBC error is reported via the library's exception helpers.
+        /// </remarks>
         Result BindInt32( SQLUSMALLINT columnNumber, Int32* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::Int32, targetAddress, sizeof( Int32 ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a 32-bit unsigned integer application buffer to the specified result set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">Pointer to a <c>UInt32</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::UInt32"/>.
+        /// The bound buffer size is <c>sizeof(UInt32)</c>. On failure the underlying ODBC error is reported via the library's exception helpers.
+        /// </remarks>
         Result BindUInt32( SQLUSMALLINT columnNumber, UInt32* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::UInt32, targetAddress, sizeof( UInt32 ), nullIndicatorOrActualLength );
         }
 
+        /// <summary>
+        /// Binds a 64-bit signed integer application buffer to the specified result set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">Pointer to an <c>Int64</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator according to ODBC semantics.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Int64"/>.
+        /// The bound buffer size is <c>sizeof(Int64)</c>. On failure the underlying ODBC error is reported via the library's exception helpers.
+        /// </remarks>
         Result BindInt64( SQLUSMALLINT columnNumber, Int64* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::Int64, targetAddress, sizeof( Int64 ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a 64-bit unsigned integer application buffer to the specified result set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">Pointer to a <c>UInt64</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator according to ODBC semantics.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::UInt64"/>.
+        /// The bound buffer size is <c>sizeof(UInt64)</c>. On failure the underlying ODBC error is reported via the library's exception helpers.
+        /// </remarks>
         Result BindUInt64( SQLUSMALLINT columnNumber, UInt64* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::UInt64, targetAddress, sizeof( UInt64 ), nullIndicatorOrActualLength = nullptr );
         }
 
+        /// <summary>
+        /// Binds a single-precision floating point application buffer to the specified result set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">Pointer to a buffer that will receive the single-precision column value when a row is fetched. (Note: this overload's parameter is declared as <c>Double*</c> in the header.)</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator according to ODBC semantics.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Single"/>.
+        /// The implementation passes <c>sizeof(Double)</c> as the buffer size per the declaration. On failure the underlying ODBC error is reported via the library's exception helpers.
+        /// </remarks>
         Result BindSingle( SQLUSMALLINT columnNumber, Double* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::Single, targetAddress, sizeof( Double ), nullIndicatorOrActualLength );
         }
 
+        /// <summary>
+        /// Binds a double-precision floating point application buffer to the specified result set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">Pointer to a <c>Double</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator according to ODBC semantics.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Double"/>.
+        /// The bound buffer size is <c>sizeof(Double)</c>. On failure the underlying ODBC error is reported via the library's exception helpers.
+        /// </remarks>
         Result BindDouble( SQLUSMALLINT columnNumber, Double* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::Double, targetAddress, sizeof( Double ), nullIndicatorOrActualLength );
         }
 
-        Result BindString( SQLUSMALLINT columnNumber, SQLPOINTER targetAddress, SQLLEN targetAddressMaxLength, SQLLEN* nullIndicatorOrActualLength ) const
+        /// <summary>
+        /// Binds an ANSI character buffer to the specified result set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">Pointer to an ANSI (<c>char</c>) buffer that will receive the column data when a row is fetched.</param>
+        /// <param name="targetAddressMaxLength">Maximum length in bytes of the target buffer. For ANSI data this is a byte count (not character count).</param>
+        /// <param name="nullIndicatorOrActualByteLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator according to ODBC semantics (typically the number of bytes written or required).
+        /// </param>
+        /// <returns>
+        /// An <c>ODBC::Result</c> describing success or failure of the bind operation.
+        /// </returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Char"/>.
+        /// Use the indicator parameter to observe NULL semantics or to get the actual byte length of variable-length columns.
+        /// On failure the underlying ODBC error is reported via the library's exception helpers.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
+        Result BindString( SQLUSMALLINT columnNumber, char* targetAddress, SQLLEN targetAddressMaxLength, SQLLEN* nullIndicatorOrActualByteLength ) const
         {
-            return BindColumn( columnNumber, NativeType::Char, targetAddress, targetAddressMaxLength, nullIndicatorOrActualLength );
+            return BindColumn( columnNumber, NativeType::Char, targetAddress, targetAddressMaxLength, nullIndicatorOrActualByteLength );
+        }
+
+        /// <summary>
+        /// Binds a wide-character (UTF-16) buffer to the specified result set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">Pointer to a wide-character (<c>wchar_t</c>) buffer that will receive the column data when a row is fetched.</param>
+        /// <param name="targetAddressMaxLength">
+        /// Maximum length of the target buffer expressed as a character count (number of <c>wchar_t</c> elements).
+        /// The implementation multiplies this value by <c>sizeof(wchar_t)</c> when calling the underlying ODBC bind.
+        /// </param>
+        /// <param name="nullIndicatorOrActualByteLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator according to ODBC semantics (the returned length is expressed in bytes for wide-character binds).
+        /// </param>
+        /// <returns>
+        /// An <c>ODBC::Result</c> describing success or failure of the bind operation.
+        /// </returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::WideChar"/>.
+        /// Note that <paramref name="targetAddressMaxLength"/> is a character count; the call translates it to bytes by multiplying by <c>sizeof(wchar_t)</c>.
+        /// Use the indicator parameter to observe NULL semantics or to get the actual byte length of variable-length columns.
+        /// On failure the underlying ODBC error is reported via the library's exception helpers.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
+        Result BindString( SQLUSMALLINT columnNumber, wchar_t* targetAddress, SQLLEN targetAddressMaxLength, SQLLEN* nullIndicatorOrActualByteLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::WideChar, targetAddress, targetAddressMaxLength * sizeof( wchar_t ), nullIndicatorOrActualByteLength );
         }
         
         
+        /// <summary>
+        /// Binds a GUID/UUID buffer to the specified result-set column (maps to SQLBindCol with NativeType::Guid).
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">Pointer to a Guid value that will receive the column data.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either SQL_NULL_DATA when the column is NULL or the length/indicator according to ODBC rules. May be nullptr if the caller does not require the indicator/length.</param>
+        /// <returns>Result::Success or Result::SuccessWithInfo on success; on failure the library throws via its diagnostic helpers.</returns>
         Result BindGuid( SQLUSMALLINT columnNumber, Guid* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::Guid, targetAddress, sizeof( Guid ), nullIndicatorOrActualLength );
         }
+        /// <summary>
+        /// Binds an ODBC timestamp structure to the specified result-set column (maps to SQLBindCol with NativeType::TimeStamp).
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">Pointer to an ODBC::TimeStamp structure that will receive the column data.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either SQL_NULL_DATA when the column is NULL or the length/indicator according to ODBC rules. May be nullptr if the caller does not require the indicator/length.</param>
+        /// <returns>Result::Success or Result::SuccessWithInfo on success; on failure the library throws via its diagnostic helpers.</returns>
         Result BindTimeStamp( SQLUSMALLINT columnNumber, ODBC::TimeStamp* targetAddress, SQLLEN* nullIndicatorOrActualLength = nullptr ) const
         {
             return BindColumn( columnNumber, NativeType::TimeStamp, targetAddress, sizeof( ODBC::TimeStamp ), nullIndicatorOrActualLength );
         }
 
+        /// <summary>
+        /// Binds a fixed-size binary buffer to the specified result-set column.
+        /// </summary>
+        /// <typeparam name="maxSize">
+        /// Maximum number of bytes the target FixedDBBinary can hold.
+        /// </typeparam>
+        /// <param name="columnNumber">
+        /// One-based column ordinal to bind.
+        /// </param>
+        /// <param name="targetAddress">
+        /// Pointer to the target `FixedDBBinary<maxSize>` object whose internal buffer will receive
+        /// the column data and whose indicator (returned by `Indicator()`) will receive the
+        /// ODBC length/NULL indicator (for example `SQL_NULL_DATA` or actual byte count).
+        /// </param>
+        /// <returns>
+        /// An `ODBC::Result` value indicating the outcome of the bind operation. On failure the
+        /// underlying call reports diagnostics via the library's exception helpers.
+        /// </returns>
+        /// <remarks>
+        /// The call forwards to `BindColumn` using `NativeType::Binary`. The `parameterValueBufferLength`
+        /// passed to the driver is `maxSize` (bytes). The `Indicator()` pointer of the provided
+        /// `FixedDBBinary` is used to receive NULL/length information when rows are fetched.
+        /// The `targetAddress` object and its internal buffer MUST remain valid for the lifetime
+        /// of the statement or until it is unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">When the underlying ODBC call fails and diagnostics are raised.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// ODBC::FixedDBBinary<4096> buffer;
+        /// statement.BindBinary( 1, &buffer );
+        /// </code>
+        /// </example>
         template<size_t maxSize>
         Result BindBinary( SQLUSMALLINT columnNumber, FixedDBBinary<maxSize>* targetAddress ) const
         {
             return BindColumn( columnNumber, NativeType::Binary, targetAddress->data( ), maxSize, targetAddress->Indicator( ) );
         }
+
+        /// <summary>
+        /// Binds a fixed-size wide-character (UTF-16) string buffer to the specified result-set column.
+        /// </summary>
+        /// <typeparam name="maxSize">
+        /// Maximum number of characters (not including terminating null) the target FixedDBWideString can hold.
+        /// </typeparam>
+        /// <param name="columnNumber">
+        /// One-based column ordinal to bind.
+        /// </param>
+        /// <param name="targetAddress">
+        /// Pointer to the target `FixedDBWideString<maxSize>` object whose internal wide-character buffer
+        /// will receive column data. The object's `Indicator()` pointer will receive the ODBC length/NULL indicator
+        /// (length is returned in bytes for wide-character binds).
+        /// </param>
+        /// <returns>
+        /// An `ODBC::Result` value indicating the outcome of the bind operation.
+        /// </returns>
+        /// <remarks>
+        /// This forwards to `BindColumn` with `NativeType::WideChar`. The buffer length provided to ODBC is
+        /// calculated as `(maxSize + 1) * sizeof(wchar_t)` to account for the terminating null wchar.
+        /// The driver returns lengths in bytes for wide-character binds; the `Indicator()` pointer on the
+        /// `FixedDBWideString` receives this value or `SQL_NULL_DATA` when the column is NULL.
+        /// The `targetAddress` and its buffer must remain valid while the statement is active and bound.
+        /// </remarks>
+        /// <exception cref="SystemException">When the underlying ODBC call fails and diagnostics are raised.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// ODBC::FixedDBWideString<1024> nameBuffer;
+        /// statement.BindWideString( 2, &nameBuffer );
+        /// </code>
+        /// </example>
         template<size_t maxSize>
         Result BindWideString( SQLUSMALLINT columnNumber, FixedDBWideString<maxSize>* targetAddress ) const
         {
-            return BindColumn( columnNumber, NativeType::WideChar, targetAddress->data( ), ( maxSize + 1 )* sizeof( wchar_t ), targetAddress->Indicator( ) );
+            return BindColumn( columnNumber, NativeType::WideChar, targetAddress->data( ), ( maxSize + 1 ) * sizeof( wchar_t ), targetAddress->Indicator( ) );
         }
+
+        /// <summary>
+        /// Binds a fixed-size ANSI (byte) string buffer to the specified result-set column.
+        /// </summary>
+        /// <typeparam name="maxSize">
+        /// Maximum number of ANSI characters (not including terminating null) the target FixedDBAnsiString can hold.
+        /// </typeparam>
+        /// <param name="columnNumber">
+        /// One-based column ordinal to bind.
+        /// </param>
+        /// <param name="targetAddress">
+        /// Pointer to the target `FixedDBAnsiString<maxSize>` object whose internal buffer
+        /// will receive column data. The object's `Indicator()` pointer will receive the ODBC
+        /// length/NULL indicator (length is returned in bytes for ANSI binds).
+        /// </param>
+        /// <returns>
+        /// An `ODBC::Result` value indicating the outcome of the bind operation.
+        /// </returns>
+        /// <remarks>
+        /// This forwards to `BindColumn` with `NativeType::Char`. The buffer length passed to the driver
+        /// is `maxSize + 1` bytes to accommodate the terminating null. The `Indicator()` on the
+        /// `FixedDBAnsiString` receives the byte length or `SQL_NULL_DATA` for NULL values.
+        /// Ensure the `targetAddress` object remains alive and unchanged while the binding is active.
+        /// </remarks>
+        /// <exception cref="SystemException">When the underlying ODBC call fails and diagnostics are raised.</exception>
+        /// <example>
+        /// <code language="cpp">
+        /// ODBC::FixedDBAnsiString<256> tagBuffer;
+        /// statement.BindAnsiString( 3, &tagBuffer );
+        /// </code>
+        /// </example>
         template<size_t maxSize>
         Result BindAnsiString( SQLUSMALLINT columnNumber, FixedDBAnsiString<maxSize>* targetAddress ) const
         {
             return BindColumn( columnNumber, NativeType::Char, targetAddress->data( ), maxSize + 1, targetAddress->Indicator( ) );
         }
 
-    public:
+    
         /// <summary>
         /// Gets the value of the specified column as a DBBoolean.
         /// </summary>
@@ -2997,6 +3358,39 @@ namespace Harlinn::ODBC
         {
         }
     public:
+        /// <summary>
+        /// Binds an application buffer to a result set column.
+        /// </summary>
+        /// <param name="columnNumber">
+        /// One-based column ordinal to bind. Must be &gt;= 1.
+        /// </param>
+        /// <param name="targetType">
+        /// The native C data type of the target buffer (see <see cref="NativeType"/>).
+        /// </param>
+        /// <param name="targetValue">
+        /// Pointer to the target buffer that will receive column data.
+        /// </param>
+        /// <param name="targetValueMaxLength">
+        /// Maximum length in bytes of the target buffer. For wide-character binds this value is expressed in bytes.
+        /// For fixed-size scalar types pass sizeof(theType).
+        /// </param>
+        /// <param name="nullIndicatorOrLength">
+        /// Pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c>
+        /// when the column is NULL or the length/indicator according to ODBC rules. May be <c>nullptr</c>
+        /// if the caller does not require indicator/length information.
+        /// </param>
+        /// <returns>
+        /// An <see cref="ODBC::Result"/> describing success or failure of the bind operation
+        /// (for example <c>Result::Success</c> or <c>Result::SuccessWithInfo</c>).
+        /// </returns>
+        /// <remarks>
+        /// This method is a thin, safe wrapper around the ODBC API <c>SQLBindCol</c>. On failure
+        /// the library's diagnostic helpers are invoked and an exception is thrown. The application
+        /// must ensure that the memory referenced by <paramref name="targetValue"/> and the
+        /// indicator pointed to by <paramref name="nullIndicatorOrLength"/> remain valid for the
+        /// lifetime of the statement or until the binding is explicitly changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindColumn( SQLUSMALLINT columnNumber, NativeType targetType, SQLPOINTER targetValue, SQLLEN targetValueMaxLength, SQLLEN* nullIndicatorOrLength ) const
         {
             auto rc = SQLBindCol( Handle( ), columnNumber, static_cast<SQLSMALLINT>(targetType), targetValue, targetValueMaxLength, nullIndicatorOrLength );
@@ -3008,207 +3402,954 @@ namespace Harlinn::ODBC
         }
 
 
+        /// <summary>
+        /// Binds a boolean application buffer to the specified result-set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="targetAddress">Pointer to a boolean buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>
+        /// An <see cref="ODBC::Result"/> describing success or failure of the bind operation
+        /// (for example <c>Result::Success</c> or <c>Result::SuccessWithInfo</c>).
+        /// </returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Boolean"/>.
+        /// Note: the buffer size passed to the underlying ODBC call is <c>sizeof(Byte)</c> (one byte) because
+        /// ODBC boolean/numeric boolean storage is driver-dependent and commonly represented as a single byte.
+        /// The application must ensure that the memory referenced by <paramref name="targetAddress"/> and the
+        /// indicator pointed to by <paramref name="nullIndicatorOrActualLength"/> remain valid for the lifetime
+        /// of the statement or until the binding is explicitly changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindBooleanColumn( SQLUSMALLINT columnNumber, bool* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Boolean, targetAddress, sizeof( Byte ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a database-aware boolean container to the specified result-set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="dbValue">
+        /// Reference to a <c>DBBoolean</c> whose internal storage will receive the fetched value and whose
+        /// <c>Indicator()</c> pointer will receive NULL/length information.
+        /// </param>
+        /// <returns>
+        /// An <see cref="ODBC::Result"/> describing success or failure of the bind operation
+        /// (for example <c>Result::Success</c> or <c>Result::SuccessWithInfo</c>).
+        /// </returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Boolean"/>.
+        /// The <paramref name="dbValue"/> object and its internal storage MUST remain valid for the lifetime of the statement
+        /// or until the binding is explicitly changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindBooleanColumn( SQLUSMALLINT columnNumber, DBBoolean& dbValue ) const
         {
-            return BindColumn( columnNumber, NativeType::Boolean, dbValue.data(), sizeof( Byte ), dbValue.Indicator() );
+            return BindColumn( columnNumber, NativeType::Boolean, dbValue.data( ), sizeof( Byte ), dbValue.Indicator( ) );
         }
+
+        /// <summary>
+        /// Binds a signed-byte (SByte) application buffer to the specified result-set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="targetAddress">Pointer to an <c>SByte</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::SByte"/>.
+        /// The bound buffer size is <c>sizeof(SByte)</c>. Ensure bound memory remains valid while the statement is active.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindSByteColumn( SQLUSMALLINT columnNumber, SByte* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::SByte, targetAddress, sizeof( SByte ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a database-aware signed-byte container to the specified result-set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="dbValue">
+        /// Reference to a <c>DBSByte</c> whose internal storage will receive the fetched value and whose
+        /// <c>Indicator()</c> pointer will receive NULL/length information.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::SByte"/>.
+        /// The <paramref name="dbValue"/> object and its internal storage MUST remain valid for the lifetime of the statement.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindSByteColumn( SQLUSMALLINT columnNumber, DBSByte& dbValue ) const
         {
             return BindColumn( columnNumber, NativeType::SByte, dbValue.data( ), sizeof( SByte ), dbValue.Indicator( ) );
         }
 
+        /// <summary>
+        /// Binds an unsigned-byte (Byte) application buffer to the specified result-set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="targetAddress">Pointer to a <c>Byte</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Byte"/>.
+        /// The bound buffer size is <c>sizeof(Byte)</c>. Ensure bound memory remains valid while the statement is active.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindByteColumn( SQLUSMALLINT columnNumber, Byte* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Byte, targetAddress, sizeof( Byte ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a database-aware unsigned-byte container to the specified result-set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="dbValue">
+        /// Reference to a <c>DBByte</c> whose internal storage will receive the fetched value and whose
+        /// <c>Indicator()</c> pointer will receive NULL/length information.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Byte"/>.
+        /// The <paramref name="dbValue"/> object and its internal storage MUST remain valid for the lifetime of the statement.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindByteColumn( SQLUSMALLINT columnNumber, DBByte& dbValue ) const
         {
             return BindColumn( columnNumber, NativeType::Byte, dbValue.data( ), sizeof( Byte ), dbValue.Indicator( ) );
         }
 
+        /// <summary>
+        /// Binds a 16-bit signed integer application buffer to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="targetAddress">Pointer to an <c>Int16</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// The caller must ensure that the memory referenced by <paramref name="targetAddress"/> and the indicator pointed to by
+        /// <paramref name="nullIndicatorOrActualLength"/> remain valid for the lifetime of the statement or until the binding is
+        /// explicitly changed/unbound. This is a thin wrapper around <c>SQLBindCol</c>.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt16Column( SQLUSMALLINT columnNumber, Int16* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Int16, targetAddress, sizeof( Int16 ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a database-aware 16-bit signed integer container to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="dbValue">
+        /// Reference to a <c>DBInt16</c> whose internal storage will receive the fetched value and whose
+        /// <c>Indicator()</c> pointer will receive NULL/length information.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// The <paramref name="dbValue"/> object and its internal storage MUST remain valid for the lifetime of the statement
+        /// or until the binding is explicitly changed/unbound. The indicator returned by <c>dbValue.Indicator()</c> receives
+        /// ODBC NULL/length information (for example <c>SQL_NULL_DATA</c> or actual length).
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt16Column( SQLUSMALLINT columnNumber, DBInt16& dbValue ) const
         {
             return BindColumn( columnNumber, NativeType::Int16, dbValue.data( ), sizeof( Int16 ), dbValue.Indicator( ) );
         }
 
+
+        /// <summary>
+        /// Binds a 16-bit unsigned integer application buffer to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="targetAddress">Pointer to a <c>UInt16</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// The caller must ensure that the memory referenced by <paramref name="targetAddress"/> and the indicator pointed to by
+        /// <paramref name="nullIndicatorOrActualLength"/> remain valid for the lifetime of the statement or until the binding is
+        /// explicitly changed/unbound. This is a thin wrapper around <c>SQLBindCol</c>.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindUInt16Column( SQLUSMALLINT columnNumber, UInt16* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::UInt16, targetAddress, sizeof( UInt16 ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a database-aware 16-bit unsigned integer container to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="dbValue">
+        /// Reference to a <c>DBUInt16</c> whose internal storage will receive the fetched value and whose
+        /// <c>Indicator()</c> pointer will receive NULL/length information.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// The <paramref name="dbValue"/> object and its internal storage MUST remain valid for the lifetime of the statement
+        /// or until the binding is explicitly changed/unbound. The indicator returned by <c>dbValue.Indicator()</c> receives
+        /// ODBC NULL/length information (for example <c>SQL_NULL_DATA</c> or actual length).
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindUInt16Column( SQLUSMALLINT columnNumber, DBUInt16& dbValue ) const
         {
             return BindColumn( columnNumber, NativeType::UInt16, dbValue.data( ), sizeof( UInt16 ), dbValue.Indicator( ) );
         }
 
+        /// <summary>
+        /// Binds a 32-bit signed integer application buffer to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="targetAddress">Pointer to an <c>Int32</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Int32"/>.
+        /// The bound buffer size is <c>sizeof(Int32)</c>. The memory referenced by <paramref name="targetAddress"/>
+        /// and the indicator pointed to by <paramref name="nullIndicatorOrActualLength"/> must remain valid
+        /// for the lifetime of the statement or until the binding is explicitly changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt32Column( SQLUSMALLINT columnNumber, Int32* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Int32, targetAddress, sizeof( Int32 ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a database-aware 32-bit signed integer container to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="dbValue">
+        /// Reference to a <c>DBInt32</c> whose internal storage will receive the fetched value and whose
+        /// <c>Indicator()</c> pointer will receive NULL/length information.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Int32"/>.
+        /// The <paramref name="dbValue"/> object and its internal storage MUST remain valid for the lifetime
+        /// of the statement or until the binding is explicitly changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt32Column( SQLUSMALLINT columnNumber, DBInt32& dbValue ) const
         {
             return BindColumn( columnNumber, NativeType::Int32, dbValue.data( ), sizeof( Int32 ), dbValue.Indicator( ) );
         }
 
 
+        /// <summary>
+        /// Binds a 32-bit unsigned integer application buffer to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="targetAddress">Pointer to a <c>UInt32</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::UInt32"/>.
+        /// The bound buffer size is <c>sizeof(UInt32)</c>. The memory referenced by <paramref name="targetAddress"/>
+        /// and the indicator pointed to by <paramref name="nullIndicatorOrActualLength"/> must remain valid
+        /// for the lifetime of the statement or until the binding is explicitly changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindUInt32Column( SQLUSMALLINT columnNumber, UInt32* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::UInt32, targetAddress, sizeof( UInt32 ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a database-aware 32-bit unsigned integer container to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="dbValue">
+        /// Reference to a <c>DBUInt32</c> whose internal storage will receive the fetched value and whose
+        /// <c>Indicator()</c> pointer will receive NULL/length information.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::UInt32"/>.
+        /// The <paramref name="dbValue"/> object and its internal storage MUST remain valid for the lifetime
+        /// of the statement or until the binding is explicitly changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindUInt32Column( SQLUSMALLINT columnNumber, DBUInt32& dbValue ) const
         {
             return BindColumn( columnNumber, NativeType::UInt32, dbValue.data( ), sizeof( UInt32 ), dbValue.Indicator( ) );
         }
 
+        /// <summary>
+        /// Binds a 64-bit signed integer application buffer to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="targetAddress">Pointer to an <c>Int64</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Int64"/>.
+        /// The bound buffer size is <c>sizeof(Int64)</c>. The memory referenced by <paramref name="targetAddress"/>
+        /// and the indicator pointed to by <paramref name="nullIndicatorOrActualLength"/> must remain valid
+        /// for the lifetime of the statement or until the binding is explicitly changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt64Column( SQLUSMALLINT columnNumber, Int64* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Int64, targetAddress, sizeof( Int64 ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a database-aware 64-bit signed integer container to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="dbValue">
+        /// Reference to a <c>DBInt64</c> whose internal storage will receive the fetched value and whose
+        /// <c>Indicator()</c> pointer will receive NULL/length information.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Int64"/>.
+        /// The <paramref name="dbValue"/> object and its internal storage MUST remain valid for the lifetime
+        /// of the statement or until the binding is explicitly changed/unbound. The indicator returned by
+        /// <c>dbValue.Indicator()</c> receives ODBC NULL/length information (for example <c>SQL_NULL_DATA</c>).
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt64Column( SQLUSMALLINT columnNumber, DBInt64& dbValue ) const
         {
             return BindColumn( columnNumber, NativeType::Int64, dbValue.data( ), sizeof( Int64 ), dbValue.Indicator( ) );
         }
+
+        /// <summary>
+        /// Binds a 64-bit unsigned integer application buffer to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="targetAddress">Pointer to a <c>UInt64</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::UInt64"/>.
+        /// The bound buffer size is <c>sizeof(UInt64)</c>. The memory referenced by <paramref name="targetAddress"/>
+        /// and the indicator pointed to by <paramref name="nullIndicatorOrActualLength"/> must remain valid
+        /// for the lifetime of the statement or until the binding is explicitly changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindUInt64Column( SQLUSMALLINT columnNumber, UInt64* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::UInt64, targetAddress, sizeof( UInt64 ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a database-aware 64-bit unsigned integer container to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="dbValue">
+        /// Reference to a <c>DBUInt64</c> whose internal storage will receive the fetched value and whose
+        /// <c>Indicator()</c> pointer will receive NULL/length information.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::UInt64"/>.
+        /// The <paramref name="dbValue"/> object and its internal storage MUST remain valid for the lifetime
+        /// of the statement or until the binding is explicitly changed/unbound. The indicator returned by
+        /// <c>dbValue.Indicator()</c> receives ODBC NULL/length information (for example <c>SQL_NULL_DATA</c>).
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindUInt64Column( SQLUSMALLINT columnNumber, DBUInt64& dbValue ) const
         {
             return BindColumn( columnNumber, NativeType::UInt64, dbValue.data( ), sizeof( UInt64 ), dbValue.Indicator( ) );
         }
 
+        /// <summary>
+        /// Binds a single-precision floating point application buffer to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="targetAddress">Pointer to a <c>float</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator according to ODBC semantics.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Single"/>.
+        /// The bound buffer size passed to the underlying ODBC call is <c>sizeof(float)</c>.
+        /// The memory referenced by <paramref name="targetAddress"/> and the indicator pointed to by
+        /// <paramref name="nullIndicatorOrActualLength"/> must remain valid for the lifetime of the statement
+        /// or until the binding is explicitly changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindSingleColumn( SQLUSMALLINT columnNumber, float* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Single, targetAddress, sizeof( float ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a database-aware single-precision container (<c>DBSingle</c>) to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="dbValue">Reference to a <c>DBSingle</c> whose internal storage will receive the fetched value and whose <c>Indicator()</c> pointer will receive NULL/length information.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Single"/>.
+        /// The bound buffer size passed to the underlying ODBC call is <c>sizeof(float)</c>.
+        /// The <paramref name="dbValue"/> object and its internal storage MUST remain valid for the lifetime
+        /// of the statement or until the binding is explicitly changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindSingleColumn( SQLUSMALLINT columnNumber, DBSingle& dbValue ) const
         {
             return BindColumn( columnNumber, NativeType::Single, dbValue.data( ), sizeof( float ), dbValue.Indicator( ) );
         }
 
+        /// <summary>
+        /// Binds a double-precision floating point application buffer to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="targetAddress">Pointer to a <c>double</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator according to ODBC semantics.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Double"/>.
+        /// The bound buffer size passed to the underlying ODBC call is <c>sizeof(double)</c>.
+        /// The memory referenced by <paramref name="targetAddress"/> and the indicator pointed to by
+        /// <paramref name="nullIndicatorOrActualLength"/> must remain valid for the lifetime of the statement
+        /// or until the binding is explicitly changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindDoubleColumn( SQLUSMALLINT columnNumber, double* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Double, targetAddress, sizeof( double ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a database-aware double-precision container (<c>DBDouble</c>) to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="dbValue">Reference to a <c>DBDouble</c> whose internal storage will receive the fetched value and whose <c>Indicator()</c> pointer will receive NULL/length information.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Double"/>.
+        /// The bound buffer size passed to the underlying ODBC call is <c>sizeof(double)</c>.
+        /// The <paramref name="dbValue"/> object and its internal storage MUST remain valid for the lifetime
+        /// of the statement or until the binding is explicitly changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindDoubleColumn( SQLUSMALLINT columnNumber, DBDouble& dbValue ) const
         {
             return BindColumn( columnNumber, NativeType::Double, dbValue.data( ), sizeof( double ), dbValue.Indicator( ) );
         }
 
+        /// <summary>
+        /// Binds a DateTime column (stored as a 64-bit integer of ticks) to an application
+        /// <c>DateTime*</c> buffer for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="targetAddress">Pointer to a <c>DateTime</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This is a convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Int64"/>.
+        /// The driver is expected to provide the DateTime value as a 64-bit tick count (Int64). The application must
+        /// ensure that the memory pointed to by <paramref name="targetAddress"/> and the indicator pointed to by
+        /// <paramref name="nullIndicatorOrActualLength"/> remain valid for the lifetime of the statement or until the
+        /// binding is changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindDateTimeColumn( SQLUSMALLINT columnNumber, DateTime* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Int64, targetAddress, sizeof( Int64 ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a database-aware DateTime container (<c>DBDateTime</c>) to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="dbValue">
+        /// Reference to a <c>DBDateTime</c> whose internal storage will receive the fetched value and whose
+        /// <c>Indicator()</c> pointer will receive NULL/length information.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Int64"/>.
+        /// The <paramref name="dbValue"/> object and its internal storage MUST remain valid for the lifetime of the statement
+        /// or until the binding is explicitly changed/unbound. The indicator returned by <c>dbValue.Indicator()</c> receives
+        /// ODBC NULL/length information (for example <c>SQL_NULL_DATA</c>).
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindDateTimeColumn( SQLUSMALLINT columnNumber, DBDateTime& dbValue ) const
         {
             return BindColumn( columnNumber, NativeType::Int64, dbValue.data( ), sizeof( Int64 ), dbValue.Indicator( ) );
         }
 
+        /// <summary>
+        /// Binds a TimeSpan column (stored as a 64-bit integer of ticks) to an application
+        /// <c>TimeSpan*</c> buffer for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="targetAddress">Pointer to a <c>TimeSpan</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the length/indicator value according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This is a convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Int64"/>.
+        /// The driver is expected to provide the TimeSpan value as a 64-bit tick count (Int64). The application must
+        /// ensure that the memory pointed to by <paramref name="targetAddress"/> and the indicator pointed to by
+        /// <paramref name="nullIndicatorOrActualLength"/> remain valid for the lifetime of the statement or until the
+        /// binding is changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindTimeSpanColumn( SQLUSMALLINT columnNumber, TimeSpan* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Int64, targetAddress, sizeof( Int64 ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a database-aware TimeSpan container (<c>DBTimeSpan</c>) to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="dbValue">
+        /// Reference to a <c>DBTimeSpan</c> whose internal storage will receive the fetched value and whose
+        /// <c>Indicator()</c> pointer will receive NULL/length information.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Int64"/>.
+        /// The <paramref name="dbValue"/> object and its internal storage MUST remain valid for the lifetime of the statement
+        /// or until the binding is explicitly changed/unbound. The indicator returned by <c>dbValue.Indicator()</c> receives
+        /// ODBC NULL/length information (for example <c>SQL_NULL_DATA</c>).
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindTimeSpanColumn( SQLUSMALLINT columnNumber, DBTimeSpan& dbValue ) const
         {
             return BindColumn( columnNumber, NativeType::Int64, dbValue.data( ), sizeof( Int64 ), dbValue.Indicator( ) );
         }
 
 
+        /// <summary>
+        /// Binds a GUID/UUID column to an application buffer for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="targetAddress">Pointer to a `Guid` that will receive the column data when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c>
+        /// when the column is NULL or the length/indicator according to ODBC semantics. May be <c>nullptr</c>
+        /// if the caller does not require indicator/length information.
+        /// </param>
+        /// <returns>
+        /// An <see cref="ODBC::Result"/> describing success or failure of the bind operation
+        /// (for example <c>Result::Success</c> or <c>Result::SuccessWithInfo</c>).
+        /// </returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Guid"/>.
+        /// The bound buffer size is <c>sizeof(Guid)</c>. The application must ensure that the memory
+        /// referenced by <paramref name="targetAddress"/> and the indicator pointed to by
+        /// <paramref name="nullIndicatorOrActualLength"/> remain valid for the lifetime of the statement
+        /// or until the binding is explicitly changed/unbound.
+        /// </remarks>
         Result BindGuidColumn( SQLUSMALLINT columnNumber, Guid* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Guid, targetAddress, sizeof( Guid ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a database-aware GUID/UUID container to the specified result-set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="dbValue">
+        /// Reference to a <c>DBGuid</c> whose internal storage will receive the fetched value and whose
+        /// <c>Indicator()</c> pointer will receive NULL/length information.
+        /// </param>
+        /// <returns>
+        /// An <see cref="ODBC::Result"/> describing success or failure of the bind operation
+        /// (for example <c>Result::Success</c> or <c>Result::SuccessWithInfo</c>).
+        /// </returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Guid"/>.
+        /// The <paramref name="dbValue"/> object and its internal storage MUST remain valid for the lifetime
+        /// of the statement or until the binding is explicitly changed/unbound.
+        /// </remarks>
         Result BindGuidColumn( SQLUSMALLINT columnNumber, DBGuid& dbValue ) const
         {
             return BindColumn( columnNumber, NativeType::Guid, dbValue.data( ), sizeof( Guid ), dbValue.Indicator( ) );
         }
 
+        /// <summary>
+        /// Binds a currency column to an application buffer for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="targetAddress">Pointer to a <c>Currency</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">
+        /// Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c>
+        /// when the column is NULL or the length/indicator according to ODBC semantics. May be <c>nullptr</c>.
+        /// </param>
+        /// <returns>
+        /// An <see cref="ODBC::Result"/> describing success or failure of the bind operation
+        /// (for example <c>Result::Success</c> or <c>Result::SuccessWithInfo</c>).
+        /// </returns>
+        /// <remarks>
+        /// Currency values are exchanged using a 64-bit integer representation. This wrapper binds the buffer
+        /// as <see cref="NativeType::Int64"/> and passes <c>sizeof(Int64)</c> as the buffer size. The application
+        /// must ensure that the memory referenced by <paramref name="targetAddress"/> and the indicator pointed to
+        /// by <paramref name="nullIndicatorOrActualLength"/> remain valid for the lifetime of the statement
+        /// or until the binding is explicitly changed/unbound.
+        /// </remarks>
         Result BindCurrencyColumn( SQLUSMALLINT columnNumber, Currency* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Int64, targetAddress, sizeof( Int64 ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a database-aware currency container to the specified result-set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="dbValue">
+        /// Reference to a <c>DBCurrency</c> whose internal storage will receive the fetched value and whose
+        /// <c>Indicator()</c> pointer will receive NULL/length information.
+        /// </param>
+        /// <returns>
+        /// An <see cref="ODBC::Result"/> describing success or failure of the bind operation
+        /// (for example <c>Result::Success</c> or <c>Result::SuccessWithInfo</c>).
+        /// </returns>
+        /// <remarks>
+        /// This wrapper binds the currency container's storage as a 64-bit integer (<see cref="NativeType::Int64"/>).
+        /// The <paramref name="dbValue"/> object and its internal storage MUST remain valid for the lifetime of the
+        /// statement or until the binding is explicitly changed/unbound. The <c>Indicator()</c> pointer on the
+        /// <c>dbValue</c> receives ODBC NULL/length information (for example <c>SQL_NULL_DATA</c>).
+        /// </remarks>
         Result BindCurrencyColumn( SQLUSMALLINT columnNumber, DBCurrency& dbValue ) const
         {
             return BindColumn( columnNumber, NativeType::Int64, dbValue.data( ), sizeof( Int64 ), dbValue.Indicator( ) );
         }
 
-        Result BindCharColumn( SQLUSMALLINT columnNumber, SQLPOINTER targetAddress, SQLLEN targetAddressMaxLength, SQLLEN* nullIndicatorOrActualLength ) const
+        /// <summary>
+        /// Binds an ANSI character buffer to the specified result-set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">
+        /// One-based column ordinal to bind.
+        /// </param>
+        /// <param name="targetAddress">
+        /// Pointer to an ANSI (<c>char</c>) buffer that will receive the column data when a row is fetched.
+        /// </param>
+        /// <param name="targetAddressMaxLength">Maximum length in bytes of the target buffer.</param>
+        /// <param name="nullIndicatorOrActualByteLength">
+        /// Pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the actual byte length written/required according to ODBC semantics.
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Char"/>.
+        /// The caller must ensure that the memory referenced by <paramref name="targetAddress"/> and the indicator
+        /// pointed to by <paramref name="nullIndicatorOrActualByteLength"/> remain valid for the lifetime of the statement
+        /// or until the binding is explicitly changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
+        Result BindCharColumn( SQLUSMALLINT columnNumber, char* targetAddress, SQLLEN targetAddressMaxLength, SQLLEN* nullIndicatorOrActualByteLength ) const
         {
-            return BindColumn( columnNumber, NativeType::Char, targetAddress, targetAddressMaxLength, nullIndicatorOrActualLength );
+            return BindColumn( columnNumber, NativeType::Char, targetAddress, targetAddressMaxLength, nullIndicatorOrActualByteLength );
         }
 
+        /// <summary>
+        /// Binds a wide-character buffer treated as character data to the specified result-set column for subsequent fetch operations.
+        /// </summary>
+        /// <param name="columnNumber">
+        /// One-based column ordinal to bind.
+        /// </param>
+        /// <param name="targetAddress">
+        /// Pointer to a wide-character (<c>wchar_t</c>) buffer that will receive the column data when a row is fetched.
+        /// </param>
+        /// <param name="targetAddressMaxLength">
+        /// Maximum length of the target buffer expressed as a character count (number of <c>wchar_t</c> elements).
+        /// The call converts this to bytes by multiplying by <c>sizeof(wchar_t)</c> when calling the underlying ODBC API.
+        /// </param>
+        /// <param name="nullIndicatorOrActualByteLength">
+        /// Pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL
+        /// or the actual byte length written/required according to ODBC semantics (note: returned length is in bytes).
+        /// </param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This wrapper forwards to <c>BindColumn</c> using <see cref="NativeType::Char"/> and multiplies
+        /// <paramref name="targetAddressMaxLength"/> by <c>sizeof(wchar_t)</c> to obtain the buffer size in bytes.
+        /// Ensure the <paramref name="targetAddress"/> buffer and the indicator remain valid while the statement is active.
+        /// Prefer using wide-character-specific binding helpers if the driver expects UTF-16 wide-character binds.
+        /// </remarks>
+        /// <exception cref="SystemException">
+        /// Thrown by the library's diagnostic helpers when the underlying ODBC call fails.
+        /// </exception>
+        Result BindCharColumn( SQLUSMALLINT columnNumber, wchar_t* targetAddress, SQLLEN targetAddressMaxLength, SQLLEN* nullIndicatorOrActualByteLength ) const
+        {
+            return BindColumn( columnNumber, NativeType::Char, targetAddress, targetAddressMaxLength * sizeof( wchar_t ), nullIndicatorOrActualByteLength );
+        }
+
+        /// <summary>
+        /// Binds a 32-bit integer (SQL C long) application buffer to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be >= 1.</param>
+        /// <param name="targetAddress">Pointer to an <c>Int32</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator value according to ODBC semantics.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Long"/>.
+        /// The bound buffer size is <c>sizeof(Int32)</c>. The memory referenced by <paramref name="targetAddress"/>
+        /// and the indicator pointed to by <paramref name="nullIndicatorOrActualLength"/> must remain valid
+        /// for the lifetime of the statement or until the binding is explicitly changed/unbound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindLongColumn( SQLUSMALLINT columnNumber, Int32* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Long, targetAddress, sizeof( Int32 ), nullIndicatorOrActualLength );
         }
+
+        /// <summary>
+        /// Binds a 16-bit signed integer (SQL C short) application buffer to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be >= 1.</param>
+        /// <param name="targetAddress">Pointer to an <c>Int16</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator value according to ODBC semantics.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Short"/>.
+        /// The bound buffer size is <c>sizeof(Int16)</c>. Ensure bound memory remains valid while the statement is active.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindShortColumn( SQLUSMALLINT columnNumber, Int16* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Short, targetAddress, sizeof( Int16 ), nullIndicatorOrActualLength );
         }
-        
+
+        /// <summary>
+        /// Binds an ODBC <c>Time</c> structure to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be >= 1.</param>
+        /// <param name="targetAddress">Pointer to an <c>ODBC::Time</c> structure that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator value according to ODBC semantics.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::TypeTime"/>.
+        /// The bound buffer size is <c>sizeof(ODBC::Time)</c>. The caller must ensure that the memory referenced
+        /// by <paramref name="targetAddress"/> and any indicator remain valid for the statement's lifetime.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindTimeColumn( SQLUSMALLINT columnNumber, ODBC::Time* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::TypeTime, targetAddress, sizeof( ODBC::Time ), nullIndicatorOrActualLength );
         }
 
+        /// <summary>
+        /// Binds a MS SQL Server TIME2 (DBTIME2) structure to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be >= 1.</param>
+        /// <param name="targetAddress">Pointer to an <c>ODBC::Time2</c> structure that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator value according to ODBC semantics.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Time2 uses a binary representation specific to the driver (MS SQL Server); this wrapper binds using <see cref="NativeType::Binary"/>.
+        /// The bound buffer size is <c>sizeof(ODBC::Time2)</c>. Ensure the buffer and indicator remain valid while bound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindTime2Column( SQLUSMALLINT columnNumber, ODBC::Time2* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Binary, targetAddress, sizeof( ODBC::Time2 ), nullIndicatorOrActualLength );
         }
 
+        /// <summary>
+        /// Binds an SQL interval (interval day-to-second or other interval) structure to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be >= 1.</param>
+        /// <param name="targetAddress">Pointer to an <c>ODBC::Interval</c> structure that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator value according to ODBC semantics.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::IntervalDayToSecond"/>.
+        /// The bound buffer size is <c>sizeof(ODBC::Interval)</c>. The reported indicator will reflect NULL or actual interval data length.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindIntervalColumn( SQLUSMALLINT columnNumber, ODBC::Interval* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::IntervalDayToSecond, targetAddress, sizeof( ODBC::Interval ), nullIndicatorOrActualLength );
         }
-        
-        
+
+
+        /// <summary>
+        /// Binds an ODBC timestamp structure to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be >= 1.</param>
+        /// <param name="targetAddress">Pointer to an <c>ODBC::TimeStamp</c> structure that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator value according to ODBC semantics.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::TypeTimeStamp"/>.
+        /// The bound buffer size is <c>sizeof(ODBC::TimeStamp)</c>. The caller must ensure the target buffer and indicator remain valid.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindTimeStampColumn( SQLUSMALLINT columnNumber, ODBC::TimeStamp* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::TypeTimeStamp, targetAddress, sizeof( ODBC::TimeStamp ), nullIndicatorOrActualLength );
         }
 
+        /// <summary>
+        /// Binds a timestamp-with-timezone-like structure (TimeStampOffset) to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be >= 1.</param>
+        /// <param name="targetAddress">Pointer to an <c>ODBC::TimeStampOffset</c> structure that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator value according to ODBC semantics.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This wrapper binds the structure as binary data (<see cref="NativeType::Binary"/>). The bound buffer size is <c>sizeof(ODBC::TimeStampOffset)</c>.
+        /// Ensure the buffer and indicator remain valid while the statement is active.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindTimeStampOffsetColumn( SQLUSMALLINT columnNumber, ODBC::TimeStampOffset* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Binary, targetAddress, sizeof( ODBC::TimeStampOffset ), nullIndicatorOrActualLength );
         }
 
+        /// <summary>
+        /// Binds an ODBC numeric/decimal structure to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be >= 1.</param>
+        /// <param name="targetAddress">Pointer to an <c>ODBC::Numeric</c> structure that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator value according to ODBC semantics.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Convenience wrapper around <c>BindColumn</c> that binds using <see cref="NativeType::Numeric"/>.
+        /// The bound buffer size is <c>sizeof(ODBC::Numeric)</c>. The numeric precision/scale is described by column metadata.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindNumericColumn( SQLUSMALLINT columnNumber, ODBC::Numeric* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Numeric, targetAddress, sizeof( ODBC::Numeric ), nullIndicatorOrActualLength );
         }
 
+        /// <summary>
+        /// Binds a database-specific money structure to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be >= 1.</param>
+        /// <param name="targetAddress">Pointer to an <c>ODBC::Money</c> structure that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator value according to ODBC semantics.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Money values are bound as binary data (<see cref="NativeType::Binary"/>). The bound buffer size is <c>sizeof(ODBC::Money)</c>.
+        /// The interpretation of the returned bytes is data source dependent (see GetDBCurrency helpers for conversion).
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindMoneyColumn( SQLUSMALLINT columnNumber, ODBC::Money* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Binary, targetAddress, sizeof( ODBC::Money ), nullIndicatorOrActualLength );
         }
 
+        /// <summary>
+        /// Binds a row-version / timestamp (binary) value to the specified result-set column.
+        /// </summary>
+        /// <param name="columnNumber">One-based column ordinal to bind. Must be >= 1.</param>
+        /// <param name="targetAddress">Pointer to an <c>ODBC::RowVersion</c> buffer that will receive the column value when a row is fetched.</param>
+        /// <param name="nullIndicatorOrActualLength">Optional pointer to an indicator/length value. On return this receives either <c>SQL_NULL_DATA</c> when the column is NULL or the length/indicator value according to ODBC semantics.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Row version values are driver-specific binary blobs and are bound as <see cref="NativeType::Binary"/>.
+        /// The bound buffer size is <c>sizeof(ODBC::RowVersion)</c>. Ensure the buffer and indicator remain valid while bound.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown by the library's diagnostic helpers when the underlying ODBC call fails.</exception>
         Result BindRowVersionColumn( SQLUSMALLINT columnNumber, ODBC::RowVersion* targetAddress, SQLLEN* nullIndicatorOrActualLength ) const
         {
             return BindColumn( columnNumber, NativeType::Binary, targetAddress, sizeof( ODBC::RowVersion ), nullIndicatorOrActualLength );
         }
 
 
+        /// <summary>
+        /// Binds a fixed-size binary buffer to a result-set column.
+        /// </summary>
+        /// <typeparam name="maxSize">Maximum number of bytes the target FixedDBBinary can hold.</typeparam>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">
+        /// Pointer to the target `FixedDBBinary<maxSize>` whose internal buffer will receive
+        /// the column data. The object's `Indicator()` pointer will receive the ODBC NULL/length indicator.
+        /// The `targetAddress` and its internal buffer MUST remain valid for the lifetime of the statement
+        /// or until the binding is changed/unbound.
+        /// </param>
+        /// <returns>
+        /// An `ODBC::Result` indicating the outcome of the bind operation.
+        /// </returns>
+        /// <remarks>
+        /// Forwards to `BindColumn` using `NativeType::Binary`. The `parameterValueBufferLength` passed is `maxSize`
+        /// (bytes). Use the `Indicator()` on the provided object to observe `SQL_NULL_DATA` or the actual byte length
+        /// when rows are fetched.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         template<size_t maxSize>
         Result BindBinaryColumn( SQLUSMALLINT columnNumber, FixedDBBinary<maxSize>* targetAddress ) const
         {
-            return BindColumn( columnNumber, NativeType::Binary, targetAddress->data(), maxSize, targetAddress->Indicator() );
+            return BindColumn( columnNumber, NativeType::Binary, targetAddress->data( ), maxSize, targetAddress->Indicator( ) );
         }
+
+        /// <summary>
+        /// Binds a fixed-size wide-character (UTF-16) string buffer to a result-set column.
+        /// </summary>
+        /// <typeparam name="maxSize">Maximum number of characters (excluding terminating null) the target `FixedDBWideString` can hold.</typeparam>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">
+        /// Pointer to the target `FixedDBWideString<maxSize>` whose internal wide-character buffer
+        /// will receive column data. The object's `Indicator()` pointer will receive the ODBC NULL/length indicator
+        /// (length is returned in bytes for wide-character binds). The `targetAddress` and its buffer MUST remain
+        /// valid for the lifetime of the statement or until the binding is changed/unbound.
+        /// </param>
+        /// <returns>
+        /// An `ODBC::Result` indicating the outcome of the bind operation.
+        /// </returns>
+        /// <remarks>
+        /// Forwards to `BindColumn` with `NativeType::WideChar`. The buffer length passed to ODBC is
+        /// `(maxSize + 1) * sizeof(wchar_t)` to account for the terminating null wchar. Drivers return lengths in bytes.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         template<size_t maxSize>
         Result BindStringColumn( SQLUSMALLINT columnNumber, FixedDBWideString<maxSize>* targetAddress ) const
         {
-            return BindColumn( columnNumber, NativeType::WideChar, targetAddress->data( ), (maxSize + 1) * sizeof(wchar_t), targetAddress->Indicator( ) );
+            return BindColumn( columnNumber, NativeType::WideChar, targetAddress->data( ), ( maxSize + 1 ) * sizeof( wchar_t ), targetAddress->Indicator( ) );
         }
+
+        /// <summary>
+        /// Binds a fixed-size ANSI (byte) string buffer to a result-set column.
+        /// </summary>
+        /// <typeparam name="maxSize">Maximum number of ANSI characters (excluding terminating null) the target `FixedDBAnsiString` can hold.</typeparam>
+        /// <param name="columnNumber">One-based column ordinal to bind.</param>
+        /// <param name="targetAddress">
+        /// Pointer to the target `FixedDBAnsiString<maxSize>` whose internal buffer will receive column data.
+        /// The object's `Indicator()` pointer will receive the ODBC NULL/length indicator (length is returned in bytes).
+        /// The `targetAddress` and its buffer MUST remain valid for the lifetime of the statement or until the binding is changed/unbound.
+        /// </param>
+        /// <returns>
+        /// An `ODBC::Result` indicating the outcome of the bind operation.
+        /// </returns>
+        /// <remarks>
+        /// Forwards to `BindColumn` with `NativeType::Char`. The buffer length passed to the driver is `maxSize + 1`
+        /// bytes to accommodate the terminating null. Use the `Indicator()` to observe `SQL_NULL_DATA` or actual byte length.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         template<size_t maxSize>
         Result BindStringColumn( SQLUSMALLINT columnNumber, FixedDBAnsiString<maxSize>* targetAddress ) const
         {
@@ -3218,38 +4359,51 @@ namespace Harlinn::ODBC
 
 
         /// <summary>
-        /// Binds a buffer to a parameter marker in an SQL statement. BindParameter supports 
-        /// binding to a Unicode C data type, even if the underlying driver does not support 
-        /// Unicode data.
+        /// Binds an application parameter buffer to the statement for use when the statement is executed.
         /// </summary>
         /// <param name="parameterNumber">
-        /// Parameter number, ordered sequentially in increasing parameter order, starting at 1.
+        /// One-based parameter ordinal to bind. Must be &gt;= 1.
         /// </param>
         /// <param name="parameterDirection">
-        /// The direction of the parameter
+        /// Direction of the parameter (input, output, input/output, return value, etc.).
         /// </param>
         /// <param name="valueType">
-        /// The native C data type of the parameter.
+        /// Native C data type of the application buffer (see <see cref="NativeType"/>).
         /// </param>
         /// <param name="parameterType">
-        /// The SQL data type of the parameter.
+        /// SQL data type of the parameter (see <see cref="SqlType"/>).
         /// </param>
         /// <param name="columnSize">
-        /// The size of the column or expression of the corresponding parameter marker. 
+        /// For character or binary data, the maximum number of characters/bytes. For other types, behavior depends on the driver.
         /// </param>
         /// <param name="decimalDigits">
-        /// The decimal digits of the column or expression of the corresponding parameter marker.
+        /// Number of decimal digits (scale) for numeric/decimal types.
         /// </param>
         /// <param name="parameterValue">
-        /// A pointer to a buffer for the parameter's data.
+        /// Pointer to the application buffer containing the parameter value (or a buffer used for output).
         /// </param>
         /// <param name="parameterValueBufferLength">
-        /// Length of the ParameterValuePtr buffer in bytes.
+        /// Length in bytes of the application buffer. For fixed-size scalar types this is typically 0 and the driver uses the C type size;
+        /// for character or binary buffers this is the buffer size in bytes.
         /// </param>
         /// <param name="lengthOrIndicator">
-        /// A pointer to a buffer for the parameter's length.
+        /// Pointer to an <c>SQLLEN</c> that on input may contain information for the driver (for example total length);
+        /// on return receives either <c>SQL_NULL_DATA</c> to indicate SQL NULL, or the number of bytes/characters returned or required.
+        /// May be <c>nullptr</c> if the caller does not require indicator/length information.
         /// </param>
-        /// <returns></returns>
+        /// <returns>
+        /// An <see cref="ODBC::Result"/> describing the outcome of the bind operation (for example <c>Result::Success</c> or <c>Result::SuccessWithInfo</c>).
+        /// </returns>
+        /// <remarks>
+        /// This is a thin, safe wrapper around the native ODBC API <c>SQLBindParameter</c>. The provided parameters are converted
+        /// to the corresponding native SQL/ C types and forwarded to the driver. The application must ensure that the memory
+        /// referenced by <paramref name="parameterValue"/> and the indicator pointed to by <paramref name="lengthOrIndicator"/> remain
+        /// valid for the lifetime of the statement or until the binding is explicitly changed or reset.
+        /// 
+        /// On failure the library's diagnostic helpers are invoked and an exception is thrown (see <see cref="Internal::ThrowException"/>).
+        /// Use the returned <see cref="ODBC::Result"/> only when the call succeeds (this method will throw on error).
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindParameter( SQLUSMALLINT parameterNumber, ODBC::ParameterDirection parameterDirection, NativeType valueType, SqlType parameterType, SQLULEN columnSize, SQLSMALLINT decimalDigits, SQLPOINTER parameterValue, SQLLEN parameterValueBufferLength, SQLLEN* lengthOrIndicator ) const
         {
             auto rc = SQLBindParameter( Handle( ), parameterNumber, static_cast<SQLSMALLINT>( parameterDirection ), static_cast< SQLSMALLINT >(valueType), static_cast< SQLSMALLINT >( parameterType ), columnSize, decimalDigits, parameterValue, parameterValueBufferLength, lengthOrIndicator );
@@ -3260,27 +4414,111 @@ namespace Harlinn::ODBC
             return static_cast<Result>( rc );
         }
 
-        Result BindBooleanParameter( SQLUSMALLINT parameterNumber, bool* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection) const
+        /// <summary>
+        /// Binds a boolean parameter to the statement.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">
+        /// Pointer to the application boolean buffer. For input parameters the value pointed to is sent to the driver.
+        /// For output or input/output parameters the driver writes the resulting boolean value to this buffer.
+        /// </param>
+        /// <param name="nullIndicator">
+        /// Optional pointer to an <c>SQLLEN</c> indicator/length. On return this receives <c>SQL_NULL_DATA</c> when the parameter
+        /// value is NULL or the length/indicator according to ODBC semantics. May be <c>nullptr</c> if the caller does not require the indicator.
+        /// </param>
+        /// <param name="parameterDirection">Direction of the parameter (Input, Output, InputOutput, etc.).</param>
+        /// <returns>
+        /// An <see cref="ODBC::Result"/> describing success or failure of the bind operation.
+        /// </returns>
+        /// <remarks>
+        /// This is a thin wrapper around <c>SQLBindParameter</c> that binds the parameter using <see cref="NativeType::Boolean"/>
+        /// and SQL type <see cref="SqlType::Bit"/>. The application must ensure that the memory referenced by
+        /// <paramref name="parameterValue"/> and the indicator pointed to by <paramref name="nullIndicator"/> remain valid
+        /// for the lifetime of the statement or until the binding is changed or reset.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
+        Result BindBooleanParameter( SQLUSMALLINT parameterNumber, bool* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
             return BindParameter( parameterNumber, parameterDirection, NativeType::Boolean, SqlType::Bit, 0, 0, parameterValue, 0, nullIndicator );
         }
 
+        /// <summary>
+        /// Binds a read-only (const) boolean input parameter to the statement.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">Pointer to a const boolean input value.</param>
+        /// <param name="nullIndicator">Optional pointer to an <c>SQLLEN</c> indicator/length. May be <c>nullptr</c>.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Forwards to the mutable overload with <see cref="ODBC::ParameterDirection::Input"/> and drops const by const_cast.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindBooleanParameter( SQLUSMALLINT parameterNumber, const bool* parameterValue, SQLLEN* nullIndicator ) const
         {
-            return BindBooleanParameter( parameterNumber, const_cast<bool*>( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
+            return BindBooleanParameter( parameterNumber, const_cast< bool* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
         }
+
+        /// <summary>
+        /// Binds a boolean parameter with an explicit direction but without an indicator pointer.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">Pointer to the boolean application buffer.</param>
+        /// <param name="parameterDirection">Direction of the parameter (Input, Output, InputOutput, etc.).</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This overload forwards to the full overload using a <c>nullptr</c> indicator pointer.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindBooleanParameter( SQLUSMALLINT parameterNumber, bool* parameterValue, ODBC::ParameterDirection parameterDirection ) const
         {
             return BindBooleanParameter( parameterNumber, parameterValue, nullptr, parameterDirection );
         }
+
+        /// <summary>
+        /// Binds a read-only (const) boolean input parameter without an indicator pointer.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">Pointer to a const boolean input value.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Forwards to the mutable overload with <see cref="ODBC::ParameterDirection::Input"/> and a <c>nullptr</c> indicator.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindBooleanParameter( SQLUSMALLINT parameterNumber, const bool* parameterValue ) const
         {
-            return BindBooleanParameter( parameterNumber, const_cast< bool* >(parameterValue), nullptr, ODBC::ParameterDirection::Input );
+            return BindBooleanParameter( parameterNumber, const_cast< bool* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
         }
+
+        /// <summary>
+        /// Binds a database-aware boolean container (<c>DBBoolean</c>) to the specified parameter.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">
+        /// Reference to a <c>DBBoolean</c> whose internal storage will be used as the parameter buffer.
+        /// </param>
+        /// <param name="parameterDirection">Direction of the parameter. Defaults to <see cref="ODBC::ParameterDirection::InputOutput"/>.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// The call uses <c>parameterValue.data()</c> as the value buffer and <c>parameterValue.Indicator()</c>
+        /// as the indicator pointer so that SQL NULL semantics are preserved. The <paramref name="parameterValue"/>
+        /// object and its internal storage MUST remain valid for the lifetime of the statement or until the binding is changed.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindBooleanParameter( SQLUSMALLINT parameterNumber, DBBoolean& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
         {
             return BindBooleanParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
         }
+
+        /// <summary>
+        /// Binds a read-only database-aware boolean container (<c>DBBoolean</c>) as an input parameter.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">Const reference to a <c>DBBoolean</c> providing the input value and indicator.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This overload forwards to the primary overload using the container's internal buffer and indicator.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindBooleanParameter( SQLUSMALLINT parameterNumber, const DBBoolean& parameterValue ) const
         {
             return BindBooleanParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
@@ -3288,82 +4526,331 @@ namespace Harlinn::ODBC
 
 
 
+        /// <summary>
+        /// Binds a signed-byte (SByte) parameter to the statement.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">
+        /// Pointer to the application buffer containing the parameter value.
+        /// For input parameters the value pointed to is sent to the driver.
+        /// For output or input/output parameters the driver writes the resulting value to this buffer.
+        /// </param>
+        /// <param name="nullIndicator">
+        /// Optional pointer to an <c>SQLLEN</c> indicator/length. On return this receives
+        /// <c>SQL_NULL_DATA</c> when the parameter value is NULL or the length/indicator
+        /// according to ODBC semantics. May be <c>nullptr</c> if the caller does not require the indicator.
+        /// </param>
+        /// <param name="parameterDirection">Direction of the parameter (Input, Output, InputOutput, etc.).</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Thin wrapper around <c>SQLBindParameter</c> that binds using <see cref="NativeType::SByte"/>
+        /// and SQL type <see cref="SqlType::TinyInt"/>.
+        /// The memory pointed to by <paramref name="parameterValue"/> and the indicator pointed to by
+        /// <paramref name="nullIndicator"/> MUST remain valid for the lifetime of the statement or until the binding is changed.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindSByteParameter( SQLUSMALLINT parameterNumber, SByte* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::SByte, SqlType::TinyInt, 0, 0, parameterValue, 0, nullIndicator );
             return rc;
         }
 
+        /// <summary>
+        /// Binds a read-only (const) signed-byte input parameter to the statement.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">Pointer to a const <c>SByte</c> input value.</param>
+        /// <param name="nullIndicator">Optional pointer to an <c>SQLLEN</c> indicator/length. May be <c>nullptr</c>.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Forwards to the mutable overload with <see cref="ODBC::ParameterDirection::Input"/> and drops const by <c>const_cast</c>.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindSByteParameter( SQLUSMALLINT parameterNumber, const SByte* parameterValue, SQLLEN* nullIndicator ) const
         {
             return BindSByteParameter( parameterNumber, const_cast< SByte* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
         }
+
+        /// <summary>
+        /// Binds a signed-byte (SByte) parameter with explicit direction but without an indicator pointer.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">Pointer to the <c>SByte</c> application buffer.</param>
+        /// <param name="parameterDirection">Direction of the parameter (Input, Output, InputOutput, etc.).</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This overload forwards to the full overload using a <c>nullptr</c> indicator pointer.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindSByteParameter( SQLUSMALLINT parameterNumber, SByte* parameterValue, ODBC::ParameterDirection parameterDirection ) const
         {
             return BindSByteParameter( parameterNumber, parameterValue, nullptr, parameterDirection );
         }
+
+        /// <summary>
+        /// Binds a read-only (const) signed-byte input parameter without an indicator pointer.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">Pointer to a const <c>SByte</c> input value.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Forwards to the mutable overload with <see cref="ODBC::ParameterDirection::Input"/> and a <c>nullptr</c> indicator.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindSByteParameter( SQLUSMALLINT parameterNumber, const SByte* parameterValue ) const
         {
             return BindSByteParameter( parameterNumber, const_cast< SByte* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
         }
+
+        /// <summary>
+        /// Binds a database-aware signed-byte container (<c>DBSByte</c>) to the specified parameter.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">
+        /// Reference to a <c>DBSByte</c> whose internal storage will be used as the parameter buffer.
+        /// </param>
+        /// <param name="parameterDirection">Direction of the parameter. Defaults to <see cref="ODBC::ParameterDirection::InputOutput"/>.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// The call uses <c>parameterValue.data()</c> as the value buffer and <c>parameterValue.Indicator()</c>
+        /// as the indicator pointer so that SQL NULL semantics are preserved. The <paramref name="parameterValue"/>
+        /// object and its internal storage MUST remain valid for the lifetime of the statement or until the binding is changed.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindSByteParameter( SQLUSMALLINT parameterNumber, DBSByte& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
         {
             return BindSByteParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
         }
+
+        /// <summary>
+        /// Binds a read-only database-aware signed-byte container (<c>DBSByte</c>) as an input parameter.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">Const reference to a <c>DBSByte</c> providing the input value and indicator.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This overload forwards to the primary overload using the container's internal buffer and indicator.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindSByteParameter( SQLUSMALLINT parameterNumber, const DBSByte& parameterValue ) const
         {
             return BindSByteParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
         }
 
 
+        /// <summary>
+        /// Binds an unsigned-byte (Byte) parameter to the statement.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">
+        /// Pointer to the application buffer containing the parameter value.
+        /// For input parameters the value pointed to is sent to the driver.
+        /// For output or input/output parameters the driver writes the resulting value to this buffer.
+        /// </param>
+        /// <param name="nullIndicator">
+        /// Optional pointer to an <c>SQLLEN</c> indicator/length. On return this receives
+        /// <c>SQL_NULL_DATA</c> when the parameter value is SQL NULL or the length/indicator
+        /// according to ODBC semantics. May be <c>nullptr</c> if the caller does not require the indicator.
+        /// </param>
+        /// <param name="parameterDirection">Direction of the parameter (Input, Output, InputOutput, etc.).</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Thin wrapper around <c>SQLBindParameter</c> that binds using <see cref="NativeType::Byte"/>
+        /// and SQL type <see cref="SqlType::TinyInt"/>. The memory pointed to by <paramref name="parameterValue"/>
+        /// and the indicator pointed to by <paramref name="nullIndicator"/> MUST remain valid for the lifetime
+        /// of the statement or until the binding is changed.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindByteParameter( SQLUSMALLINT parameterNumber, Byte* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Byte, SqlType::TinyInt, 0, 0, parameterValue, 0, nullIndicator );
             return rc;
         }
 
+        /// <summary>
+        /// Binds a read-only (const) unsigned-byte input parameter to the statement.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">Pointer to a const <c>Byte</c> input value.</param>
+        /// <param name="nullIndicator">Optional pointer to an <c>SQLLEN</c> indicator/length. May be <c>nullptr</c>.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Forwards to the mutable overload with <see cref="ODBC::ParameterDirection::Input"/>
+        /// and drops const by <c>const_cast</c>.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindByteParameter( SQLUSMALLINT parameterNumber, const Byte* parameterValue, SQLLEN* nullIndicator ) const
         {
             return BindByteParameter( parameterNumber, const_cast< Byte* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
         }
+
+        /// <summary>
+        /// Binds an unsigned-byte (Byte) parameter with an explicit direction but without an indicator pointer.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">Pointer to the <c>Byte</c> application buffer.</param>
+        /// <param name="parameterDirection">Direction of the parameter (Input, Output, InputOutput, etc.).</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This overload forwards to the full overload using a <c>nullptr</c> indicator pointer.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindByteParameter( SQLUSMALLINT parameterNumber, Byte* parameterValue, ODBC::ParameterDirection parameterDirection ) const
         {
             return BindByteParameter( parameterNumber, parameterValue, nullptr, parameterDirection );
         }
+
+        /// <summary>
+        /// Binds a read-only (const) unsigned-byte input parameter without an indicator pointer.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">Pointer to a const <c>Byte</c> input value.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Forwards to the mutable overload with <see cref="ODBC::ParameterDirection::Input"/> and a <c>nullptr</c> indicator.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindByteParameter( SQLUSMALLINT parameterNumber, const Byte* parameterValue ) const
         {
             return BindByteParameter( parameterNumber, const_cast< Byte* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
         }
+
+        /// <summary>
+        /// Binds a database-aware unsigned-byte container (<c>DBByte</c>) to the specified parameter.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">
+        /// Reference to a <c>DBByte</c> whose internal storage will be used as the parameter buffer.
+        /// </param>
+        /// <param name="parameterDirection">Direction of the parameter. Defaults to <see cref="ODBC::ParameterDirection::InputOutput"/>.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// The call uses <c>parameterValue.data()</c> as the value buffer and <c>parameterValue.Indicator()</c>
+        /// as the indicator pointer so that SQL NULL semantics are preserved. The <paramref name="parameterValue"/>
+        /// object and its internal storage MUST remain valid for the lifetime of the statement or until the binding is changed.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindByteParameter( SQLUSMALLINT parameterNumber, DBByte& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
         {
             return BindByteParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
         }
+
+        /// <summary>
+        /// Binds a read-only database-aware unsigned-byte container (<c>DBByte</c>) as an input parameter.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind.</param>
+        /// <param name="parameterValue">Const reference to a <c>DBByte</c> providing the input value and indicator.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This overload forwards to the primary overload using the container's internal buffer and indicator.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindByteParameter( SQLUSMALLINT parameterNumber, const DBByte& parameterValue ) const
         {
             return BindByteParameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
         }
 
+        /// <summary>
+        /// Binds a 16-bit signed integer parameter to the statement.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">Pointer to an <c>Int16</c> buffer that contains the parameter value for input parameters or receives the value for output parameters.</param>
+        /// <param name="nullIndicator">
+        /// Optional pointer to an <c>SQLLEN</c> indicator/length. On return this receives <c>SQL_NULL_DATA</c> when the parameter value is SQL NULL
+        /// or the length/indicator according to ODBC semantics. May be <c>nullptr</c> if the caller does not require the indicator.
+        /// </param>
+        /// <param name="parameterDirection">Direction of the parameter (Input, Output, InputOutput, etc.).</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Thin wrapper around <c>SQLBindParameter</c> that binds using <see cref="NativeType::Int16"/> and SQL type <see cref="SqlType::SmallInt"/>.
+        /// The memory pointed to by <paramref name="parameterValue"/> and the indicator pointed to by <paramref name="nullIndicator"/>
+        /// MUST remain valid for the lifetime of the statement or until the binding is changed.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt16Parameter( SQLUSMALLINT parameterNumber, Int16* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int16, SqlType::SmallInt, 0, 0, parameterValue, 0, nullIndicator );
             return rc;
         }
+
+        /// <summary>
+        /// Binds a read-only (const) 16-bit integer input parameter to the statement.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">Pointer to a const <c>Int16</c> input value.</param>
+        /// <param name="nullIndicator">Optional pointer to an <c>SQLLEN</c> indicator/length. May be <c>nullptr</c>.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Forwards to the mutable overload with <see cref="ODBC::ParameterDirection::Input"/> and drops const by <c>const_cast</c>.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt16Parameter( SQLUSMALLINT parameterNumber, const Int16* parameterValue, SQLLEN* nullIndicator ) const
         {
             return BindInt16Parameter( parameterNumber, const_cast< Int16* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
         }
+
+        /// <summary>
+        /// Binds a 16-bit integer parameter with an explicit direction but without an indicator pointer.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">Pointer to the <c>Int16</c> application buffer.</param>
+        /// <param name="parameterDirection">Direction of the parameter (Input, Output, InputOutput, etc.).</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This overload forwards to the full overload using a <c>nullptr</c> indicator pointer.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt16Parameter( SQLUSMALLINT parameterNumber, Int16* parameterValue, ODBC::ParameterDirection parameterDirection ) const
         {
             return BindInt16Parameter( parameterNumber, parameterValue, nullptr, parameterDirection );
         }
+
+        /// <summary>
+        /// Binds a read-only (const) 16-bit integer input parameter without an indicator pointer.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">Pointer to a const <c>Int16</c> input value.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Forwards to the mutable overload with <see cref="ODBC::ParameterDirection::Input"/> and a <c>nullptr</c> indicator.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt16Parameter( SQLUSMALLINT parameterNumber, const Int16* parameterValue ) const
         {
             return BindInt16Parameter( parameterNumber, const_cast< Int16* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
         }
+
+        /// <summary>
+        /// Binds a database-aware 16-bit signed integer container to the specified parameter.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">
+        /// Reference to a <c>DBInt16</c> whose internal storage will be used as the parameter buffer.
+        /// The container's <c>Indicator()</c> is used to preserve SQL NULL semantics.
+        /// </param>
+        /// <param name="parameterDirection">Direction of the parameter. Defaults to <see cref="ODBC::ParameterDirection::InputOutput"/>.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// The call uses <c>parameterValue.data()</c> as the value buffer and <c>parameterValue.Indicator()</c>
+        /// as the indicator pointer so that SQL NULL semantics are preserved. The <paramref name="parameterValue"/>
+        /// object and its internal storage MUST remain valid for the lifetime of the statement or until the binding is changed.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt16Parameter( SQLUSMALLINT parameterNumber, DBInt16& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
         {
             return BindInt16Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
         }
+
+        /// <summary>
+        /// Binds a read-only database-aware 16-bit integer container as an input parameter.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">Const reference to a <c>DBInt16</c> providing the input value and indicator.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This overload forwards to the primary overload using the container's internal buffer and indicator.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt16Parameter( SQLUSMALLINT parameterNumber, const DBInt16& parameterValue ) const
         {
             return BindInt16Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
@@ -3371,27 +4858,109 @@ namespace Harlinn::ODBC
 
 
 
+        /// <summary>
+        /// Binds a 16-bit unsigned integer parameter to the statement.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">Pointer to the application <c>UInt16</c> buffer that contains the parameter value for input parameters or receives the value for output parameters.</param>
+        /// <param name="nullIndicator">
+        /// Optional pointer to an <c>SQLLEN</c> indicator/length. On return this receives <c>SQL_NULL_DATA</c> when the parameter value is SQL NULL
+        /// or the length/indicator according to ODBC semantics. May be <c>nullptr</c> if the caller does not require the indicator.
+        /// </param>
+        /// <param name="parameterDirection">Direction of the parameter (Input, Output, InputOutput, etc.).</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Thin wrapper around <c>SQLBindParameter</c> that binds using <see cref="NativeType::UInt16"/> and SQL type <see cref="SqlType::SmallInt"/>.
+        /// The memory pointed to by <paramref name="parameterValue"/> and the indicator pointed to by <paramref name="nullIndicator"/>
+        /// MUST remain valid for the lifetime of the statement or until the binding is changed.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, UInt16* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::UInt16, SqlType::SmallInt, 0, 0, parameterValue, 0, nullIndicator );
             return rc;
         }
+
+        /// <summary>
+        /// Binds a read-only (const) 16-bit unsigned integer input parameter to the statement.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">Pointer to a const <c>UInt16</c> input value.</param>
+        /// <param name="nullIndicator">
+        /// Optional pointer to an <c>SQLLEN</c> indicator/length. May be <c>nullptr</c>.
+        /// </param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Forwards to the mutable overload with <see cref="ODBC::ParameterDirection::Input"/> and drops const by <c>const_cast</c>.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, const UInt16* parameterValue, SQLLEN* nullIndicator ) const
         {
             return BindUInt16Parameter( parameterNumber, const_cast< UInt16* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
         }
+
+        /// <summary>
+        /// Binds a 16-bit unsigned integer parameter with an explicit direction but without an indicator pointer.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">Pointer to the <c>UInt16</c> application buffer.</param>
+        /// <param name="parameterDirection">Direction of the parameter (Input, Output, InputOutput, etc.).</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This overload forwards to the full overload using a <c>nullptr</c> indicator pointer.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, UInt16* parameterValue, ODBC::ParameterDirection parameterDirection ) const
         {
             return BindUInt16Parameter( parameterNumber, parameterValue, nullptr, parameterDirection );
         }
+
+        /// <summary>
+        /// Binds a read-only (const) 16-bit unsigned integer input parameter without an indicator pointer.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">Pointer to a const <c>UInt16</c> input value.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Forwards to the mutable overload with <see cref="ODBC::ParameterDirection::Input"/> and a <c>nullptr</c> indicator.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, const UInt16* parameterValue ) const
         {
             return BindUInt16Parameter( parameterNumber, const_cast< UInt16* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
         }
+
+        /// <summary>
+        /// Binds a database-aware 16-bit unsigned integer container to the specified parameter.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">
+        /// Reference to a <c>DBUInt16</c> whose internal storage will be used as the parameter buffer.
+        /// The container's <c>Indicator()</c> is used to preserve SQL NULL semantics.
+        /// </param>
+        /// <param name="parameterDirection">Direction of the parameter. Defaults to <see cref="ODBC::ParameterDirection::InputOutput"/>.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// The call uses <c>parameterValue.data()</c> as the value buffer and <c>parameterValue.Indicator()</c>
+        /// as the indicator pointer so that SQL NULL semantics are preserved. The <paramref name="parameterValue"/>
+        /// object and its internal storage MUST remain valid for the lifetime of the statement or until the binding is changed.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, DBUInt16& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
         {
             return BindUInt16Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
         }
+
+        /// <summary>
+        /// Binds a read-only database-aware 16-bit unsigned integer container as an input parameter.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">Const reference to a <c>DBUInt16</c> providing the input value and indicator.</param>
+        /// <returns>An <c>ODBC::Result</c> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This overload forwards to the primary overload using the container's internal buffer and indicator.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindUInt16Parameter( SQLUSMALLINT parameterNumber, const DBUInt16& parameterValue ) const
         {
             return BindUInt16Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );
@@ -3399,27 +4968,109 @@ namespace Harlinn::ODBC
 
 
 
+        /// <summary>
+        /// Binds a 32-bit signed integer parameter to the statement.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">Pointer to the application <c>Int32</c> buffer that contains the parameter value for input parameters or receives the value for output parameters.</param>
+        /// <param name="nullIndicator">
+        /// Optional pointer to an <c>SQLLEN</c> indicator/length. On return this receives <c>SQL_NULL_DATA</c> when the parameter value is SQL NULL
+        /// or the length/indicator according to ODBC semantics. May be <c>nullptr</c> if the caller does not require the indicator.
+        /// </param>
+        /// <param name="parameterDirection">Direction of the parameter (Input, Output, InputOutput, etc.).</param>
+        /// <returns>
+        /// An <see cref="ODBC::Result"/> describing success or failure of the bind operation.
+        /// </returns>
+        /// <remarks>
+        /// Thin wrapper around <c>SQLBindParameter</c> that binds using <see cref="NativeType::Int32"/> and SQL type <see cref="SqlType::Integer"/>.
+        /// The memory pointed to by <paramref name="parameterValue"/> and the indicator pointed to by <paramref name="nullIndicator"/>
+        /// MUST remain valid for the lifetime of the statement or until the binding is changed.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt32Parameter( SQLUSMALLINT parameterNumber, Int32* parameterValue, SQLLEN* nullIndicator, ODBC::ParameterDirection parameterDirection ) const
         {
             auto rc = BindParameter( parameterNumber, parameterDirection, NativeType::Int32, SqlType::Integer, 0, 0, parameterValue, 0, nullIndicator );
             return rc;
         }
+
+        /// <summary>
+        /// Binds a read-only (const) 32-bit integer input parameter to the statement.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">Pointer to a const <c>Int32</c> input value.</param>
+        /// <param name="nullIndicator">Optional pointer to an <c>SQLLEN</c> indicator/length. May be <c>nullptr</c>.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Forwards to the mutable overload with <see cref="ODBC::ParameterDirection::Input"/> and removes const with <c>const_cast</c>.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt32Parameter( SQLUSMALLINT parameterNumber, const Int32* parameterValue, SQLLEN* nullIndicator ) const
         {
             return BindInt32Parameter( parameterNumber, const_cast< Int32* >( parameterValue ), nullIndicator, ODBC::ParameterDirection::Input );
         }
+
+        /// <summary>
+        /// Binds a 32-bit integer parameter with an explicit direction but without an indicator pointer.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">Pointer to the <c>Int32</c> application buffer.</param>
+        /// <param name="parameterDirection">Direction of the parameter (Input, Output, InputOutput, etc.).</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This overload forwards to the full overload using a <c>nullptr</c> indicator pointer.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt32Parameter( SQLUSMALLINT parameterNumber, Int32* parameterValue, ODBC::ParameterDirection parameterDirection ) const
         {
             return BindInt32Parameter( parameterNumber, parameterValue, nullptr, parameterDirection );
         }
+
+        /// <summary>
+        /// Binds a read-only (const) 32-bit integer input parameter without an indicator pointer.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">Pointer to a const <c>Int32</c> input value.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// Forwards to the mutable overload with <see cref="ODBC::ParameterDirection::Input"/> and a <c>nullptr</c> indicator.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt32Parameter( SQLUSMALLINT parameterNumber, const Int32* parameterValue ) const
         {
             return BindInt32Parameter( parameterNumber, const_cast< Int32* >( parameterValue ), nullptr, ODBC::ParameterDirection::Input );
         }
+
+        /// <summary>
+        /// Binds a database-aware 32-bit signed integer container to the specified parameter.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">
+        /// Reference to a <c>DBInt32</c> whose internal storage will be used as the parameter buffer.
+        /// The container's <c>Indicator()</c> is used to preserve SQL NULL semantics.
+        /// </param>
+        /// <param name="parameterDirection">Direction of the parameter. Defaults to <see cref="ODBC::ParameterDirection::InputOutput"/>.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// The call uses <c>parameterValue.data()</c> as the value buffer and <c>parameterValue.Indicator()</c>
+        /// as the indicator pointer so that SQL NULL semantics are preserved. The <paramref name="parameterValue"/>
+        /// object and its internal storage MUST remain valid for the lifetime of the statement or until the binding is changed.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt32Parameter( SQLUSMALLINT parameterNumber, DBInt32& parameterValue, ODBC::ParameterDirection parameterDirection = ODBC::ParameterDirection::InputOutput ) const
         {
             return BindInt32Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ), parameterDirection );
         }
+
+        /// <summary>
+        /// Binds a read-only database-aware 32-bit integer container as an input parameter.
+        /// </summary>
+        /// <param name="parameterNumber">One-based parameter ordinal to bind. Must be &gt;= 1.</param>
+        /// <param name="parameterValue">Const reference to a <c>DBInt32</c> providing the input value and indicator.</param>
+        /// <returns>An <see cref="ODBC::Result"/> describing success or failure of the bind operation.</returns>
+        /// <remarks>
+        /// This overload forwards to the primary overload using the container's internal buffer and indicator.
+        /// </remarks>
+        /// <exception cref="SystemException">Thrown when the underlying ODBC call fails and diagnostics are reported.</exception>
         Result BindInt32Parameter( SQLUSMALLINT parameterNumber, const DBInt32& parameterValue ) const
         {
             return BindInt32Parameter( parameterNumber, parameterValue.data( ), parameterValue.Indicator( ) );

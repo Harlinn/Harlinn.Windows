@@ -74,9 +74,16 @@ namespace Harlinn::Windows::DirectX::MiniEngine
         }
     }
     using XMFLOAT2 = Math::m::Vector<float, 2>;
+    static_assert(Harlinn::Common::HasSameSizeAndAlignment_v<XMFLOAT2, ::DirectX::XMFLOAT2>);
+
     using XMFLOAT3 = Math::m::Vector<float, 3>;
+    static_assert( Harlinn::Common::HasSameSizeAndAlignment_v<XMFLOAT3, ::DirectX::XMFLOAT3> );
+
     using XMFLOAT4 = Math::m::Vector<float, 4>;
+    static_assert( Harlinn::Common::HasSameSizeAndAlignment_v<XMFLOAT4, ::DirectX::XMFLOAT4> );
+
     using XMUINT4 = Math::m::Vector<UInt32, 4>;
+    static_assert( Harlinn::Common::HasSameSizeAndAlignment_v<XMUINT4, ::DirectX::XMUINT4> );
 #else
     using XMVECTOR = ::DirectX::XMVECTOR;
     using FXMVECTOR = ::DirectX::FXMVECTOR;

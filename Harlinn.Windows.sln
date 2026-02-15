@@ -3374,6 +3374,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicStringBenchmarks", "Be
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Copyright.Tool", "DotNet\Tools\Copyright.Tool\Copyright.Tool.csproj", "{EA5284CB-8AAE-44C7-AA0C-7841320A935B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Harlinn.DirectX.MiniEngine.Tests", "Examples\Windows\Graphics\DirectX\MiniEngine\Harlinn.DirectX.MiniEngine.Tests\Harlinn.DirectX.MiniEngine.Tests.vcxproj", "{6378693C-E7A8-47AA-8441-7633453FF33F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6B47CEC4-C054-455E-97C2-453872D52AA1} = {6B47CEC4-C054-455E-97C2-453872D52AA1}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18254,6 +18259,30 @@ Global
 		{EA5284CB-8AAE-44C7-AA0C-7841320A935B}.Release|x64.Build.0 = Release|Any CPU
 		{EA5284CB-8AAE-44C7-AA0C-7841320A935B}.Release|x86.ActiveCfg = Release|Any CPU
 		{EA5284CB-8AAE-44C7-AA0C-7841320A935B}.Release|x86.Build.0 = Release|Any CPU
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Debug|Any CPU.Build.0 = Debug|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Debug|ARM64.ActiveCfg = Debug|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Debug|ARM64.Build.0 = Debug|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Debug|x64.ActiveCfg = Debug|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Debug|x64.Build.0 = Debug|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Debug|x86.ActiveCfg = Debug|Win32
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Debug|x86.Build.0 = Debug|Win32
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Profile|Any CPU.ActiveCfg = Release|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Profile|Any CPU.Build.0 = Release|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Profile|ARM64.ActiveCfg = Release|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Profile|ARM64.Build.0 = Release|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Profile|x64.ActiveCfg = Release|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Profile|x64.Build.0 = Release|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Profile|x86.ActiveCfg = Release|Win32
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Profile|x86.Build.0 = Release|Win32
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Release|Any CPU.ActiveCfg = Release|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Release|Any CPU.Build.0 = Release|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Release|ARM64.ActiveCfg = Release|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Release|ARM64.Build.0 = Release|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Release|x64.ActiveCfg = Release|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Release|x64.Build.0 = Release|x64
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Release|x86.ActiveCfg = Release|Win32
+		{6378693C-E7A8-47AA-8441-7633453FF33F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -19020,6 +19049,7 @@ Global
 		{BACE08EC-B958-4F93-86BD-7D7817C0D1CA} = {B2B90F21-73DA-4D1E-B526-DB68DA129D40}
 		{F3C1B572-A66A-4C87-9B87-19BD1DC100DE} = {BACE08EC-B958-4F93-86BD-7D7817C0D1CA}
 		{EA5284CB-8AAE-44C7-AA0C-7841320A935B} = {519248F3-DCC7-4389-BB52-E36E8B1A2318}
+		{6378693C-E7A8-47AA-8441-7633453FF33F} = {48EBE065-0A0B-4C7C-85D9-A7416C17EA59}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {72148CF9-A054-4B83-9675-2D14F91844D1}

@@ -28,6 +28,7 @@
 #include <cfenv>
 #include <immintrin.h>
 #include <array>
+#include <numbers>
 
 namespace Harlinn::Math
 {

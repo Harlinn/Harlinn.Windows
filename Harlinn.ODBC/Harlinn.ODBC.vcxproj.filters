@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Documentation">
+      <UniqueIdentifier>{3eb1fc7c-1251-45c8-b4c9-917b9f11765a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -38,5 +41,60 @@
     <ClCompile Include="HODBC.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Documentation\Readme.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Documentation\IntroductionAndScope.md" />
+    <None Include="Documentation\01-IntroductionAndScope.Plan.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Documentation\02-ODBCAndSQLServerPrimerPlan.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Documentation\03-GettingStartedBuildLinkAndDriverSetupPlan.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Documentation\04-EnvironmentAndConnectionLifecycleAndOptionsPlan.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Documentation\05-StatementBasicsPreparingAndExecutingSQLPlan.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Documentation\06-BindingParametersBindParameterAndDBAwareContainersPlan.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Documentation\07-RetrievingResultsBindColumnDataReaderAndGetXHelpersPlan.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Documentation\08-WorkingWithStringsAndBinaryDataPlan.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Documentation\09-DateTimeAndNumericTypesPlan.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Documentation\10-TransactionsAndConcurrencyPlan.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Documentation\11-DiagnosticsErrorHandlingAndExceptionsPlan.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Documentation\12-PerformanceConnectionPoolingBatchBulkOperationsAndTuningPlan.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Documentation\13-AdvancedTopicsDescriptorsAsynchronousOperationsAndBookmarksPlan.md">
+      <Filter>Documentation</Filter>
+    </None>
+    <None Include="Documentation\14-MicrosoftSQLServerSpecificPatternsAndPitfallsPlan.md" />
+    <None Include="Documentation\15-SecurityAuthenticationAndEncryptionPlan.md" />
+    <None Include="Documentation\16-TestingLoggingAndTroubleshootingPlan.md" />
+    <None Include="Documentation\17-ExampleWalkthroughsPlan.md" />
+    <None Include="Documentation\18-MigrationAndInteropFromLegacyODBCAndADONetPlan.md" />
+    <None Include="Documentation\19-AppendixTypeMapsSQLSTATEReferencesAndCommonHODBCAPIsPlan.md" />
+    <None Include="Documentation\20-TroubleshootingChecklistAndFAQPlan.md" />
+    <None Include="Documentation\Database\CreateTables.sql">
+      <Filter>Documentation</Filter>
+    </None>
   </ItemGroup>
 </Project>

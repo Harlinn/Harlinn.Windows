@@ -1,0 +1,144 @@
+# Chapter 14 — Microsoft SQL Server Specific Patterns and Pitfalls (Development Plan)
+
+Goal
+- Document Microsoft SQL Server–specific behaviors, type mappings, driver quirks and practical pitfalls when using `HODBC.h`/ODBC. Provide clear patterns, pitfalls to avoid, MathJax conversions for common calculations and mermaid diagrams showing interaction flows. Offer actionable examples and testing guidance specific to MS SQL Server.
+
+Learning outcomes
+- Map MS SQL Server types and extensions (e.g., `TIME2`, `TIMESTAMPOFFSET`, `ROWVERSION`, `GUID`, `SQL_SS_*`) to `HODBC.h` wrappers and ODBC native types.
+- Correctly handle encoding and length semantics for Unicode (NVARCHAR/NCHAR) and ANSI (VARCHAR/CHAR) columns and avoid common buffer-length mistakes.
+- Understand driver-specific behaviors (parameter sniffing, `SQL_NO_TOTAL`, driver return units, NVARCHAR(MAX)/VARBINARY(MAX) streaming) and how to code defensively in `HODBC.h`.
+- Use MS SQL Server–specific features (TVPs, bulk operations) where appropriate and document portable fallbacks.
+- Test and validate behavior across driver versions and Windows platforms.
+
+Target audience and prerequisites
+- Readers who completed the earlier chapters and are implementing `HODBC` against Microsoft SQL Server.
+- Prereqs: C++23 toolchain (MSVC x64), SQL Server instance, Microsoft ODBC Driver for SQL Server installed. Familiarity with ODBC basics (Chapter 2) and `HODBC.h` DB-aware containers.
+
+Chapter outline (sections and content)
+
+1. Chapter opening — scope and assumptions
+   - Clarify this chapter focuses on MS SQL Server driver behaviors and SQL Server extensions exposed via ODBC. Emphasize testing across driver versions (ODBC Driver 13/17/18+).
+
+2. MS SQL Server specific SQL types and `HODBC` mappings
+   - `Time2` / `SQL_SS_TIME2` ? `DBTime2` / `Time2` wrapper. Fraction handling notes.
+   - `TIMESTAMP` / `rowversion` ? `RowVersion` / `DBRowVersion` (8-byte binary) and concurrency semantics.
+   - `TIMESTAMPOFFSET` / `SQL_SS_TIMESTAMPOFFSET` ? `TimeStampOffset` wrapper, preserving offset information.
+   - `UNIQUEIDENTIFIER` / `SQL_GUID` ? `Guid` / `DBGuid` binding patterns.
+   - `SQL_SS_*` extended types (e.g., `SQL_SS_VARIANT`, `SQL_SS_TIME2`) — show where to use `NativeType` and `SqlType` overrides.
+
+3. Encoding and length semantics (Unicode vs ANSI)
+   - MS drivers generally support Unicode; prefer wide binds (`SQL_C_WCHAR` / `SQL_NCHAR`) for NVARCHAR/NCHAR.
+   - MathJax reminder for bind size calculations:
+
+   $$\text{bindSizeInBytes}_{\text{wide}} = (\text{maxChars} + 1)\times\mathrm{sizeof}(\texttt{wchar\_t})$$
+
+   $$\text{charCount} = \dfrac{\text{returnedBytes}}{\mathrm{sizeof}(\texttt{wchar\_t})}$$
+
+   - Explain drivers may return lengths in bytes. Always treat returned length as bytes and convert to character counts only after validating divisibility.
+
+4. `NVARCHAR(MAX)` / `VARBINARY(MAX)` and LOB streaming
+   - Best practice: stream large objects using `SQLGetData`/`SQLPutData` (chunked) rather than pre-allocating huge buffers.
+   - Explain `SQL_NO_TOTAL` semantics with MS drivers and how `HODBC.h` `DataReader::AfterFetch()` patterns should handle it.
+
+5. `ROWVERSION` / `timestamp` semantics and optimistic concurrency
+   - `rowversion` is updated by SQL Server on changes; treat as binary 8-byte token.
+   - Pattern: read `rowversion`, include in `WHERE` clause when updating; check rows affected for conflict detection. Use `DBRowVersion` alias.
+
+6. GUID / UNIQUEIDENTIFIER handling
+   - Prefer binding GUIDs with `SQL_C_GUID` / `SQL_GUID` and `DBGuid` wrapper. Avoid textual UUID conversions unless necessary.
+   - On SQL Server the `uniqueidentifier` is 16 bytes — confirm binding sizes accordingly.
+
+7. Parameter sniffing and query plan impacts (server-side pitfall)
+   - Describe parameter sniffing: when SQL Server optimizes using parameter values from first compile resulting in suboptimal plans for other values.
+   - Defensive patterns:
+     - Use `OPTION (RECOMPILE)` for sensitive queries.
+     - Use `OPTIMIZE FOR` hints or local variables inside stored procs to avoid sniffing.
+     - Test queries with representative parameter distributions.
+   - Mermaid diagram showing how a single parameter value can influence cached plan for subsequent executions.
+
+8. Driver version and feature detection
+   - Test for required driver capabilities (Time2, TIMESTAMPOFFSET, async flags) at runtime; prefer feature-gated code paths.
+   - Example: check `SQLGetInfo` / `SQLGetTypeInfo` results or driver string in connection diagnostics.
+
+9. Table-valued parameters (TVPs) and bulk patterns
+   - TVP support in MS drivers: fast and convenient for bulk data. Pattern: define user type and send structured parameter.
+   - If TVPs are unavailable or portability is required, use array binding or `BULK INSERT` / `bcp` alternatives.
+
+10. Driver quirks and gotchas
+    - `SQL_NO_TOTAL` returned for some streaming calls; treat it specially (use dynamic growth of buffers or streaming aggregation).
+    - `SQL_ATTR_PARAM_BIND_TYPE` and behavior of `SQLPutData` across drivers — test streaming parameter semantics.
+    - Encoding fallbacks: mismatched driver/DB collation may cause truncation or implicit conversions — avoid by using NVARCHAR when storing Unicode.
+    - Connection-level attributes: `TrustServerCertificate`, `Encrypt` interactions with driver versions and TLS requirements.
+
+11. Testing matrix and verification guidance
+    - Test combinations: driver version (ODBC 13/17/18+), SQL Server version (2014/2016/2017/2019/2022), Windows OS version and 32/64-bit driver matching.
+    - Provide a simple test checklist: verify Time2 fraction round-trip, GUID round-trip, NVARCHAR(MAX) streaming, rowversion update detection, TVP transfer.
+
+12. Examples and sample code (locations)
+    - Add MS-specific examples under `Examples\ODBC\DocsExamples\MsSqlSpecific\`:
+      - `Time2RoundTrip.cpp` — verify fraction precision matches expectations.
+      - `RowVersionOptimisticUpdate.cpp` — rowversion-based concurrency example.
+      - `GuidBindExample.cpp` — GUID parameter/column binding.
+      - `TvpsAndBulk.cpp` — TVP and array-binding fallbacks.
+
+13. Exercises
+    - Exercise 1: Demonstrate NVARCHAR(MAX) streaming using chunk sizes 8KB and 64KB; measure memory and throughput.
+    - Exercise 2: Reproduce parameter sniffing issue with a synthetic table and show fixes using `OPTION (RECOMPILE)` and `OPTIMIZE FOR`.
+    - Exercise 3: Implement server feature detection and run appropriate code path for `Time2` vs fallback.
+
+14. Deliverables & artifact locations
+    - Chapter markdown: `Harlinn.ODBC\Documentation\Chapters\14_MsSqlPatternsAndPitfalls.md`.
+    - Examples folder: `Examples\ODBC\DocsExamples\MsSqlSpecific\` with files listed above and a README documenting connection gating (`HODBC_TEST_CONN`) and required server objects.
+
+15. Implementation tasks (step-by-step)
+    1. Draft chapter markdown with MathJax formulas and mermaid diagrams at `Chapters\14_MsSqlPatternsAndPitfalls.md`.
+    2. Implement the example programs under `Examples\ODBC\DocsExamples\MsSqlSpecific` and add README with schema and run instructions.
+    3. Validate examples on MSVC x64 (C++23) and with MS ODBC Driver 18+; gate CI via `HODBC_TEST_CONN`.
+    4. Peer review and iterate; ensure content references `HODBC.h` wrappers and shows correct `DBValue` / `FixedDB*` usage.
+    5. Link chapter from `Harlinn.ODBC\Documentation\Readme.md`.
+
+16. Acceptance criteria
+    - Chapter draft exists and is linked in the TOC.
+    - Examples compile on MSVC x64 / C++23 and demonstrate the MS-specific behaviors when a valid connection is supplied.
+    - Chapter documents conversion math, lists driver quirks, and gives testing guidance for driver and SQL Server versions.
+    - Code examples follow repository rules: C++23, XML-style `///` for public API snippets, PascalCase types, camelCase parameters, private fields with trailing underscore, and formatted by `clang-format`.
+
+17. Mermaid diagrams (embed in chapter)
+
+Parameter sniffing influence on plan cache
+
+```mermaid
+sequenceDiagram
+  participant App
+  participant DB
+  App->>DB: Execute spQuery(@param=1)
+  DB-->>App: Plan cached for @param=1
+  App->>DB: Execute spQuery(@param=10000)
+  DB-->>App: Plan still used (may be suboptimal)
+```
+
+NVARCHAR vs VARCHAR binding flow
+
+```mermaid
+flowchart LR
+  App[Application buffer] --> Bind[Bind as SQL_C_WCHAR]
+  Bind --> Driver[MS ODBC Driver]
+  Driver --> DB[SQL Server column NVARCHAR]
+  alt mismatch (ANSI bind)
+    Driver --> Convert[Implicit conversion] --> DB
+    Note right of Convert: possible truncation or conversion cost
+  end
+```
+
+18. Estimated effort
+    - Draft chapter: 3–5 hours.
+    - Implement examples and tests: 2–4 hours (depends on test server availability).
+    - Review & polish: 1–2 hours.
+    - Total: ~6–11 hours.
+
+Notes and repository rules to follow
+- Use C++23 for all examples and include XML-style `///` comments where public APIs appear.
+- Follow naming conventions and formatting and run `clang-format` / `clang-tidy` before committing.
+- Gate integration tests and example runs using `HODBC_TEST_CONN` environment variable.
+
+If you want I can now create the chapter draft file and the example source files under the suggested examples folder.

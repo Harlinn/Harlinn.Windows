@@ -1,4 +1,4 @@
-/*
+﻿/*
    Copyright 2024-2026 Espen Harlinn
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,7 @@ namespace
         LocalFixture( ) {}
         ~LocalFixture( ) {}
     };
+
 
 }
 BOOST_FIXTURE_TEST_SUITE( MathVector4FloatTests, LocalFixture )
@@ -215,6 +216,8 @@ BOOST_AUTO_TEST_CASE( OuterProductTest )
     BOOST_CHECK( r3 == expectedR3 );
     BOOST_CHECK( r4 == expectedR4 );
 }
+
+
 
 
 BOOST_AUTO_TEST_SUITE_END( )

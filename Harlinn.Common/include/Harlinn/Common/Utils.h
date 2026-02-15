@@ -264,6 +264,17 @@ namespace Harlinn::Common
     inline constexpr UInt64 ExponentMask<double, UInt64> = std::bit_cast< UInt64 >( 0b0111111111110000000000000000000000000000000000000000000000000000 );
 
 
+    template <typename T, typename U>
+    struct HasSameSizeAndAlignment
+        : std::integral_constant<bool, sizeof( T ) == sizeof( U ) && alignof( T ) == alignof( U )>
+    { };
+
+    
+    template <typename T, typename U>
+    inline constexpr bool HasSameSizeAndAlignment_v = HasSameSizeAndAlignment<T, U>::value;
+
+
+
 
 #pragma pack(push,1)
     /// <summary>

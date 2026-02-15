@@ -1,0 +1,150 @@
+# Chapter 4 — Environment and Connection — Lifecycle and Options (Development Plan)
+
+Goal
+- Explain ODBC environment and connection lifecycles using the `HODBC.h` wrappers. Show configuration options (connection pooling, ODBC version selection, connection attributes), best practices for lifetime management (RAII), and practical guidance for real-world apps.
+
+Learning outcomes
+- Understand `Environment` and `Connection` wrapper responsibilities and lifetimes in `HODBC.h`.
+- Configure and choose connection pooling strategies and ODBC versions via `ConnectionPooling` and `Version` enums.
+- Set and read common connection and statement attributes (timeouts, autocommit, isolation level, read-only vs read-write).
+- Apply best practices for deterministic resource cleanup and error handling.
+
+Target audience and prerequisites
+- Readers who completed Chapters 1–3 or who know basic ODBC concepts and can build the examples.
+- Required environment: C++23 toolchain (MSVC x64) and Visual Studio, a SQL Server instance for testing.
+
+Chapter structure (sections and brief content)
+
+1. Chapter opening — why lifecycle management matters
+   - Short rationale: resource leaks, connection limits on servers, deterministic close for transactions.
+
+2. `Environment` wrapper
+   - Role of ODBC environment handle (HENV). How `HODBC::SqlHandle<HandleType::Environment>` implements RAII.
+   - Typical configuration at environment creation: `ConnectionPooling` selection and `Version` (ODBC version) choice.
+   - Example code showing environment creation and setting pooling and version.
+
+3. `Connection` wrapper
+   - Role of ODBC connection handle (HDBC). How `HODBC::SqlHandle<HandleType::Connection>` and `Connection` class manage connect/disconnect and diagnostics.
+   - Lifetimes: prefer stack-local or scoped connection objects; use move semantics for transfer.
+   - Example: connect, set autocommit off, begin transaction, commit/rollback, close.
+
+4. Connection pooling strategies
+   - Explain pooling modes from `HODBC.h` (`ConnectionPooling::Off`, `OnePerDriver`, `OnePerEnvironment`, `DriverAware`).
+   - When to use each mode (desktop app, server app, mixed drivers).
+   - Example: enabling pooling before environment creation (order matters) and verifying pool behavior.
+   - Notes on pool sizing: rough guidance and a simple sizing formula using expected concurrent users and per-user connection usage.
+
+   MathJax example — simple pool sizing heuristic:
+
+   Let
+   - $U$ = expected simultaneous users,
+   - $C$ = average concurrent connections per user,
+   - $H$ = headroom factor (e.g., 1.2 for 20% headroom).
+
+   Then recommended pool size $P$:
+
+   $$P = \lceil U \times C \times H \rceil$$
+
+   Mention this is heuristic; tune empirically.
+
+5. ODBC version selection and compatibility
+   - Discuss `Version` enum in `HODBC.h` (ODBC2, ODBC3, ODBC3_80). Choose version according to driver and required features (descriptors, async, bulk operations).
+   - Example: enabling ODBC 3.80 for advanced features.
+
+6. Common connection attributes and statement attributes
+   - Autocommit vs explicit transactions: `SQLSetConnectAttr(SQL_ATTR_AUTOCOMMIT, ...)` semantics; demonstrate via `Connection` helper methods (if present) or raw attribute setting.
+   - Login timeout, query timeout, connection timeout — difference between driver and statement timeouts.
+   - Isolation levels and concurrency enums (`Concurrency`, `CursorType`) and how they affect behavior.
+   - Example snippets illustrating setting attributes and verifying them.
+
+7. Error reporting and deterministic cleanup
+   - Best practices: always check `Result` via `Succeeded()` / `Failed()` after operations that return `Result` and use `Internal::GetDiagnosticRecord` when errors occur.
+   - Ensure `Connection` `Close()` is called deterministically (RAII or explicit close in catch blocks). Show try/catch pattern with `Internal::ThrowException` already used by wrappers.
+   - Special-case handling in `SqlHandle::Close()` for `08003` SQL state — explain rationale (already present in `HODBC.h`).
+
+8. Scoped patterns and examples
+   - Scoped environment and connection factory pattern to centralize pool and config.
+   - Example: create `Environment` at application startup, create connections per request scope, use RAII to ensure release.
+
+9. Advanced options
+   - Driver-aware pooling caveats, thread-safety notes, and driver-specific attributes (e.g., MS SQL Server encryption attributes).
+   - Using `Descriptor` for array/bulk operations in conjunction with pooling.
+
+10. Exercises and verification
+    - Exercise 1: Create `Environment` with `OnePerEnvironment` pooling, open N connections concurrently and observe resource consumption.
+    - Exercise 2: Toggle autocommit and perform a multi-statement transaction with commit/rollback verification.
+    - Exercise 3: Set ODBC version to 3.80 and use a 3.80-only feature (example: some descriptor behavior) — fallback guidance if driver doesn't support it.
+
+11. Deliverables and artifact locations
+    - Chapter markdown: `Harlinn.ODBC\Documentation\Chapters\04_EnvironmentAndConnection.md` (final content).
+    - Example code: `Examples\ODBC\DocsExamples\EnvConn\EnvConnExamples.cpp` and `README.md` showing env var `HODBC_TEST_CONN` usage.
+    - Optional test: `Tests\Harlinn.ODBC.Tests\EnvConnIntegration.cpp` gated by `HODBC_TEST_CONN`.
+
+12. Acceptance criteria
+    - Chapter file created and linked from TOC.
+    - Examples compile with MSVC x64 / C++23 and demonstrate pooling and attribute changes when a valid connection is provided.
+    - Chapter documents the `SqlHandle::Close()` `08003` handling and recommends deterministic cleanup patterns.
+
+Implementation tasks (step-by-step)
+1. Draft chapter markdown with code snippets and diagrams at `Chapters\04_EnvironmentAndConnection.md`.
+2. Implement `EnvConnExamples.cpp` with small runnable examples:
+   - Example A: create environment with pooling, open and close a connection.
+   - Example B: autocommit off transaction demo (begin, insert, rollback).
+   - Example C: concurrent connection open test (uses threads and reads pool behavior) — gated.
+3. Add README for example explaining env var `HODBC_TEST_CONN` and required privileges.
+4. Validate examples build on MSVC x64 (C++23) and run when connection info is provided.
+5. Add optional Boost.Test integration tests gated by `HODBC_TEST_CONN`.
+6. Peer review, apply feedback, and link chapter from `Documentation\Readme.md`.
+
+Estimated effort
+- Draft chapter: 3–5 hours.
+- Implement examples and tests: 2–4 hours (depends on test DB availability).
+- Review & polish: 1–2 hours.
+- Total: ~6–11 hours.
+
+Coding and style notes
+- Use C++23 and follow project `copilot-instructions.md` rules: PascalCase types, camelCase parameters, private members with trailing underscore.
+- Public API snippets must use XML-style `///` comments if declaring new public symbols in examples.
+- Run `clang-format` / `clang-tidy` before committing examples and tests.
+
+Mermaid diagrams (to embed in chapter)
+
+Lifecycle overview
+
+```mermaid
+flowchart LR
+  App[Application] --> Env[Environment]
+  Env --> ConnPool[Connection Pool]
+  ConnPool --> Conn[Connection]
+  Conn --> Stmt[Statement]
+  Stmt --> Result[ResultSet / RowsAffected]
+  App -->|Shutdown| EnvClose[Environment Close -> flush pools]
+```
+
+Connection pooling sequence
+
+```mermaid
+sequenceDiagram
+  App->>Env: Create Environment (set pooling)
+  Env->>Driver: Initialize pool
+  App->>Env: Request Connection
+  Env->>Pool: Acquire (existing or open new)
+  Pool-->>App: Connection handle
+  App->>Pool: Release connection (return to pool)
+  Note right of Pool: Pool retains connections until environment closed
+```
+
+MathJax examples (included above)
+- Pool sizing heuristic:
+
+$$P = \lceil U \times C \times H \rceil$$
+
+where $U$ = simultaneous users, $C$ = avg concurrent connections per user, $H$ = headroom factor.
+
+Checklist (final)
+- [ ] Create `Chapters\04_EnvironmentAndConnection.md` with final prose and code snippets.
+- [ ] Add examples under `Examples\ODBC\DocsExamples\EnvConn` and `README.md`.
+- [ ] Optional tests added under `Tests\Harlinn.ODBC.Tests` gated by `HODBC_TEST_CONN`.
+- [ ] Link chapter from `Harlinn.ODBC\Documentation\Readme.md`.
+
+If you want, I can now create the chapter draft file and the example `EnvConnExamples.cpp`.

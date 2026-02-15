@@ -11245,10 +11245,16 @@ namespace Harlinn::Math
             ( ( dest[ I ][ I ] = static_cast< FloatT >( args ) ), ... );
         }
 
+        /// <summary>
+        /// Base class for row-major matrix SIMD (Single Instruction, Multiple Data) operations.
+        /// </summary>
         struct MatrixSimdBase
         {
         };
 
+        /// <summary>
+        /// Base class for row-major matrix types.
+        /// </summary>
         struct MatrixBase
         {
         };
@@ -11318,7 +11324,10 @@ namespace Harlinn::Math
         Identity
     };
 
-
+    /// <summary>
+    /// A SIMD-optimized representation of a 1x1 square matrix with specialized alignment and conversion operations.
+    /// </summary>
+    /// <typeparam name="MatrixT">The matrix type to be represented in SIMD form. Must define a value_type member.</typeparam>
     template<typename MatrixT>
     struct alignas( SIMD::Traits<typename MatrixT::value_type, 1>::AlignAs )
         SquareMatrixSimd<MatrixT, 1> : public Internal::MatrixSimdBase
@@ -11365,6 +11374,14 @@ namespace Harlinn::Math
         }
 
     };
+
+    /// <summary>
+    /// A SIMD-optimized 2x2 square row-major matrix structure that provides 
+    /// efficient matrix operations using SIMD instructions.
+    /// </summary>
+    /// <typeparam name="MatrixT">
+    /// The underlying matrix type. Must have a value_type member typedef and support 2x2 matrix dimensions.
+    /// </typeparam>
     template<typename MatrixT>
     struct alignas( SIMD::Traits<typename MatrixT::value_type, 4>::AlignAs )
         SquareMatrixSimd<MatrixT, 2> : public Internal::MatrixSimdBase
@@ -11451,6 +11468,11 @@ namespace Harlinn::Math
     };
 
 
+    /// <summary>
+    /// A 3x3 square row-major matrix optimized for SIMD operations, providing hardware-accelerated 
+    /// matrix computations with proper memory alignment.
+    /// </summary>
+    /// <typeparam name="MatrixT">The underlying matrix type that defines the value type and matrix representation.</typeparam>
     template<typename MatrixT>
     struct alignas( SIMD::Traits<typename MatrixT::value_type, 3>::AlignAs )
         SquareMatrixSimd<MatrixT, 3> : public Internal::MatrixSimdBase
@@ -11584,7 +11606,13 @@ namespace Harlinn::Math
 
     };
 
-
+    /// <summary>
+    /// A SIMD-optimized 4x4 square row-major matrix structure that stores matrix data using 
+    /// SIMD vector types for efficient parallel operations.
+    /// </summary>
+    /// <typeparam name="MatrixT">
+    /// The underlying matrix type that defines the value type and matrix properties.
+    /// </typeparam>
     template<typename MatrixT>
     struct alignas( SIMD::Traits<typename MatrixT::value_type, 4>::AlignAs )
         SquareMatrixSimd<MatrixT, 4> : public Internal::MatrixSimdBase
@@ -11725,6 +11753,13 @@ namespace Harlinn::Math
 
 
     // SquareMatrix Definition
+
+    /// <summary>
+    /// A square row-major matrix class template that stores and manipulates N×N 
+    /// matrices of arithmetic values with SIMD optimization support.
+    /// </summary>
+    /// <typeparam name="T">The arithmetic type of the matrix elements (must satisfy ArithmeticType concept).</typeparam>
+    /// <typeparam name="N">The size of the square matrix (number of rows and columns).</typeparam>
     template<ArithmeticType T, size_t N>
     class SquareMatrix : public Internal::MatrixBase
     {
@@ -12544,6 +12579,7 @@ namespace Harlinn::Math
     /// provided matrix is singular with a determinant equal to 0, 
     /// Inverse returns an infinite matrix.
     /// </returns>
+    
     inline SquareMatrix<float, 4>::Simd Inverse( const SquareMatrix<float, 4>::Simd& matrix, typename Vector<float, 4>::Simd* determinant = nullptr )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
@@ -12670,6 +12706,7 @@ namespace Harlinn::Math
         {
             *determinant = vTemp;
         }
+
         vTemp = Traits::Div( Traits::Fill( 1.f ), vTemp );
         MatrixSimd result;
         result.simd[ 0 ] = Traits::Mul( C0, vTemp );
@@ -12678,6 +12715,260 @@ namespace Harlinn::Math
         result.simd[ 3 ] = Traits::Mul( C6, vTemp );
         return result;
     }
+    
+    /*
+    inline SquareMatrix<float, 4>::Simd Inverse( const SquareMatrix<float, 4>::Simd& matrix )
+    {
+        using Simd = SquareMatrix<float, 4>::Simd;
+        using SIMDType = __m128;
+
+        SIMDType row0 = matrix.simd[ 0 ];
+        SIMDType row1 = matrix.simd[ 1 ];
+        SIMDType row2 = matrix.simd[ 2 ];
+        SIMDType row3 = matrix.simd[ 3 ];
+
+        // Transpose to get columns
+        SIMDType tmp0 = _mm_shuffle_ps( row0, row1, 0x44 );
+        SIMDType tmp2 = _mm_shuffle_ps( row0, row1, 0xEE );
+        SIMDType tmp1 = _mm_shuffle_ps( row2, row3, 0x44 );
+        SIMDType tmp3 = _mm_shuffle_ps( row2, row3, 0xEE );
+
+        row0 = _mm_shuffle_ps( tmp0, tmp1, 0x88 );
+        row1 = _mm_shuffle_ps( tmp0, tmp1, 0xDD );
+        row2 = _mm_shuffle_ps( tmp2, tmp3, 0x88 );
+        row3 = _mm_shuffle_ps( tmp2, tmp3, 0xDD );
+
+        // Pairs for first 8 elements (cofactors)
+        SIMDType tmp = _mm_mul_ps( row2, row3 );
+        tmp = _mm_shuffle_ps( tmp, tmp, 0xB1 );
+
+        SIMDType minor0 = _mm_mul_ps( row1, tmp );
+        SIMDType minor1 = _mm_mul_ps( row0, tmp );
+
+        tmp = _mm_shuffle_ps( tmp, tmp, 0x4E );
+
+        minor0 = _mm_fmsub_ps( row1, tmp, minor0 );
+        minor1 = _mm_fmsub_ps( row0, tmp, minor1 );
+        minor1 = _mm_shuffle_ps( minor1, minor1, 0x4E );
+
+        // Pairs for second 8 elements
+        tmp = _mm_mul_ps( row1, row2 );
+        tmp = _mm_shuffle_ps( tmp, tmp, 0xB1 );
+
+        minor0 = _mm_fmadd_ps( row3, tmp, minor0 );
+        SIMDType minor3 = _mm_mul_ps( row0, tmp );
+
+        tmp = _mm_shuffle_ps( tmp, tmp, 0x4E );
+
+        minor0 = _mm_fnmadd_ps( row3, tmp, minor0 );
+        minor3 = _mm_fmsub_ps( row0, tmp, minor3 );
+        minor3 = _mm_shuffle_ps( minor3, minor3, 0x4E );
+
+        // Pairs for third 8 elements
+        tmp = _mm_mul_ps( _mm_shuffle_ps( row1, row1, 0x4E ), row3 );
+        tmp = _mm_shuffle_ps( tmp, tmp, 0xB1 );
+        row2 = _mm_shuffle_ps( row2, row2, 0x4E );
+
+        minor0 = _mm_fmadd_ps( row2, tmp, minor0 );
+        SIMDType minor2 = _mm_mul_ps( row0, tmp );
+
+        tmp = _mm_shuffle_ps( tmp, tmp, 0x4E );
+
+        minor0 = _mm_fnmadd_ps( row2, tmp, minor0 );
+        minor2 = _mm_fmsub_ps( row0, tmp, minor2 );
+        minor2 = _mm_shuffle_ps( minor2, minor2, 0x4E );
+
+        // Pairs for fourth 8 elements
+        tmp = _mm_mul_ps( row0, row1 );
+        tmp = _mm_shuffle_ps( tmp, tmp, 0xB1 );
+
+        minor2 = _mm_fmadd_ps( row3, tmp, minor2 );
+        minor3 = _mm_fmsub_ps( row2, tmp, minor3 );
+
+        tmp = _mm_shuffle_ps( tmp, tmp, 0x4E );
+
+        minor2 = _mm_fmsub_ps( row3, tmp, minor2 );
+        minor3 = _mm_fnmadd_ps( row2, tmp, minor3 );
+
+        // Pairs for fifth 8 elements
+        tmp = _mm_mul_ps( row0, row3 );
+        tmp = _mm_shuffle_ps( tmp, tmp, 0xB1 );
+
+        minor1 = _mm_fnmadd_ps( row2, tmp, minor1 );
+        minor2 = _mm_fmadd_ps( row1, tmp, minor2 );
+
+        tmp = _mm_shuffle_ps( tmp, tmp, 0x4E );
+
+        minor1 = _mm_fmadd_ps( row2, tmp, minor1 );
+        minor2 = _mm_fnmadd_ps( row1, tmp, minor2 );
+
+        // Pairs for sixth 8 elements
+        tmp = _mm_mul_ps( row0, row2 );
+        tmp = _mm_shuffle_ps( tmp, tmp, 0xB1 );
+
+        minor1 = _mm_fmadd_ps( row3, tmp, minor1 );
+        minor3 = _mm_fnmadd_ps( row1, tmp, minor3 );
+
+        tmp = _mm_shuffle_ps( tmp, tmp, 0x4E );
+
+        minor1 = _mm_fnmadd_ps( row3, tmp, minor1 );
+        minor3 = _mm_fmadd_ps( row1, tmp, minor3 );
+
+        // Compute determinant
+        SIMDType det = _mm_mul_ps( matrix.simd[ 0 ], minor0 );
+        det = _mm_hadd_ps( det, det );
+        det = _mm_hadd_ps( det, det );
+
+        // Check for singular matrix
+        SIMDType absDet = _mm_andnot_ps( _mm_set1_ps( -0.0f ), det );
+        if ( _mm_comilt_ss( absDet, _mm_set1_ps( 1e-10f ) ) )
+        {
+            SIMDType nanVal = _mm_set1_ps( Math::Constants<float>::NaN );
+            return Simd( nanVal, nanVal, nanVal, nanVal );
+        }
+
+        // Compute reciprocal of determinant
+        det = _mm_div_ps( _mm_set1_ps( 1.0f ), det );
+
+        // Multiply minors by reciprocal determinant
+        minor0 = _mm_mul_ps( det, minor0 );
+        minor1 = _mm_mul_ps( det, minor1 );
+        minor2 = _mm_mul_ps( det, minor2 );
+        minor3 = _mm_mul_ps( det, minor3 );
+
+        return Simd( minor0, minor1, minor2, minor3 );
+    }
+
+    inline SquareMatrix<float, 4>::Simd Inverse( const SquareMatrix<float, 4>::Simd& matrix, typename Vector<float, 4>::Simd* determinant )
+    {
+        using Simd = SquareMatrix<float, 4>::Simd;
+        using SIMDType = __m128;
+
+        SIMDType row0 = matrix.simd[ 0 ];
+        SIMDType row1 = matrix.simd[ 1 ];
+        SIMDType row2 = matrix.simd[ 2 ];
+        SIMDType row3 = matrix.simd[ 3 ];
+
+        // Transpose to get columns
+        SIMDType tmp0 = _mm_shuffle_ps( row0, row1, 0x44 );
+        SIMDType tmp2 = _mm_shuffle_ps( row0, row1, 0xEE );
+        SIMDType tmp1 = _mm_shuffle_ps( row2, row3, 0x44 );
+        SIMDType tmp3 = _mm_shuffle_ps( row2, row3, 0xEE );
+
+        row0 = _mm_shuffle_ps( tmp0, tmp1, 0x88 );
+        row1 = _mm_shuffle_ps( tmp0, tmp1, 0xDD );
+        row2 = _mm_shuffle_ps( tmp2, tmp3, 0x88 );
+        row3 = _mm_shuffle_ps( tmp2, tmp3, 0xDD );
+
+        // Pairs for first 8 elements (cofactors)
+        SIMDType tmp = _mm_mul_ps( row2, row3 );
+        tmp = _mm_shuffle_ps( tmp, tmp, 0xB1 );
+
+        SIMDType minor0 = _mm_mul_ps( row1, tmp );
+        SIMDType minor1 = _mm_mul_ps( row0, tmp );
+
+        tmp = _mm_shuffle_ps( tmp, tmp, 0x4E );
+
+        minor0 = _mm_fmsub_ps( row1, tmp, minor0 );
+        minor1 = _mm_fmsub_ps( row0, tmp, minor1 );
+        minor1 = _mm_shuffle_ps( minor1, minor1, 0x4E );
+
+        // Pairs for second 8 elements
+        tmp = _mm_mul_ps( row1, row2 );
+        tmp = _mm_shuffle_ps( tmp, tmp, 0xB1 );
+
+        minor0 = _mm_fmadd_ps( row3, tmp, minor0 );
+        SIMDType minor3 = _mm_mul_ps( row0, tmp );
+
+        tmp = _mm_shuffle_ps( tmp, tmp, 0x4E );
+
+        minor0 = _mm_fnmadd_ps( row3, tmp, minor0 );
+        minor3 = _mm_fmsub_ps( row0, tmp, minor3 );
+        minor3 = _mm_shuffle_ps( minor3, minor3, 0x4E );
+
+        // Pairs for third 8 elements
+        tmp = _mm_mul_ps( _mm_shuffle_ps( row1, row1, 0x4E ), row3 );
+        tmp = _mm_shuffle_ps( tmp, tmp, 0xB1 );
+        row2 = _mm_shuffle_ps( row2, row2, 0x4E );
+
+        minor0 = _mm_fmadd_ps( row2, tmp, minor0 );
+        SIMDType minor2 = _mm_mul_ps( row0, tmp );
+
+        tmp = _mm_shuffle_ps( tmp, tmp, 0x4E );
+
+        minor0 = _mm_fnmadd_ps( row2, tmp, minor0 );
+        minor2 = _mm_fmsub_ps( row0, tmp, minor2 );
+        minor2 = _mm_shuffle_ps( minor2, minor2, 0x4E );
+
+        // Pairs for fourth 8 elements
+        tmp = _mm_mul_ps( row0, row1 );
+        tmp = _mm_shuffle_ps( tmp, tmp, 0xB1 );
+
+        minor2 = _mm_fmadd_ps( row3, tmp, minor2 );
+        minor3 = _mm_fmsub_ps( row2, tmp, minor3 );
+
+        tmp = _mm_shuffle_ps( tmp, tmp, 0x4E );
+
+        minor2 = _mm_fmsub_ps( row3, tmp, minor2 );
+        minor3 = _mm_fnmadd_ps( row2, tmp, minor3 );
+
+        // Pairs for fifth 8 elements
+        tmp = _mm_mul_ps( row0, row3 );
+        tmp = _mm_shuffle_ps( tmp, tmp, 0xB1 );
+
+        minor1 = _mm_fnmadd_ps( row2, tmp, minor1 );
+        minor2 = _mm_fmadd_ps( row1, tmp, minor2 );
+
+        tmp = _mm_shuffle_ps( tmp, tmp, 0x4E );
+
+        minor1 = _mm_fmadd_ps( row2, tmp, minor1 );
+        minor2 = _mm_fnmadd_ps( row1, tmp, minor2 );
+
+        // Pairs for sixth 8 elements
+        tmp = _mm_mul_ps( row0, row2 );
+        tmp = _mm_shuffle_ps( tmp, tmp, 0xB1 );
+
+        minor1 = _mm_fmadd_ps( row3, tmp, minor1 );
+        minor3 = _mm_fnmadd_ps( row1, tmp, minor3 );
+
+        tmp = _mm_shuffle_ps( tmp, tmp, 0x4E );
+
+        minor1 = _mm_fnmadd_ps( row3, tmp, minor1 );
+        minor3 = _mm_fmadd_ps( row1, tmp, minor3 );
+
+        // Compute determinant
+        SIMDType det = _mm_mul_ps( matrix.simd[ 0 ], minor0 );
+        det = _mm_hadd_ps( det, det );
+        det = _mm_hadd_ps( det, det );
+
+        // Check for singular matrix
+        SIMDType absDet = _mm_andnot_ps( _mm_set1_ps( -0.0f ), det );
+        if ( _mm_comilt_ss( absDet, _mm_set1_ps( 1e-10f ) ) )
+        {
+            SIMDType nanVal = _mm_set1_ps( Math::Constants<float>::NaN );
+            if ( determinant )
+            {
+                ( *determinant ).simd = nanVal;
+            }
+            return Simd( nanVal, nanVal, nanVal, nanVal );
+        }
+
+        // Compute reciprocal of determinant
+        det = _mm_div_ps( _mm_set1_ps( 1.0f ), det );
+        if ( determinant )
+        {
+            ( *determinant ).simd = det;
+        }
+
+        // Multiply minors by reciprocal determinant
+        minor0 = _mm_mul_ps( det, minor0 );
+        minor1 = _mm_mul_ps( det, minor1 );
+        minor2 = _mm_mul_ps( det, minor2 );
+        minor3 = _mm_mul_ps( det, minor3 );
+
+        return Simd( minor0, minor1, minor2, minor3 );
+    }
+    */
 
     /// <summary>
     /// Calculates the inverse of the matrix.
@@ -13066,15 +13357,34 @@ namespace Harlinn::Math
     }
 
     /// <summary>
-    /// Creates a transformation matrix that rotates about the y-axis, 
-    /// then the x-axis, and finally the z-axis
+    /// Creates a 4x4 rotation matrix from pitch, yaw, and roll (Euler angles).
     /// </summary>
+    /// <typeparam name="S">
+    /// A SIMD vector type with Size > 2. The vector elements are interpreted as:
+    /// [0] = pitch (rotation around x-axis, in radians)
+    /// [1] = yaw (rotation around y-axis, in radians)
+    /// [2] = roll (rotation around z-axis, in radians)
+    /// Any additional elements are ignored.
+    /// </typeparam>
     /// <param name="v">
-    /// The angles of rotation around the x-axis, y-axis and z-axis, in radians.
+    /// A SIMD vector containing the Euler angles in radians. The rotations are applied in the order:
+    /// yaw first (around y-axis), then pitch (around x-axis), then roll (around z-axis).
     /// </param>
     /// <returns>
-    /// The transformation matrix.
+    /// A 4x4 homogeneous transformation matrix in SIMD form that represents the rotation described by
+    /// the input Euler angles. The matrix is configured as a rotation matrix with the bottom-right
+    /// element set to 1.0 for homogeneous coordinates. The upper-left 3x3 submatrix contains the
+    /// rotation transformation, and the translation column is zero.
     /// </returns>
+    /// <example>
+    /// <code language="cpp">
+    /// // Example: Create a rotation matrix for pitch=0.5f, yaw=1.0f, roll=1.5f radians
+    /// 
+    /// Vector3f angles(0.5f, 1.0f, 1.5f);
+    /// auto eulerAngles = angles.ToSimd();  // Convert to SIMD form
+    /// auto rotationMatrix = Rotation(eulerAngles);  // Returns SquareMatrix<float, 4>::Simd
+    /// </code>
+    /// </example> 
     template<SimdType S>
         requires ( S::Size > 2 )
     inline SquareMatrix<float, 4>::Simd Rotation( const S& v ) noexcept
@@ -13164,15 +13474,28 @@ namespace Harlinn::Math
     }
 
     /// <summary>
-    /// Creates a matrix that rotates around the x-axis.
+    /// Creates a 4×4 rotation matrix that rotates around the X-axis.
     /// </summary>
-    /// <param name="angle">
-    /// Thw clockwise angle of rotation, in radians, around the x-axis 
-    /// when looking along the rotation axis toward the origin.
-    /// </param>
+    /// <param name="angle">The angle of rotation around the X-axis, expressed in radians.</param>
     /// <returns>
-    /// The rotation matrix.
+    /// The DirectX X-axis rotation matrix, which is a left-handed coordinate system where positive 
+    /// rotation is clockwise when looking along the axis toward the origin. It is defined by the 
+    /// following row-major 4x4 matrix, representing rotation by angle in radians: 
+    /// 
+    /// [1     0        0     0]
+    /// [0   cos(θ)  sin(θ)  0]
+    /// [0  -sin(θ)  cos(θ)  0]
+    /// [0     0        0     1]
+    /// 
+    /// where θ is the provided angle in radians.
     /// </returns>
+    /// <example>
+    /// <code language="cpp">
+    /// // Rotate 45 degrees around the X-axis
+    /// float angle = Math::Constants<float>::Pi / 4.f; // 45 degrees
+    /// auto rotMatrix = Math::RotationX(angle);
+    /// </code>
+    /// </example>
     inline SquareMatrix<float, 4>::Simd RotationX( float angle ) noexcept
     {
         using Traits = SquareMatrix<float, 4>::Traits;
@@ -13196,15 +13519,28 @@ namespace Harlinn::Math
     }
 
     /// <summary>
-    /// Creates a matrix that rotates around the y-axis.
+    /// Creates a 4×4 rotation matrix that rotates around the Y-axis.
     /// </summary>
-    /// <param name="angle">
-    /// Thw clockwise angle of rotation, in radians, around the y-axis 
-    /// when looking along the rotation axis toward the origin.
-    /// </param>
+    /// <param name="angle">The angle of rotation around the Y-axis, expressed in radians.</param>
     /// <returns>
-    /// The rotation matrix.
+    /// The DirectX Y-axis rotation matrix, which is a left-handed coordinate system where positive 
+    /// rotation is clockwise when looking along the axis toward the origin. It is defined by the 
+    /// following row-major 4x4 matrix, representing rotation by angle in radians: 
+    /// 
+    /// [cos(θ) 0 -sin(θ) 0]
+    /// [  0    1    0    0]
+    /// [sin(θ) 0  cos(θ) 0]
+    /// [  0    0    0    1]
+    /// 
+    /// where θ is the provided angle in radians.
     /// </returns>
+    /// <example>
+    /// <code language="cpp">
+    /// // Rotate 45 degrees around the Y-axis
+    /// float angle = Math::Constants<float>::Pi / 4.f; // 45 degrees
+    /// auto rotMatrix = Math::RotationY(angle);
+    /// </code>
+    /// </example>
     inline SquareMatrix<float, 4>::Simd RotationY( float angle ) noexcept
     {
         using Traits = SquareMatrix<float, 4>::Traits;
@@ -13229,16 +13565,30 @@ namespace Harlinn::Math
         return result;
     }
 
+    
     /// <summary>
-    /// Creates a matrix that rotates around the z-axis.
+    /// Creates a 4×4 rotation matrix that rotates around the Z-axis.
     /// </summary>
-    /// <param name="angle">
-    /// Thw clockwise angle of rotation, in radians, around the z-axis 
-    /// when looking along the rotation axis toward the origin.
-    /// </param>
+    /// <param name="angle">The angle of rotation around the Z-axis, expressed in radians.</param>
     /// <returns>
-    /// The rotation matrix.
+    /// The DirectX Z-axis rotation matrix, which is a left-handed coordinate system where positive 
+    /// rotation is clockwise when looking along the axis toward the origin. It is defined by the 
+    /// following row-major 4x4 matrix, representing rotation by angle in radians: 
+    /// 
+    /// [ cos(θ) sin(θ) 0 0]
+    /// [-sin(θ) cos(θ) 0 0]
+    /// [   0      0    1 0]
+    /// [   0      0    0 1]
+    /// 
+    /// where θ is the provided angle in radians.
     /// </returns>
+    /// <example>
+    /// <code language="cpp">
+    /// // Rotate 45 degrees around the Z-axis
+    /// float angle = Math::Constants<float>::Pi / 4.f; // 45 degrees
+    /// auto rotMatrix = Math::RotationZ(angle);
+    /// </code>
+    /// </example>
     inline SquareMatrix<float, 4>::Simd RotationZ( float angle ) noexcept
     {
         using Traits = SquareMatrix<float, 4>::Traits;
@@ -13264,18 +13614,28 @@ namespace Harlinn::Math
 
 
     /// <summary>
-    /// Creates a matrix that rotates around a normalized vector.
+    /// Creates a 4x4 rotation matrix that rotates around a normalized axis using Rodrigues' rotation formula.
     /// </summary>
     /// <param name="normalizedAxis">
-    /// Normalized vector defining the axis of rotation.
+    /// A SIMD vector containing the normalized axis of rotation (x, y, z components). 
+    /// The vector must be normalized before calling this function; undefined behavior occurs if the axis is not normalized.
+    /// The size must be greater than 2 (typically 3 or 4).
     /// </param>
     /// <param name="angle">
-    /// The angle of rotation in radians, measured clockwise when 
-    /// looking along the rotation axis toward the origin.
+    /// The angle of rotation in radians.
     /// </param>
     /// <returns>
-    /// The rotation matrix
+    /// A 4x4 rotation matrix in SIMD form (SquareMatrix&lt;float, 4&gt;::Simd) that performs the specified rotation.
+    /// The matrix is structured as a homogeneous transformation matrix with the rotation component in the upper-left 3x3 block
+    /// and the bottom row set to [0, 0, 0, 1].
     /// </returns>
+    /// <remarks>
+    /// This function implements Rodrigues' rotation formula:
+    /// R = I + sin(θ)K + (1 - cos(θ))K²
+    /// where θ is the rotation angle, K is the skew-symmetric cross-product matrix of the normalized axis,
+    /// and I is the identity matrix.
+    /// </remarks>
+    /// <exception cref="static_assert">Fails at compile-time if S::Size is not greater than 2.</exception>
     template<SimdType S>
         requires ( S::Size > 2 )
     inline SquareMatrix<float, 4>::Simd RotationNormal( const S& normalizedAxis, float angle ) noexcept
@@ -13329,23 +13689,32 @@ namespace Harlinn::Math
 
         V2 = Traits::Shuffle<3, 2, 1, 0>( V2, V0 );
         result.simd[ 2 ] = V2;
-        result.simd[ 3 ] = { { 0.0f, 0.0f, 0.0f, 1.0f } };
+        result.simd[ 3 ] = Constants::IdentityR4;
         return result;
     }
 
     /// <summary>
-    /// Creates a matrix that rotates around a normalized vector.
+    /// Creates a rotation matrix from a normalized axis and an angle.
     /// </summary>
+    /// <typeparam name="S">
+    /// A TupleType with Size greater than 2 representing the rotation axis vector.
+    /// </typeparam>
     /// <param name="normalizedAxis">
-    /// Normalized vector defining the axis of rotation.
+    /// A normalized vector (unit length) describing the axis of rotation.
     /// </param>
     /// <param name="angle">
-    /// The angle of rotation in radians, measured clockwise when 
-    /// looking along the rotation axis toward the origin.
+    /// The angle of rotation in radians.
     /// </param>
     /// <returns>
-    /// The rotation matrix.
+    /// A 4x4 SIMD rotation matrix that performs rotation around the specified normalized axis by the specified angle.
     /// </returns>
+    /// <remarks>
+    /// This function is a convenience overload that converts the TupleType to its corresponding SIMD representation
+    /// and delegates to the SIMD-based RotationNormal implementation.
+    /// The input normalizedAxis must be a unit vector (magnitude = 1.0) for correct results.
+    /// Rotation is performed using Rodrigues' rotation formula.
+    /// The function is marked noexcept and designed for high-performance graphics applications.
+    /// </remarks>
     template<TupleType S>
         requires ( S::Size > 2 )
     inline SquareMatrix<float, 4>::Simd RotationNormal( const S& normalizedAxis, float angle ) noexcept

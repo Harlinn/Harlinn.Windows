@@ -207,6 +207,34 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Documentation\01-IntroductionAndScope.Plan.md" />
+    <None Include="Documentation\02-ODBCAndSQLServerPrimerPlan.md" />
+    <None Include="Documentation\03-GettingStartedBuildLinkAndDriverSetupPlan.md" />
+    <None Include="Documentation\04-EnvironmentAndConnectionLifecycleAndOptionsPlan.md" />
+    <None Include="Documentation\05-StatementBasicsPreparingAndExecutingSQLPlan.md" />
+    <None Include="Documentation\06-BindingParametersBindParameterAndDBAwareContainersPlan.md" />
+    <None Include="Documentation\07-RetrievingResultsBindColumnDataReaderAndGetXHelpersPlan.md" />
+    <None Include="Documentation\08-WorkingWithStringsAndBinaryDataPlan.md" />
+    <None Include="Documentation\09-DateTimeAndNumericTypesPlan.md" />
+    <None Include="Documentation\10-TransactionsAndConcurrencyPlan.md" />
+    <None Include="Documentation\11-DiagnosticsErrorHandlingAndExceptionsPlan.md" />
+    <None Include="Documentation\12-PerformanceConnectionPoolingBatchBulkOperationsAndTuningPlan.md" />
+    <None Include="Documentation\13-AdvancedTopicsDescriptorsAsynchronousOperationsAndBookmarksPlan.md" />
+    <None Include="Documentation\14-MicrosoftSQLServerSpecificPatternsAndPitfallsPlan.md" />
+    <None Include="Documentation\15-SecurityAuthenticationAndEncryptionPlan.md" />
+    <None Include="Documentation\16-TestingLoggingAndTroubleshootingPlan.md" />
+    <None Include="Documentation\17-ExampleWalkthroughsPlan.md" />
+    <None Include="Documentation\18-MigrationAndInteropFromLegacyODBCAndADONetPlan.md" />
+    <None Include="Documentation\19-AppendixTypeMapsSQLSTATEReferencesAndCommonHODBCAPIsPlan.md" />
+    <None Include="Documentation\20-TroubleshootingChecklistAndFAQPlan.md" />
+    <None Include="Documentation\Database\CreateTables.sql" />
+    <None Include="Documentation\IntroductionAndScope.md" />
+    <None Include="Documentation\Readme.md">
+      <SubType>
+      </SubType>
+    </None>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

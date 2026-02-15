@@ -39,7 +39,8 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
         
 #ifdef HDMC_USES_HCC_MATH
         auto forwardLenSq = LengthSquared( forward );
-        forward = m::Traits::Select( (forward * m::ReciprocalSqrt( forwardLenSq )).simd, ( -Vector3( m::Traits::Constants::IdentityR2 )).simd, m::Traits::Less( forwardLenSq.simd, Scalar( 0.000001f ).simd ) );
+        //forward = m::Traits::Select( ( forward * m::ReciprocalSqrt( forwardLenSq ) ).simd, ( -Vector3( m::Traits::Constants::IdentityR2 ) ).simd, m::Traits::Less( forwardLenSq.simd, Scalar( 0.000001f ).simd ) );
+        forward = m::Traits::Select( (forward * m::ReciprocalSqrt( forwardLenSq )).simd, ( -Vector3( m::Traits::Constants::IdentityR3 )).simd, m::Traits::Less( forwardLenSq.simd, Scalar( 0.000001f ).simd ) );
 #else
         Scalar forwardLenSq = LengthSquare( forward );
         forward = Select( forward * RecipSqrt( forwardLenSq ), -Vector3( kZUnitVector ), forwardLenSq < Scalar( 0.000001f ) );
