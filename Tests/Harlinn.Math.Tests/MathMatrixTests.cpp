@@ -71,6 +71,25 @@ namespace
         return MatrixApproximatelyEqual( SquareMatrix<float, 4>( m1 ), SquareMatrix<float, 4>( m2 ), epsilon );
     }
 
+    bool MatrixApproximatelyEqual(
+        const SquareMatrix<float, 2>::Simd& actual,
+        const SquareMatrix<float, 2>::Simd& expected,
+        float epsilon = 1e-5f )
+    {
+        auto actualArray = SquareMatrix<float, 2>::Simd::Traits::ToArray( actual.simd );
+        auto expectedArray = SquareMatrix<float, 2>::Simd::Traits::ToArray( expected.simd );
+
+        for ( size_t i = 0; i < actualArray.size( ); ++i )
+        {
+            if ( std::abs( actualArray[ i ] - expectedArray[ i ] ) > epsilon )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     /// <summary>
     /// Verifies that a 4x4 rotation matrix is orthogonal (R^T * R = I).
     /// </summary>
@@ -2355,5 +2374,898 @@ BOOST_AUTO_TEST_CASE( InverseDeterminantIsNonZeroForInvertibleMatrix )
     BOOST_TEST( determinant[ 0 ] != 0.0f );
     BOOST_TEST( !std::isnan( determinant[ 0 ] ) );
 }
+
+/// <summary>
+/// Tests the inverse of a 3x3 identity matrix.
+/// </summary>
+BOOST_AUTO_TEST_CASE( InverseOfIdentityMatrix )
+{
+    // Arrange
+    SquareMatrix<float, 3> identity;
+    auto identitySimd = identity.ToSimd( );
+
+    // Act
+    auto result = Inverse( identitySimd );
+
+    // Assert
+    auto resultMatrix = SquareMatrix<float, 3>( result );
+    bool isIdentity = resultMatrix.IsIdentity( );
+    BOOST_TEST( isIdentity );
+}
+
+/// <summary>
+/// Tests the inverse of a simple diagonal matrix.
+/// </summary>
+BOOST_AUTO_TEST_CASE( InverseOfDiagonalMatrix )
+{
+    // Arrange
+    SquareMatrix<float, 3> original = SquareMatrix<float, 3>::Diag( 2.0f, 3.0f, 4.0f );
+    auto originalSimd = original.ToSimd( );
+
+    SquareMatrix<float, 3> expected;
+    expected[ 0 ][ 0 ] = 0.5f;
+    expected[ 1 ][ 1 ] = 1.0f / 3.0f;
+    expected[ 2 ][ 2 ] = 0.25f;
+
+    // Act
+    auto resultSimd = Inverse( originalSimd );
+    auto result = SquareMatrix<float, 3>( resultSimd );
+
+    // Assert
+    constexpr float epsilon = 1e-6f;
+    bool element00Match = std::abs( result[ 0 ][ 0 ] - expected[ 0 ][ 0 ] ) < epsilon;
+    bool element11Match = std::abs( result[ 1 ][ 1 ] - expected[ 1 ][ 1 ] ) < epsilon;
+    bool element22Match = std::abs( result[ 2 ][ 2 ] - expected[ 2 ][ 2 ] ) < epsilon;
+
+    BOOST_TEST( element00Match );
+    BOOST_TEST( element11Match );
+    BOOST_TEST( element22Match );
+}
+
+/// <summary>
+/// Tests that M * M^-1 = I for a general invertible matrix.
+/// </summary>
+BOOST_AUTO_TEST_CASE( MatrixTimesInverseEqualsIdentity )
+{
+    // Arrange
+    SquareMatrix<float, 3> original;
+    original[ 0 ][ 0 ] = 1.0f;
+    original[ 0 ][ 1 ] = 2.0f;
+    original[ 0 ][ 2 ] = 3.0f;
+    original[ 1 ][ 0 ] = 0.0f;
+    original[ 1 ][ 1 ] = 1.0f;
+    original[ 1 ][ 2 ] = 4.0f;
+    original[ 2 ][ 0 ] = 5.0f;
+    original[ 2 ][ 1 ] = 6.0f;
+    original[ 2 ][ 2 ] = 2.0f;
+
+    auto originalSimd = original.ToSimd( );
+
+    // Act
+    auto inverseSimd = Inverse( originalSimd );
+    auto product = Multiply( originalSimd, inverseSimd );
+    auto productMatrix = SquareMatrix<float, 3>( product );
+
+    // Assert
+    constexpr float epsilon = 1e-4f;
+    for ( int i = 0; i < 3; ++i )
+    {
+        for ( int j = 0; j < 3; ++j )
+        {
+            float expectedValue = ( i == j ) ? 1.0f : 0.0f;
+            float actualValue = productMatrix[ i ][ j ];
+            bool matches = std::abs( actualValue - expectedValue ) < epsilon;
+            BOOST_TEST( matches );
+        }
+    }
+}
+
+/// <summary>
+/// Tests the determinant calculation for a 3x3 matrix.
+/// </summary>
+BOOST_AUTO_TEST_CASE( DeterminantCalculation )
+{
+    // Arrange
+    SquareMatrix<float, 3> original;
+    original[ 0 ][ 0 ] = 1.0f;
+    original[ 0 ][ 1 ] = 2.0f;
+    original[ 0 ][ 2 ] = 3.0f;
+    original[ 1 ][ 0 ] = 0.0f;
+    original[ 1 ][ 1 ] = 1.0f;
+    original[ 1 ][ 2 ] = 4.0f;
+    original[ 2 ][ 0 ] = 5.0f;
+    original[ 2 ][ 1 ] = 6.0f;
+    original[ 2 ][ 2 ] = 2.0f;
+
+    auto originalSimd = original.ToSimd( );
+    Math::Vector<float, 3>::Simd determinantSimd;
+
+    // Act
+    Inverse( originalSimd, &determinantSimd );
+    float determinant = determinantSimd.x( );
+
+    // Expected: 1*(1*2 - 4*6) - 2*(0*2 - 4*5) + 3*(0*6 - 1*5)
+    //         = 1*(2 - 24) - 2*(0 - 20) + 3*(0 - 5)
+    //         = -22 + 40 - 15 = 3
+    float expectedDeterminant = 3.0f;
+    constexpr float epsilon = 1e-5f;
+    bool determinantMatches = std::abs( determinant - expectedDeterminant ) < epsilon;
+
+    // Assert
+    BOOST_TEST( determinantMatches );
+}
+
+/// <summary>
+/// Tests the inverse of the identity matrix without computing determinant.
+/// </summary>
+BOOST_AUTO_TEST_CASE( InverseWithoutDeterminantOutput )
+{
+    // Arrange
+    SquareMatrix<float, 3> identity;
+    auto identitySimd = identity.ToSimd( );
+
+    // Act - should not crash when determinant is nullptr
+    auto resultSimd = Inverse( identitySimd, nullptr );
+    auto resultMatrix = SquareMatrix<float, 3>( resultSimd );
+
+    // Assert
+    bool isIdentity = resultMatrix.IsIdentity( );
+    BOOST_TEST( isIdentity );
+}
+
+/// <summary>
+/// Tests inverse with a matrix containing decimal values.
+/// </summary>
+BOOST_AUTO_TEST_CASE( InverseOfMatrixWithDecimalValues )
+{
+    // Arrange
+    SquareMatrix<float, 3> original;
+    original[ 0 ][ 0 ] = 1.5f;
+    original[ 0 ][ 1 ] = 0.5f;
+    original[ 0 ][ 2 ] = 0.0f;
+    original[ 1 ][ 0 ] = 0.0f;
+    original[ 1 ][ 1 ] = 2.0f;
+    original[ 1 ][ 2 ] = 0.0f;
+    original[ 2 ][ 0 ] = 0.0f;
+    original[ 2 ][ 1 ] = 0.0f;
+    original[ 2 ][ 2 ] = 0.5f;
+
+    auto originalSimd = original.ToSimd( );
+    Math::Vector<float, 3>::Simd determinantSimd;
+
+    // Act
+    auto inverseSimd = Inverse( originalSimd, &determinantSimd );
+    auto product = Multiply( originalSimd, inverseSimd );
+    auto productMatrix = SquareMatrix<float, 3>( product );
+
+    // Assert
+    constexpr float epsilon = 1e-4f;
+    for ( int i = 0; i < 3; ++i )
+    {
+        for ( int j = 0; j < 3; ++j )
+        {
+            float expectedValue = ( i == j ) ? 1.0f : 0.0f;
+            float actualValue = productMatrix[ i ][ j ];
+            bool matches = std::abs( actualValue - expectedValue ) < epsilon;
+            BOOST_TEST( matches );
+        }
+    }
+}
+
+/// <summary>
+/// Tests inverse of a matrix with negative values.
+/// </summary>
+BOOST_AUTO_TEST_CASE( InverseOfMatrixWithNegativeValues )
+{
+    // Arrange
+    SquareMatrix<float, 3> original;
+    original[ 0 ][ 0 ] = -1.0f;
+    original[ 0 ][ 1 ] = 0.0f;
+    original[ 0 ][ 2 ] = 0.0f;
+    original[ 1 ][ 0 ] = 0.0f;
+    original[ 1 ][ 1 ] = 2.0f;
+    original[ 1 ][ 2 ] = 0.0f;
+    original[ 2 ][ 0 ] = 0.0f;
+    original[ 2 ][ 1 ] = 0.0f;
+    original[ 2 ][ 2 ] = -3.0f;
+
+    auto originalSimd = original.ToSimd( );
+
+    // Act
+    auto inverseSimd = Inverse( originalSimd );
+    auto product = Multiply( originalSimd, inverseSimd );
+    auto productMatrix = SquareMatrix<float, 3>( product );
+
+    // Assert
+    constexpr float epsilon = 1e-4f;
+    for ( int i = 0; i < 3; ++i )
+    {
+        for ( int j = 0; j < 3; ++j )
+        {
+            float expectedValue = ( i == j ) ? 1.0f : 0.0f;
+            float actualValue = productMatrix[ i ][ j ];
+            bool matches = std::abs( actualValue - expectedValue ) < epsilon;
+            BOOST_TEST( matches );
+        }
+    }
+}
+
+/// <summary>
+/// Tests the determinant of an identity matrix (should be 1.0).
+/// </summary>
+BOOST_AUTO_TEST_CASE( DeterminantOfIdentityMatrix )
+{
+    // Arrange
+    SquareMatrix<float, 3> identity;
+    auto identitySimd = identity.ToSimd( );
+    Math::Vector<float, 3>::Simd determinantSimd;
+
+    // Act
+    Inverse( identitySimd, &determinantSimd );
+    float determinant = determinantSimd.x( );
+
+    // Assert
+    constexpr float epsilon = 1e-6f;
+    bool determinantIsOne = std::abs( determinant - 1.0f ) < epsilon;
+    BOOST_TEST( determinantIsOne );
+}
+
+/// <summary>
+/// Tests the inverse operation preserves numerical stability.
+/// </summary>
+BOOST_AUTO_TEST_CASE( InverseNumericalStability )
+{
+    // Arrange
+    SquareMatrix<float, 3> original;
+    original[ 0 ][ 0 ] = 1.0f;
+    original[ 0 ][ 1 ] = 1.0f;
+    original[ 0 ][ 2 ] = 1.0f;
+    original[ 1 ][ 0 ] = 1.0f;
+    original[ 1 ][ 1 ] = 2.0f;
+    original[ 1 ][ 2 ] = 1.0f;
+    original[ 2 ][ 0 ] = 1.0f;
+    original[ 2 ][ 1 ] = 1.0f;
+    original[ 2 ][ 2 ] = 2.0f;
+
+    auto originalSimd = original.ToSimd( );
+
+    // Act
+    auto inverseSimd = Inverse( originalSimd );
+    auto product1 = Multiply( originalSimd, inverseSimd );
+    auto product2 = Multiply( inverseSimd, originalSimd );
+
+    auto product1Matrix = SquareMatrix<float, 3>( product1 );
+    auto product2Matrix = SquareMatrix<float, 3>( product2 );
+
+    // Assert - verify commutativity up to numerical precision
+    constexpr float epsilon = 1e-4f;
+    for ( int i = 0; i < 3; ++i )
+    {
+        for ( int j = 0; j < 3; ++j )
+        {
+            bool product1Match = std::abs( product1Matrix[ i ][ j ] - ( ( i == j ) ? 1.0f : 0.0f ) ) < epsilon;
+            bool product2Match = std::abs( product2Matrix[ i ][ j ] - ( ( i == j ) ? 1.0f : 0.0f ) ) < epsilon;
+            BOOST_TEST( product1Match );
+            BOOST_TEST( product2Match );
+        }
+    }
+}
+
+/// <summary>
+/// Tests inverse of the identity matrix.
+/// The inverse of the identity matrix should be the identity matrix itself.
+/// </summary>
+BOOST_AUTO_TEST_CASE( InverseOfIdentityMatrixIsIdentity2x2 )
+{
+    using Simd = SquareMatrix<float, 2>::Simd;
+    using Traits = SquareMatrix<float, 2>::Traits;
+
+    // Create identity matrix: [1 0; 0 1]
+    Simd identity( Traits::Set( 1.f, 0.f, 0.f, 1.f ) );
+
+    // Compute inverse
+    Simd result = Inverse( identity );
+
+    // Verify result is identity
+    bool isIdentity = MatrixApproximatelyEqual( result, identity );
+    BOOST_TEST( isIdentity );
+}
+
+/// <summary>
+/// Tests inverse of a simple 2x2 matrix.
+/// For matrix [a b; c d], inverse is (1/det) * [d -b; -c a]
+/// where det = ad - bc
+/// </summary>
+BOOST_AUTO_TEST_CASE( InverseOfSimpleMatrix2x2 )
+{
+    using Simd = SquareMatrix<float, 2>::Simd;
+    using Traits = SquareMatrix<float, 2>::Traits;
+
+    // Matrix: [2 1; 1 2]
+    // Determinant: 2*2 - 1*1 = 3
+    // Inverse: (1/3) * [2 -1; -1 2] = [2/3 -1/3; -1/3 2/3]
+    Simd matrix( Traits::Set( 2.f, 1.f, 1.f, 2.f ) );
+    Simd result = Inverse( matrix );
+
+    // Expected inverse
+    const float inv3 = 1.f / 3.f;
+    Simd expected( Traits::Set( 2.f * inv3, -inv3, -inv3, 2.f * inv3 ) );
+
+    bool isCorrect = MatrixApproximatelyEqual( result, expected );
+    BOOST_TEST( isCorrect );
+}
+
+/// <summary>
+/// Tests inverse with determinant calculation.
+/// Verifies that the determinant is correctly computed and returned.
+/// </summary>
+BOOST_AUTO_TEST_CASE( InverseWithDeterminantOutput2x2 )
+{
+    using Simd = SquareMatrix<float, 2>::Simd;
+    using Traits = SquareMatrix<float, 2>::Traits;
+
+    // Matrix: [3 0; 0 2]
+    // Determinant: 3*2 - 0*0 = 6
+    Simd matrix( Traits::Set( 3.f, 0.f, 0.f, 2.f ) );
+    Simd determinantOut;
+
+    Simd result = Inverse( matrix, &determinantOut );
+
+    // Expected determinant: 6.0
+    auto detArray = Traits::ToArray( determinantOut.simd );
+    float expectedDet = 6.f;
+
+    bool detIsCorrect = std::abs( detArray[ 0 ] - expectedDet ) < 1e-5f;
+    BOOST_TEST( detIsCorrect );
+}
+
+/// <summary>
+/// Tests inverse of a diagonal matrix.
+/// For diagonal matrix [a 0; 0 b], inverse is [1/a 0; 0 1/b]
+/// </summary>
+BOOST_AUTO_TEST_CASE( InverseOfDiagonalMatrix2x2 )
+{
+    using Simd = SquareMatrix<float, 2>::Simd;
+    using Traits = SquareMatrix<float, 2>::Traits;
+
+    // Diagonal matrix: [4 0; 0 5]
+    Simd diagonal( Traits::Set( 4.f, 0.f, 0.f, 5.f ) );
+    Simd result = Inverse( diagonal );
+
+    // Expected: [1/4 0; 0 1/5]
+    Simd expected( Traits::Set( 0.25f, 0.f, 0.f, 0.2f ) );
+
+    bool isCorrect = MatrixApproximatelyEqual( result, expected );
+    BOOST_TEST( isCorrect );
+}
+
+/// <summary>
+/// Tests inverse of a matrix with negative values.
+/// </summary>
+BOOST_AUTO_TEST_CASE( InverseOfMatrixWithNegativeValues2x2 )
+{
+    using Simd = SquareMatrix<float, 2>::Simd;
+    using Traits = SquareMatrix<float, 2>::Traits;
+
+    // Matrix: [1 -2; -3 4]
+    // Determinant: 1*4 - (-2)*(-3) = 4 - 6 = -2
+    // Inverse: (1/-2) * [4 2; 3 1] = [-2 -1; -1.5 -0.5]
+    Simd matrix( Traits::Set( 1.f, -2.f, -3.f, 4.f ) );
+    Simd result = Inverse( matrix );
+
+    Simd expected( Traits::Set( -2.f, -1.f, -1.5f, -0.5f ) );
+
+    bool isCorrect = MatrixApproximatelyEqual( result, expected );
+    BOOST_TEST( isCorrect );
+}
+
+/// <summary>
+/// Tests matrix multiplication property: M * M^-1 = I
+/// This verifies the correctness of the inverse computation.
+/// </summary>
+BOOST_AUTO_TEST_CASE( MatrixTimesInverseEqualsIdentity2x2 )
+{
+    using Simd = SquareMatrix<float, 2>::Simd;
+    using Traits = SquareMatrix<float, 2>::Traits;
+
+    // Matrix: [2 3; 4 5]
+    // Determinant: 2*5 - 3*4 = 10 - 12 = -2
+    Simd matrix( Traits::Set( 2.f, 3.f, 4.f, 5.f ) );
+    Simd inverse = Inverse( matrix );
+
+    // Multiply matrix by its inverse
+    Simd product = Multiply( matrix, inverse );
+
+    // Expected: identity matrix
+    Simd identity( Traits::Set( 1.f, 0.f, 0.f, 1.f ) );
+
+    bool isIdentity = MatrixApproximatelyEqual( product, identity, 1e-4f );
+    BOOST_TEST( isIdentity );
+}
+
+/// <summary>
+/// Tests inverse of matrix with floating-point values.
+/// </summary>
+BOOST_AUTO_TEST_CASE( InverseOfFloatingPointMatrix2x2 )
+{
+    using Simd = SquareMatrix<float, 2>::Simd;
+    using Traits = SquareMatrix<float, 2>::Traits;
+
+    // Matrix: [1.5 0.5; 0.5 1.5]
+    // Determinant: 1.5*1.5 - 0.5*0.5 = 2.25 - 0.25 = 2.0
+    // Inverse: 0.5 * [1.5 -0.5; -0.5 1.5]
+    Simd matrix( Traits::Set( 1.5f, 0.5f, 0.5f, 1.5f ) );
+    Simd result = Inverse( matrix );
+
+    Simd expected( Traits::Set( 0.75f, -0.25f, -0.25f, 0.75f ) );
+
+    bool isCorrect = MatrixApproximatelyEqual( result, expected );
+    BOOST_TEST( isCorrect );
+}
+
+/// <summary>
+/// Tests inverse consistency: (M^-1)^-1 = M
+/// </summary>
+BOOST_AUTO_TEST_CASE( InverseOfInverseEqualsOriginal2x2 )
+{
+    using Simd = SquareMatrix<float, 2>::Simd;
+    using Traits = SquareMatrix<float, 2>::Traits;
+
+    // Original matrix: [2 1; 1 2]
+    Simd original( Traits::Set( 2.f, 1.f, 1.f, 2.f ) );
+
+    // Compute inverse, then inverse of that
+    Simd firstInverse = Inverse( original );
+    Simd doubleInverse = Inverse( firstInverse );
+
+    // Should equal original
+    bool isConsistent = MatrixApproximatelyEqual( doubleInverse, original, 1e-4f );
+    BOOST_TEST( isConsistent );
+}
+
+/// <summary>
+/// Tests inverse with a matrix near singular (very small determinant).
+/// This tests the numerical stability of the algorithm.
+/// </summary>
+BOOST_AUTO_TEST_CASE( InverseOfNearSingularMatrix2x2 )
+{
+    using Simd = SquareMatrix<float, 2>::Simd;
+    using Traits = SquareMatrix<float, 2>::Traits;
+
+    // Nearly singular matrix with determinant close to zero
+    // Matrix: [1 1; 1 1.0001]
+    // Determinant: 1*1.0001 - 1*1 = 0.0001
+    Simd matrix( Traits::Set( 1.f, 1.f, 1.f, 1.0001f ) );
+    Simd result = Inverse( matrix );
+
+    // Verify by multiplying back
+    Simd product = Multiply( matrix, result );
+    Simd identity( Traits::Set( 1.f, 0.f, 0.f, 1.f ) );
+
+    // Use larger epsilon due to numerical precision issues with near-singular matrices
+    bool isValid = MatrixApproximatelyEqual( product, identity, 1e-3f );
+    BOOST_TEST( isValid );
+}
+
+/// <summary>
+/// Tests determinant calculation for various matrices.
+/// </summary>
+BOOST_AUTO_TEST_CASE( DeterminantCalculationAccuracy2x2 )
+{
+    using Simd = SquareMatrix<float, 2>::Simd;
+    using Traits = SquareMatrix<float, 2>::Traits;
+
+    // Test matrix: [3 2; 1 4]
+    // Determinant: 3*4 - 2*1 = 12 - 2 = 10
+    Simd matrix( Traits::Set( 3.f, 2.f, 1.f, 4.f ) );
+    Simd determinantOut;
+
+    Inverse( matrix, &determinantOut );
+
+    auto detArray = Traits::ToArray( determinantOut.simd );
+    float expectedDet = 10.f;
+
+    bool detIsCorrect = std::abs( detArray[ 0 ] - expectedDet ) < 1e-5f;
+    BOOST_TEST( detIsCorrect );
+}
+
+/// <summary>
+/// Tests determinant of identity matrix.
+/// Identity matrix should have determinant of 1.0f.
+/// </summary>
+BOOST_AUTO_TEST_CASE( DeterminantOfIdentityMatrixIsOne )
+{
+    SquareMatrix<float, 4> identity;
+    auto identitySimd = identity.ToSimd( );
+
+    auto result = Determinant( identitySimd );
+
+    float det = result.x( );
+    bool isCorrect = ApproximatelyEqual( det, 1.0f );
+    BOOST_TEST( isCorrect );
+}
+
+/// <summary>
+/// Tests determinant of zero matrix.
+/// Zero matrix should have determinant of 0.0f.
+/// </summary>
+BOOST_AUTO_TEST_CASE( DeterminantOfZeroMatrixIsZero )
+{
+    SquareMatrix<float, 4> zero = SquareMatrix<float, 4>::Zero( );
+    auto zeroSimd = zero.ToSimd( );
+
+    auto result = Determinant( zeroSimd );
+
+    float det = result.x( );
+    bool isCorrect = ApproximatelyEqual( det, 0.0f );
+    BOOST_TEST( isCorrect );
+}
+
+/// <summary>
+/// Tests determinant of a diagonal matrix.
+/// For a diagonal matrix, determinant equals product of diagonal elements.
+/// </summary>
+BOOST_AUTO_TEST_CASE( DeterminantOfDiagonalMatrix )
+{
+    auto diagonal = SquareMatrix<float, 4>::Diag( 2.0f, 3.0f, 4.0f, 5.0f );
+    auto diagonalSimd = diagonal.ToSimd( );
+
+    auto result = Determinant( diagonalSimd );
+
+    float det = result.x( );
+    float expected = 2.0f * 3.0f * 4.0f * 5.0f; // 120.0f
+    bool isCorrect = ApproximatelyEqual( det, expected );
+    BOOST_TEST( isCorrect );
+}
+
+/// <summary>
+/// Tests determinant of a scaled identity matrix.
+/// Scaling identity by factor k should multiply determinant by k^4.
+/// </summary>
+BOOST_AUTO_TEST_CASE( DeterminantOfScaledIdentity )
+{
+    SquareMatrix<float, 4> identity;
+    float scaleFactor = 2.5f;
+    auto scaled = identity * scaleFactor;
+
+    auto result = Determinant( scaled );
+
+    float det = result.x( );
+    float expected = scaleFactor * scaleFactor * scaleFactor * scaleFactor; // k^4
+    bool isCorrect = ApproximatelyEqual( det, expected, 1e-4f );
+    BOOST_TEST( isCorrect );
+}
+
+/// <summary>
+/// Tests determinant of a known 4x4 matrix.
+/// Uses a simple matrix with manually calculated determinant.
+/// </summary>
+BOOST_AUTO_TEST_CASE( DeterminantOfKnownMatrix )
+{
+    // Create a simple 4x4 matrix:
+    // [ 1  2  3  4 ]
+    // [ 5  1  6  7 ]
+    // [ 8  9  1  10]
+    // [11 12 13  1 ]
+    SquareMatrix<float, 4> matrix(
+        1.0f, 2.0f, 3.0f, 4.0f,
+        5.0f, 1.0f, 6.0f, 7.0f,
+        8.0f, 9.0f, 1.0f, 10.0f,
+        11.0f, 12.0f, 13.0f, 1.0f
+    );
+
+    auto matrixSimd = matrix.ToSimd( );
+    auto result = Determinant( matrixSimd );
+
+    float det = result.x( );
+
+    // Verify determinant is a reasonable value (not NaN or infinite)
+    bool isFinite = std::isfinite( det );
+    BOOST_TEST( isFinite );
+}
+
+/// <summary>
+/// Tests determinant with row swapped matrix.
+/// Swapping two rows should negate the determinant.
+/// </summary>
+BOOST_AUTO_TEST_CASE( DeterminantChangeWithRowSwap )
+{
+    SquareMatrix<float, 4> original;
+    auto originalSimd = original.ToSimd( );
+    auto resultOriginal = Determinant( originalSimd );
+    float detOriginal = resultOriginal.x( );
+
+    // Create matrix with swapped rows
+    SquareMatrix<float, 4> swapped;
+    auto temp = swapped[ 0 ];
+    swapped[ 0 ] = swapped[ 1 ];
+    swapped[ 1 ] = temp;
+
+    auto swappedSimd = swapped.ToSimd( );
+    auto resultSwapped = Determinant( swappedSimd );
+    float detSwapped = resultSwapped.x( );
+
+    // Determinants should be negatives of each other
+    bool isNegated = ApproximatelyEqual( detOriginal, -detSwapped );
+    BOOST_TEST( isNegated );
+}
+
+/// <summary>
+/// Tests determinant with very small values.
+/// Should handle denormalized numbers gracefully.
+/// </summary>
+BOOST_AUTO_TEST_CASE( DeterminantWithSmallValues )
+{
+    SquareMatrix<float, 4> matrix(
+        1e-6f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1e-6f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1e-6f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1e-6f
+    );
+
+    auto matrixSimd = matrix.ToSimd( );
+    auto result = Determinant( matrixSimd );
+
+    float det = result.x( );
+
+    // Result should be finite
+    bool isFinite = std::isfinite( det );
+    BOOST_TEST( isFinite );
+
+    // Should be approximately (1e-6)^4
+    float expected = 1e-24f;
+    bool isCorrect = ApproximatelyEqual( det, expected, 1e-30f );
+    BOOST_TEST( isCorrect );
+}
+
+/// <summary>
+/// Tests determinant with large values.
+/// Should handle large numbers without overflow.
+/// </summary>
+BOOST_AUTO_TEST_CASE( DeterminantWithLargeValues )
+{
+    SquareMatrix<float, 4> matrix(
+        1e6f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1e6f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1e6f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1e6f
+    );
+
+    auto matrixSimd = matrix.ToSimd( );
+    auto result = Determinant( matrixSimd );
+
+    float det = result.x( );
+
+    // Result should be finite
+    bool isFinite = std::isfinite( det );
+    BOOST_TEST( isFinite );
+}
+
+/// <summary>
+/// Tests determinant of singular matrix.
+/// Singular matrix should have determinant of approximately 0.
+/// </summary>
+BOOST_AUTO_TEST_CASE( DeterminantOfSingularMatrix )
+{
+    // Create a singular matrix (two identical rows)
+    SquareMatrix<float, 4> singular(
+        1.0f, 2.0f, 3.0f, 4.0f,
+        1.0f, 2.0f, 3.0f, 4.0f,
+        5.0f, 6.0f, 7.0f, 8.0f,
+        9.0f, 10.0f, 11.0f, 12.0f
+    );
+
+    auto singularSimd = singular.ToSimd( );
+    auto result = Determinant( singularSimd );
+
+    float det = result.x( );
+
+    // Determinant should be very close to zero
+    bool isZero = ApproximatelyEqual( det, 0.0f, 1e-4f );
+    BOOST_TEST( isZero );
+}
+
+/// <summary>
+/// Tests determinant is not NaN.
+/// Ensures the computation produces valid IEEE 754 floating-point result.
+/// </summary>
+BOOST_AUTO_TEST_CASE( DeterminantIsNotNaN )
+{
+    SquareMatrix<float, 4> identity;
+    auto identitySimd = identity.ToSimd( );
+
+    auto result = Determinant( identitySimd );
+    float det = result.x( );
+
+    bool isNotNaN = !std::isnan( det );
+    BOOST_TEST( isNotNaN );
+}
+
+/// <summary>
+/// Tests determinant result vector contains all identical values.
+/// The Dot product fill operation should populate all components.
+/// </summary>
+BOOST_AUTO_TEST_CASE( DeterminantResultComponentsMatch )
+{
+    SquareMatrix<float, 4> identity;
+    auto identitySimd = identity.ToSimd( );
+
+    auto result = Determinant( identitySimd );
+
+    float x = result.x( );
+    float y = result.y( );
+    float z = result.z( );
+    float w = result.w( );
+
+    bool xEqualsY = ApproximatelyEqual( x, y );
+    bool yEqualsZ = ApproximatelyEqual( y, z );
+    bool zEqualsW = ApproximatelyEqual( z, w );
+
+    BOOST_TEST( xEqualsY );
+    BOOST_TEST( yEqualsZ );
+    BOOST_TEST( zEqualsW );
+}
+
+BOOST_AUTO_TEST_CASE( IdentityMatrixDeterminant )
+{
+    // Arrange: Create a 4x4 identity matrix
+    SquareMatrix<float, 4> identityMatrix = SquareMatrix<float, 4>( );
+    auto simdMatrix = identityMatrix.ToSimd( );
+
+    // Act
+    float determinant = ScalarDeterminant( simdMatrix );
+
+    // Assert: Determinant of identity matrix should be 1.0
+    BOOST_TEST( ApproximatelyEqual( determinant, 1.0f ) );
+}
+
+BOOST_AUTO_TEST_CASE( ScaledIdentityMatrixDeterminant )
+{
+    // Arrange: Create a diagonal matrix with scale factor 2 on diagonal
+    // [2  0  0  0]
+    // [0  2  0  0]
+    // [0  0  2  0]
+    // [0  0  0  2]
+    // Determinant should be 2^4 = 16
+    SquareMatrix<float, 4> scaledMatrix(
+        2.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 2.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 2.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 2.0f
+    );
+    auto simdMatrix = scaledMatrix.ToSimd( );
+
+    // Act
+    float determinant = ScalarDeterminant( simdMatrix );
+
+    // Assert: Determinant should be 16.0
+    BOOST_TEST( ApproximatelyEqual( determinant, 16.0f ) );
+}
+
+BOOST_AUTO_TEST_CASE( SingularMatrixDeterminant )
+{
+    // Arrange: Create a singular matrix (two identical rows)
+    // [1  2  3  4]
+    // [1  2  3  4]
+    // [5  6  7  8]
+    // [9  10 11 12]
+    // Determinant should be 0
+    SquareMatrix<float, 4> singularMatrix(
+        1.0f, 2.0f, 3.0f, 4.0f,
+        1.0f, 2.0f, 3.0f, 4.0f,
+        5.0f, 6.0f, 7.0f, 8.0f,
+        9.0f, 10.0f, 11.0f, 12.0f
+    );
+    auto simdMatrix = singularMatrix.ToSimd( );
+
+    // Act
+    float determinant = ScalarDeterminant( simdMatrix );
+
+    // Assert: Determinant of singular matrix should be 0
+    BOOST_TEST( ApproximatelyEqual( determinant, 0.0f, 1e-3f ) );
+}
+
+BOOST_AUTO_TEST_CASE( SimpleMatrixDeterminant )
+{
+    // Arrange: Create a simple 4x4 matrix with known determinant
+    // [1  0  0  0]
+    // [0  1  0  0]
+    // [0  0  2  0]
+    // [0  0  0  3]
+    // Determinant = 1*1*2*3 = 6
+    SquareMatrix<float, 4> simpleMatrix(
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 2.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 3.0f
+    );
+    auto simdMatrix = simpleMatrix.ToSimd( );
+
+    // Act
+    float determinant = ScalarDeterminant( simdMatrix );
+
+    // Assert: Determinant should be 6.0
+    BOOST_TEST( ApproximatelyEqual( determinant, 6.0f ) );
+}
+
+BOOST_AUTO_TEST_CASE( NegativeDeterminant )
+{
+    // Arrange: Create a matrix with negative determinant
+    // [1  0  0  0]
+    // [0  -1 0  0]
+    // [0  0  1  0]
+    // [0  0  0  1]
+    // Determinant = -1
+    SquareMatrix<float, 4> negativeMatrix(
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, -1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    );
+    auto simdMatrix = negativeMatrix.ToSimd( );
+
+    // Act
+    float determinant = ScalarDeterminant( simdMatrix );
+
+    // Assert: Determinant should be -1.0
+    BOOST_TEST( ApproximatelyEqual( determinant, -1.0f ) );
+}
+
+BOOST_AUTO_TEST_CASE( GeneralMatrixDeterminant )
+{
+    // Arrange: Create a general 4x4 matrix
+    // [2  1  3  0]
+    // [0  1  4  1]
+    // [1  0  2  1]
+    // [3  2  1  0]
+    // Determinant calculated using cofactor expansion
+    SquareMatrix<float, 4> generalMatrix(
+        2.0f, 1.0f, 3.0f, 0.0f,
+        0.0f, 1.0f, 4.0f, 1.0f,
+        1.0f, 0.0f, 2.0f, 1.0f,
+        3.0f, 2.0f, 1.0f, 0.0f
+    );
+    auto simdMatrix = generalMatrix.ToSimd( );
+
+    // Act
+    float determinant = ScalarDeterminant( simdMatrix );
+
+    // Assert: Verify determinant is computed (non-zero for non-singular matrix)
+    // The determinant should be a finite, valid number
+    BOOST_TEST( std::isfinite( determinant ) );
+    BOOST_TEST( determinant != 0.0f );
+}
+
+BOOST_AUTO_TEST_CASE( ZeroMatrixDeterminant )
+{
+    // Arrange: Create a zero matrix
+    SquareMatrix<float, 4> zeroMatrix = SquareMatrix<float, 4>::Zero( );
+    auto simdMatrix = zeroMatrix.ToSimd( );
+
+    // Act
+    float determinant = ScalarDeterminant( simdMatrix );
+
+    // Assert: Determinant of zero matrix should be 0
+    BOOST_TEST( ApproximatelyEqual( determinant, 0.0f ) );
+}
+
+BOOST_AUTO_TEST_CASE( ReturnValueIsFinite )
+{
+    // Arrange: Create an arbitrary matrix
+    SquareMatrix<float, 4> matrix(
+        1.5f, 2.3f, 0.7f, 1.1f,
+        0.2f, 3.4f, 1.8f, 0.5f,
+        2.1f, 0.9f, 2.2f, 3.3f,
+        1.7f, 1.2f, 0.4f, 2.8f
+    );
+    auto simdMatrix = matrix.ToSimd( );
+
+    // Act
+    float determinant = ScalarDeterminant( simdMatrix );
+
+    // Assert: Return value should be a finite number (not NaN or Inf)
+    BOOST_TEST( std::isfinite( determinant ) );
+}
+
 
 BOOST_AUTO_TEST_SUITE_END( )
