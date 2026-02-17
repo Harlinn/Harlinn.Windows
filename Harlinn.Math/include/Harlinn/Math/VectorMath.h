@@ -13134,20 +13134,27 @@ namespace Harlinn::Math
 
 
     /// <summary>
-    /// Creates a translation matrix using the provided offsets.
+    /// Creates a 4x4 homogeneous translation matrix in SIMD form.
     /// </summary>
-    /// <param name="offsetX">
-    /// Translation along the x-axis.
-    /// </param>
-    /// <param name="offsetY">
-    /// Translation along the y-axis.
-    /// </param>
-    /// <param name="offsetZ">
-    /// Translation along the z-axis.
-    /// </param>
-    /// <returns>
-    /// The translation matrix.
-    /// </returns>
+    /// <param name="offsetX">The translation offset along the x-axis.</param>
+    /// <param name="offsetY">The translation offset along the y-axis.</param>
+    /// <param name="offsetZ">The translation offset along the z-axis.</param>
+    /// <returns>A 4x4 SIMD translation matrix with the translation components stored in row 3.</returns>
+    /// <remarks>
+    /// Constructs a homogeneous 4x4 transformation matrix for translation:
+    /// <para>
+    /// The matrix is organized in row-major order as:
+    /// <list type="bullet">
+    /// <item><description>Rows 0-2: Identity matrix (3x3 rotation/scale portion)</description></item>
+    /// <item><description>Row 3: Translation vector [offsetX, offsetY, offsetZ, 1.0]</description></item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// This layout is typical for column-major interpretation where the translation components
+    /// are in the bottom row, allowing efficient 4x4 * 4x1 vector transformations where the vector
+    /// is multiplied by accumulating scaled rows of the matrix.
+    /// </para>
+    /// </remarks>
     inline SquareMatrix<float, 4>::Simd Translation( float offsetX, float offsetY, float offsetZ )
     {
         using Simd = SquareMatrix<float, 4>::Simd;

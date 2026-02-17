@@ -494,7 +494,7 @@ namespace Harlinn::Windows::DirectX::MiniEngine::Math
 
         INLINE Matrix4 ToMatrix4( ) const 
         { 
-            return Matrix4( m_basis.simd[ 0 ], m_basis.simd[ 1 ], m_basis.simd[ 2 ], m_translation.simd );
+            return Matrix4( m_basis.simd[ 0 ], m_basis.simd[ 1 ], m_basis.simd[ 2 ], SetWToOne( m_translation.simd ) );
         }
 
         INLINE operator Matrix4( ) const 

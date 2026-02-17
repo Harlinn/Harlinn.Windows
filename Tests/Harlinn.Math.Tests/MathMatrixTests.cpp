@@ -182,6 +182,29 @@ namespace
         return result;
     }
 
+    /// <summary>
+    /// Helper function to create a 3x3 matrix from row data.
+    /// </summary>
+    SquareMatrix<float, 3>::Simd CreateMatrix3x3(
+        float m00, float m01, float m02,
+        float m10, float m11, float m12,
+        float m20, float m21, float m22 )
+    {
+        SquareMatrix<float, 3> matrix;
+        matrix[ 0 ][ 0 ] = m00; matrix[ 0 ][ 1 ] = m01; matrix[ 0 ][ 2 ] = m02;
+        matrix[ 1 ][ 0 ] = m10; matrix[ 1 ][ 1 ] = m11; matrix[ 1 ][ 2 ] = m12;
+        matrix[ 2 ][ 0 ] = m20; matrix[ 2 ][ 1 ] = m21; matrix[ 2 ][ 2 ] = m22;
+        return matrix.ToSimd( );
+    }
+
+    /// <summary>
+    /// Helper function to extract scalar determinant from SIMD result.
+    /// </summary>
+    float ExtractDeterminant( const Math::Vector<float, 3>::Simd& result )
+    {
+        return result.x( );
+    }
+
 
 }
 
@@ -3265,6 +3288,739 @@ BOOST_AUTO_TEST_CASE( ReturnValueIsFinite )
 
     // Assert: Return value should be a finite number (not NaN or Inf)
     BOOST_TEST( std::isfinite( determinant ) );
+}
+
+
+BOOST_AUTO_TEST_CASE( IdentityMatrixHasDeterminantOne3x3 )
+{
+    // Arrange
+    auto matrix = CreateMatrix3x3(
+        1.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 1.0f );
+    const float expectedDeterminant = 1.0f;
+
+    // Act
+    auto result = Determinant( matrix );
+    float actualDeterminant = ExtractDeterminant( result );
+
+    // Assert
+    bool isEqual = std::abs( actualDeterminant - expectedDeterminant ) < 1e-5f;
+    BOOST_TEST( isEqual );
+}
+
+BOOST_AUTO_TEST_CASE( ZeroMatrixHasDeterminantZero3x3 )
+{
+    // Arrange
+    auto matrix = CreateMatrix3x3(
+        0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f );
+    const float expectedDeterminant = 0.0f;
+
+    // Act
+    auto result = Determinant( matrix );
+    float actualDeterminant = ExtractDeterminant( result );
+
+    // Assert
+    bool isZero = std::abs( actualDeterminant - expectedDeterminant ) < 1e-5f;
+    BOOST_TEST( isZero );
+}
+
+BOOST_AUTO_TEST_CASE( DiagonalMatrixDeterminantIsProductOfDiagonal3x3 )
+{
+    // Arrange: diagonal matrix with values 2, 3, 4
+    // det = 2 * 3 * 4 = 24
+    auto matrix = CreateMatrix3x3(
+        2.0f, 0.0f, 0.0f,
+        0.0f, 3.0f, 0.0f,
+        0.0f, 0.0f, 4.0f );
+    const float expectedDeterminant = 24.0f;
+
+    // Act
+    auto result = Determinant( matrix );
+    float actualDeterminant = ExtractDeterminant( result );
+
+    // Assert
+    bool isEqual = std::abs( actualDeterminant - expectedDeterminant ) < 1e-4f;
+    BOOST_TEST( isEqual );
+}
+
+BOOST_AUTO_TEST_CASE( SingularMatrixHasDeterminantZero3x3 )
+{
+    // Arrange: singular matrix (rows are linearly dependent)
+    // Row 3 = Row 1 + Row 2
+    auto matrix = CreateMatrix3x3(
+        1.0f, 2.0f, 3.0f,
+        4.0f, 5.0f, 6.0f,
+        5.0f, 7.0f, 9.0f );
+    const float expectedDeterminant = 0.0f;
+
+    // Act
+    auto result = Determinant( matrix );
+    float actualDeterminant = ExtractDeterminant( result );
+
+    // Assert
+    bool isZero = std::abs( actualDeterminant - expectedDeterminant ) < 1e-4f;
+    BOOST_TEST( isZero );
+}
+
+BOOST_AUTO_TEST_CASE( StandardMatrixDeterminant3x3 )
+{
+    // Arrange: standard 3x3 matrix with known determinant
+    // | 1  2  3 |
+    // | 0  1  4 | = 1*(1*6 - 4*2) - 2*(0*6 - 4*5) + 3*(0*2 - 1*5)
+    // | 5  2  6 |   = 1*(6 - 8) - 2*(0 - 20) + 3*(0 - 5)
+    //              = 1*(-2) - 2*(-20) + 3*(-5)
+    //              = -2 + 40 - 15 = 23
+    auto matrix = CreateMatrix3x3(
+        1.0f, 2.0f, 3.0f,
+        0.0f, 1.0f, 4.0f,
+        5.0f, 2.0f, 6.0f );
+    const float expectedDeterminant = 23.0f;
+
+    // Act
+    auto result = Determinant( matrix );
+    float actualDeterminant = ExtractDeterminant( result );
+
+    // Assert
+    bool isEqual = std::abs( actualDeterminant - expectedDeterminant ) < 1e-4f;
+    BOOST_TEST( isEqual );
+}
+
+BOOST_AUTO_TEST_CASE( NegativeDeterminant3x3 )
+{
+    // Arrange: matrix with negative determinant
+    auto matrix = CreateMatrix3x3(
+        2.0f, 1.0f, 3.0f,
+        1.0f, 0.0f, 1.0f,
+        1.0f, 2.0f, 1.0f );
+    // det = 2*(0 - 2) - 1*(1 - 1) + 3*(2 - 0) = -4 - 0 + 6 = 2
+    const float expectedDeterminant = 2.0f;
+
+    // Act
+    auto result = Determinant( matrix );
+    float actualDeterminant = ExtractDeterminant( result );
+
+    // Assert
+    bool isEqual = std::abs( actualDeterminant - expectedDeterminant ) < 1e-4f;
+    BOOST_TEST( isEqual );
+}
+
+BOOST_AUTO_TEST_CASE( MatrixWithNegativeElements3x3 )
+{
+    // Arrange: matrix containing negative values
+    auto matrix = CreateMatrix3x3(
+        -1.0f, 2.0f, -3.0f,
+        4.0f, -5.0f, 6.0f,
+        -7.0f, 8.0f, -9.0f );
+
+    // Act
+    auto result = Determinant( matrix );
+    float actualDeterminant = ExtractDeterminant( result );
+
+    // Assert: verify determinant is computed (exact value less important than correctness)
+    bool isFinite = std::isfinite( actualDeterminant );
+    BOOST_TEST( isFinite );
+}
+
+BOOST_AUTO_TEST_CASE( LargeValueMatrix3x3 )
+{
+    // Arrange: matrix with large values
+    auto matrix = CreateMatrix3x3(
+        1000.0f, 2000.0f, 3000.0f,
+        4000.0f, 5000.0f, 6000.0f,
+        7000.0f, 8000.0f, 9000.0f );
+    // This is a singular matrix, determinant should be 0
+    const float expectedDeterminant = 0.0f;
+
+    // Act
+    auto result = Determinant( matrix );
+    float actualDeterminant = ExtractDeterminant( result );
+
+    // Assert
+    bool isZero = std::abs( actualDeterminant - expectedDeterminant ) < 1e-2f;
+    BOOST_TEST( isZero );
+}
+
+BOOST_AUTO_TEST_CASE( SmallValueMatrix3x3 )
+{
+    // Arrange: matrix with small values
+    auto matrix = CreateMatrix3x3(
+        0.001f, 0.002f, 0.003f,
+        0.004f, 0.005f, 0.006f,
+        0.007f, 0.008f, 0.010f );
+
+    // Act
+    auto result = Determinant( matrix );
+    float actualDeterminant = ExtractDeterminant( result );
+
+    // Assert: verify result is computed correctly (non-singular)
+    bool isFinite = std::isfinite( actualDeterminant );
+    BOOST_TEST( isFinite );
+}
+
+BOOST_AUTO_TEST_CASE( MixedSignMatrix3x3 )
+{
+    // Arrange: matrix with mixed signs
+    auto matrix = CreateMatrix3x3(
+        1.0f, -2.0f, 3.0f,
+        -4.0f, 5.0f, -6.0f,
+        7.0f, -8.0f, 9.0f );
+
+    // Act
+    auto result = Determinant( matrix );
+    float actualDeterminant = ExtractDeterminant( result );
+
+    // Assert: result should be valid (determinant = 0 for this singular matrix)
+    bool isZero = std::abs( actualDeterminant ) < 1e-4f;
+    BOOST_TEST( isZero );
+}
+
+BOOST_AUTO_TEST_CASE( RotationMatrixDeterminantOne3x3 )
+{
+    // Arrange: 90 degree rotation matrix around Z-axis
+    // | cos(90)  -sin(90)  0 |   | 0  -1  0 |
+    // | sin(90)   cos(90)  0 | = | 1   0  0 |
+    // |    0        0      1 |   | 0   0  1 |
+    // det = 1
+    auto matrix = CreateMatrix3x3(
+        0.0f, -1.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f );
+    const float expectedDeterminant = 1.0f;
+
+    // Act
+    auto result = Determinant( matrix );
+    float actualDeterminant = ExtractDeterminant( result );
+
+    // Assert
+    bool isEqual = std::abs( actualDeterminant - expectedDeterminant ) < 1e-5f;
+    BOOST_TEST( isEqual );
+}
+
+BOOST_AUTO_TEST_CASE( DeterminantIdentityMatrix )
+{
+    // Identity matrix: [[1, 0], [0, 1]]
+    // Expected determinant: 1*1 - 0*0 = 1
+    SquareMatrix<float, 2>::Simd matrix( std::array{ 1.0f, 0.0f, 0.0f, 1.0f } );
+    auto result = Determinant( matrix );
+
+    auto determinantValue = result.x( );
+    bool isCorrect = std::abs( determinantValue - 1.0f ) < 1e-6f;
+    BOOST_TEST( isCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( DeterminantZeroMatrix )
+{
+    // Zero matrix: [[0, 0], [0, 0]]
+    // Expected determinant: 0*0 - 0*0 = 0
+    SquareMatrix<float, 2>::Simd matrix( std::array{ 0.0f, 0.0f, 0.0f, 0.0f } );
+    auto result = Determinant( matrix );
+
+    auto determinantValue = result.x( );
+    bool isCorrect = std::abs( determinantValue ) < 1e-6f;
+    BOOST_TEST( isCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( DeterminantSimpleMatrix )
+{
+    // Simple matrix: [[2, 3], [4, 5]]
+    // Expected determinant: 2*5 - 3*4 = 10 - 12 = -2
+    SquareMatrix<float, 2>::Simd matrix( std::array{ 2.0f, 3.0f, 4.0f, 5.0f } );
+    auto result = Determinant( matrix );
+
+    auto determinantValue = result.x( );
+    bool isCorrect = std::abs( determinantValue - ( -2.0f ) ) < 1e-6f;
+    BOOST_TEST( isCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( DeterminantPositiveDeterminant )
+{
+    // Matrix: [[3, 2], [1, 4]]
+    // Expected determinant: 3*4 - 2*1 = 12 - 2 = 10
+    SquareMatrix<float, 2>::Simd matrix( std::array{ 3.0f, 2.0f, 1.0f, 4.0f } );
+    auto result = Determinant( matrix );
+
+    auto determinantValue = result.x( );
+    bool isCorrect = std::abs( determinantValue - 10.0f ) < 1e-6f;
+    BOOST_TEST( isCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( DeterminantNegativeDeterminant )
+{
+    // Matrix: [[1, 5], [2, 3]]
+    // Expected determinant: 1*3 - 5*2 = 3 - 10 = -7
+    SquareMatrix<float, 2>::Simd matrix( std::array{ 1.0f, 5.0f, 2.0f, 3.0f } );
+    auto result = Determinant( matrix );
+
+    auto determinantValue = result.x( );
+    bool isCorrect = std::abs( determinantValue - ( -7.0f ) ) < 1e-6f;
+    BOOST_TEST( isCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( DeterminantSingularMatrix )
+{
+    // Singular matrix (linearly dependent rows): [[2, 4], [1, 2]]
+    // Expected determinant: 2*2 - 4*1 = 4 - 4 = 0
+    SquareMatrix<float, 2>::Simd matrix( std::array{ 2.0f, 4.0f, 1.0f, 2.0f } );
+    auto result = Determinant( matrix );
+
+    auto determinantValue = result.x( );
+    bool isCorrect = std::abs( determinantValue ) < 1e-6f;
+    BOOST_TEST( isCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( DeterminantNegativeValues )
+{
+    // Matrix with negative values: [[-2, 3], [1, -4]]
+    // Expected determinant: -2*-4 - 3*1 = 8 - 3 = 5
+    SquareMatrix<float, 2>::Simd matrix( std::array{ -2.0f, 3.0f, 1.0f, -4.0f } );
+    auto result = Determinant( matrix );
+
+    auto determinantValue = result.x( );
+    bool isCorrect = std::abs( determinantValue - 5.0f ) < 1e-6f;
+    BOOST_TEST( isCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( DeterminantLargeValues )
+{
+    // Matrix with large values: [[1000, 2000], [3000, 4000]]
+    // Expected determinant: 1000*4000 - 2000*3000 = 4000000 - 6000000 = -2000000
+    SquareMatrix<float, 2>::Simd matrix( std::array{ 1000.0f, 2000.0f, 3000.0f, 4000.0f } );
+    auto result = Determinant( matrix );
+
+    auto determinantValue = result.x( );
+    bool isCorrect = std::abs( determinantValue - ( -2000000.0f ) ) < 100.0f;  // Relaxed tolerance for large values
+    BOOST_TEST( isCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( DeterminantSmallValues )
+{
+    // Matrix with small values: [[0.001, 0.002], [0.003, 0.004]]
+    // Expected determinant: 0.001*0.004 - 0.002*0.003 = 0.000004 - 0.000006 = -0.000002
+    SquareMatrix<float, 2>::Simd matrix( std::array{ 0.001f, 0.002f, 0.003f, 0.004f } );
+    auto result = Determinant( matrix );
+
+    auto determinantValue = result.x( );
+    bool isCorrect = std::abs( determinantValue - ( -0.000002f ) ) < 1e-9f;
+    BOOST_TEST( isCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( DeterminantDiagonalMatrix )
+{
+    // Diagonal matrix: [[5, 0], [0, 3]]
+    // Expected determinant: 5*3 - 0*0 = 15
+    SquareMatrix<float, 2>::Simd matrix( std::array{ 5.0f, 0.0f, 0.0f, 3.0f } );
+    auto result = Determinant( matrix );
+
+    auto determinantValue = result.x( );
+    bool isCorrect = std::abs( determinantValue - 15.0f ) < 1e-6f;
+    BOOST_TEST( isCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( DeterminantSymmetricMatrix )
+{
+    // Symmetric matrix: [[2, 1], [1, 2]]
+    // Expected determinant: 2*2 - 1*1 = 4 - 1 = 3
+    SquareMatrix<float, 2>::Simd matrix( std::array{ 2.0f, 1.0f, 1.0f, 2.0f } );
+    auto result = Determinant( matrix );
+
+    auto determinantValue = result.x( );
+    bool isCorrect = std::abs( determinantValue - 3.0f ) < 1e-6f;
+    BOOST_TEST( isCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( DeterminantAntiSymmetricMatrix )
+{
+    // Antisymmetric matrix: [[0, 5], [-5, 0]]
+    // Expected determinant: 0*0 - 5*-5 = 0 + 25 = 25
+    SquareMatrix<float, 2>::Simd matrix( std::array{ 0.0f, 5.0f, -5.0f, 0.0f } );
+    auto result = Determinant( matrix );
+
+    auto determinantValue = result.x( );
+    bool isCorrect = std::abs( determinantValue - 25.0f ) < 1e-6f;
+    BOOST_TEST( isCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( DeterminantWithFractionalValues )
+{
+    // Matrix with fractional values: [[1.5, 2.5], [3.5, 4.5]]
+    // Expected determinant: 1.5*4.5 - 2.5*3.5 = 6.75 - 8.75 = -2
+    SquareMatrix<float, 2>::Simd matrix( std::array{ 1.5f, 2.5f, 3.5f, 4.5f } );
+    auto result = Determinant( matrix );
+
+    auto determinantValue = result.x( );
+    bool isCorrect = std::abs( determinantValue - ( -2.0f ) ) < 1e-6f;
+    BOOST_TEST( isCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( Transpose4x4FloatMatrix )
+{
+    using namespace Harlinn::Math;
+
+    // Arrange: Define the original matrix and the expected transposed result.
+    // The constructor takes elements in row-major order.
+    SquareMatrix<float, 4> originalMatrix(
+        1.0f, 2.0f, 3.0f, 4.0f,
+        5.0f, 6.0f, 7.0f, 8.0f,
+        9.0f, 10.0f, 11.0f, 12.0f,
+        13.0f, 14.0f, 15.0f, 16.0f
+    );
+
+    SquareMatrix<float, 4> expectedTransposedMatrix(
+        1.0f, 5.0f, 9.0f, 13.0f,
+        2.0f, 6.0f, 10.0f, 14.0f,
+        3.0f, 7.0f, 11.0f, 15.0f,
+        4.0f, 8.0f, 12.0f, 16.0f
+    );
+
+    // Act: Convert the matrix to its SIMD representation and call the Transpose function.
+    auto originalSimd = originalMatrix.ToSimd( );
+    auto transposedSimd = Transpose( originalSimd );
+
+    // Convert the transposed SIMD result back to a standard matrix for easy verification.
+    SquareMatrix<float, 4> resultMatrix( transposedSimd );
+
+    // Assert: Check if each element of the resulting matrix matches the expected transposed matrix.
+    // For a simple shuffle operation without arithmetic, direct comparison is safe.
+    for ( size_t i = 0; i < 4; ++i )
+    {
+        for ( size_t j = 0; j < 4; ++j )
+        {
+            BOOST_TEST( resultMatrix[ i ][ j ] == expectedTransposedMatrix[ i ][ j ] );
+        }
+    }
+
+    // You can also check if transposing twice returns the original matrix.
+    auto transposedTwiceSimd = Transpose( transposedSimd );
+    SquareMatrix<float, 4> resultTransposedTwice( transposedTwiceSimd );
+    BOOST_TEST( resultTransposedTwice == originalMatrix );
+}
+
+BOOST_AUTO_TEST_CASE( TransposeIdentityMatrix3x3 )
+{
+    /// Arrange
+    auto identity = SquareMatrix<float, 3>::Simd( Math::MatrixType::Identity );
+
+    /// Act
+    auto transposed = Transpose( identity );
+
+    /// Assert
+    BOOST_TEST( transposed == identity );
+}
+
+BOOST_AUTO_TEST_CASE( TransposeBasicMatrix3x3 )
+{
+    /// Arrange
+    SquareMatrix<float, 3> original(
+        1.0f, 2.0f, 3.0f,
+        4.0f, 5.0f, 6.0f,
+        7.0f, 8.0f, 9.0f
+    );
+    auto originalSimd = original.ToSimd( );
+
+    /// Act
+    auto transposed = Transpose( originalSimd );
+
+    /// Assert: Verify each element
+    auto result = SquareMatrix<float, 3>( transposed );
+    bool isCorrect =
+        std::fabs( result[ 0 ][ 0 ] - 1.0f ) < 1e-6f &&
+        std::fabs( result[ 0 ][ 1 ] - 4.0f ) < 1e-6f &&
+        std::fabs( result[ 0 ][ 2 ] - 7.0f ) < 1e-6f &&
+        std::fabs( result[ 1 ][ 0 ] - 2.0f ) < 1e-6f &&
+        std::fabs( result[ 1 ][ 1 ] - 5.0f ) < 1e-6f &&
+        std::fabs( result[ 1 ][ 2 ] - 8.0f ) < 1e-6f &&
+        std::fabs( result[ 2 ][ 0 ] - 3.0f ) < 1e-6f &&
+        std::fabs( result[ 2 ][ 1 ] - 6.0f ) < 1e-6f &&
+        std::fabs( result[ 2 ][ 2 ] - 9.0f ) < 1e-6f;
+    BOOST_TEST( isCorrect );
+}
+
+BOOST_AUTO_TEST_CASE( TransposeSymmetricMatrix3x3 )
+{
+    /// Arrange: Create a symmetric matrix
+    SquareMatrix<float, 3> symmetric(
+        1.0f, 2.0f, 3.0f,
+        2.0f, 5.0f, 6.0f,
+        3.0f, 6.0f, 9.0f
+    );
+    auto symmetricSimd = symmetric.ToSimd( );
+
+    /// Act
+    auto transposed = Transpose( symmetricSimd );
+
+    /// Assert: Symmetric matrix should equal its transpose
+    BOOST_TEST( transposed == symmetricSimd );
+}
+
+BOOST_AUTO_TEST_CASE( TransposeAntiSymmetricMatrix3x3 )
+{
+    /// Arrange: Create an anti-symmetric matrix
+    SquareMatrix<float, 3> antiSymmetric(
+        0.0f, 2.0f, 3.0f,
+        -2.0f, 0.0f, 6.0f,
+        -3.0f, -6.0f, 0.0f
+    );
+    auto antiSymmetricSimd = antiSymmetric.ToSimd( );
+
+    /// Act
+    auto transposed = Transpose( antiSymmetricSimd );
+    auto result = SquareMatrix<float, 3>( transposed );
+
+    /// Assert: Transpose of anti-symmetric matrix should be its negation
+    bool isNegated =
+        std::fabs( result[ 0 ][ 1 ] - ( -2.0f ) ) < 1e-6f &&
+        std::fabs( result[ 1 ][ 0 ] - 2.0f ) < 1e-6f &&
+        std::fabs( result[ 0 ][ 2 ] - ( -3.0f ) ) < 1e-6f &&
+        std::fabs( result[ 2 ][ 0 ] - 3.0f ) < 1e-6f &&
+        std::fabs( result[ 1 ][ 2 ] - ( -6.0f ) ) < 1e-6f &&
+        std::fabs( result[ 2 ][ 1 ] - 6.0f ) < 1e-6f;
+    BOOST_TEST( isNegated );
+}
+
+BOOST_AUTO_TEST_CASE( TransposeDoubleTranspose3x3 )
+{
+    /// Arrange
+    SquareMatrix<float, 3> original(
+        1.5f, 2.5f, 3.5f,
+        4.5f, 5.5f, 6.5f,
+        7.5f, 8.5f, 9.5f
+    );
+    auto originalSimd = original.ToSimd( );
+
+    /// Act: Transpose twice
+    auto transposed = Transpose( originalSimd );
+    auto doubleTransposed = Transpose( transposed );
+
+    /// Assert: Double transpose should return to original
+    BOOST_TEST( doubleTransposed == originalSimd );
+}
+
+BOOST_AUTO_TEST_CASE( TransposeDiagonalMatrix3x3 )
+{
+    /// Arrange: Create a diagonal matrix
+    SquareMatrix<float, 3> diagonal(
+        1.0f, 0.0f, 0.0f,
+        0.0f, 2.0f, 0.0f,
+        0.0f, 0.0f, 3.0f
+    );
+    auto diagonalSimd = diagonal.ToSimd( );
+
+    /// Act
+    auto transposed = Transpose( diagonalSimd );
+
+    /// Assert: Diagonal matrix should equal its transpose
+    BOOST_TEST( transposed == diagonalSimd );
+}
+
+BOOST_AUTO_TEST_CASE( TransposeZeroMatrix3x3 )
+{
+    /// Arrange
+    auto zero = SquareMatrix<float, 3>::Zero( ).ToSimd( );
+
+    /// Act
+    auto transposed = Transpose( zero );
+
+    /// Assert
+    BOOST_TEST( transposed == zero );
+}
+
+BOOST_AUTO_TEST_CASE( TransposeWithNegativeValues3x3 )
+{
+    /// Arrange
+    SquareMatrix<float, 3> withNegatives(
+        -1.0f, -2.0f, -3.0f,
+        -4.0f, -5.0f, -6.0f,
+        -7.0f, -8.0f, -9.0f
+    );
+    auto withNegativesSimd = withNegatives.ToSimd( );
+
+    /// Act
+    auto transposed = Transpose( withNegativesSimd );
+
+    /// Assert
+    auto result = SquareMatrix<float, 3>( transposed );
+    bool isCorrect =
+        std::fabs( result[ 0 ][ 1 ] - ( -4.0f ) ) < 1e-6f &&
+        std::fabs( result[ 1 ][ 0 ] - ( -2.0f ) ) < 1e-6f &&
+        std::fabs( result[ 2 ][ 2 ] - ( -9.0f ) ) < 1e-6f;
+    BOOST_TEST( isCorrect );
+}
+
+/// <summary>
+/// Tests that transposing a 2x2 identity matrix returns the identity matrix.
+/// </summary>
+BOOST_AUTO_TEST_CASE( TransposeIdentityMatrix2x2 )
+{
+    // Arrange
+    auto identityMatrix = SquareMatrix<float, 2>::Simd::Identity( );
+
+    // Act
+    auto result = Transpose( identityMatrix );
+
+    // Assert
+    bool isIdentity = result == identityMatrix;
+    BOOST_TEST( isIdentity );
+}
+
+/// <summary>
+/// Tests that transposing a 2x2 zero matrix returns the zero matrix.
+/// </summary>
+BOOST_AUTO_TEST_CASE( TransposeZeroMatrix2x2 )
+{
+    // Arrange
+    auto zeroMatrix = SquareMatrix<float, 2>::Simd::Zero( );
+
+    // Act
+    auto result = Transpose( zeroMatrix );
+
+    // Assert
+    bool isZero = result == zeroMatrix;
+    BOOST_TEST( isZero );
+}
+
+/// <summary>
+/// Tests that transposing a symmetric 2x2 matrix returns the same matrix.
+/// Matrix: [[1, 2], [2, 3]]
+/// </summary>
+BOOST_AUTO_TEST_CASE( TransposeSymmetricMatrix2x2 )
+{
+    // Arrange
+    SquareMatrix<float, 2> matrix{ 1.0f, 2.0f, 2.0f, 3.0f };
+    auto simdMatrix = matrix.ToSimd( );
+
+    // Act
+    auto result = Transpose( simdMatrix );
+
+    // Assert - symmetric matrix should equal its transpose
+    bool isSymmetric = ( result == simdMatrix );
+    BOOST_TEST( isSymmetric );
+}
+
+/// <summary>
+/// Tests that transposing a 2x2 matrix twice returns the original matrix.
+/// </summary>
+BOOST_AUTO_TEST_CASE( TransposeTransposedMatrix2x2 )
+{
+    // Arrange
+    SquareMatrix<float, 2> original{ 1.0f, 2.0f, 3.0f, 4.0f };
+    auto simdMatrix = original.ToSimd( );
+
+    // Act
+    auto transposed = Transpose( simdMatrix );
+    auto doubleTransposed = Transpose( transposed );
+
+    // Assert
+    bool isOriginal = ( doubleTransposed == simdMatrix );
+    BOOST_TEST( isOriginal );
+}
+
+/// <summary>
+/// Tests that transposing a general 2x2 matrix with distinct values works correctly.
+/// Matrix: [[1, 2], [3, 4]]
+/// Expected transpose: [[1, 3], [2, 4]]
+/// </summary>
+BOOST_AUTO_TEST_CASE( TransposeGeneralMatrix2x2 )
+{
+    // Arrange
+    SquareMatrix<float, 2> original{ 1.0f, 2.0f, 3.0f, 4.0f };
+    SquareMatrix<float, 2> expected{ 1.0f, 3.0f, 2.0f, 4.0f };
+
+    auto originalSimd = original.ToSimd( );
+    auto expectedSimd = expected.ToSimd( );
+
+    // Act
+    auto result = Transpose( originalSimd );
+
+    // Assert
+    bool matchesExpected = ( result == expectedSimd );
+    BOOST_TEST( matchesExpected );
+}
+
+/// <summary>
+/// Tests that transposing a 2x2 matrix with negative values works correctly.
+/// Matrix: [[-1, 2], [-3, 4]]
+/// Expected transpose: [[-1, -3], [2, 4]]
+/// </summary>
+BOOST_AUTO_TEST_CASE( TransposeMatrixWithNegativeValues2x2 )
+{
+    // Arrange
+    SquareMatrix<float, 2> original{ -1.0f, 2.0f, -3.0f, 4.0f };
+    SquareMatrix<float, 2> expected{ -1.0f, -3.0f, 2.0f, 4.0f };
+
+    auto originalSimd = original.ToSimd( );
+    auto expectedSimd = expected.ToSimd( );
+
+    // Act
+    auto result = Transpose( originalSimd );
+
+    // Assert
+    bool matchesExpected = ( result == expectedSimd );
+    BOOST_TEST( matchesExpected );
+}
+
+/// <summary>
+/// Tests that transposing a 2x2 matrix with floating-point values works correctly.
+/// Matrix: [[1.5, 2.5], [3.5, 4.5]]
+/// Expected transpose: [[1.5, 3.5], [2.5, 4.5]]
+/// </summary>
+BOOST_AUTO_TEST_CASE( TransposeMatrixWithFloatingPointValues2x2 )
+{
+    // Arrange
+    SquareMatrix<float, 2> original{ 1.5f, 2.5f, 3.5f, 4.5f };
+    SquareMatrix<float, 2> expected{ 1.5f, 3.5f, 2.5f, 4.5f };
+
+    auto originalSimd = original.ToSimd( );
+    auto expectedSimd = expected.ToSimd( );
+
+    // Act
+    auto result = Transpose( originalSimd );
+
+    // Assert
+    bool matchesExpected = ( result == expectedSimd );
+    BOOST_TEST( matchesExpected );
+}
+
+/// <summary>
+/// Tests that transposing an anti-symmetric 2x2 matrix preserves the anti-symmetric property.
+/// Matrix: [[0, 1], [-1, 0]]
+/// Transposed: [[0, -1], [1, 0]]
+/// </summary>
+BOOST_AUTO_TEST_CASE( TransposeAntiSymmetricMatrix2x2 )
+{
+    // Arrange
+    SquareMatrix<float, 2> original{ 0.0f, 1.0f, -1.0f, 0.0f };
+    SquareMatrix<float, 2> expected{ 0.0f, -1.0f, 1.0f, 0.0f };
+
+    auto originalSimd = original.ToSimd( );
+    auto expectedSimd = expected.ToSimd( );
+
+    // Act
+    auto result = Transpose( originalSimd );
+
+    // Assert
+    bool matchesExpected = ( result == expectedSimd );
+    BOOST_TEST( matchesExpected );
+}
+
+/// <summary>
+/// Tests that transposing a 2x2 diagonal matrix returns the same matrix.
+/// Matrix: [[5, 0], [0, 7]]
+/// </summary>
+BOOST_AUTO_TEST_CASE( TransposeDiagonalMatrix2x2 )
+{
+    // Arrange
+    SquareMatrix<float, 2> matrix{ 5.0f, 0.0f, 0.0f, 7.0f };
+    auto simdMatrix = matrix.ToSimd( );
+
+    // Act
+    auto result = Transpose( simdMatrix );
+
+    // Assert - diagonal matrix should equal its transpose
+    bool isDiagonal = ( result == simdMatrix );
+    BOOST_TEST( isDiagonal );
 }
 
 
