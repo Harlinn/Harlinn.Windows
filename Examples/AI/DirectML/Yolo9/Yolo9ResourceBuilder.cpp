@@ -18,7 +18,7 @@
 #include "yolo9.h"
 
 
-#pragma comment(lib,"Microsoft.AI.MachineLearning.lib")
+#pragma comment(lib,"Microsoft.Windows.AI.MachineLearning.lib")
 #pragma comment(lib,"onnxruntime.lib")
 
 

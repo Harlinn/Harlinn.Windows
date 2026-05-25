@@ -20,9 +20,9 @@
 
 
 #include "HAITensor.h"
-#include "onnxruntime_cxx_api.h"
+#include "winml/onnxruntime_cxx_api.h"
 
-#pragma comment(lib,"Microsoft.AI.MachineLearning.lib")
+#pragma comment(lib,"Microsoft.Windows.AI.MachineLearning.lib")
 #pragma comment(lib,"onnxruntime.lib")
 
 namespace Harlinn::AI::ONNX

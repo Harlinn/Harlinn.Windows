@@ -109,9 +109,9 @@ using namespace Harlinn::Windows::Graphics;
 #include <dxcore_interface.h>
 #include <dxcore.h>
 
-#include <onnxruntime_cxx_api.h>
+#include <winml/onnxruntime_cxx_api.h>
 
-#include "dml_provider_factory.h"
+#include "winml/dml_provider_factory.h"
 
 using Microsoft::WRL::ComPtr;
 

@@ -21,7 +21,7 @@
 #include "HAIONNX.h"
 #include "HAIDirectML.h"
 
-#include <dml_provider_factory.h>
+#include <winml/dml_provider_factory.h>
 
 namespace Harlinn::AI::ONNX::DirectML
 {
