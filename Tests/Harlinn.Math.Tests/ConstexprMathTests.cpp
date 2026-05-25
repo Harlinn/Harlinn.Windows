@@ -4065,21 +4065,22 @@ BOOST_AUTO_TEST_CASE( FloatASinTest1 )
 // --run_test=ConstexprMathTests/DoubleASinTest1
 BOOST_AUTO_TEST_CASE( DoubleASinTest1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = ASin( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon() * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon() * static_cast<ValueType>(10) ) -> bool
         {
             auto r = ASin( x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = ASin( x );
             return IsNaN( r );
@@ -4207,21 +4208,22 @@ BOOST_AUTO_TEST_CASE( FloatACosTest1 )
 // --run_test=ConstexprMathTests/DoubleACosTest1
 BOOST_AUTO_TEST_CASE( DoubleACosTest1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = ACos( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * static_cast<ValueType>(10) ) -> bool
         {
             auto r = ACos( x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = ACos( x );
             return IsNaN( r );
@@ -4531,21 +4533,22 @@ BOOST_AUTO_TEST_CASE( FloatATan2Test1 )
 // --run_test=ConstexprMathTests/DoubleATan2Test1
 BOOST_AUTO_TEST_CASE( DoubleATan2Test1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType y, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType y, ValueType expected ) -> bool
         {
             auto r = ATan2( x, y );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType y, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType y, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * static_cast<ValueType>(10) ) -> bool
         {
             auto r = ATan2( x, y );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x, C::ValueType y ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x, ValueType y ) -> bool
         {
             auto r = ATan2( x, y );
             return IsNaN( r );
@@ -4688,25 +4691,26 @@ BOOST_AUTO_TEST_CASE( DoubleATan2Test1 )
 // --run_test=ConstexprMathTests/FloatSinCosTest1
 BOOST_AUTO_TEST_CASE( FloatSinCosTest1 )
 {
-    using C = Constants<float>;
+    using ValueType = float;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expectedSine, C::ValueType expectedCosine ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expectedSine, ValueType expectedCosine ) -> bool
         {
-            C::ValueType sine, cosine;
+            ValueType sine, cosine;
             SinCos( x, &sine, &cosine );
             return IsSameValue( sine, expectedSine ) && IsSameValue( cosine, expectedCosine );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expectedSine, C::ValueType expectedCosine, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expectedSine, ValueType expectedCosine, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * static_cast<ValueType>(10) ) -> bool
         {
-            C::ValueType sine, cosine;
+            ValueType sine, cosine;
             SinCos( x, &sine, &cosine );
             return AreNearlyEqual( sine, expectedSine, epsilon ) && AreNearlyEqual( cosine, expectedCosine, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
-            C::ValueType sine, cosine;
+            ValueType sine, cosine;
             SinCos( x, &sine, &cosine );
             return IsNaN( sine ) && IsNaN( cosine );
         };
@@ -4744,25 +4748,26 @@ BOOST_AUTO_TEST_CASE( FloatSinCosTest1 )
 // --run_test=ConstexprMathTests/DoubleSinCosTest1
 BOOST_AUTO_TEST_CASE( DoubleSinCosTest1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expectedSine, C::ValueType expectedCosine ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expectedSine, ValueType expectedCosine ) -> bool
         {
-            C::ValueType sine, cosine;
+            ValueType sine, cosine;
             SinCos( x, &sine, &cosine );
             return IsSameValue( sine, expectedSine ) && IsSameValue( cosine, expectedCosine );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expectedSine, C::ValueType expectedCosine, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expectedSine, ValueType expectedCosine, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * static_cast<ValueType>(10) ) -> bool
         {
-            C::ValueType sine, cosine;
+            ValueType sine, cosine;
             SinCos( x, &sine, &cosine );
             return AreNearlyEqual( sine, expectedSine, epsilon ) && AreNearlyEqual( cosine, expectedCosine, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
-            C::ValueType sine, cosine;
+            ValueType sine, cosine;
             SinCos( x, &sine, &cosine );
             return IsNaN( sine ) && IsNaN( cosine );
         };
@@ -4843,21 +4848,22 @@ BOOST_AUTO_TEST_CASE( FloatSinHTest1 )
 // --run_test=ConstexprMathTests/DoubleSinHTest1
 BOOST_AUTO_TEST_CASE( DoubleSinHTest1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = SinH( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * static_cast<ValueType>(10) ) -> bool
         {
             auto r = SinH( x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = SinH( x );
             return IsNaN( r );
@@ -4935,21 +4941,22 @@ BOOST_AUTO_TEST_CASE( FloatASinHTest1 )
 // --run_test=ConstexprMathTests/DoubleASinHTest1
 BOOST_AUTO_TEST_CASE( DoubleASinHTest1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = ASinH( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * static_cast<ValueType>(10) ) -> bool
         {
             auto r = ASinH( x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = ASinH( x );
             return IsNaN( r );
@@ -5026,21 +5033,22 @@ BOOST_AUTO_TEST_CASE( FloatCosHTest1 )
 // --run_test=ConstexprMathTests/DoubleCosHTest1
 BOOST_AUTO_TEST_CASE( DoubleCosHTest1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = CosH( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * static_cast<ValueType>(10) ) -> bool
         {
             auto r = CosH( x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = CosH( x );
             return IsNaN( r );
@@ -5075,15 +5083,16 @@ BOOST_AUTO_TEST_CASE( DoubleCosHTest1 )
 // --run_test=ConstexprMathTests/FloatACosHTest1
 BOOST_AUTO_TEST_CASE( FloatACosHTest1 )
 {
-    using C = Constants<float>;
+    using ValueType = float;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = ACosH( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = ACosH( x );
             return IsNaN( r );
@@ -5114,21 +5123,22 @@ BOOST_AUTO_TEST_CASE( FloatACosHTest1 )
 // --run_test=ConstexprMathTests/DoubleACosHTest1
 BOOST_AUTO_TEST_CASE( DoubleACosHTest1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = ACosH( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * static_cast<ValueType>(10) ) -> bool
         {
             auto r = ACosH( x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = ACosH( x );
             return IsNaN( r );
@@ -5160,15 +5170,16 @@ BOOST_AUTO_TEST_CASE( DoubleACosHTest1 )
 // --run_test=ConstexprMathTests/FloatTanHTest1
 BOOST_AUTO_TEST_CASE( FloatTanHTest1 )
 {
-    using C = Constants<float>;
+    using ValueType = float;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = TanH( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = TanH( x );
             return IsNaN( r );
@@ -5214,21 +5225,22 @@ BOOST_AUTO_TEST_CASE( FloatTanHTest1 )
 // --run_test=ConstexprMathTests/DoubleTanHTest1
 BOOST_AUTO_TEST_CASE( DoubleTanHTest1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = TanH( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * static_cast<ValueType>(10) ) -> bool
         {
             auto r = TanH( x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = TanH( x );
             return IsNaN( r );
@@ -5274,15 +5286,16 @@ BOOST_AUTO_TEST_CASE( DoubleTanHTest1 )
 // --run_test=ConstexprMathTests/FloatATanHTest1
 BOOST_AUTO_TEST_CASE( FloatATanHTest1 )
 {
-    using C = Constants<float>;
+    using ValueType = float;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = ATanH( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = ATanH( x );
             return IsNaN( r );
@@ -5323,15 +5336,16 @@ BOOST_AUTO_TEST_CASE( FloatATanHTest1 )
 // --run_test=ConstexprMathTests/DoubleATanHTest1
 BOOST_AUTO_TEST_CASE( DoubleATanHTest1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;   
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = ATanH( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = ATanH( x );
             return IsNaN( r );
@@ -5372,15 +5386,16 @@ BOOST_AUTO_TEST_CASE( DoubleATanHTest1 )
 // --run_test=ConstexprMathTests/FloatJ0Test1
 BOOST_AUTO_TEST_CASE( FloatJ0Test1 )
 {
-    using C = Constants<float>;
+    using ValueType = float;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = J0( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = J0( x );
             return IsNaN( r );
@@ -5434,21 +5449,22 @@ BOOST_AUTO_TEST_CASE( FloatJ0Test1 )
 // --run_test=ConstexprMathTests/DoubleJ0Test1
 BOOST_AUTO_TEST_CASE( DoubleJ0Test1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = J0( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * 10 ) -> bool
         {
             auto r = J0( x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = J0( x );
             return IsNaN( r );
@@ -5502,21 +5518,22 @@ BOOST_AUTO_TEST_CASE( DoubleJ0Test1 )
 // --run_test=ConstexprMathTests/FloatJ1Test1
 BOOST_AUTO_TEST_CASE( FloatJ1Test1 )
 {
-    using C = Constants<float>;
+    using ValueType = float;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = J1( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * 10 ) -> bool
         {
             auto r = J1( x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = J1( x );
             return IsNaN( r );
@@ -5571,21 +5588,22 @@ BOOST_AUTO_TEST_CASE( FloatJ1Test1 )
 // --run_test=ConstexprMathTests/DoubleJ1Test1
 BOOST_AUTO_TEST_CASE( DoubleJ1Test1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = J1( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * 10 ) -> bool
         {
             auto r = J1( x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = J1( x );
             return IsNaN( r );
@@ -5641,21 +5659,22 @@ BOOST_AUTO_TEST_CASE( DoubleJ1Test1 )
 // --run_test=ConstexprMathTests/FloatJNTest1
 BOOST_AUTO_TEST_CASE( FloatJNTest1 )
 {
-    using C = Constants<float>;
+    using ValueType = float;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( int n, C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( int n, ValueType x, ValueType expected ) -> bool
         {
             auto r = JN( n, x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( int n, C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( int n, ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * 10 ) -> bool
         {
             auto r = JN( n, x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( int n, C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( int n, ValueType x ) -> bool
         {
             auto r = JN( n, x );
             return IsNaN( r );
@@ -5830,21 +5849,22 @@ BOOST_AUTO_TEST_CASE( FloatJNTest1 )
 // --run_test=ConstexprMathTests/DoubleJNTest1
 BOOST_AUTO_TEST_CASE( DoubleJNTest1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( int n, C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( int n, ValueType x, ValueType expected ) -> bool
         {
             auto r = JN( n, x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( int n, C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( int n, ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * 10 ) -> bool
         {
             auto r = JN( n, x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( int n, C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( int n, ValueType x ) -> bool
         {
             auto r = JN( n, x );
             return IsNaN( r );
@@ -6019,21 +6039,22 @@ BOOST_AUTO_TEST_CASE( DoubleJNTest1 )
 // --run_test=ConstexprMathTests/FloatY0Test1
 BOOST_AUTO_TEST_CASE( FloatY0Test1 )
 {
-    using C = Constants<float>;
+    using ValueType = float;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = Y0( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * 10 ) -> bool
         {
             auto r = Y0( x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = Y0( x );
             return IsNaN( r );
@@ -6087,21 +6108,22 @@ BOOST_AUTO_TEST_CASE( FloatY0Test1 )
 // --run_test=ConstexprMathTests/DoubleY0Test1
 BOOST_AUTO_TEST_CASE( DoubleY0Test1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = Y0( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * 10 ) -> bool
         {
             auto r = Y0( x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = Y0( x );
             return IsNaN( r );
@@ -6158,21 +6180,22 @@ BOOST_AUTO_TEST_CASE( DoubleY0Test1 )
 // --run_test=ConstexprMathTests/FloatY1Test1
 BOOST_AUTO_TEST_CASE( FloatY1Test1 )
 {
-    using C = Constants<float>;
+    using ValueType = float;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = Y1( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * 10 ) -> bool
         {
             auto r = Y1( x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = Y1( x );
             return IsNaN( r );
@@ -6228,21 +6251,22 @@ BOOST_AUTO_TEST_CASE( FloatY1Test1 )
 // --run_test=ConstexprMathTests/DoubleY1Test1
 BOOST_AUTO_TEST_CASE( DoubleY1Test1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = Y1( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * 10 ) -> bool
         {
             auto r = Y1( x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = Y1( x );
             return IsNaN( r );
@@ -6298,21 +6322,22 @@ BOOST_AUTO_TEST_CASE( DoubleY1Test1 )
 // --run_test=ConstexprMathTests/FloatYNTest1
 BOOST_AUTO_TEST_CASE( FloatYNTest1 )
 {
-    using C = Constants<float>;
+    using ValueType = float;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( int n, C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( int n, ValueType x, ValueType expected ) -> bool
         {
             auto r = YN( n, x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( int n, C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( int n, ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * 10 ) -> bool
         {
             auto r = YN( n, x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( int n, C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( int n, ValueType x ) -> bool
         {
             auto r = YN( n, x );
             return IsNaN( r );
@@ -6468,21 +6493,22 @@ BOOST_AUTO_TEST_CASE( FloatYNTest1 )
 // --run_test=ConstexprMathTests/DoubleYNTest1
 BOOST_AUTO_TEST_CASE( DoubleYNTest1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( int n, C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( int n, ValueType x, ValueType expected ) -> bool
         {
             auto r = YN( n, x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckClose = []( int n, C::ValueType x, C::ValueType expected, C::ValueType epsilon = std::numeric_limits<C::ValueType>::epsilon( ) * 10 ) -> bool
+    constexpr auto CheckClose = []( int n, ValueType x, ValueType expected, ValueType epsilon = std::numeric_limits<ValueType>::epsilon( ) * 10 ) -> bool
         {
             auto r = YN( n, x );
             return AreNearlyEqual( r, expected, epsilon );
         };
 
-    constexpr auto CheckIsNaN = []( int n, C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( int n, ValueType x ) -> bool
         {
             auto r = YN( n, x );
             return IsNaN( r );
@@ -6639,15 +6665,16 @@ BOOST_AUTO_TEST_CASE( DoubleYNTest1 )
 // --run_test=ConstexprMathTests/FloatErfTest1
 BOOST_AUTO_TEST_CASE( FloatErfTest1 )
 {
-    using C = Constants<float>;
+    using ValueType = float;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = Erf( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = Erf( x );
             return IsNaN( r );
@@ -6698,15 +6725,16 @@ BOOST_AUTO_TEST_CASE( FloatErfTest1 )
 // --run_test=ConstexprMathTests/DoubleErfTest1
 BOOST_AUTO_TEST_CASE( DoubleErfTest1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = Erf( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = Erf( x );
             return IsNaN( r );
@@ -6757,15 +6785,16 @@ BOOST_AUTO_TEST_CASE( DoubleErfTest1 )
 // --run_test=ConstexprMathTests/FloatErfCTest1
 BOOST_AUTO_TEST_CASE( FloatErfCTest1 )
 {
-    using C = Constants<float>;
+    using ValueType = float;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = ErfC( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = ErfC( x );
             return IsNaN( r );
@@ -6810,7 +6839,7 @@ BOOST_AUTO_TEST_CASE( FloatErfCTest1 )
     BOOST_CHECK( check9 );
 
     // erfc (9) == 4.13703171e-37
-    constexpr auto check10 = Check( 9.f, 4.13703171e-37 );
+    constexpr auto check10 = Check( 9.f, 4.13703171e-37f );
     BOOST_CHECK( check10 );
 
 }
@@ -6818,15 +6847,16 @@ BOOST_AUTO_TEST_CASE( FloatErfCTest1 )
 // --run_test=ConstexprMathTests/DoubleErfCTest1
 BOOST_AUTO_TEST_CASE( DoubleErfCTest1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = ErfC( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = ErfC( x );
             return IsNaN( r );
@@ -6877,15 +6907,16 @@ BOOST_AUTO_TEST_CASE( DoubleErfCTest1 )
 // --run_test=ConstexprMathTests/DoubleTGammaTest1
 BOOST_AUTO_TEST_CASE( DoubleTGammaTest1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = TGamma( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = TGamma( x );
             return IsNaN( r );
@@ -6940,15 +6971,16 @@ BOOST_AUTO_TEST_CASE( DoubleTGammaTest1 )
 // --run_test=ConstexprMathTests/FloatLGammaTest1
 BOOST_AUTO_TEST_CASE( FloatLGammaTest1 )
 {
-    using C = Constants<float>;
+    using ValueType = float;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = LGamma( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = LGamma( x );
             return IsNaN( r );
@@ -6986,15 +7018,16 @@ BOOST_AUTO_TEST_CASE( FloatLGammaTest1 )
 // --run_test=ConstexprMathTests/DoubleLGammaTest1
 BOOST_AUTO_TEST_CASE( DoubleLGammaTest1 )
 {
-    using C = Constants<double>;
+    using ValueType = double;
+    using C = Constants<ValueType>;
 
-    constexpr auto Check = []( C::ValueType x, C::ValueType expected ) -> bool
+    constexpr auto Check = []( ValueType x, ValueType expected ) -> bool
         {
             auto r = LGamma( x );
             return IsSameValue( r, expected );
         };
 
-    constexpr auto CheckIsNaN = []( C::ValueType x ) -> bool
+    constexpr auto CheckIsNaN = []( ValueType x ) -> bool
         {
             auto r = LGamma( x );
             return IsNaN( r );

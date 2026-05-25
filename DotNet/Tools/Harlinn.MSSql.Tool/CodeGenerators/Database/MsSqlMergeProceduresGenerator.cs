@@ -17,7 +17,6 @@
 using Harlinn.MSSql.Tool.Output;
 using Microsoft.SqlServer.Management.HadrData;
 using Microsoft.SqlServer.Management.XEvent;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 

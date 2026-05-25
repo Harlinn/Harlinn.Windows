@@ -501,7 +501,7 @@ namespace Harlinn::Windows::Graphics::D2D
         T GetGradientStopCollection( ) const
         {
             typename T::InterfaceType* ptr = nullptr;
-            GetBitmap( (ID2D1GradientStopCollection**)&ptr );
+            GetGradientStopCollection( (ID2D1GradientStopCollection**)&ptr );
             return T( ptr );
         }
 
@@ -584,7 +584,7 @@ namespace Harlinn::Windows::Graphics::D2D
         T GetGradientStopCollection( ) const
         {
             typename T::InterfaceType* ptr = nullptr;
-            GetBitmap( (ID2D1GradientStopCollection**)&ptr );
+            GetGradientStopCollection( (ID2D1GradientStopCollection**)&ptr );
             return T( ptr );
         }
 
