@@ -12,4 +12,16 @@
     <ProjectReference Include="..\..\..\Examples\SqlClient\AdventureWorks\AdventureWorks.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="MSTest.TestAdapter" Version="4.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="MSTest.TestFramework" Version="4.2.3" />
+  </ItemGroup>
+
 </Project>
