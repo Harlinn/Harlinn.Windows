@@ -741,7 +741,7 @@ DEF_TEST(SkVM_NewOps, r) {
             buf[i] = i;
         }
 
-        const int M = 16;
+        static constexpr const int M = 16;
         uint8_t img[M];
         for (int i = 0; i < M; i++) {
             img[i] = i*i;
