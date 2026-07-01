@@ -76,11 +76,18 @@ namespace Harlinn::Math::SIMD
         m512d
     };
 
+    /// <summary>
+    /// Default traits for SIMD data types.
+    /// </summary>
+    /// <typeparam name="dt"></typeparam>
     template<DataType dt>
     struct DataTypeTraits : public std::false_type
     {
     };
 
+    /// <summary>
+    /// Traits for the __m64 SIMD data type.
+    /// </summary>
     template<>
     struct DataTypeTraits<DataType::m64> : public std::true_type
     {
@@ -88,8 +95,12 @@ namespace Harlinn::Math::SIMD
         static constexpr size_t AlignAs = 8;
         static constexpr size_t Size = 8;
         using Type = __m64;
+        using type = __m64;
     };
 
+    /// <summary>
+    /// Traits for the __m128 SIMD data type.
+    /// </summary>
     template<>
     struct DataTypeTraits<DataType::m128> : public std::true_type
     {
@@ -97,8 +108,13 @@ namespace Harlinn::Math::SIMD
         static constexpr size_t AlignAs = 16;
         static constexpr size_t Size = 16;
         using Type = __m128;
+        using type = __m128;
         using IntegerType = __m128i;
     };
+
+    /// <summary>
+    /// Traits for the __m128i SIMD data type.
+    /// </summary>
     template<>
     struct DataTypeTraits<DataType::m128i> : public std::true_type
     {
@@ -106,7 +122,12 @@ namespace Harlinn::Math::SIMD
         static constexpr size_t AlignAs = 16;
         static constexpr size_t Size = 16;
         using Type = __m128i;
+        using type = __m128i;
     };
+
+    /// <summary>
+    /// Traits for the __m128d SIMD data type.
+    /// </summary>
     template<>
     struct DataTypeTraits<DataType::m128d> : public std::true_type
     {
@@ -114,18 +135,27 @@ namespace Harlinn::Math::SIMD
         static constexpr size_t AlignAs = 16;
         static constexpr size_t Size = 16;
         using Type = __m128d;
+        using type = __m128d;
         using IntegerType = __m128i;
     };
 
+    /// <summary>
+    /// Traits for the __m256 SIMD data type.
+    /// </summary>
     template<>
     struct DataTypeTraits<DataType::m256> : public std::true_type
     {
         static constexpr DataType Id = DataType::m256;
         static constexpr size_t AlignAs = 32;
         static constexpr size_t Size = 32;
-        using Type = __m256;
+        using Type = __m256; 
+        using type = __m256;
         using IntegerType = __m256i;
     };
+
+    /// <summary>
+    /// Traits for the __m256i SIMD data type.
+    /// </summary>
     template<>
     struct DataTypeTraits<DataType::m256i> : public std::true_type
     {
@@ -133,7 +163,12 @@ namespace Harlinn::Math::SIMD
         static constexpr size_t AlignAs = 32;
         static constexpr size_t Size = 32;
         using Type = __m256i;
+        using type = __m256i;
     };
+
+    /// <summary>
+    /// Traits for the __m256d SIMD data type.
+    /// </summary>
     template<>
     struct DataTypeTraits<DataType::m256d> : public std::true_type
     {
@@ -141,17 +176,27 @@ namespace Harlinn::Math::SIMD
         static constexpr size_t AlignAs = 32;
         static constexpr size_t Size = 32;
         using Type = __m256d;
+        using type = __m256d;
         using IntegerType = __m256i;
     };
+
+    /// <summary>
+    /// Traits for the __m512 SIMD data type.
+    /// </summary>
     template<>
     struct DataTypeTraits<DataType::m512> : public std::true_type
     {
         static constexpr DataType Id = DataType::m512;
         static constexpr size_t AlignAs = 64;
         static constexpr size_t Size = 64;
-        using Type = __m512;
+        using Type = __m512; 
+        using type = __m512;
         using IntegerType = __m512i;
     };
+
+    /// <summary>
+    /// Traits for the __m512i SIMD data type.
+    /// </summary>
     template<>
     struct DataTypeTraits<DataType::m512i> : public std::true_type
     {
@@ -159,7 +204,12 @@ namespace Harlinn::Math::SIMD
         static constexpr size_t AlignAs = 64;
         static constexpr size_t Size = 64;
         using Type = __m512i;
+        using type = __m512i;
     };
+
+    /// <summary>
+    /// Traits for the __m512d SIMD data type.
+    /// </summary>
     template<>
     struct DataTypeTraits<DataType::m512d> : public std::true_type
     {
@@ -167,9 +217,15 @@ namespace Harlinn::Math::SIMD
         static constexpr size_t AlignAs = 64;
         static constexpr size_t Size = 64;
         using Type = __m512d;
+        using type = __m512d;
         using IntegerType = __m512i;
     };
 
+    /// <summary>
+    /// Default traits for SIMD types that provides type information and 
+    /// properties for various element types.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     template<typename T>
     struct TraitLimits : public std::false_type
     {
@@ -177,6 +233,11 @@ namespace Harlinn::Math::SIMD
 
     namespace Internal
     {
+        /// <summary>
+        /// Implementation of trait limits for specific element and SIMD types.
+        /// </summary>
+        /// <typeparam name="ElementT">The element type.</typeparam>
+        /// <typeparam name="SIMDT">The SIMD type.</typeparam>
         template<typename ElementT, typename SIMDT>
         struct TraitLimitsImpl : public std::true_type
         {
@@ -185,6 +246,9 @@ namespace Harlinn::Math::SIMD
             static constexpr size_t Size = sizeof( SIMDType ) / sizeof( ElementType );
         };
 
+        /// <summary>
+        /// Base structure for SIMD traits.
+        /// </summary>
         struct TraitsBase : public std::true_type
         {
         };
