@@ -19,6 +19,7 @@
 
 namespace Harlinn::Windows::Graphics::DirectWrite
 {
+    /*
     // ================================================================
     // FontFileLoader
     // ================================================================
@@ -37,6 +38,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         FontFileStream result( fontFileStream );
         return result;
     }
+    
     // ================================================================
     // LocalFontFileLoader
     // ================================================================
@@ -88,6 +90,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         CheckHRESULT( hr );
         return result;
     }
+    */
 
     // ================================================================
     // FontFileStream

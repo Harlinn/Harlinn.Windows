@@ -22,6 +22,7 @@
 namespace Harlinn::Windows::Graphics::DirectWrite
 {
     class FontFileStream;
+    
     /// <summary>
     /// Handles loading font file resources of a particular type from a font file reference key into a font file stream object.
     /// </summary>
@@ -32,8 +33,82 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFileLoader, Unknown, IDWriteFontFileLoader, IUnknown )
 
-        HW_EXPORT void CreateStreamFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, IDWriteFontFileStream** fontFileStream ) const;
-        HW_EXPORT FontFileStream CreateStreamFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize ) const;
+        /// <summary>
+        /// Creates a font file stream object that encapsulates an open file resource.
+        /// </summary>
+        /// <param name="fontFileReferenceKey">
+        /// A pointer to a font file reference key that uniquely identifies the font file 
+        /// resource within the scope of the font loader being used. The buffer allocated 
+        /// for this key must at least be the size, in bytes, specified by fontFileReferenceKeySize.
+        /// </param>
+        /// <param name="fontFileReferenceKeySize">
+        /// The size of font file reference key, in bytes.
+        /// </param>
+        /// <param name="fontFileStream">
+        /// When this method returns, contains the address of a pointer to the newly created IDWriteFontFileStream object.
+        /// </param>
+        void CreateStreamFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, IDWriteFontFileStream** fontFileStream ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateStreamFromKey( fontFileReferenceKey, fontFileReferenceKeySize, fontFileStream );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Creates a font file stream object that encapsulates an open file resource.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the font file reference key container.
+        /// </typeparam>
+        /// <param name="fontFileReferenceKey">
+        /// A reference to the font file reference key container.
+        /// </param>
+        /// <param name="fontFileStream">
+        /// When this method returns, contains the address of a pointer to the newly created IDWriteFontFileStream object.
+        /// </param>
+        template<typename T>
+            requires std::is_standard_layout_v<typename T::value_type>&& ContiguousRange<T>
+        void CreateStreamFromKey( const T& fontFileReferenceKey, IDWriteFontFileStream** fontFileStream ) const
+        {
+            CreateStreamFromKey( fontFileReferenceKey.data( ), static_cast< UINT32 >( fontFileReferenceKey.size( ) * sizeof( typename T::value_type ) ), fontFileStream );
+        }
+
+
+        /// <summary>
+        /// Creates a font file stream object that encapsulates an open file resource.
+        /// </summary>
+        /// <param name="fontFileReferenceKey">
+        /// A pointer to a font file reference key that uniquely identifies the font file 
+        /// resource within the scope of the font loader being used. The buffer allocated 
+        /// for this key must at least be the size, in bytes, specified by fontFileReferenceKeySize.
+        /// </param>
+        /// <param name="fontFileReferenceKeySize">
+        /// The size of font file reference key, in bytes.
+        /// </param>
+        /// <returns>
+        /// A FontFileStream object that encapsulates the open file resource.
+        /// </returns>
+        inline FontFileStream CreateStreamFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize ) const;
+
+        /// <summary>
+        /// Creates a font file stream object that encapsulates an open file resource.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the font file reference key container.
+        /// </typeparam>
+        /// <param name="fontFileReferenceKey">
+        /// A reference to the font file reference key container.
+        /// </param>
+        /// <returns>
+        /// A FontFileStream object that encapsulates the open file resource.
+        /// </returns>
+        template<typename T>
+            requires std::is_standard_layout_v<typename T::value_type>&& ContiguousRange<T>
+        FontFileStream CreateStreamFromKey( const T& fontFileReferenceKey ) const
+        {
+            return CreateStreamFromKey( fontFileReferenceKey.data( ), static_cast<UINT32>( fontFileReferenceKey.size( ) * sizeof( typename T::value_type ) ) );
+        }
+
     };
 
     /// <summary>
@@ -49,14 +124,284 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( LocalFontFileLoader, FontFileLoader, IDWriteLocalFontFileLoader, IDWriteFontFileLoader )
 
-        HW_EXPORT void GetFilePathLengthFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, UINT32* filePathLength ) const;
-        HW_EXPORT UINT32 GetFilePathLengthFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize ) const;
+        /// <summary>
+        /// Obtains the length of the absolute file path from the font file reference key.
+        /// </summary>
+        /// <param name="fontFileReferenceKey">
+        /// A pointer to the font file reference key.
+        /// </param>
+        /// <param name="fontFileReferenceKeySize">
+        /// The size of the font file reference key, in bytes.
+        /// </param>
+        /// <param name="filePathLength">
+        /// Length of the file path string not including the terminating NULL character.
+        /// </param>
+        void GetFilePathLengthFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, UINT32* filePathLength ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFilePathLengthFromKey( fontFileReferenceKey, fontFileReferenceKeySize, filePathLength );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetFilePathFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, WCHAR* filePath, UINT32 filePathSize ) const;
-        HW_EXPORT WideString GetFilePathFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize ) const;
 
-        HW_EXPORT void GetLastWriteTimeFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, FILETIME* lastWriteTime ) const;
-        HW_EXPORT FILETIME GetLastWriteTimeFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize ) const;
+        /// <summary>
+        /// Obtains the length of the absolute file path from the font file reference key.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the font file reference key container.
+        /// </typeparam>
+        /// <param name="fontFileReferenceKey">
+        /// A reference to the font file reference key container.
+        /// </param>
+        /// <param name="filePathLength">
+        /// Length of the file path string not including the terminating NULL character.
+        /// </param>
+        template<typename T>
+            requires std::is_standard_layout_v<typename T::value_type>&& ContiguousRange<T>
+        void GetFilePathLengthFromKey( const T& fontFileReferenceKey, UINT32* filePathLength ) const
+        {
+            GetFilePathLengthFromKey( fontFileReferenceKey.data( ), static_cast<UINT32>( fontFileReferenceKey.size( ) * sizeof( typename T::value_type ) ), filePathLength );
+        }
+
+        /// <summary>
+        /// Obtains the length of the absolute file path from the font file reference key.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the font file reference key container.
+        /// </typeparam>
+        /// <param name="fontFileReferenceKey">
+        /// A reference to the font file reference key container.
+        /// </param>
+        /// <returns>
+        /// Length of the file path string not including the terminating NULL character.
+        /// </returns>
+        UINT32 GetFilePathLengthFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize ) const
+        {
+            UINT32 result = 0;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFilePathLengthFromKey( fontFileReferenceKey, fontFileReferenceKeySize, &result );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return result;
+        }
+
+        /// <summary>
+        /// Obtains the length of the absolute file path from the font file reference key.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the font file reference key container.
+        /// </typeparam>
+        /// <param name="fontFileReferenceKey">
+        /// A reference to the font file reference key container.
+        /// </param>
+        /// <returns>
+        /// Length of the file path string not including the terminating NULL character.
+        /// </returns>
+        template<typename T>
+            requires std::is_standard_layout_v<typename T::value_type>&& ContiguousRange<T>
+        UINT32 GetFilePathLengthFromKey( const T& fontFileReferenceKey ) const
+        {
+            return GetFilePathLengthFromKey( fontFileReferenceKey.data( ), static_cast<UINT32>( fontFileReferenceKey.size( ) * sizeof( typename T::value_type ) ) );
+        }
+
+        /// <summary>
+        /// Obtains the absolute font file path from the font file reference key.
+        /// </summary>
+        /// <param name="fontFileReferenceKey">
+        /// Font file reference key that uniquely identifies the local font file
+        /// within the scope of the font loader being used.
+        /// </param>
+        /// <param name="fontFileReferenceKeySize">
+        /// Size of font file reference key in bytes.
+        /// </param>
+        /// <param name="filePath">
+        /// Character array that receives the local file path.
+        /// </param>
+        /// <param name="filePathSize">
+        /// Size of the filePath array in character count including the terminated NULL character.
+        /// </param>
+        void GetFilePathFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, WCHAR* filePath, UINT32 filePathSize ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFilePathFromKey( fontFileReferenceKey, fontFileReferenceKeySize, filePath, filePathSize );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Obtains the absolute font file path from the font file reference key.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the font file reference key container.
+        /// </typeparam>
+        /// <param name="fontFileReferenceKey">
+        /// A reference to the font file reference key container.
+        /// </param>
+        /// <param name="filePath">
+        /// Character array that receives the absolute font file path.
+        /// </param>
+        /// <param name="filePathSize">
+        /// Size of the filePath array in character count including the terminated NULL character.
+        /// </param>
+        template<typename T>
+            requires std::is_standard_layout_v<typename T::value_type>&& ContiguousRange<T>
+        void GetFilePathFromKey( const T& fontFileReferenceKey, WCHAR* filePath, UINT32 filePathSize ) const
+        {
+            GetFilePathFromKey( fontFileReferenceKey.data( ), static_cast<UINT32>( fontFileReferenceKey.size( ) * sizeof( typename T::value_type ) ), filePath, filePathSize );
+        }
+
+
+        /// <summary>
+        /// Obtains the absolute font file path from the font file reference key.
+        /// </summary>
+        /// <typeparam name="ST">
+        /// The type of the string to return.
+        /// </typeparam>
+        /// <param name="fontFileReferenceKey">
+        /// Font file reference key that uniquely identifies the local font file
+        /// within the scope of the font loader being used.
+        /// </param>
+        /// <param name="fontFileReferenceKeySize">
+        /// Size of font file reference key in bytes.
+        /// </param>
+        /// <returns>
+        /// The absolute font file path.
+        /// </returns>
+        template<WideStringLike ST = WideString>
+        ST GetFilePathFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize ) const
+        {
+            UINT32 filePathSize = GetFilePathLengthFromKey( fontFileReferenceKey, fontFileReferenceKeySize );
+
+            ST result;
+
+            result.resize( filePathSize );
+
+            InterfaceType* pInterface = GetInterface( );
+            GetFilePathFromKey( fontFileReferenceKey, fontFileReferenceKeySize, result.data( ), filePathSize + 1 );
+            return result;
+        }
+
+        /// <summary>
+        /// Obtains the absolute font file path from the font file reference key.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of the font file reference key container.
+        /// </typeparam>
+        /// <typeparam name="ST">
+        /// The type of the string to return.
+        /// </typeparam>
+        /// <param name="fontFileReferenceKey">
+        /// A reference to the font file reference key container.
+        /// </param>
+        /// <returns>
+        /// The absolute font file path.
+        /// </returns>
+        template<typename T, WideStringLike ST = WideString>
+            requires std::is_standard_layout_v<typename T::value_type>&& ContiguousRange<T>
+        ST GetFilePathFromKey( const T& fontFileReferenceKey ) const
+        {
+            return GetFilePathFromKey<ST>( fontFileReferenceKey.data( ), static_cast< UINT32 >( fontFileReferenceKey.size( ) * sizeof( typename T::value_type ) ) );
+        }
+
+        /// <summary>
+        /// Obtains the last write time of a font file from the font file reference key.
+        /// </summary>
+        /// <param name="fontFileReferenceKey">
+        /// Font file reference key that uniquely identifies the local font file
+        /// within the scope of the font loader being used.
+        /// </param>
+        /// <param name="fontFileReferenceKeySize">
+        /// Size of font file reference key in bytes.
+        /// </param>
+        /// <param name="lastWriteTime">
+        /// Pointer to a FILETIME structure that receives the last write time of the font file.
+        /// </param>
+        void GetLastWriteTimeFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, FILETIME* lastWriteTime ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetLastWriteTimeFromKey( fontFileReferenceKey, fontFileReferenceKeySize, lastWriteTime );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Obtains the last write time of a font file from the font file reference key.
+        /// </summary>
+        /// <param name="fontFileReferenceKey">
+        /// Font file reference key that uniquely identifies the local font file
+        /// within the scope of the font loader being used.
+        /// </param>
+        /// <param name="fontFileReferenceKeySize">
+        /// Size of font file reference key in bytes.
+        /// </param>
+        /// <param name="lastWriteTime">
+        /// Pointer to a DateTime structure that receives the last write time of the font file.
+        /// </param>
+        void GetLastWriteTimeFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, DateTime* lastWriteTime ) const
+        {
+            FILETIME result = {};
+            GetLastWriteTimeFromKey( fontFileReferenceKey, fontFileReferenceKeySize, &result );
+            if ( lastWriteTime )
+            {
+                *lastWriteTime = DateTime::FromFileTime( result );
+            }
+            else
+            {
+                InterfaceType* pInterface = GetInterface( );
+                HCC_COM_CHECK_HRESULT2( E_POINTER, pInterface );
+            }
+        }
+
+
+        /// <summary>
+        /// Obtains the last write time of a font file from the font file reference key.
+        /// </summary>
+        /// <typeparam name="DT">
+        /// The type of the last write time to return. Must be either DateTime or FILETIME.
+        /// </typeparam>
+        /// <param name="fontFileReferenceKey">
+        /// Font file reference key that uniquely identifies the local font file
+        /// within the scope of the font loader being used.
+        /// </param>
+        /// <param name="fontFileReferenceKeySize">
+        /// Size of font file reference key in bytes.
+        /// </param>
+        /// <returns>
+        /// The last write time of the font file.
+        /// </returns>
+        template<typename DT = DateTime>
+            requires std::is_same_v<DT, DateTime> || std::is_same_v<DT, FILETIME>
+        DT GetLastWriteTimeFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize ) const
+        {
+            DT result{};
+            GetLastWriteTimeFromKey( fontFileReferenceKey, fontFileReferenceKeySize, &result );
+            return result;
+        }
+
+        /// <summary>
+        /// Obtains the last write time of a font file from the font file reference key.
+        /// </summary>
+        /// <typeparam name="DT">
+        /// The type of the last write time to return. Must be either DateTime or FILETIME.
+        /// </typeparam>
+        /// <typeparam name="T">
+        /// The type of the font file reference key. Must be a contiguous range of standard layout types.
+        /// </typeparam>
+        /// <param name="fontFileReferenceKey">
+        /// Font file reference key that uniquely identifies the local font file
+        /// within the scope of the font loader being used.
+        /// </param>
+        /// <returns>
+        /// The last write time of the font file.
+        /// </returns>
+        template<typename DT = DateTime, typename T>
+            requires std::is_standard_layout_v<typename T::value_type>&& ContiguousRange<T> &&(  std::is_same_v<DT, DateTime> || std::is_same_v<DT, FILETIME> )
+        DT GetLastWriteTimeFromKey( const T& fontFileReferenceKey ) const
+        {
+            DT result{};
+            GetLastWriteTimeFromKey( fontFileReferenceKey.data( ), static_cast<UINT32>( fontFileReferenceKey.size( ) ), &result );
+            return result;
+        }
+
+
+
     };
 
     /// <summary>
@@ -78,6 +423,16 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         HW_EXPORT void GetLastWriteTime( UINT64* lastWriteTime ) const;
         HW_EXPORT UINT64 GetLastWriteTime( ) const;
     };
+
+    inline FontFileStream FontFileLoader::CreateStreamFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize ) const
+    {
+        IDWriteFontFileStream* fontFileStream = nullptr;
+        CreateStreamFromKey( fontFileReferenceKey, fontFileReferenceKeySize, &fontFileStream );
+        FontFileStream result( fontFileStream );
+        return result;
+    }
+
+
 
     /// <summary>
     /// Represents a font file. Applications such as font managers or font viewers can call 
