@@ -1473,6 +1473,97 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
     };
 
+    /// <summary>
+    /// Represents the internal structure of a device pixel (i.e., the physical arrangement of red,
+    /// green, and blue color components) that is assumed for purposes of rendering text.
+    /// </summary>
+    enum class PixelGeometry : int
+    {
+        /// <summary>
+        /// The red, green, and blue color components of each pixel are assumed to occupy the same point.
+        /// </summary>
+        Flat = DWRITE_PIXEL_GEOMETRY_FLAT,
+
+        /// <summary>
+        /// Each pixel comprises three vertical stripes, with red on the left, green in the center, and 
+        /// blue on the right. This is the most common pixel geometry for LCD monitors.
+        /// </summary>
+        RGB = DWRITE_PIXEL_GEOMETRY_RGB,
+
+        /// <summary>
+        /// Each pixel comprises three vertical stripes, with blue on the left, green in the center, and 
+        /// red on the right.
+        /// </summary>
+        BGR = DWRITE_PIXEL_GEOMETRY_BGR
+    };
+
+
+    /// <summary>
+    /// Represents a method of rendering glyphs.
+    /// </summary>
+    enum class RenderingMode : int
+    {
+        /// <summary>
+        /// Specifies that the rendering mode is determined automatically based on the font and size.
+        /// </summary>
+        Default = DWRITE_RENDERING_MODE_DEFAULT,
+
+        /// <summary>
+        /// Specifies that no antialiasing is performed. Each pixel is either set to the foreground 
+        /// color of the text or retains the color of the background.
+        /// </summary>
+        Aliased = DWRITE_RENDERING_MODE_ALIASED,
+
+        /// <summary>
+        /// Specifies that antialiasing is performed in the horizontal direction and the appearance
+        /// of glyphs is layout-compatible with GDI using CLEARTYPE_QUALITY. Use DWRITE_MEASURING_MODE_GDI_CLASSIC 
+        /// to get glyph advances. The antialiasing may be either ClearType or grayscale depending on
+        /// the text antialiasing mode.
+        /// </summary>
+        GDIClassic = DWRITE_RENDERING_MODE_GDI_CLASSIC,
+
+        /// <summary>
+        /// Specifies that antialiasing is performed in the horizontal direction and the appearance
+        /// of glyphs is layout-compatible with GDI using CLEARTYPE_NATURAL_QUALITY. Glyph advances
+        /// are close to the font design advances, but are still rounded to whole pixels. Use
+        /// DWRITE_MEASURING_MODE_GDI_NATURAL to get glyph advances. The antialiasing may be either
+        /// ClearType or grayscale depending on the text antialiasing mode.
+        /// </summary>
+        GDINatural = DWRITE_RENDERING_MODE_GDI_NATURAL,
+
+        /// <summary>
+        /// Specifies that antialiasing is performed in the horizontal direction. This rendering
+        /// mode allows glyphs to be positioned with subpixel precision and is therefore suitable
+        /// for natural (i.e., resolution-independent) layout. The antialiasing may be either
+        /// ClearType or grayscale depending on the text antialiasing mode.
+        /// </summary>
+        Natural = DWRITE_RENDERING_MODE_NATURAL,
+
+        /// <summary>
+        /// Similar to natural mode except that antialiasing is performed in both the horizontal
+        /// and vertical directions. This is typically used at larger sizes to make curves and
+        /// diagonal lines look smoother. The antialiasing may be either ClearType or grayscale
+        /// depending on the text antialiasing mode.
+        /// </summary>
+        NaturalSymmetric = DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC,
+
+        /// <summary>
+        /// Specifies that rendering should bypass the rasterizer and use the outlines directly. 
+        /// This is typically used at very large sizes.
+        /// </summary>
+        Outline = DWRITE_RENDERING_MODE_OUTLINE,
+
+        // The following names are obsolete, but are kept as aliases to avoid breaking existing code.
+        // Each of these rendering modes may result in either ClearType or grayscale antialiasing 
+        // depending on the DWRITE_TEXT_ANTIALIASING_MODE.
+        ClearTypeGDIClassic = DWRITE_RENDERING_MODE_CLEARTYPE_GDI_CLASSIC,
+        ClearTypeGDINatural = DWRITE_RENDERING_MODE_CLEARTYPE_GDI_NATURAL,
+        ClearTypeNatural = DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL,
+        ClearTypeNaturalSymmetric = DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL_SYMMETRIC
+    };
+
+
+
 
     /// <summary>
     /// Represents text rendering settings such as ClearType level, enhanced contrast, 
@@ -1485,11 +1576,58 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( RenderingParams, Unknown, IDWriteRenderingParams, IUnknown )
 
-        HW_EXPORT FLOAT GetGamma( ) const;
-        HW_EXPORT FLOAT GetEnhancedContrast( ) const;
-        HW_EXPORT FLOAT GetClearTypeLevel( ) const;
-        HW_EXPORT DWRITE_PIXEL_GEOMETRY GetPixelGeometry( ) const;
-        HW_EXPORT DWRITE_RENDERING_MODE GetRenderingMode( ) const;
+        /// <summary>
+        /// Gets the gamma value used for gamma correction. Valid values must be
+        /// greater than zero and cannot exceed 256.
+        /// </summary>
+        FLOAT GetGamma( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            FLOAT gamma = pInterface->GetGamma( );
+            return gamma;
+        }
+
+        /// <summary>
+        /// Gets the amount of contrast enhancement. Valid values are greater than
+        /// or equal to zero.
+        /// </summary>
+        FLOAT GetEnhancedContrast( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            FLOAT enhancedContrast = pInterface->GetEnhancedContrast( );
+            return enhancedContrast;
+        }
+
+        /// <summary>
+        /// Gets the ClearType level. Valid values range from 0.0f (no ClearType) 
+        /// to 1.0f (full ClearType).
+        /// </summary>
+        FLOAT GetClearTypeLevel( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            FLOAT clearTypeLevel = pInterface->GetClearTypeLevel( );
+            return clearTypeLevel;
+        }
+
+        /// <summary>
+        /// Gets the pixel geometry.
+        /// </summary>
+        PixelGeometry GetPixelGeometry( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            DWRITE_PIXEL_GEOMETRY pixelGeometry = pInterface->GetPixelGeometry( );
+            return static_cast< PixelGeometry >( pixelGeometry ); 
+        }
+
+        /// <summary>
+        /// Gets the rendering mode.
+        /// </summary>
+        RenderingMode GetRenderingMode( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            DWRITE_RENDERING_MODE renderingMode = pInterface->GetRenderingMode( );
+            return static_cast< RenderingMode >( renderingMode );
+        }
     };
 
     
@@ -1507,27 +1645,135 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFace, Unknown, IDWriteFontFace, IUnknown )
 
-        HW_EXPORT DWRITE_FONT_FACE_TYPE GetType( ) const;
-        HW_EXPORT void GetFiles( _Inout_ UINT32* numberOfFiles, IDWriteFontFile** fontFiles ) const;
-        HW_EXPORT UINT32 GetNumberOfFiles( ) const;
-        HW_EXPORT std::shared_ptr< std::vector<FontFile> > GetFiles( ) const;
+        FontFaceType GetType( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return static_cast< FontFaceType >( pInterface->GetType( ) );
+        }
+        void GetFiles( _Inout_ UINT32* numberOfFiles, IDWriteFontFile** fontFiles ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFiles( numberOfFiles, fontFiles );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT UINT32 GetIndex( ) const;
-        HW_EXPORT DWRITE_FONT_SIMULATIONS GetSimulations( ) const;
-        HW_EXPORT BOOL IsSymbolFont( ) const;
-        HW_EXPORT void GetMetrics( DWRITE_FONT_METRICS* fontFaceMetrics ) const;
-        HW_EXPORT void GetMetrics( DWRITE_FONT_METRICS& fontFaceMetrics ) const;
-        HW_EXPORT UINT16 GetGlyphCount( ) const;
-        HW_EXPORT void GetDesignGlyphMetrics( UINT16 const* glyphIndices, UINT32 glyphCount, DWRITE_GLYPH_METRICS* glyphMetrics, BOOL isSideways = FALSE ) const;
-        HW_EXPORT void GetGlyphIndices( UINT32 const* codePoints, UINT32 codePointCount, UINT16* glyphIndices ) const;
-        HW_EXPORT void TryGetFontTable( UINT32 openTypeTableTag, const void** tableData, UINT32* tableSize, void** tableContext, BOOL* exists ) const;
-        HW_EXPORT void ReleaseFontTable( void* tableContext ) const;
-        HW_EXPORT void GetGlyphRunOutline( FLOAT emSize, UINT16 const* glyphIndices, FLOAT const* glyphAdvances, DWRITE_GLYPH_OFFSET const* glyphOffsets, UINT32 glyphCount, BOOL isSideways, BOOL isRightToLeft, IDWriteGeometrySink* geometrySink ) const;
-        HW_EXPORT void GetRecommendedRenderingMode( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MEASURING_MODE measuringMode, IDWriteRenderingParams* renderingParams, DWRITE_RENDERING_MODE* renderingMode ) const;
-        HW_EXPORT DWRITE_RENDERING_MODE GetRecommendedRenderingMode( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MEASURING_MODE measuringMode, IDWriteRenderingParams* renderingParams ) const;
+        UINT32 GetNumberOfFiles( ) const
+        {
+            UINT32 result;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFiles( &result, nullptr );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return result;
+        }
 
-        HW_EXPORT void GetGdiCompatibleMetrics( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, DWRITE_FONT_METRICS* fontFaceMetrics ) const;
-        HW_EXPORT void GetGdiCompatibleGlyphMetrics( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, BOOL useGdiNatural, UINT16 const* glyphIndices, UINT32 glyphCount, DWRITE_GLYPH_METRICS* glyphMetrics, BOOL isSideways = FALSE ) const;
+        std::vector<FontFile> GetFiles( ) const
+        {
+            UINT32 numberOfFiles = GetNumberOfFiles( );
+            IDWriteFontFile** fontFiles = reinterpret_cast< IDWriteFontFile** >( alloca( numberOfFiles * sizeof( IDWriteFontFile* ) ) );
+
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFiles( &numberOfFiles, fontFiles );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+
+            std::vector<FontFile> result( numberOfFiles );
+
+            for ( std::vector<FontFile>::size_type i = 0; i < numberOfFiles; i++ )
+            {
+                IDWriteFontFile* fontFile = fontFiles[ i ];
+                result.emplace_back( fontFile );
+            }
+
+            return result;
+        }
+
+        UINT32 GetIndex( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetIndex( );
+        }
+
+        FontSimulation GetSimulations( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return static_cast< FontSimulation >( pInterface->GetSimulations( ) );
+        }
+        BOOL IsSymbolFont( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->IsSymbolFont( );
+        }
+        void GetMetrics( DWRITE_FONT_METRICS* fontFaceMetrics ) const
+        {
+            CheckPointerNotNull( fontFaceMetrics );
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->GetMetrics( fontFaceMetrics );
+        }
+        void GetMetrics( DWRITE_FONT_METRICS& fontFaceMetrics ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->GetMetrics( &fontFaceMetrics );
+        }
+        UINT16 GetGlyphCount( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetGlyphCount( );
+        }
+        void GetDesignGlyphMetrics( UINT16 const* glyphIndices, UINT32 glyphCount, DWRITE_GLYPH_METRICS* glyphMetrics, BOOL isSideways ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetDesignGlyphMetrics( glyphIndices, glyphCount, glyphMetrics, isSideways );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void GetGlyphIndices( UINT32 const* codePoints, UINT32 codePointCount, UINT16* glyphIndices ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetGlyphIndices( codePoints, codePointCount, glyphIndices );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void TryGetFontTable( UINT32 openTypeTableTag, const void** tableData, UINT32* tableSize, void** tableContext, BOOL* exists ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->TryGetFontTable( openTypeTableTag, tableData, tableSize, tableContext, exists );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void ReleaseFontTable( void* tableContext ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->ReleaseFontTable( tableContext );
+        }
+        void GetGlyphRunOutline( FLOAT emSize, UINT16 const* glyphIndices, FLOAT const* glyphAdvances, DWRITE_GLYPH_OFFSET const* glyphOffsets, UINT32 glyphCount, BOOL isSideways, BOOL isRightToLeft, IDWriteGeometrySink* geometrySink ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetGlyphRunOutline( emSize, glyphIndices, glyphAdvances, glyphOffsets, glyphCount, isSideways, isRightToLeft, geometrySink );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void GetRecommendedRenderingMode( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MEASURING_MODE measuringMode, IDWriteRenderingParams* renderingParams, DWRITE_RENDERING_MODE* renderingMode ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetRecommendedRenderingMode( emSize, pixelsPerDip, measuringMode, renderingParams, renderingMode );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        DWRITE_RENDERING_MODE GetRecommendedRenderingMode( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MEASURING_MODE measuringMode, IDWriteRenderingParams* renderingParams ) const
+        {
+            DWRITE_RENDERING_MODE result = DWRITE_RENDERING_MODE( 0 );
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetRecommendedRenderingMode( emSize, pixelsPerDip, measuringMode, renderingParams, &result );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return result;
+        }
+
+        void GetGdiCompatibleMetrics( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, DWRITE_FONT_METRICS* fontFaceMetrics ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetGdiCompatibleMetrics( emSize, pixelsPerDip, transform, fontFaceMetrics );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void GetGdiCompatibleGlyphMetrics( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, BOOL useGdiNatural, UINT16 const* glyphIndices, UINT32 glyphCount, DWRITE_GLYPH_METRICS* glyphMetrics, BOOL isSideways ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetGdiCompatibleGlyphMetrics( emSize, pixelsPerDip, transform, useGdiNatural, glyphIndices, glyphCount, glyphMetrics, isSideways );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
     };
 
     class FontFileEnumerator;

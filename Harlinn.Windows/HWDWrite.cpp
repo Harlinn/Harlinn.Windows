@@ -182,7 +182,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         HRESULT hr = pInterface->Analyze( &isSupportedFontType, &fontFileType, nullptr, &numberOfFaces );
         CheckHRESULT( hr );
     }
-    */
+    
     // ================================================================
     // RenderingParams
     // ================================================================
@@ -211,7 +211,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         InterfaceType* pInterface = GetInterface( );
         return pInterface->GetRenderingMode( );
     }
-
+    
     // ================================================================
     // FontFace
     // ================================================================
@@ -348,7 +348,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         HRESULT hr = pInterface->GetGdiCompatibleGlyphMetrics( emSize, pixelsPerDip, transform, useGdiNatural, glyphIndices, glyphCount, glyphMetrics, isSideways );
         CheckHRESULT( hr );
     }
-
+    */
     // ================================================================
     // FontCollectionLoader
     // ================================================================
