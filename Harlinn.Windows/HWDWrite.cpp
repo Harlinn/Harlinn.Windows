@@ -90,7 +90,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         CheckHRESULT( hr );
         return result;
     }
-    */
+    
 
     // ================================================================
     // FontFileStream
@@ -137,6 +137,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         CheckHRESULT( hr );
         return result;
     }
+    
 
     // ================================================================
     // FontFile
@@ -181,7 +182,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         HRESULT hr = pInterface->Analyze( &isSupportedFontType, &fontFileType, nullptr, &numberOfFaces );
         CheckHRESULT( hr );
     }
-
+    */
     // ================================================================
     // RenderingParams
     // ================================================================

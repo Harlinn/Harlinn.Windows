@@ -21,6 +21,510 @@
 
 namespace Harlinn::Windows::Graphics::DirectWrite
 {
+    /// <summary>
+    /// The type of a font represented by a single font file.
+    /// Font formats that consist of multiple files, e.g. Type 1 .PFM and .PFB, have
+    /// separate enum values for each of the file type.
+    /// </summary>
+    enum class FontFileType : int
+    {
+        /// <summary>
+        /// Font type is not recognized by the DirectWrite font system.
+        /// </summary>
+        Unknown = DWRITE_FONT_FILE_TYPE_UNKNOWN,
+
+        /// <summary>
+        /// OpenType font with CFF outlines.
+        /// </summary>
+        CFF = DWRITE_FONT_FILE_TYPE_CFF,
+
+        /// <summary>
+        /// OpenType font with TrueType outlines.
+        /// </summary>
+        TrueType = DWRITE_FONT_FILE_TYPE_TRUETYPE,
+
+        /// <summary>
+        /// OpenType font that contains a TrueType collection.
+        /// </summary>
+        OpenTypeCollection = DWRITE_FONT_FILE_TYPE_OPENTYPE_COLLECTION,
+
+        /// <summary>
+        /// Type 1 PFM font.
+        /// </summary>
+        Type1PFM = DWRITE_FONT_FILE_TYPE_TYPE1_PFM,
+
+        /// <summary>
+        /// Type 1 PFB font.
+        /// </summary>
+        Type1PFB = DWRITE_FONT_FILE_TYPE_TYPE1_PFB,
+
+        /// <summary>
+        /// Vector .FON font.
+        /// </summary>
+        Vector = DWRITE_FONT_FILE_TYPE_VECTOR,
+
+        /// <summary>
+        /// Bitmap .FON font.
+        /// </summary>
+        Bitmap = DWRITE_FONT_FILE_TYPE_BITMAP,
+
+        // The following name is obsolete, but kept as an alias to avoid breaking existing code.
+        TrueTypeCollection = DWRITE_FONT_FILE_TYPE_OPENTYPE_COLLECTION
+    };
+
+
+    /// <summary>
+    /// The file format of a complete font face.
+    /// Font formats that consist of multiple files, e.g. Type 1 .PFM and .PFB, have
+    /// a single enum entry.
+    /// </summary>
+    enum class FontFaceType : int
+    {
+        /// <summary>
+        /// OpenType font face with CFF outlines.
+        /// </summary>
+        CFF = DWRITE_FONT_FACE_TYPE_CFF,
+
+        /// <summary>
+        /// OpenType font face with TrueType outlines.
+        /// </summary>
+        TrueType = DWRITE_FONT_FACE_TYPE_TRUETYPE,
+
+        /// <summary>
+        /// OpenType font face that is a part of a TrueType or CFF collection.
+        /// </summary>
+        OpenTypeCollection = DWRITE_FONT_FACE_TYPE_OPENTYPE_COLLECTION,
+
+        /// <summary>
+        /// A Type 1 font face.
+        /// </summary>
+        Type1 = DWRITE_FONT_FACE_TYPE_TYPE1,
+
+        /// <summary>
+        /// A vector .FON format font face.
+        /// </summary>
+        Vector = DWRITE_FONT_FACE_TYPE_VECTOR,
+
+        /// <summary>
+        /// A bitmap .FON format font face.
+        /// </summary>
+        Bitmap = DWRITE_FONT_FACE_TYPE_BITMAP,
+
+        /// <summary>
+        /// Font face type is not recognized by the DirectWrite font system.
+        /// </summary>
+        Unknown = DWRITE_FONT_FACE_TYPE_UNKNOWN,
+
+        /// <summary>
+        /// The font data includes only the CFF table from an OpenType CFF font.
+        /// This font face type can be used only for embedded fonts (i.e., custom
+        /// font file loaders) and the resulting font face object supports only the
+        /// minimum functionality necessary to render glyphs.
+        /// </summary>
+        RawCFF = DWRITE_FONT_FACE_TYPE_RAW_CFF,
+
+        // The following name is obsolete, but kept as an alias to avoid breaking existing code.
+        TrueTypeCollection = DWRITE_FONT_FACE_TYPE_OPENTYPE_COLLECTION,
+    };
+
+
+    /// <summary>
+    /// Specifies algorithmic style simulations to be applied to the font face.
+    /// Bold and oblique simulations can be combined via bitwise OR operation.
+    /// </summary>
+    enum class FontSimulation : int
+    {
+        /// <summary>
+        /// No simulations are performed.
+        /// </summary>
+        None = DWRITE_FONT_SIMULATIONS_NONE,
+
+        /// <summary>
+        /// Algorithmic emboldening is performed.
+        /// </summary>
+        Bold = DWRITE_FONT_SIMULATIONS_BOLD,
+
+        /// <summary>
+        /// Algorithmic italicization is performed.
+        /// </summary>
+        Oblique = DWRITE_FONT_SIMULATIONS_OBLIQUE
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( FontSimulation, int );
+
+
+    /// <summary>
+    /// The font weight enumeration describes common values for degree of blackness or thickness of strokes of characters in a font.
+    /// Font weight values less than 1 or greater than 999 are considered to be invalid, and they are rejected by font API functions.
+    /// </summary>
+    enum class FontWeight : int
+    {
+        /// <summary>
+        /// Predefined font weight : Thin (100).
+        /// </summary>
+        Thin = DWRITE_FONT_WEIGHT_THIN,
+
+        /// <summary>
+        /// Predefined font weight : Extra-light (200).
+        /// </summary>
+        ExtraLight = DWRITE_FONT_WEIGHT_EXTRA_LIGHT,
+
+        /// <summary>
+        /// Predefined font weight : Ultra-light (200).
+        /// </summary>
+        UltraLight = DWRITE_FONT_WEIGHT_ULTRA_LIGHT,
+
+        /// <summary>
+        /// Predefined font weight : Light (300).
+        /// </summary>
+        Light = DWRITE_FONT_WEIGHT_LIGHT,
+
+        /// <summary>
+        /// Predefined font weight : Semi-light (350).
+        /// </summary>
+        SemiLight = DWRITE_FONT_WEIGHT_SEMI_LIGHT,
+
+        /// <summary>
+        /// Predefined font weight : Normal (400).
+        /// </summary>
+        Normal = DWRITE_FONT_WEIGHT_NORMAL,
+
+        /// <summary>
+        /// Predefined font weight : Regular (400).
+        /// </summary>
+        Regular = DWRITE_FONT_WEIGHT_REGULAR,
+
+        /// <summary>
+        /// Predefined font weight : Medium (500).
+        /// </summary>
+        Medium = DWRITE_FONT_WEIGHT_MEDIUM,
+
+        /// <summary>
+        /// Predefined font weight : Demi-bold (600).
+        /// </summary>
+        DemiBold = DWRITE_FONT_WEIGHT_DEMI_BOLD,
+
+        /// <summary>
+        /// Predefined font weight : Semi-bold (600).
+        /// </summary>
+        SemiBold = DWRITE_FONT_WEIGHT_SEMI_BOLD,
+
+        /// <summary>
+        /// Predefined font weight : Bold (700).
+        /// </summary>
+        Bold = DWRITE_FONT_WEIGHT_BOLD,
+
+        /// <summary>
+        /// Predefined font weight : Extra-bold (800).
+        /// </summary>
+        ExtraBold = DWRITE_FONT_WEIGHT_EXTRA_BOLD,
+
+        /// <summary>
+        /// Predefined font weight : Ultra-bold (800).
+        /// </summary>
+        UltraBold = DWRITE_FONT_WEIGHT_ULTRA_BOLD,
+
+        /// <summary>
+        /// Predefined font weight : Black (900).
+        /// </summary>
+        Black = DWRITE_FONT_WEIGHT_BLACK,
+
+        /// <summary>
+        /// Predefined font weight : Heavy (900).
+        /// </summary>
+        Heavy = DWRITE_FONT_WEIGHT_HEAVY,
+
+        /// <summary>
+        /// Predefined font weight : Extra-black (950).
+        /// </summary>
+        ExtraBlack = DWRITE_FONT_WEIGHT_EXTRA_BLACK,
+
+        /// <summary>
+        /// Predefined font weight : Ultra-black (950).
+        /// </summary>
+        UltraBlack = DWRITE_FONT_WEIGHT_ULTRA_BLACK
+    };
+
+    /// <summary>
+    /// The font stretch enumeration describes relative change from the normal aspect ratio
+    /// as specified by a font designer for the glyphs in a font.
+    /// Values less than 1 or greater than 9 are considered to be invalid, and they are rejected by font API functions.
+    /// </summary>
+    enum class FontStretch : int
+    {
+        /// <summary>
+        /// Predefined font stretch : Not known (0).
+        /// </summary>
+        Undefined = DWRITE_FONT_STRETCH_UNDEFINED,
+
+        /// <summary>
+        /// Predefined font stretch : Ultra-condensed (1).
+        /// </summary>
+        UltraCondensed = DWRITE_FONT_STRETCH_ULTRA_CONDENSED,
+
+        /// <summary>
+        /// Predefined font stretch : Extra-condensed (2).
+        /// </summary>
+        ExtraCondensed = DWRITE_FONT_STRETCH_EXTRA_CONDENSED,
+
+        /// <summary>
+        /// Predefined font stretch : Condensed (3).
+        /// </summary>
+        Condensed = DWRITE_FONT_STRETCH_CONDENSED,
+
+        /// <summary>
+        /// Predefined font stretch : Semi-condensed (4).
+        /// </summary>
+        SemiCondensed = DWRITE_FONT_STRETCH_SEMI_CONDENSED,
+
+        /// <summary>
+        /// Predefined font stretch : Normal (5).
+        /// </summary>
+        Normal = DWRITE_FONT_STRETCH_NORMAL,
+
+        /// <summary>
+        /// Predefined font stretch : Medium (5).
+        /// </summary>
+        Medium = DWRITE_FONT_STRETCH_MEDIUM,
+
+        /// <summary>
+        /// Predefined font stretch : Semi-expanded (6).
+        /// </summary>
+        SemiExpanded = DWRITE_FONT_STRETCH_SEMI_EXPANDED,
+
+        /// <summary>
+        /// Predefined font stretch : Expanded (7).
+        /// </summary>
+        Expanded = DWRITE_FONT_STRETCH_EXPANDED,
+
+        /// <summary>
+        /// Predefined font stretch : Extra-expanded (8).
+        /// </summary>
+        ExtraExpanded = DWRITE_FONT_STRETCH_EXTRA_EXPANDED,
+
+        /// <summary>
+        /// Predefined font stretch : Ultra-expanded (9).
+        /// </summary>
+        UltraExpanded = DWRITE_FONT_STRETCH_ULTRA_EXPANDED
+    };
+
+
+    /// <summary>
+    /// The font style enumeration describes the slope style of a font face, such as Normal, Italic or Oblique.
+    /// Values other than the ones defined in the enumeration are considered to be invalid, and they are rejected by font API functions.
+    /// </summary>
+    enum class FontStyle : int
+    {
+        /// <summary>
+        /// Font slope style : Normal.
+        /// </summary>
+        Normal = DWRITE_FONT_STYLE_NORMAL,
+
+        /// <summary>
+        /// Font slope style : Oblique.
+        /// </summary>
+        Oblique = DWRITE_FONT_STYLE_OBLIQUE,
+
+        /// <summary>
+        /// Font slope style : Italic.
+        /// </summary>
+        Italic = DWRITE_FONT_STYLE_ITALIC
+    };
+
+
+    /// <summary>
+    /// The informational string enumeration identifies a string in a font.
+    /// </summary>
+    enum class InformationalStringId : int
+    {
+        /// <summary>
+        /// Unspecified name ID.
+        /// </summary>
+        None = DWRITE_INFORMATIONAL_STRING_NONE,
+
+        /// <summary>
+        /// Copyright notice provided by the font.
+        /// </summary>
+        CopyrightNotice = DWRITE_INFORMATIONAL_STRING_COPYRIGHT_NOTICE,
+
+        /// <summary>
+        /// String containing a version number.
+        /// </summary>
+        VersionStrings = DWRITE_INFORMATIONAL_STRING_VERSION_STRINGS,
+
+        /// <summary>
+        /// Trademark information provided by the font.
+        /// </summary>
+        Trademark = DWRITE_INFORMATIONAL_STRING_TRADEMARK,
+
+        /// <summary>
+        /// Name of the font manufacturer.
+        /// </summary>
+        Manufacturer = DWRITE_INFORMATIONAL_STRING_MANUFACTURER,
+
+        /// <summary>
+        /// Name of the font designer.
+        /// </summary>
+        Designer = DWRITE_INFORMATIONAL_STRING_DESIGNER,
+
+        /// <summary>
+        /// URL of font designer (with protocol, e.g., http://, ftp://).
+        /// </summary>
+        DesignerUrl = DWRITE_INFORMATIONAL_STRING_DESIGNER_URL,
+
+        /// <summary>
+        /// Description of the font. Can contain revision information, usage recommendations, history, features, etc.
+        /// </summary>
+        Description = DWRITE_INFORMATIONAL_STRING_DESCRIPTION,
+
+        /// <summary>
+        /// URL of font vendor (with protocol, e.g., http://, ftp://). If a unique serial number is embedded in the URL, it can be used to register the font.
+        /// </summary>
+        FontVendorUrl = DWRITE_INFORMATIONAL_STRING_FONT_VENDOR_URL,
+
+        /// <summary>
+        /// Description of how the font may be legally used, or different example scenarios for licensed use. This field should be written in plain language, not legalese.
+        /// </summary>
+        LicenseDescription = DWRITE_INFORMATIONAL_STRING_LICENSE_DESCRIPTION,
+
+        /// <summary>
+        /// URL where additional licensing information can be found.
+        /// </summary>
+        LicenseInfoUrl = DWRITE_INFORMATIONAL_STRING_LICENSE_INFO_URL,
+
+        /// <summary>
+        /// GDI-compatible family name. Because GDI allows a maximum of four fonts per family, fonts in the same family may have different GDI-compatible family names
+        /// (e.g., "Arial", "Arial Narrow", "Arial Black").
+        /// </summary>
+        Win32FamilyNames = DWRITE_INFORMATIONAL_STRING_WIN32_FAMILY_NAMES,
+
+        /// <summary>
+        /// GDI-compatible subfamily name.
+        /// </summary>
+        Win32SubfamilyNames = DWRITE_INFORMATIONAL_STRING_WIN32_SUBFAMILY_NAMES,
+
+        /// <summary>
+        /// Typographic family name preferred by the designer. This enables font designers to group more than four fonts in a single family without losing compatibility with
+        /// GDI. This name is typically only present if it differs from the GDI-compatible family name.
+        /// </summary>
+        TypographicFamilyNames = DWRITE_INFORMATIONAL_STRING_TYPOGRAPHIC_FAMILY_NAMES,
+
+        /// <summary>
+        /// Typographic subfamily name preferred by the designer. This name is typically only present if it differs from the GDI-compatible subfamily name. 
+        /// </summary>
+        TypographicSubfamilyNames = DWRITE_INFORMATIONAL_STRING_TYPOGRAPHIC_SUBFAMILY_NAMES,
+
+        /// <summary>
+        /// Sample text. This can be the font name or any other text that the designer thinks is the best example to display the font in.
+        /// </summary>
+        SampleText = DWRITE_INFORMATIONAL_STRING_SAMPLE_TEXT,
+
+        /// <summary>
+        /// The full name of the font, e.g. "Arial Bold", from name id 4 in the name table.
+        /// </summary>
+        FullName = DWRITE_INFORMATIONAL_STRING_FULL_NAME,
+
+        /// <summary>
+        /// The postscript name of the font, e.g. "GillSans-Bold" from name id 6 in the name table.
+        /// </summary>
+        PostscriptName = DWRITE_INFORMATIONAL_STRING_POSTSCRIPT_NAME,
+
+        /// <summary>
+        /// The postscript CID findfont name, from name id 20 in the name table.
+        /// </summary>
+        PostscriptCidName = DWRITE_INFORMATIONAL_STRING_POSTSCRIPT_CID_NAME,
+
+        /// <summary>
+        /// Family name for the weight-stretch-style model.
+        /// </summary>
+        WeightStretchStyleFamilyName = DWRITE_INFORMATIONAL_STRING_WEIGHT_STRETCH_STYLE_FAMILY_NAME,
+
+        /// <summary>
+        /// Script/language tag to identify the scripts or languages that the font was
+        /// primarily designed to support. See DWRITE_FONT_PROPERTY_ID_DESIGN_SCRIPT_LANGUAGE_TAG
+        /// for a longer description.
+        /// </summary>
+        DesignScriptLanguageTag = DWRITE_INFORMATIONAL_STRING_DESIGN_SCRIPT_LANGUAGE_TAG,
+
+        /// <summary>
+        /// Script/language tag to identify the scripts or languages that the font declares
+        /// it is able to support.
+        /// </summary>
+        SupportedScriptLanguageTag = DWRITE_INFORMATIONAL_STRING_SUPPORTED_SCRIPT_LANGUAGE_TAG,
+
+        // Obsolete aliases kept to avoid breaking existing code.
+        PreferredFamilyNames = DWRITE_INFORMATIONAL_STRING_TYPOGRAPHIC_FAMILY_NAMES,
+        PreferredSubfamilyNames = DWRITE_INFORMATIONAL_STRING_TYPOGRAPHIC_SUBFAMILY_NAMES,
+        WwsFamilyName = DWRITE_INFORMATIONAL_STRING_WEIGHT_STRETCH_STYLE_FAMILY_NAME,
+    };
+
+
+    /// <summary>
+    /// The FontMetrics structure specifies the metrics of a font face that
+    /// are applicable to all glyphs within the font face.
+    /// </summary>
+    struct FontMetrics : public DWRITE_FONT_METRICS
+    {
+        using Base = DWRITE_FONT_METRICS;
+
+        FontMetrics( )
+            : Base{}
+        {}
+    };
+
+
+    /// <summary>
+    /// The GlyphMetrics structure specifies the metrics of an individual glyph.
+    /// The units depend on how the metrics are obtained.
+    /// </summary>
+    struct GlyphMetrics : public DWRITE_GLYPH_METRICS
+    {
+        using Base = DWRITE_GLYPH_METRICS;
+
+        GlyphMetrics( )
+            : Base{}
+        {}
+    };
+
+
+    /// <summary>
+    /// Optional adjustment to a glyph's position. A glyph offset changes the 
+    /// position of a glyph without affecting the pen position. Offsets are in 
+    /// logical, pre-transform units.
+    /// </summary>
+    struct GlyphOffset : public DWRITE_GLYPH_OFFSET
+    {
+        using Base = DWRITE_GLYPH_OFFSET;
+
+        GlyphOffset( )
+            : Base{}
+        {}
+    };
+
+
+    /// <summary>
+    /// Specifies the type of DirectWrite factory object.
+    /// DirectWrite factory contains internal state such as font loader registration and cached font data.
+    /// In most cases it is recommended to use the shared factory object, because it allows multiple components
+    /// that use DirectWrite to share internal DirectWrite state and reduce memory usage.
+    /// However, there are cases when it is desirable to reduce the impact of a component,
+    /// such as a plug-in from an untrusted source, on the rest of the process by sandboxing and isolating it
+    /// from the rest of the process components. In such cases, it is recommended to use an isolated factory for the sandboxed
+    /// component.
+    /// </summary>
+    enum class FactoryType : int 
+    {
+        /// <summary>
+        /// The factory is a shared factory object that can be used by multiple components in the process.
+        /// </summary>
+        Shared = DWRITE_FACTORY_TYPE_SHARED,
+        /// <summary>
+        /// The factory is private to the component that created it. It cannot be shared with other components in the process.
+        /// </summary>
+        Isolated = DWRITE_FACTORY_TYPE_ISOLATED
+    };
+
+
     class FontFileStream;
     
     /// <summary>
@@ -414,14 +918,298 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFileStream, Unknown, IDWriteFontFileStream, IUnknown )
 
-        HW_EXPORT void ReadFileFragment( void const** fragmentStart, UINT64 fileOffset, UINT64 fragmentSize, void** fragmentContext ) const;
-        HW_EXPORT void ReleaseFileFragment( void* fragmentContext ) const;
+        /// <summary>
+        /// Reads a fragment of a font file.
+        /// </summary>
+        /// <param name="fragmentStart">
+        /// Receives the pointer to the start of the font file fragment.
+        /// </param>
+        /// <param name="fileOffset">
+        /// Offset of the fragment from the beginning of the font file.
+        /// </param>
+        /// <param name="fragmentSize">
+        /// Size of the fragment in bytes.
+        /// </param>
+        /// <param name="fragmentContext">
+        /// The client defined context to be passed to the ReleaseFileFragment.
+        /// </param>
+        void ReadFileFragment( void const** fragmentStart, UINT64 fileOffset, UINT64 fragmentSize, void** fragmentContext ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->ReadFileFragment( fragmentStart, fileOffset, fragmentSize, fragmentContext );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetFileSize( UINT64* fileSize ) const;
-        HW_EXPORT UINT64 GetFileSize( ) const;
+        /// <summary>
+        /// A moveable, span-like RAII wrapper for font file fragment data.
+        /// Automatically manages ReadFileFragment and ReleaseFileFragment lifecycle.
+        /// </summary>
+        class Fragment
+        {
+            const FontFileStream* fontFileStream_;
+            const void* fragmentStart_;
+            UINT64 fragmentSize_;
+            void* fragmentContext_;
+        public:
+            /// <summary>
+            /// Constructs an empty Fragment.
+            /// </summary>
+            Fragment( ) noexcept
+                : fontFileStream_( nullptr ), fragmentStart_( nullptr ),
+                fragmentSize_( 0 ), fragmentContext_( nullptr )
+            {}
 
-        HW_EXPORT void GetLastWriteTime( UINT64* lastWriteTime ) const;
-        HW_EXPORT UINT64 GetLastWriteTime( ) const;
+            /// <summary>
+            /// Constructs a Fragment by reading a fragment from the font file stream.
+            /// </summary>
+            /// <param name="fontFileStream">The FontFileStream to read from.</param>
+            /// <param name="fileOffset">Offset of the fragment from the beginning of the font file.</param>
+            /// <param name="fragmentSize">Size of the fragment in bytes.</param>
+            Fragment( const FontFileStream& fontFileStream, UINT64 fileOffset, UINT64 fragmentSize )
+                : fontFileStream_( &fontFileStream ), fragmentStart_( nullptr ),
+                fragmentSize_( fragmentSize ), fragmentContext_( nullptr )
+            {
+                fontFileStream_->ReadFileFragment( &fragmentStart_, fileOffset, fragmentSize, &fragmentContext_ );
+            }
+
+            /// <summary>
+            /// Move constructor.
+            /// </summary>
+            Fragment( Fragment&& other ) noexcept
+                : fontFileStream_( other.fontFileStream_ ), fragmentStart_( other.fragmentStart_ ),
+                fragmentSize_( other.fragmentSize_ ), fragmentContext_( other.fragmentContext_ )
+            {
+                other.fontFileStream_ = nullptr;
+                other.fragmentStart_ = nullptr;
+                other.fragmentSize_ = 0;
+                other.fragmentContext_ = nullptr;
+            }
+
+            /// <summary>
+            /// Move assignment operator.
+            /// </summary>
+            Fragment& operator=( Fragment&& other ) noexcept
+            {
+                if ( this != &other )
+                {
+                    Release( );
+                    fontFileStream_ = other.fontFileStream_;
+                    fragmentStart_ = other.fragmentStart_;
+                    fragmentSize_ = other.fragmentSize_;
+                    fragmentContext_ = other.fragmentContext_;
+
+                    other.fontFileStream_ = nullptr;
+                    other.fragmentStart_ = nullptr;
+                    other.fragmentSize_ = 0;
+                    other.fragmentContext_ = nullptr;
+                }
+                return *this;
+            }
+
+            /// <summary>
+            /// Destructor. Releases the fragment if it was successfully acquired.
+            /// </summary>
+            ~Fragment( ) noexcept
+            {
+                Release( );
+            }
+
+            // Deleted copy operations
+            Fragment( const Fragment& ) = delete;
+            Fragment& operator=( const Fragment& ) = delete;
+
+            /// <summary>
+            /// Returns a pointer to the fragment data.
+            /// </summary>
+            /// <returns>Pointer to the fragment data, or nullptr if no fragment is held.</returns>
+            const void* data( ) const noexcept
+            {
+                return fragmentStart_;
+            }
+
+            /// <summary>
+            /// Returns the size of the fragment in bytes.
+            /// </summary>
+            /// <returns>Size of the fragment in bytes.</returns>
+            UINT64 size( ) const noexcept
+            {
+                return fragmentSize_;
+            }
+
+            /// <summary>
+            /// Returns whether the fragment holds valid data.
+            /// </summary>
+            /// <returns>True if the fragment holds valid data; otherwise, false.</returns>
+            bool Empty( ) const noexcept
+            {
+                return fragmentStart_ == nullptr;
+            }
+
+            /// <summary>
+            /// Returns a span view of the fragment data as bytes.
+            /// </summary>
+            /// <returns>A span of bytes covering the fragment.</returns>
+            std::span<const std::byte> AsSpan( ) const noexcept
+            {
+                return std::span<const std::byte>(
+                    static_cast< const std::byte* >( fragmentStart_ ), fragmentSize_ );
+            }
+
+            /// <summary>
+            /// Returns a span view of the fragment data as a specific type.
+            /// </summary>
+            /// <typeparam name="T">The element type for the span.</typeparam>
+            /// <returns>A span of T covering the fragment (if size is compatible).</returns>
+            template<typename T>
+            std::span<const T> AsSpan( ) const noexcept
+            {
+                return std::span<const T>(
+                    static_cast< const T* >( fragmentStart_ ),
+                    fragmentSize_ / sizeof( T ) );
+            }
+
+        private:
+            /// <summary>
+            /// Releases the held fragment if valid.
+            /// </summary>
+            void Release( ) noexcept
+            {
+                if ( fontFileStream_ && fragmentContext_ )
+                {
+                    fontFileStream_->ReleaseFileFragment( fragmentContext_ );
+                }
+            }
+        };
+
+        /// <summary>
+        /// Reads a fragment of the font file.
+        /// </summary>
+        /// <param name="fileOffset">The offset in the file where the fragment starts.</param>
+        /// <param name="fragmentSize">The size of the fragment to read.</param>
+        /// <returns>A Fragment object representing the read fragment.</returns>
+        Fragment ReadFileFragment( UINT64 fileOffset, UINT64 fragmentSize ) const
+        {
+            Fragment result(*this, fileOffset, fragmentSize );
+            return result;
+        }
+
+        /// <summary>
+        /// Releases a previously acquired fragment of the font file.
+        /// </summary>
+        /// <param name="fragmentContext">The context of the fragment to release.</param>
+        void ReleaseFileFragment( void* fragmentContext ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->ReleaseFileFragment( fragmentContext );
+        }
+
+        /// <summary>
+        /// Retrieves the size of the font file.
+        /// </summary>
+        /// <param name="fileSize">A pointer to a variable that receives the file size.</param>
+        void GetFileSize( UINT64* fileSize ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFileSize( fileSize );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Retrieves the size of the font file.
+        /// </summary>
+        /// <returns>The size of the font file.</returns>
+        UINT64 GetFileSize( ) const
+        {
+            UINT64 fileSize = 0;
+            GetFileSize( &fileSize );
+            return fileSize;
+        }
+
+        /// <summary>
+        /// Retrieves the last write time of the font file.
+        /// </summary>
+        /// <param name="lastWriteTime">
+        /// A pointer to a variable that receives the last write time.
+        /// </param>
+        /// <returns>
+        /// true if the last write time was retrieved successfully; otherwise, false.
+        /// </returns>
+        bool GetLastWriteTime( UINT64* lastWriteTime ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetLastWriteTime( lastWriteTime );
+            if(FAILED(hr))
+            {
+                if ( hr == E_NOTIMPL )
+                {
+                    return false;
+                }
+                HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Retrieves the last write time of the font file.
+        /// </summary>
+        /// <param name="lastWriteTime">
+        /// A pointer to a variable that receives the last write time.
+        /// </param>
+        /// <returns>
+        /// true if the last write time was retrieved successfully; otherwise, false.
+        /// </returns>
+        bool GetLastWriteTime( FILETIME* lastWriteTime ) const
+        {
+            return GetLastWriteTime( reinterpret_cast< UINT64* >( lastWriteTime ) );
+        }
+
+        /// <summary>
+        /// Retrieves the last write time of the font file.
+        /// </summary>
+        /// <param name="lastWriteTime">
+        /// A pointer to a variable that receives the last write time.
+        /// </param>
+        /// <returns>
+        /// true if the last write time was retrieved successfully; otherwise, false.
+        /// </returns>
+        bool GetLastWriteTime( DateTime* lastWriteTime ) const
+        {
+            UINT64 result = 0;
+            if ( GetLastWriteTime( &result ) )
+            {
+                if ( lastWriteTime )
+                {
+                    *lastWriteTime = DateTime::FromFileTime( result );
+                }
+                else
+                {
+                    InterfaceType* pInterface = GetInterface( );
+                    HCC_COM_CHECK_HRESULT2( E_POINTER, pInterface );
+                }
+                return true;
+            }
+            return false;
+        }
+
+
+        /// <summary>
+        /// Retrieves the last write time of the font file.
+        /// </summary>
+        /// <typeparam name="T">The type of the last write time. Can be DateTime, FILETIME, or UINT64.</typeparam>
+        /// <returns>
+        /// An optional containing the last write time if it was retrieved successfully; otherwise, std::nullopt.
+        /// </returns>
+        template<typename T = DateTime>
+        std::optional<T> GetLastWriteTime( ) const
+            requires std::is_same_v<T, DateTime> || std::is_same_v<T, FILETIME> || std::is_same_v<T, UINT64>
+        {
+            T result{};
+            if ( GetLastWriteTime( &result ) )
+            {
+                return result;
+            }
+            return std::nullopt;
+        }
     };
 
     inline FontFileStream FontFileLoader::CreateStreamFromKey( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize ) const
@@ -446,12 +1234,243 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFile, Unknown, IDWriteFontFile, IUnknown )
 
-        HW_EXPORT void GetReferenceKey( void const** fontFileReferenceKey, UINT32* fontFileReferenceKeySize ) const;
-        HW_EXPORT void GetLoader( IDWriteFontFileLoader** fontFileLoader ) const;
-        HW_EXPORT FontFileLoader GetLoader( ) const;
-        HW_EXPORT void Analyze( BOOL* isSupportedFontType, DWRITE_FONT_FILE_TYPE* fontFileType, DWRITE_FONT_FACE_TYPE* fontFaceType, UINT32* numberOfFaces ) const;
-        HW_EXPORT void Analyze( BOOL& isSupportedFontType, DWRITE_FONT_FILE_TYPE& fontFileType, DWRITE_FONT_FACE_TYPE& fontFaceType, UINT32& numberOfFaces ) const;
-        HW_EXPORT void Analyze( BOOL& isSupportedFontType, DWRITE_FONT_FILE_TYPE& fontFileType, UINT32& numberOfFaces ) const;
+        /// <summary>
+        /// Obtains the pointer to the reference key of a font file. The returned 
+        /// pointer is valid until the font file object is released.
+        /// </summary>
+        /// <param name="fontFileReferenceKey">A pointer to a variable that receives the reference key.</param>
+        /// <param name="fontFileReferenceKeySize">A pointer to a variable that receives the size of the reference key.</param>
+        void GetReferenceKey( void const** fontFileReferenceKey, UINT32* fontFileReferenceKeySize ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetReferenceKey( fontFileReferenceKey, fontFileReferenceKeySize );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Obtains the pointer to the reference key of a font file. The returned 
+        /// span is valid until the font file object is released.
+        /// </summary>
+        /// <returns>
+        /// A span containing the reference key bytes.
+        /// </returns>
+        std::span<const std::byte> GetReferenceKey( ) const
+        {
+            void const* fontFileReferenceKey = nullptr;
+            UINT32 fontFileReferenceKeySize = 0;
+            GetReferenceKey( &fontFileReferenceKey, &fontFileReferenceKeySize );
+            return std::span<const std::byte>( reinterpret_cast< const std::byte* >( fontFileReferenceKey ), fontFileReferenceKeySize );
+        }
+
+        /// <summary>
+        /// Obtains the file loader associated with a font file object.
+        /// </summary>
+        /// <param name="fontFileLoader">
+        /// A pointer to a variable that receives the file loader.
+        /// </param>
+        void GetLoader( IDWriteFontFileLoader** fontFileLoader ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetLoader( fontFileLoader );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Obtains the file loader associated with a font file object.
+        /// </summary>
+        /// <returns>
+        /// The file loader associated with the font file object.
+        /// </returns>
+        FontFileLoader GetLoader( ) const
+        {
+            IDWriteFontFileLoader* fontFileLoader = nullptr;
+            GetLoader( &fontFileLoader );
+            FontFileLoader result( fontFileLoader );
+            return result;
+        }
+
+
+        /// <summary>
+        /// Analyzes a file and returns whether it represents a font, and whether the font type is supported by the font system.
+        /// </summary>
+        /// <param name="isSupportedFontType">
+        /// `TRUE` if the font type is supported by the font system, `FALSE` otherwise.
+        /// </param>
+        /// <param name="fontFileType">
+        /// The type of the font file. Note that even if `isSupportedFontType` is `FALSE`,
+        /// the `fontFileType` value may be different from `DWRITE_FONT_FILE_TYPE_UNKNOWN`.
+        /// </param>
+        /// <param name="fontFaceType">
+        /// The type of the font face that can be constructed from the font file.
+        /// Note that even if `isSupportedFontType` is `FALSE`, the `fontFaceType` value may be different from
+        /// `DWRITE_FONT_FACE_TYPE_UNKNOWN`.
+        /// </param>
+        /// <param name="numberOfFaces">
+        /// Number of font faces contained in the font file.
+        /// </param>
+        void Analyze( _Out_ BOOL* isSupportedFontType, _Out_ DWRITE_FONT_FILE_TYPE* fontFileType, _Out_opt_ DWRITE_FONT_FACE_TYPE* fontFaceType, _Out_ UINT32* numberOfFaces ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->Analyze( isSupportedFontType, fontFileType, fontFaceType, numberOfFaces );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+
+        /// <summary>
+        /// Analyzes a file and returns whether it represents a font, and whether the font type is supported by the font system.
+        /// </summary>
+        /// <param name="isSupportedFontType">
+        /// `true` if the font type is supported by the font system, `false` otherwise.
+        /// </param>
+        /// <param name="fontFileType">
+        /// The type of the font file. Note that even if `isSupportedFontType` is `false`,
+        /// the `fontFileType` value may be different from `FontFileType::Unknown`.
+        /// </param>
+        /// <param name="fontFaceType">
+        /// The type of the font face that can be constructed from the font file.
+        /// Note that even if `isSupportedFontType` is `false`, the `fontFaceType` value may be different from
+        /// `FontFaceType::Unknown`.
+        /// </param>
+        /// <param name="numberOfFaces">
+        /// Number of font faces contained in the font file.
+        /// </param>
+        void Analyze( _Out_ bool* isSupportedFontType, _Out_ FontFileType* fontFileType, _Out_opt_ FontFaceType* fontFaceType, _Out_ UINT32* numberOfFaces ) const
+        {
+            BOOL isft = FALSE;
+            Analyze( &isft, reinterpret_cast< DWRITE_FONT_FILE_TYPE* >( fontFileType ), reinterpret_cast< DWRITE_FONT_FACE_TYPE* >( fontFaceType ), numberOfFaces );
+            *isSupportedFontType = isft != FALSE ? true : false;
+        }
+
+        /// <summary>
+        /// Analyzes a file and returns whether it represents a font, and whether the font type is supported by the font system.
+        /// </summary>
+        /// <param name="isSupportedFontType">
+        /// `TRUE` if the font type is supported by the font system, `FALSE` otherwise.
+        /// </param>
+        /// <param name="fontFileType">
+        /// The type of the font file. Note that even if `isSupportedFontType` is `FALSE`,
+        /// the `fontFileType` value may be different from `DWRITE_FONT_FILE_TYPE_UNKNOWN`.
+        /// </param>
+        /// <param name="fontFaceType">
+        /// The type of the font face that can be constructed from the font file.
+        /// Note that even if `isSupportedFontType` is `FALSE`, the `fontFaceType` value may be different from
+        /// `DWRITE_FONT_FACE_TYPE_UNKNOWN`.
+        /// </param>
+        /// <param name="numberOfFaces">
+        /// Number of font faces contained in the font file.
+        /// </param>
+        void Analyze( BOOL& isSupportedFontType, DWRITE_FONT_FILE_TYPE& fontFileType, DWRITE_FONT_FACE_TYPE& fontFaceType, UINT32& numberOfFaces ) const
+        {
+            Analyze( &isSupportedFontType, &fontFileType, &fontFaceType, &numberOfFaces );
+        }
+
+        /// <summary>
+        /// Analyzes a file and returns whether it represents a font, and whether the font type is supported by the font system.
+        /// </summary>
+        /// <param name="isSupportedFontType">
+        /// `true` if the font type is supported by the font system, `false` otherwise.
+        /// </param>
+        /// <param name="fontFileType">
+        /// The type of the font file. Note that even if `isSupportedFontType` is `false`,
+        /// the `fontFileType` value may be different from `FontFileType::Unknown`.
+        /// </param>
+        /// <param name="fontFaceType">
+        /// The type of the font face that can be constructed from the font file.
+        /// Note that even if `isSupportedFontType` is `false`, the `fontFaceType` value may be different from
+        /// `FontFaceType::Unknown`.
+        /// </param>
+        /// <param name="numberOfFaces">
+        /// Number of font faces contained in the font file.
+        /// </param>
+        void Analyze( bool& isSupportedFontType, FontFileType& fontFileType, FontFaceType& fontFaceType, UINT32& numberOfFaces ) const
+        {
+            Analyze( &isSupportedFontType, &fontFileType, &fontFaceType, &numberOfFaces );
+        }
+
+        /// <summary>
+        /// Analyzes a file and returns whether it represents a font, and whether the font type is supported by the font system.
+        /// </summary>
+        /// <param name="isSupportedFontType">
+        /// `TRUE` if the font type is supported by the font system, `FALSE` otherwise.
+        /// </param>
+        /// <param name="fontFileType">
+        /// The type of the font file. Note that even if `isSupportedFontType` is `FALSE`,
+        /// the `fontFileType` value may be different from `DWRITE_FONT_FILE_TYPE_UNKNOWN`.
+        /// </param>
+        /// <param name="numberOfFaces">
+        /// Number of font faces contained in the font file.
+        /// </param>
+        void Analyze( BOOL& isSupportedFontType, DWRITE_FONT_FILE_TYPE& fontFileType, UINT32& numberOfFaces ) const
+        {
+            Analyze( &isSupportedFontType, &fontFileType, nullptr, &numberOfFaces );
+        }
+
+        /// <summary>
+        /// Analyzes a file and returns whether it represents a font, and whether the font type is supported by the font system.
+        /// </summary>
+        /// <param name="isSupportedFontType">
+        /// `true` if the font type is supported by the font system, `false` otherwise.
+        /// </param>
+        /// <param name="fontFileType">
+        /// The type of the font file. Note that even if `isSupportedFontType` is `false`,
+        /// the `fontFileType` value may be different from `FontFileType::Unknown`.
+        /// </param>
+        /// <param name="numberOfFaces">
+        /// Number of font faces contained in the font file.
+        /// </param>
+        void Analyze( bool& isSupportedFontType, FontFileType& fontFileType, UINT32& numberOfFaces ) const
+        {
+            Analyze( &isSupportedFontType, &fontFileType, nullptr, &numberOfFaces );
+        }
+
+
+        struct AnalyzeResult
+        {
+            bool IsSupportedFontType; 
+            FontFileType FontFileType; 
+            FontFaceType FontFaceType; 
+            UINT32 NumberOfFaces;
+        };
+
+        /// <summary>
+        /// Analyzes a font file and returns comprehensive information about its format and content.
+        /// </summary>
+        /// <returns>
+        /// An AnalyzeResult structure containing:
+        /// - IsSupportedFontType: true if the font type is supported by the font system, false otherwise.
+        /// - FontFileType: The type of the font file (e.g., TrueType, CFF, OpenTypeCollection).
+        ///   Note: this value may be different from Unknown even if IsSupportedFontType is false.
+        /// - FontFaceType: The type of the font face that can be constructed from the font file.
+        ///   Note: this value may be different from Unknown even if IsSupportedFontType is false.
+        /// - NumberOfFaces: The number of font faces contained in the font file.
+        /// </returns>
+        /// <remarks>
+        /// This is a convenience overload that combines all output parameters from the multi-parameter
+        /// Analyze overloads into a single return value. Use this method when you need all analysis results
+        /// at once. Use the multi-parameter overloads if you only need specific information.
+        /// </remarks>
+        /// <example>
+        /// <code language="cpp">
+        /// FontFile fontFile = factory.CreateFontFileReference( L"C:\\Fonts\\Arial.ttf" );
+        /// auto result = fontFile.Analyze();
+        /// 
+        /// if ( result.IsSupportedFontType )
+        /// {
+        ///     // Process font
+        ///     int faceCount = result.NumberOfFaces;
+        ///     FontFileType fileType = result.FontFileType;
+        /// }
+        /// </code>
+        /// </example>
+        AnalyzeResult Analyze( ) const
+        {
+            AnalyzeResult result{};
+            Analyze( result.IsSupportedFontType, result.FontFileType, result.FontFaceType, result.NumberOfFaces );
+            return result;
+        }
+
+
+
     };
 
 
