@@ -1645,11 +1645,27 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFace, Unknown, IDWriteFontFace, IUnknown )
 
+        /// <summary>
+        /// Obtains the file format type of a font face.
+        /// </summary>
         FontFaceType GetType( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return static_cast< FontFaceType >( pInterface->GetType( ) );
         }
+
+        /// <summary>
+        /// Obtains the font files representing a font face.
+        /// </summary>
+        /// <param name="numberOfFiles">
+        /// The number of files representing the font face.
+        /// </param>
+        /// <param name="fontFiles">
+        /// User provided array that stores pointers to font files representing the font face.
+        /// This parameter can be NULL if the user is only interested in the number of files representing the font face.
+        /// This API increments reference count of the font file pointers returned according to COM conventions, and the client
+        /// should release them when finished.
+        /// </param>
         void GetFiles( _Inout_ UINT32* numberOfFiles, IDWriteFontFile** fontFiles ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -1657,6 +1673,12 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        /// <summary>
+        /// Obtains the number of font files representing a font face.
+        /// </summary>
+        /// <returns>
+        /// The number of font files representing the font face.
+        /// </returns>
         UINT32 GetNumberOfFiles( ) const
         {
             UINT32 result;
@@ -1666,81 +1688,420 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             return result;
         }
 
+        /// <summary>
+        /// Obtains the font files representing a font face.
+        /// </summary>
+        /// <returns>
+        /// A vector of FontFile objects representing the font face.
+        /// </returns>
         std::vector<FontFile> GetFiles( ) const
         {
             UINT32 numberOfFiles = GetNumberOfFiles( );
-            IDWriteFontFile** fontFiles = reinterpret_cast< IDWriteFontFile** >( alloca( numberOfFiles * sizeof( IDWriteFontFile* ) ) );
+            std::vector<FontFile> result;
+            result.resize( numberOfFiles );
+            IDWriteFontFile** fontFiles = reinterpret_cast< IDWriteFontFile** >( result.data() );
 
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->GetFiles( &numberOfFiles, fontFiles );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
-
-            std::vector<FontFile> result( numberOfFiles );
-
-            for ( std::vector<FontFile>::size_type i = 0; i < numberOfFiles; i++ )
-            {
-                IDWriteFontFile* fontFile = fontFiles[ i ];
-                result.emplace_back( fontFile );
-            }
-
             return result;
         }
 
+        /// <summary>
+        /// Obtains the zero-based index of the font face in its font file or files. If the font files contain a single face,
+        /// the return value is zero.
+        /// </summary>
+        /// <returns>
+        /// The zero-based index of the font face in its font file or files.
+        /// </returns>
         UINT32 GetIndex( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetIndex( );
         }
 
+        /// <summary>
+        /// Obtains the algorithmic style simulation flags of a font face.
+        /// </summary>
+        /// <returns>
+        /// The algorithmic style simulation flags of the font face.
+        /// </returns>
         FontSimulation GetSimulations( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return static_cast< FontSimulation >( pInterface->GetSimulations( ) );
         }
-        BOOL IsSymbolFont( ) const
+
+
+        /// <summary>
+        /// Determines whether the font is a symbol font.
+        /// </summary>
+        /// <returns>
+        /// true if the font is a symbol font; otherwise, false.
+        /// </returns>
+        bool IsSymbolFont( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->IsSymbolFont( );
         }
+
+
+        /// <summary>
+        /// Obtains design units and common metrics for the font face.
+        /// These metrics are applicable to all the glyphs within a fontface and are used by applications for layout calculations.
+        /// </summary>
+        /// <param name="fontFaceMetrics">
+        /// Points to a DWRITE_FONT_METRICS structure to fill in.
+        /// The metrics returned by this function are in font design units.
+        /// </param>
         void GetMetrics( DWRITE_FONT_METRICS* fontFaceMetrics ) const
         {
             CheckPointerNotNull( fontFaceMetrics );
             InterfaceType* pInterface = GetInterface( );
             pInterface->GetMetrics( fontFaceMetrics );
         }
+
+        /// <summary>
+        /// Obtains design units and common metrics for the font face.
+        /// These metrics are applicable to all the glyphs within a fontface and are used by applications for layout calculations.
+        /// </summary>
+        /// <param name="fontFaceMetrics">
+        /// Reference to a DWRITE_FONT_METRICS structure to fill in.
+        /// The metrics returned by this function are in font design units.
+        /// </param>
         void GetMetrics( DWRITE_FONT_METRICS& fontFaceMetrics ) const
         {
-            InterfaceType* pInterface = GetInterface( );
-            pInterface->GetMetrics( &fontFaceMetrics );
+            GetMetrics( &fontFaceMetrics );
         }
+
+        /// <summary>
+        /// Obtains design units and common metrics for the font face.
+        /// These metrics are applicable to all the glyphs within a fontface and are used by applications for layout calculations.
+        /// </summary>
+        /// <returns>
+        /// A FontMetrics structure containing the design units and common metrics for the font face.
+        /// </returns>
+        FontMetrics GetMetrics( ) const
+        {
+            FontMetrics result;
+            GetMetrics( &result );
+            return result;
+        }
+
+        /// <summary>
+        /// Obtains the number of glyphs in the font face.
+        /// </summary>
+        /// <returns>
+        /// The number of glyphs in the font face.
+        /// </returns>
         UINT16 GetGlyphCount( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetGlyphCount( );
         }
+
+        /// <summary>
+        /// Obtains ideal glyph metrics in font design units. Design glyphs metrics are used for glyph positioning.
+        /// </summary>
+        /// <param name="glyphIndices">
+        /// An array of glyph indices to compute the metrics for.
+        /// </param>
+        /// <param name="glyphCount">
+        /// The number of elements in the glyphIndices array.
+        /// </param>
+        /// <param name="glyphMetrics">
+        /// Array of DWRITE_GLYPH_METRICS structures filled by this function.
+        /// The metrics returned by this function are in font design units.
+        /// </param>
+        /// <param name="isSideways">
+        /// Indicates whether the font is being used in a sideways run.
+        /// This can affect the glyph metrics if the font has oblique simulation
+        /// because sideways oblique simulation differs from non-sideways oblique simulation.
+        /// </param>
         void GetDesignGlyphMetrics( UINT16 const* glyphIndices, UINT32 glyphCount, DWRITE_GLYPH_METRICS* glyphMetrics, BOOL isSideways ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->GetDesignGlyphMetrics( glyphIndices, glyphCount, glyphMetrics, isSideways );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        /// <summary>
+        /// Obtains ideal glyph metrics in font design units for a span of glyph indices. Design glyph metrics are used for glyph positioning.
+        /// </summary>
+        /// <typeparam name="SpanT">
+        /// A span-like type containing glyph indices.
+        /// </typeparam>
+        /// <param name="glyphIndices">
+        /// A span of glyph indices to compute the metrics for.
+        /// </param>
+        /// <param name="isSideways">
+        /// Indicates whether the font is being used in a sideways run.
+        /// </param>
+        /// <returns>
+        /// A vector of GlyphMetrics structures containing the metrics for each glyph.
+        /// </returns>
+        template<SpanLike SpanT>
+            requires std::is_same_v<typename SpanT::value_type, UINT16> || std::is_same_v<typename SpanT::value_type, const UINT16>
+        std::vector<GlyphMetrics> GetDesignGlyphMetrics( const SpanT& glyphIndices, bool isSideways = false ) const
+        {
+            UINT32 glyphCount = static_cast<UINT32>(glyphIndices.size());
+            std::vector<GlyphMetrics> glyphMetrics( glyphCount );
+            GetDesignGlyphMetrics( glyphIndices.data(), glyphCount, glyphMetrics.data(), isSideways ? TRUE : FALSE );
+            return glyphMetrics;
+        }
+
+
+
+        /// <summary>
+        /// Returns the nominal mapping of UTF-32 Unicode code points to glyph indices as defined by the font 'cmap' table.
+        /// Note that this mapping is primarily provided for line layout engines built on top of the physical font API.
+        /// Because of OpenType glyph substitution and line layout character substitution, the nominal conversion does not always correspond
+        /// to how a Unicode string will map to glyph indices when rendering using a particular font face.
+        /// Also, note that Unicode Variation Selectors provide for alternate mappings for character to glyph.
+        /// This call will always return the default variant.
+        /// </summary>
+        /// <param name="codePoints">
+        /// An array of UTF-32 code points to obtain nominal glyph indices from.
+        /// </param>
+        /// <param name="codePointCount">
+        /// The number of elements in the codePoints array.
+        /// </param>
+        /// <param name="glyphIndices">
+        /// Array of nominal glyph indices filled by this function.
+        /// </param>
         void GetGlyphIndices( UINT32 const* codePoints, UINT32 codePointCount, UINT16* glyphIndices ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->GetGlyphIndices( codePoints, codePointCount, glyphIndices );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        /// <summary>
+        /// Finds the specified OpenType font table if it exists and returns a pointer to it.
+        /// The function accesses the underlying font data via the IDWriteFontFileStream interface
+        /// implemented by the font file loader.
+        /// </summary>
+        /// <param name="openTypeTableTag">
+        /// Four character tag of table to find.
+        /// Use the DWRITE_MAKE_OPENTYPE_TAG() macro to create it.
+        /// Unlike GDI, it does not support the special TTCF and null tags to access the whole font.
+        /// </param>
+        /// <param name="tableData">
+        /// Pointer to base of table in memory.
+        /// The pointer is only valid so long as the FontFace used to get the font table still exists
+        /// (not any other FontFace, even if it actually refers to the same physical font).
+        /// </param>
+        /// <param name="tableSize">
+        /// Byte size of table.
+        /// </param>
+        /// <param name="tableContext">
+        /// Opaque context which must be freed by calling ReleaseFontTable.
+        /// The context actually comes from the lower level IDWriteFontFileStream,
+        /// which may be implemented by the application or DWrite itself.
+        /// It is possible for a NULL tableContext to be returned, especially if
+        /// the implementation directly memory maps the whole file.
+        /// Nevertheless, always release it later, and do not use it as a test for function success.
+        /// The same table can be queried multiple times,
+        /// but each returned context can be different, so release each separately.
+        /// </param>
+        /// <param name="exists">
+        /// True if table exists.
+        /// </param>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// If a table can not be found, the function will not return an error, but the size will be 0, table NULL, and exists = FALSE.
+        /// The context does not need to be freed if the table was not found.
+        /// </returns>
+        /// <remarks>
+        /// The context for the same tag may be different for each call,
+        /// so each one must be held and released separately.
+        /// </remarks>
         void TryGetFontTable( UINT32 openTypeTableTag, const void** tableData, UINT32* tableSize, void** tableContext, BOOL* exists ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->TryGetFontTable( openTypeTableTag, tableData, tableSize, tableContext, exists );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        /// <summary>
+        /// Releases the table obtained earlier from TryGetFontTable.
+        /// </summary>
+        /// <param name="tableContext">Opaque context from TryGetFontTable.</param>
         void ReleaseFontTable( void* tableContext ) const
         {
             InterfaceType* pInterface = GetInterface( );
             pInterface->ReleaseFontTable( tableContext );
         }
+
+        /// <summary>
+        /// A moveable, RAII wrapper for OpenType font table data.
+        /// Automatically manages TryGetFontTable and ReleaseFontTable lifecycle.
+        /// </summary>
+        class FontTable
+        {
+            const FontFace* fontFace_;
+            const void* tableData_;
+            UINT32 tableSize_;
+            void* tableContext_;
+            BOOL exists_;
+        public:
+            /// <summary>
+            /// Constructs an empty FontTable.
+            /// </summary>
+            FontTable( ) noexcept
+                : fontFace_( nullptr ), tableData_( nullptr ),
+                tableSize_( 0 ), tableContext_( nullptr ), exists_( FALSE )
+            {}
+
+            /// <summary>
+            /// Constructs a FontTable by reading a font table from the font face.
+            /// </summary>
+            /// <param name="fontFace">The FontFace to read from.</param>
+            /// <param name="openTypeTableTag">Four character tag of table to find. Use DWRITE_MAKE_OPENTYPE_TAG() to create it.</param>
+            FontTable( const FontFace& fontFace, UINT32 openTypeTableTag )
+                : fontFace_( &fontFace ), tableData_( nullptr ),
+                tableSize_( 0 ), tableContext_( nullptr ), exists_( FALSE )
+            {
+                fontFace_->TryGetFontTable( openTypeTableTag, &tableData_, &tableSize_, &tableContext_, &exists_ );
+            }
+
+            /// <summary>
+            /// Move constructor.
+            /// </summary>
+            FontTable( FontTable&& other ) noexcept
+                : fontFace_( other.fontFace_ ), tableData_( other.tableData_ ),
+                tableSize_( other.tableSize_ ), tableContext_( other.tableContext_ ),
+                exists_( other.exists_ )
+            {
+                other.fontFace_ = nullptr;
+                other.tableData_ = nullptr;
+                other.tableSize_ = 0;
+                other.tableContext_ = nullptr;
+                other.exists_ = FALSE;
+            }
+
+            /// <summary>
+            /// Move assignment operator.
+            /// </summary>
+            FontTable& operator=( FontTable&& other ) noexcept
+            {
+                if ( this != &other )
+                {
+                    Release( );
+                    fontFace_ = other.fontFace_;
+                    tableData_ = other.tableData_;
+                    tableSize_ = other.tableSize_;
+                    tableContext_ = other.tableContext_;
+                    exists_ = other.exists_;
+
+                    other.fontFace_ = nullptr;
+                    other.tableData_ = nullptr;
+                    other.tableSize_ = 0;
+                    other.tableContext_ = nullptr;
+                    other.exists_ = FALSE;
+                }
+                return *this;
+            }
+
+            /// <summary>
+            /// Destructor. Releases the table if it was successfully acquired.
+            /// </summary>
+            ~FontTable( ) noexcept
+            {
+                Release( );
+            }
+
+            // Deleted copy operations
+            FontTable( const FontTable& ) = delete;
+            FontTable& operator=( const FontTable& ) = delete;
+
+            /// <summary>
+            /// Returns whether the table exists in the font face.
+            /// </summary>
+            /// <returns>True if the table exists and was successfully retrieved; otherwise, false.</returns>
+            bool Exists( ) const noexcept
+            {
+                return exists_ != FALSE;
+            }
+
+            /// <summary>
+            /// Returns a pointer to the table data.
+            /// </summary>
+            /// <returns>Pointer to the table data, or nullptr if table does not exist.</returns>
+            const void* data( ) const noexcept
+            {
+                return tableData_;
+            }
+
+            /// <summary>
+            /// Returns the size of the table in bytes.
+            /// </summary>
+            /// <returns>Size of the table in bytes, or 0 if table does not exist.</returns>
+            UINT32 size( ) const noexcept
+            {
+                return tableSize_;
+            }
+
+            /// <summary>
+            /// Returns whether the table data is empty (does not exist or has zero size).
+            /// </summary>
+            /// <returns>True if the table is empty; otherwise, false.</returns>
+            bool Empty( ) const noexcept
+            {
+                return tableData_ == nullptr || tableSize_ == 0;
+            }
+
+            /// <summary>
+            /// Returns a span view of the table data as bytes.
+            /// </summary>
+            /// <returns>A span of bytes covering the table.</returns>
+            std::span<const std::byte> AsSpan( ) const noexcept
+            {
+                return std::span<const std::byte>(
+                    static_cast< const std::byte* >( tableData_ ), tableSize_ );
+            }
+
+            /// <summary>
+            /// Returns a span view of the table data as a specific type.
+            /// </summary>
+            /// <typeparam name="T">The element type for the span.</typeparam>
+            /// <returns>A span of T covering the table (if size is compatible).</returns>
+            /// <remarks>
+            /// The number of elements in the returned span is calculated as tableSize_ / sizeof(T).
+            /// Ensure the table size is a multiple of sizeof(T) for meaningful results.
+            /// </remarks>
+            template<typename T>
+            std::span<const T> AsSpan( ) const noexcept
+            {
+                return std::span<const T>(
+                    static_cast< const T* >( tableData_ ),
+                    tableSize_ / sizeof( T ) );
+            }
+
+        private:
+            /// <summary>
+            /// Releases the held table if valid.
+            /// </summary>
+            void Release( ) noexcept
+            {
+                if ( fontFace_ && tableContext_ )
+                {
+                    fontFace_->ReleaseFontTable( tableContext_ );
+                }
+            }
+        };
+
+        /// <summary>
+        /// Retrieves an OpenType font table.
+        /// </summary>
+        /// <param name="openTypeTableTag">Four character tag of table to find. Use DWRITE_MAKE_OPENTYPE_TAG() to create it.</param>
+        /// <returns>A FontTable object representing the retrieved table.</returns>
+        FontTable GetFontTable( UINT32 openTypeTableTag ) const
+        {
+            return FontTable( *this, openTypeTableTag );
+        }
+
+
         void GetGlyphRunOutline( FLOAT emSize, UINT16 const* glyphIndices, FLOAT const* glyphAdvances, DWRITE_GLYPH_OFFSET const* glyphOffsets, UINT32 glyphCount, BOOL isSideways, BOOL isRightToLeft, IDWriteGeometrySink* geometrySink ) const
         {
             InterfaceType* pInterface = GetInterface( );
