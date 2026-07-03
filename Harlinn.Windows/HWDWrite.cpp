@@ -348,7 +348,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         HRESULT hr = pInterface->GetGdiCompatibleGlyphMetrics( emSize, pixelsPerDip, transform, useGdiNatural, glyphIndices, glyphCount, glyphMetrics, isSideways );
         CheckHRESULT( hr );
     }
-    */
+    
     // ================================================================
     // FontCollectionLoader
     // ================================================================
@@ -368,7 +368,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         FontFileEnumerator result( fontFileEnumerator );
         return result;
     }
-
+    
     // ================================================================
     // FontFileEnumerator
     // ================================================================
@@ -402,7 +402,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         FontFile result( fontFile );
         return result;
     }
-
+    
     // ================================================================
     // LocalizedStrings
     // ================================================================
@@ -488,7 +488,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         CheckHRESULT( hr );
         return result;
     }
-
+    */
     // ================================================================
     // FontCollection
     // ================================================================

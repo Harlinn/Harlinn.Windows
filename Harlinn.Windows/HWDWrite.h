@@ -2018,11 +2018,26 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             /// <summary>
             /// Returns whether the table exists in the font face.
             /// </summary>
-            /// <returns>True if the table exists and was successfully retrieved; otherwise, false.</returns>
+            /// <returns>
+            /// True if the table exists and was successfully retrieved; otherwise, false.
+            /// </returns>
             bool Exists( ) const noexcept
             {
                 return exists_ != FALSE;
             }
+
+
+            /// <summary>
+            /// Returns whether the table exists in the font face.
+            /// </summary>
+            /// <returns>
+            /// True if the table exists and was successfully retrieved; otherwise, false.
+            /// </returns>
+            explicit operator bool( ) const noexcept
+            {
+                return Exists( );
+            }
+
 
             /// <summary>
             /// Returns a pointer to the table data.
@@ -2096,24 +2111,106 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         /// </summary>
         /// <param name="openTypeTableTag">Four character tag of table to find. Use DWRITE_MAKE_OPENTYPE_TAG() to create it.</param>
         /// <returns>A FontTable object representing the retrieved table.</returns>
+        /// <example>
+        /// <code language="cpp">
+        /// // Get a specific font table (e.g., 'head' table)
+        /// auto headTable = fontFace.GetFontTable( DWRITE_MAKE_OPENTYPE_TAG( 'h', 'e', 'a', 'd' ) );
+        /// 
+        /// if ( headTable )
+        /// {
+        ///     // Access as bytes
+        ///     auto bytes = headTable.AsSpan<std::byte>();
+        ///     
+        ///     // Or access as a specific structure (if you have one defined)
+        ///     // auto headers = headTable.AsSpan<FontHeadTable>();
+        ///     
+        ///     UINT32 tableSize = headTable.size();
+        ///     const void* data = headTable.data();
+        /// }
+        /// // FontTable automatically released here
+        /// </code>
+        /// </example>
         FontTable GetFontTable( UINT32 openTypeTableTag ) const
         {
             return FontTable( *this, openTypeTableTag );
         }
 
 
+        /// <summary>
+        /// Computes the outline of a run of glyphs by calling back to the outline sink interface.
+        /// </summary>
+        /// <param name="emSize">
+        /// Logical size of the font in DIP units. A DIP ("device-independent pixel") equals 1/96 inch.
+        /// </param>
+        /// <param name="glyphIndices">
+        /// Array of glyph indices.
+        /// </param>
+        /// <param name="glyphAdvances">
+        /// Optional array of glyph advances in DIPs.
+        /// </param>
+        /// <param name="glyphOffsets">
+        /// Optional array of glyph offsets.
+        /// </param>
+        /// <param name="glyphCount">
+        /// Number of glyphs.
+        /// </param>
+        /// <param name="isSideways">
+        /// <para>
+        /// If true, specifies that glyphs are rotated 90 degrees to the left and vertical 
+        /// metrics are used.
+        /// </para>
+        /// <para>
+        /// A client can render a vertical run by specifying `isSideways = true` and rotating 
+        /// the resulting geometry 90 degrees to the right using a transform.
+        /// </para>
+        /// </param>
+        /// <param name="isRightToLeft">
+        /// If `true`, specifies that the advance direction is right to left. By default, 
+        /// the advance direction is left to right.
+        /// </param>
+        /// <param name="geometrySink">
+        /// Interface the function calls back to draw each element of the geometry.
+        /// </param>
         void GetGlyphRunOutline( FLOAT emSize, UINT16 const* glyphIndices, FLOAT const* glyphAdvances, DWRITE_GLYPH_OFFSET const* glyphOffsets, UINT32 glyphCount, BOOL isSideways, BOOL isRightToLeft, IDWriteGeometrySink* geometrySink ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->GetGlyphRunOutline( emSize, glyphIndices, glyphAdvances, glyphOffsets, glyphCount, isSideways, isRightToLeft, geometrySink );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        /// <summary>
+        /// Determines the recommended rendering mode for the font given the 
+        /// specified size and rendering parameters.
+        /// </summary>
+        /// <param name="emSize">
+        /// Logical size of the font in DIP units. A DIP ("device-independent pixel") equals 1/96 inch.
+        /// </param>
+        /// <param name="pixelsPerDip">
+        /// Number of physical pixels per DIP. For example, if the DPI of the rendering surface is 96 this 
+        /// value is 1.0f. If the DPI is 120, this value is 120.0f/96.
+        /// </param>
+        /// <param name="measuringMode">
+        /// Specifies measuring mode that will be used for glyphs in the font.
+        /// Renderer implementations may choose different rendering modes for given measuring modes, but
+        /// best results are seen when the corresponding modes match:
+        /// DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL for DWRITE_MEASURING_MODE_NATURAL
+        /// DWRITE_RENDERING_MODE_CLEARTYPE_GDI_CLASSIC for DWRITE_MEASURING_MODE_GDI_CLASSIC
+        /// DWRITE_RENDERING_MODE_CLEARTYPE_GDI_NATURAL for DWRITE_MEASURING_MODE_GDI_NATURAL
+        /// </param>
+        /// <param name="renderingParams">
+        /// Rendering parameters object. This parameter is necessary in case the 
+        /// rendering parameters object overrides the rendering mode.
+        /// </param>
+        /// <param name="renderingMode">
+        /// Receives the recommended rendering mode to use.
+        /// </param>
         void GetRecommendedRenderingMode( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MEASURING_MODE measuringMode, IDWriteRenderingParams* renderingParams, DWRITE_RENDERING_MODE* renderingMode ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->GetRecommendedRenderingMode( emSize, pixelsPerDip, measuringMode, renderingParams, renderingMode );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
         DWRITE_RENDERING_MODE GetRecommendedRenderingMode( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MEASURING_MODE measuringMode, IDWriteRenderingParams* renderingParams ) const
         {
             DWRITE_RENDERING_MODE result = DWRITE_RENDERING_MODE( 0 );
@@ -2123,12 +2220,93 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             return result;
         }
 
+        /// <summary>
+        /// <para>
+        /// Obtains design units and common metrics for the font face.
+        /// </para>
+        /// <para>
+        /// These metrics are applicable to all the glyphs within a 
+        /// fontface and are used by applications for layout calculations.
+        /// </para>
+        /// </summary>
+        /// <param name="emSize">
+        /// Logical size of the font in DIP units. A DIP ("device-independent 
+        /// pixel") equals 1/96 inch.
+        /// </param>
+        /// <param name="pixelsPerDip">
+        /// Number of physical pixels per DIP. For example, if the DPI of the 
+        /// rendering surface is 96 this value is 1.0f. If the DPI is 120, 
+        /// this value is 120.0f/96.
+        /// </param>
+        /// <param name="transform">
+        /// Optional transform applied to the glyphs and their positions. 
+        /// This transform is applied after the scaling specified by the 
+        /// font size and pixelsPerDip.
+        /// </param>
+        /// <param name="fontFaceMetrics">
+        /// Points to a DWRITE_FONT_METRICS structure to fill in. The metrics 
+        /// returned by this function are in font design units.
+        /// </param>
         void GetGdiCompatibleMetrics( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, DWRITE_FONT_METRICS* fontFaceMetrics ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->GetGdiCompatibleMetrics( emSize, pixelsPerDip, transform, fontFaceMetrics );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        /// <summary>
+        /// <para>
+        /// Obtains glyph metrics in font design units with the return values 
+        /// compatible with what GDI would produce.
+        /// </para>
+        /// <para>
+        /// Glyphs metrics are used for positioning of individual glyphs.
+        /// </para>
+        /// </summary>
+        /// <param name="emSize">
+        /// Logical size of the font in DIP units. A DIP ("device-independent 
+        /// pixel") equals 1/96 inch.
+        /// </param>
+        /// <param name="pixelsPerDip">
+        /// Number of physical pixels per DIP. For example, if the DPI of the 
+        /// rendering surface is 96 this value is 1.0f. If the DPI is 120, 
+        /// this value is 120.0f/96.
+        /// </param>
+        /// <param name="transform">
+        /// Optional transform applied to the glyphs and their positions. This 
+        /// transform is applied after the scaling specified by the font size 
+        /// and pixelsPerDip.
+        /// </param>
+        /// <param name="useGdiNatural">
+        /// <para>
+        /// When set to FALSE, the metrics are the same as the metrics of GDI 
+        /// aliased text.
+        /// </para>
+        /// <para>
+        /// When set to TRUE, the metrics are the same as the metrics of text 
+        /// measured by GDI using a font created with CLEARTYPE_NATURAL_QUALITY.
+        /// </para>
+        /// </param>
+        /// <param name="glyphIndices">
+        /// An array of glyph indices to compute the metrics for.
+        /// </param>
+        /// <param name="glyphCount">
+        /// The number of elements in the glyphIndices array.
+        /// </param>
+        /// <param name="glyphMetrics">
+        /// Array of DWRITE_GLYPH_METRICS structures filled by this function.
+        /// The metrics returned by this function are in font design units.
+        /// </param>
+        /// <param name="isSideways">
+        /// <para>
+        /// Indicates whether the font is being used in a sideways run.
+        /// </para>
+        /// <para>
+        /// This can affect the glyph metrics if the font has oblique simulation
+        /// because sideways oblique simulation differs from non-sideways oblique 
+        /// simulation.
+        /// </para>
+        /// </param>
         void GetGdiCompatibleGlyphMetrics( FLOAT emSize, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, BOOL useGdiNatural, UINT16 const* glyphIndices, UINT32 glyphCount, DWRITE_GLYPH_METRICS* glyphMetrics, BOOL isSideways ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -2148,8 +2326,22 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontCollectionLoader, Unknown, IDWriteFontCollectionLoader, IUnknown )
 
-        HW_EXPORT void CreateEnumeratorFromKey( IDWriteFactory* factory, void const* collectionKey, UINT32 collectionKeySize, IDWriteFontFileEnumerator** fontFileEnumerator ) const;
-        HW_EXPORT FontFileEnumerator CreateEnumeratorFromKey( IDWriteFactory* factory, void const* collectionKey, UINT32 collectionKeySize ) const;
+        /// <summary>
+        /// Creates a font file enumerator object that encapsulates a collection of font files.
+        /// The font system calls back to this interface to create a font collection.
+        /// </summary>
+        /// <param name="factory">Factory associated with the loader.</param>
+        /// <param name="collectionKey">Font collection key that uniquely identifies the collection of font files within
+        /// the scope of the font collection loader being used.</param>
+        /// <param name="collectionKeySize">Size of the font collection key in bytes.</param>
+        /// <param name="fontFileEnumerator">Pointer to the newly created font file enumerator.</param>
+        void CreateEnumeratorFromKey( IDWriteFactory* factory, void const* collectionKey, UINT32 collectionKeySize, IDWriteFontFileEnumerator** fontFileEnumerator ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateEnumeratorFromKey( factory, collectionKey, collectionKeySize, fontFileEnumerator );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        inline FontFileEnumerator CreateEnumeratorFromKey( IDWriteFactory* factory, void const* collectionKey, UINT32 collectionKeySize ) const;
     };
 
     /// <summary>
@@ -2163,12 +2355,42 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFileEnumerator, Unknown, IDWriteFontFileEnumerator, IUnknown )
 
-        HW_EXPORT void MoveNext( BOOL* hasCurrentFile ) const;
-        HW_EXPORT bool MoveNext( ) const;
+        void MoveNext( BOOL* hasCurrentFile ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->MoveNext( hasCurrentFile );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        bool MoveNext( ) const
+        {
+            BOOL hasCurrentFile = FALSE;
+            MoveNext( &hasCurrentFile );
+            return hasCurrentFile != FALSE;
+        }
 
-        HW_EXPORT void GetCurrentFontFile( IDWriteFontFile** fontFile ) const;
-        HW_EXPORT FontFile GetCurrentFontFile( ) const;
+        void GetCurrentFontFile( IDWriteFontFile** fontFile ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetCurrentFontFile( fontFile );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        FontFile GetCurrentFontFile( ) const
+        {
+            IDWriteFontFile* fontFile = nullptr;
+            GetCurrentFontFile( &fontFile );
+            FontFile result( fontFile );
+            return result;
+        }
     };
+
+    inline FontFileEnumerator FontCollectionLoader::CreateEnumeratorFromKey( IDWriteFactory* factory, void const* collectionKey, UINT32 collectionKeySize ) const
+    {
+        IDWriteFontFileEnumerator* fontFileEnumerator = nullptr;
+        CreateEnumeratorFromKey( factory, collectionKey, collectionKeySize, &fontFileEnumerator );
+        
+        FontFileEnumerator result( fontFileEnumerator );
+        return result;
+    }
 
 
     /// <summary>
@@ -2181,21 +2403,290 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( LocalizedStrings, Unknown, IDWriteLocalizedStrings, IUnknown )
 
-        HW_EXPORT UINT32 GetCount( ) const;
-        HW_EXPORT void FindLocaleName( WCHAR const* localeName, UINT32* index, BOOL* exists ) const;
-        HW_EXPORT bool FindLocaleName( WCHAR const* localeName, UINT32* index ) const;
+        /// <summary>
+        /// Gets the number of language/string pairs.
+        /// </summary>
+        UINT32 GetCount( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetCount( );
+        }
 
-        HW_EXPORT void GetLocaleNameLength( UINT32 index, UINT32* length ) const;
-        HW_EXPORT UINT32 GetLocaleNameLength( UINT32 index ) const;
+        /// <summary>
+        /// Gets the index of the item with the specified locale name.
+        /// </summary>
+        /// <param name="localeName">
+        /// Locale name to look for.
+        /// </param>
+        /// <param name="index">
+        /// Receives the zero-based index of the locale name/string pair.
+        /// </param>
+        /// <param name="exists">
+        /// Receives `TRUE` if the locale name exists or `FALSE` if not.
+        /// </param>
+        void FindLocaleName( WCHAR const* localeName, UINT32* index, BOOL* exists ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->FindLocaleName( localeName, index, exists );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetLocaleName( UINT32 index, WCHAR* localeName, UINT32 size ) const;
-        HW_EXPORT WideString GetLocaleName( UINT32 index ) const;
+        /// <summary>
+        /// Gets the index of the item with the specified locale name.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// The type of the string.
+        /// </typeparam>
+        /// <param name="localeName">
+        /// Locale name to look for.
+        /// </param>
+        /// <param name="index">
+        /// Receives the zero-based index of the locale name/string pair.
+        /// </param>
+        /// <param name="exists">
+        /// Receives `TRUE` if the locale name exists or `FALSE` if not.
+        /// </param>
+        template<WideStringLike StringT>
+        void FindLocaleName( const StringT& localeName, UINT32* index, BOOL* exists ) const
+        {
+            FindLocaleName( localeName.c_str( ), index, exists );
+        }
 
-        HW_EXPORT void GetStringLength( UINT32 index, UINT32* length ) const;
-        HW_EXPORT UINT32 GetStringLength( UINT32 index ) const;
+        /// <summary>
+        /// Gets the index of the item with the specified locale name.
+        /// </summary>
+        /// <param name="localeName">
+        /// Locale name to look for.
+        /// </param>
+        /// <param name="index">
+        /// Receives the zero-based index of the locale name/string pair.
+        /// </param>
+        /// <returns>
+        /// `true` if the locale name exists or `false` if not.
+        /// </returns>
+        bool FindLocaleName( WCHAR const* localeName, UINT32* index ) const
+        {
+            BOOL exists = FALSE;
+            FindLocaleName( localeName, index, &exists );
+            return exists != FALSE;
+        }
 
-        HW_EXPORT void GetString( UINT32 index, WCHAR* stringBuffer, UINT32 size ) const;
-        HW_EXPORT WideString GetString( UINT32 index ) const;
+        /// <summary>
+        /// Gets the index of the item with the specified locale name.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// The type of the string.
+        /// </typeparam>
+        /// <param name="localeName">
+        /// Locale name to look for.
+        /// </param>
+        /// <param name="index">
+        /// Receives the zero-based index of the locale name/string pair.
+        /// </param>
+        /// <returns>
+        /// `true` if the locale name exists or `false` if not.
+        /// </returns>
+        template<WideStringLike StringT>
+        bool FindLocaleName( const StringT& localeName, UINT32* index ) const
+        {
+            return FindLocaleName( localeName.c_str( ), index );
+        }
+
+
+        /// <summary>
+        /// Gets the index of the item with the specified locale name.
+        /// </summary>
+        /// <param name="localeName">
+        /// Locale name to look for.
+        /// </param>
+        /// <returns>
+        /// `std::optional<UINT32>` containing the index if the locale name exists, or `std::nullopt` if not.
+        /// </returns>
+        std::optional<UINT32> FindLocaleName( WCHAR const* localeName ) const
+        {
+            UINT32 index = 0;
+            BOOL exists = FALSE;
+            FindLocaleName( localeName, &index, &exists );
+            if ( exists )
+            { 
+                return index;
+            }
+            else
+            {
+                return std::nullopt;
+            }
+        }
+
+        /// <summary>
+        /// Gets the index of the item with the specified locale name.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// The type of the string.
+        /// </typeparam>
+        /// <param name="localeName">
+        /// Locale name to look for.
+        /// </param>
+        /// <returns>
+        /// `std::optional<UINT32>` containing the index if the locale name exists, or `std::nullopt` if not.
+        /// </returns>
+        template<WideStringLike StringT>
+        std::optional<UINT32> FindLocaleName( const StringT& localeName ) const
+        {
+            return FindLocaleName( localeName.c_str( ) );
+        }
+
+
+        /// <summary>
+        /// Gets the length in characters (not including the null terminator) 
+        /// of the locale name with the specified index.
+        /// </summary>
+        /// <param name="index">
+        /// Zero-based index of the locale name.
+        /// </param>
+        /// <param name="length">
+        /// Receives the length in characters, not including the null terminator.
+        /// </param>
+        void GetLocaleNameLength( UINT32 index, UINT32* length ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetLocaleNameLength( index, length );
+            
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Gets the length in characters (not including the null terminator) 
+        /// of the locale name with the specified index.
+        /// </summary>
+        /// <param name="index">
+        /// Zero-based index of the locale name.
+        /// </param>
+        /// <returns>
+        /// The length in characters, not including the null terminator.
+        /// </returns>
+        UINT32 GetLocaleNameLength( UINT32 index ) const
+        {
+            UINT32 result = 0;
+            GetLocaleNameLength( index, &result );
+            return result;
+        }
+
+        /// <summary>
+        /// Copies the locale name with the specified index to the specified array.
+        /// </summary>
+        /// <param name="index">
+        /// Zero-based index of the locale name.
+        /// </param>
+        /// <param name="localeName">
+        /// Character array that receives the locale name.
+        /// </param>
+        /// <param name="size">
+        /// Size of the array in characters. The size must include space for the terminating
+        /// null character.
+        /// </param>
+        void GetLocaleName( UINT32 index, WCHAR* localeName, UINT32 size ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetLocaleName( index, localeName, size );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Gets the locale name with the specified index.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// The type of the string.
+        /// </typeparam>
+        /// <param name="index">
+        /// Zero-based index of the locale name.
+        /// </param>
+        /// <returns>
+        /// The locale name.
+        /// </returns>
+        template<WideStringLike StringT = WideString>
+        StringT GetLocaleName( UINT32 index ) const
+        {
+            UINT32 size = GetLocaleNameLength( index );
+            StringT result;
+            result.resize( size );
+            GetLocaleName( index, result.data( ), size + 1 );
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the length in characters (not including the null terminator) of 
+        /// the string with the specified index.
+        /// </summary>
+        /// <param name="index">
+        /// Zero-based index of the string.
+        /// </param>
+        /// <param name="length">
+        /// Receives the length in characters, not including the null terminator.
+        /// </param>
+        void GetStringLength( UINT32 index, UINT32* length ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetStringLength( index, length );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Gets the length in characters (not including the null terminator) of 
+        /// the string with the specified index.
+        /// </summary>
+        /// <param name="index">
+        /// Zero-based index of the string.
+        /// </param>
+        /// <returns>
+        /// The length in characters, not including the null terminator.
+        /// </returns>
+        UINT32 GetStringLength( UINT32 index ) const
+        {
+            UINT32 result = 0;
+            GetStringLength( index, &result );
+            return result;
+        }
+        /// <summary>
+        /// Copies the string with the specified index to the specified array.
+        /// </summary>
+        /// <param name="index">
+        /// Zero-based index of the string.
+        /// </param>
+        /// <param name="stringBuffer">
+        /// Character array that receives the string.
+        /// </param>
+        /// <param name="size">
+        /// Size of the array in characters. The size must include space for the terminating
+        /// null character.
+        /// </param>
+        void GetString( UINT32 index, WCHAR* stringBuffer, UINT32 size ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetString( index, stringBuffer, size );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Gets the string with the specified index.
+        /// </summary>
+        /// <typeparam name="StringT">
+        /// The type of the string.
+        /// </typeparam>
+        /// <param name="index">
+        /// Zero-based index of the string.
+        /// </param>
+        /// <returns>
+        /// The string.
+        /// </returns>
+        template<WideStringLike StringT = WideString>
+        StringT GetString( UINT32 index ) const
+        {
+            UINT32 size = GetStringLength( index );
+            StringT result;
+            result.resize( size );
+            GetString( index, result.data( ), size + 1 );
+            return result;
+        }
     };
 
     class FontFamily;
