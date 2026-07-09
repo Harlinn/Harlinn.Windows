@@ -307,7 +307,7 @@ namespace Harlinn::Common::Core::Internal
 {
 
     template<typename CollectionT, typename ValueT = typename CollectionT::value_type, typename ReferenceT = std::reference_wrapper<ValueT>>
-    ReferenceT GetCollectionElement( const CollectionT* collection, size_t index )
+    inline ReferenceT GetCollectionElement( const CollectionT* collection, size_t index )
     {
         return (*collection )[ index ];
     }

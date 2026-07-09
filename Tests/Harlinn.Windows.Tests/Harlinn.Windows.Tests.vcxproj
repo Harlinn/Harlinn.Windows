@@ -172,6 +172,7 @@
   <ItemGroup>
     <ClCompile Include="Harlinn.Windows.Tests.cpp" />
     <ClCompile Include="HWCommonTests.cpp" />
+    <ClCompile Include="HWDWriteTests.cpp" />
     <ClCompile Include="HWMediaFoundationTests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1694,7 +1694,7 @@ public: \
             CheckHRESULT( E_NOTIMPL );
         }
 
-        IClassFactory factoryPtr = nullptr;
+        IClassFactory* factoryPtr = nullptr;
         HRESULT hr = dllGetClassObject( clsid, __uuidof( IClassFactory ), (void**)&factoryPtr );
         CheckHRESULT( hr );
         ClassFactory factory( factoryPtr );
@@ -1903,7 +1903,12 @@ public: \
         {
             if ( size )
             {
-                data_ = reinterpret_cast<Byte*>( CoTaskMemAlloc( size ) );
+                Byte* ptr = reinterpret_cast< Byte* >( CoTaskMemAlloc( size ) );
+                if ( !ptr )
+                {
+                    ThrowOSError( ERROR_OUTOFMEMORY );
+                }
+                data_ = ptr;
                 size_ = size;
             }
         }
@@ -2194,7 +2199,7 @@ public: \
             : data_( data )
         { }
 
-        explicit ComString( size_t size ) noexcept
+        explicit ComString( size_t size )
         {
             if ( size )
             {
@@ -2284,10 +2289,12 @@ public: \
         {
             return data_[index];
         }
-
-        WideString ToString( ) const
+        template<WideStringLike StringT = WideString>
+        StringT ToString( ) const
         {
-            return WideString( data_ );
+            if( data_ )
+                return StringT( data_ );
+            return StringT();
         }
 
         wchar_t* c_str( )
@@ -2966,6 +2973,280 @@ public: \
         HCC_EXPORT std::vector<Guid> GetSupportedKnownInterfaceIds(IUnknown* unknown);
 
     }
+
+    namespace Com::Internal
+    {
+        template<typename ListT, typename ItemT, typename IndexT = UInt32>
+        struct ListTraits
+        {
+            using ListType = ListT;
+            using ItemType = ItemT;
+            using IndexType = IndexT;
+
+            static IndexType Count( const ListType& list )
+            {
+                return list.GetCount( );
+            }
+
+            static ItemType At( const ListType& list, IndexType index )
+            {
+                return list.GetItem( index );
+            }
+        };
+
+        /// <summary>
+        /// A random access iterator for iterating over a list of items.
+        /// </summary>
+        template<typename TraitsT>
+        class ListIterator
+        {
+        public:
+            using TraitsType = TraitsT;
+            using ListType = typename TraitsT::ListType;
+            using IndexType = typename TraitsT::IndexType;
+            using ItemType = typename TraitsT::ItemType;
+        private:
+            const ListType* list_;
+            IndexType index_;
+            mutable ItemType item_;
+        public:
+            /// <summary>
+            /// Iterator category tag (for std::iterator_traits).
+            /// </summary>
+            using iterator_category = std::random_access_iterator_tag;
+            using value_type = ItemType;
+            using difference_type = std::ptrdiff_t;
+            using pointer = ItemType*;
+            using reference = ItemType&;
+
+            /// <summary>
+            /// Constructs an end iterator.
+            /// </summary>
+            ListIterator( ) noexcept
+                : list_( nullptr ), index_( 0 ), item_( )
+            {}
+
+            /// <summary>
+            /// Constructs an iterator at the specified index.
+            /// </summary>
+            /// <param name="list">Pointer to the list being iterated.</param>
+            /// <param name="index">The index in the list.</param>
+            ListIterator( const ListType* list, IndexType index ) noexcept
+                : list_( list ), index_( index )
+            {
+                if ( list_ && index_ < TraitsType::Count( *list_ ) )
+                {
+                    item_ = TraitsType::At( *list_, index_ );
+                }
+            }
+
+
+
+
+            /// <summary>
+            /// Dereferences the iterator to get the current item.
+            /// </summary>
+            /// <returns>A reference to the current item.</returns>
+            ItemType& operator*( ) noexcept
+            {
+                return item_;
+            }
+
+            /// <summary>
+            /// Accesses members of the current item.
+            /// </summary>
+            /// <returns>A pointer to the item object.</returns>
+            ItemType* operator->( ) noexcept
+            {
+                return &item_;
+            }
+
+            /// <summary>
+            /// Pre-increment operator.
+            /// </summary>
+            /// <returns>Reference to this iterator after incrementing.</returns>
+            ListIterator& operator++( ) noexcept
+            {
+                if ( list_ )
+                {
+                    auto count = TraitsType::Count( *list_ );
+                    if ( index_ < count )
+                    {
+                        ++index_;
+                        if ( index_ < count )
+                        {
+                            item_ = TraitsType::At( *list_, index_ );
+                        }
+                    }
+                }
+                return *this;
+            }
+
+            /// <summary>
+            /// Post-increment operator.
+            /// </summary>
+            /// <returns>A copy of this iterator before incrementing.</returns>
+            ListIterator operator++( int ) noexcept
+            {
+                ListIterator temp = *this;
+                ++( *this );
+                return temp;
+            }
+
+            /// <summary>
+            /// Pre-decrement operator.
+            /// </summary>
+            /// <returns>Reference to this iterator after decrementing.</returns>
+            ListIterator& operator--( ) noexcept
+            {
+                if ( list_ && index_ > 0 )
+                {
+                    --index_;
+                    item_ = TraitsType::At( *list_, index_ );
+                }
+                return *this;
+            }
+
+            /// <summary>
+            /// Post-decrement operator.
+            /// </summary>
+            /// <returns>A copy of this iterator before decrementing.</returns>
+            ListIterator operator--( int ) noexcept
+            {
+                ListIterator temp = *this;
+                --( *this );
+                return temp;
+            }
+
+            /// <summary>
+            /// Addition operator.
+            /// </summary>
+            /// <param name="offset">The offset to add.</param>
+            /// <returns>A new iterator at the offset position.</returns>
+            ListIterator operator+( difference_type offset ) const noexcept
+            {
+                ListIterator result( *this );
+                result.index_ = static_cast< UINT32 >( static_cast< std::ptrdiff_t >( result.index_ ) + offset );
+                if ( result.list_ && result.index_ < TraitsType::Count( *result.list_ ) )
+                {
+                    result.item_ = TraitsType::At( *result.list_, result.index_ );
+                }
+                return result;
+            }
+
+            /// <summary>
+            /// Subtraction operator.
+            /// </summary>
+            /// <param name="offset">The offset to subtract.</param>
+            /// <returns>A new iterator at the offset position.</returns>
+            ListIterator operator-( difference_type offset ) const noexcept
+            {
+                return operator+( -offset );
+            }
+
+            /// <summary>
+            /// Addition assignment operator.
+            /// </summary>
+            /// <param name="offset">The offset to add.</param>
+            /// <returns>Reference to this iterator after adding.</returns>
+            ListIterator& operator+=( difference_type offset ) noexcept
+            {
+                *this = operator+( offset );
+                return *this;
+            }
+
+            /// <summary>
+            /// Subtraction assignment operator.
+            /// </summary>
+            /// <param name="offset">The offset to subtract.</param>
+            /// <returns>Reference to this iterator after subtracting.</returns>
+            ListIterator& operator-=( difference_type offset ) noexcept
+            {
+                return operator+=( -offset );
+            }
+
+            /// <summary>
+            /// Subscript operator for random access.
+            /// </summary>
+            /// <param name="offset">The index offset.</param>
+            /// <returns>The item at the offset.</returns>
+            ItemType operator[]( difference_type offset ) const noexcept
+            {
+                return *( operator+( offset ) );
+            }
+
+            /// <summary>
+            /// Equality operator.
+            /// </summary>
+            /// <param name="other">The iterator to compare with.</param>
+            /// <returns>True if both iterators point to the same position; otherwise, false.</returns>
+            bool operator==( const ListIterator& other ) const noexcept
+            {
+                return list_ == other.list_ && index_ == other.index_;
+            }
+
+            /// <summary>
+            /// Inequality operator.
+            /// </summary>
+            /// <param name="other">The iterator to compare with.</param>
+            /// <returns>True if the iterators point to different positions; otherwise, false.</returns>
+            bool operator!=( const ListIterator& other ) const noexcept
+            {
+                return !operator==( other );
+            }
+
+            /// <summary>
+            /// Less-than operator.
+            /// </summary>
+            /// <param name="other">The iterator to compare with.</param>
+            /// <returns>True if this iterator points to an earlier position; otherwise, false.</returns>
+            bool operator<( const ListIterator& other ) const noexcept
+            {
+                return list_ == other.list_ && index_ < other.index_;
+            }
+
+            /// <summary>
+            /// Less-than-or-equal operator.
+            /// </summary>
+            /// <param name="other">The iterator to compare with.</param>
+            /// <returns>True if this iterator points to an earlier or equal position; otherwise, false.</returns>
+            bool operator<=( const ListIterator& other ) const noexcept
+            {
+                return list_ == other.list_ && index_ <= other.index_;
+            }
+
+            /// <summary>
+            /// Greater-than operator.
+            /// </summary>
+            /// <param name="other">The iterator to compare with.</param>
+            /// <returns>True if this iterator points to a later position; otherwise, false.</returns>
+            bool operator>( const ListIterator& other ) const noexcept
+            {
+                return list_ == other.list_ && index_ > other.index_;
+            }
+
+            /// <summary>
+            /// Greater-than-or-equal operator.
+            /// </summary>
+            /// <param name="other">The iterator to compare with.</param>
+            /// <returns>True if this iterator points to a later or equal position; otherwise, false.</returns>
+            bool operator>=( const ListIterator& other ) const noexcept
+            {
+                return list_ == other.list_ && index_ >= other.index_;
+            }
+
+            /// <summary>
+            /// Difference operator.
+            /// </summary>
+            /// <param name="other">The iterator to subtract from this one.</param>
+            /// <returns>The difference between the iterators.</returns>
+            difference_type operator-( const ListIterator& other ) const noexcept
+            {
+                return static_cast< difference_type >( index_ ) - static_cast< difference_type >( other.index_ );
+            }
+        };
+    }
+
 }
 
 namespace std

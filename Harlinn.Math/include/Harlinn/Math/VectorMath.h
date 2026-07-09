@@ -348,27 +348,18 @@ namespace Harlinn::Math
             return ( ( values_[ I ] == other[ I ] ) && ... );
         }
 
-        [[nodiscard]] constexpr bool EqualsImpl( const Vector& other ) const
+        [[nodiscard]] bool EqualsImpl( const Vector& other ) const
         {
-            ValueType* p1 = values_;
-            const ValueType* p2 = other.values_;
             for ( size_t i = 0; i < SIMDIterations; ++i )
             {
-                if constexpr ( std::is_same_v<ValueType, float> )
+                const size_t off = i * SIMDValuesPerIteration;
+                if ( !Traits::AllEqual( Traits::Load( values_ + off ),
+                    Traits::Load( other.values_ + off ) ) )
                 {
-                    __m256i pcmp = _mm256_cmpeq_pd( _mm256_load_pd( p1 ), _mm256_load_pd( p2 ) );
-                    unsigned bitmask = _mm256_movemask_epi8( pcmp );
-                    return ( bitmask == 0xffffffffU );
+                    return false;
                 }
-                else
-                {
-                    __m256i pcmp = _mm256_cmpeq_pd( _mm256_load_pd( p1 ), _mm256_load_pd( p2 ) );
-                    unsigned bitmask = _mm256_movemask_epi8( pcmp );
-                    return ( bitmask == 0xffffffffU );
-                }
-                p1 += SIMDValuesPerIteration;
-                p2 += SIMDValuesPerIteration;
             }
+            return true;
         }
 
 
@@ -973,8 +964,8 @@ namespace Harlinn::Math
         /// </param>
         template<SimdType S>
             requires std::is_same_v<Traits, typename S::Traits> ||
-        ( std::is_same_v<typename Traits::Type, typename S::Traits::Type> && ( Size > S::Size ) )
-            TupleSimd( const S & other ) noexcept
+                ( std::is_same_v<typename Traits::Type, typename S::Traits::Type> && ( Size > S::Size ) )
+        TupleSimd( const S & other ) noexcept
             : simd( other.simd )
         {
         }
@@ -1105,7 +1096,7 @@ namespace Harlinn::Math
         /// Returns an instance of the <c>Tuple2</c>, <c>Tuple3</c> or <c>Tuple4</c>
         /// derived type initialized using the <c>Size</c> first elements of <c>simd</c>.
         /// </summary>
-        TupleType Values( ) const noexcept
+        [[nodiscard]] TupleType Values( ) const noexcept
         {
             return TupleType( *this );
         }
@@ -1114,7 +1105,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns a <c>TupleSimd</c> with each element of <c>simd</c> negated.
         /// </summary>
-        TupleSimd operator - ( ) const noexcept
+        [[nodiscard]] TupleSimd operator - ( ) const noexcept
         {
             return Traits::Negate( simd );
         }
@@ -1122,7 +1113,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns <c>true</c> if each element of <c>simd</c> is equal to the corresponding element of <c>other.simd</c>, otherwise <c>false</c>.
         /// </summary>
-        bool operator == ( const TupleSimd& other ) const noexcept
+        [[nodiscard]] bool operator == ( const TupleSimd& other ) const noexcept
         {
             return Traits::AllEqual( simd, other.simd );
         }
@@ -1130,7 +1121,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns <c>true</c> if any element of <c>simd</c> is not equal to the corresponding element of <c>other.simd</c>, otherwise <c>false</c>.
         /// </summary>
-        bool operator != ( const TupleSimd& other ) const noexcept
+        [[nodiscard]] bool operator != ( const TupleSimd& other ) const noexcept
         {
             return Traits::AnyNotEqual( simd, other.simd );
         }
@@ -1139,7 +1130,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns <c>true</c> if each element of <c>simd</c> is equal to <c>value</c>, otherwise <c>false</c>.
         /// </summary>
-        bool operator == ( const value_type value ) const noexcept
+        [[nodiscard]] bool operator == ( const value_type value ) const noexcept
         {
             return Traits::AllEqual( simd, Traits::Fill( value ) );
         }
@@ -1147,7 +1138,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns <c>true</c> if any element of <c>simd</c> is not equal to <c>value</c>, otherwise <c>false</c>.
         /// </summary>
-        bool operator != ( const value_type value ) const noexcept
+        [[nodiscard]] bool operator != ( const value_type value ) const noexcept
         {
             return Traits::AnyNotEqual( simd, Traits::Fill( value ) );
         }
@@ -1157,7 +1148,7 @@ namespace Harlinn::Math
         /// </summary>
         template<Math::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
-        bool operator == ( const T& other ) const noexcept
+        [[nodiscard]] bool operator == ( const T& other ) const noexcept
         {
             return Traits::AllEqual( simd, Traits::Load( other.values ) );
         }
@@ -1167,7 +1158,7 @@ namespace Harlinn::Math
         /// </summary>
         template<Math::TupleType T>
             requires std::is_same_v<Traits, typename T::Traits>
-        bool operator != ( const T& other ) const noexcept
+        [[nodiscard]] bool operator != ( const T& other ) const noexcept
         {
             return Traits::AllEqual( simd, Traits::Load( other.values ) ) == false;
         }
@@ -1176,7 +1167,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns <c>true</c> if any element of <c>simd</c> is equal to <c>value</c>, otherwise <c>false</c>.
         /// </summary>
-        bool AnyEqual( const value_type value ) const noexcept
+        [[nodiscard]] bool AnyEqual( const value_type value ) const noexcept
         {
             return Traits::AnyEqual( simd, Traits::Fill( value ) );
         }
@@ -1184,7 +1175,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns <c>true</c> if any element of <c>simd</c> is not equal to <c>value</c>, otherwise <c>false</c>.
         /// </summary>
-        bool AnyNotEqual( const value_type value ) const noexcept
+        [[nodiscard]] bool AnyNotEqual( const value_type value ) const noexcept
         {
             return Traits::AnyNotEqual( simd, Traits::Fill( value ) );
         }
@@ -1192,7 +1183,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns <c>true</c> if any element of <c>simd</c> is not equal to zero, otherwise <c>false</c>.
         /// </summary>
-        explicit operator bool( ) const noexcept
+        [[nodiscard]] explicit operator bool( ) const noexcept
         {
             return Traits::AnyNotEqual( simd, Traits::Zero( ) );
         }
@@ -1354,7 +1345,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns <c>true</c> if at least one of the elements of <c>simd</c>` is NaN, otherwise <c>false</c>.
         /// </summary>
-        bool HasNaN( ) const noexcept
+        [[nodiscard]] bool HasNaN( ) const noexcept
         {
             return Traits::HasNaN( simd );
         }
@@ -1362,14 +1353,14 @@ namespace Harlinn::Math
         /// <summary>
         /// Replicates the first element of `simd` to all the elements of the result.
         /// </summary>
-        TupleSimd X( ) const
+        [[nodiscard]] TupleSimd X( ) const
         {
             return Traits::Trim( Traits::At<0>( simd ) );
         }
         /// <summary>
         /// Extracts the first element of `simd`.
         /// </summary>
-        value_type x( ) const
+        [[nodiscard]] value_type x( ) const
         {
             return Traits::Extract<0>( simd );
         }
@@ -1404,7 +1395,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Copies the `TupleSimd` setting the first element to its absolute value.
         /// </summary>
-        TupleSimd WithAbsX( ) const
+        [[nodiscard]] TupleSimd WithAbsX( ) const
         {
             return Traits::AbsX( simd );
         }
@@ -1418,7 +1409,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Copies the `TupleSimd` setting the first element to its negated value.
         /// </summary>
-        TupleSimd WithNegatedX( ) const
+        [[nodiscard]] TupleSimd WithNegatedX( ) const
         {
             return Traits::NegateX( simd );
         }
@@ -1427,14 +1418,14 @@ namespace Harlinn::Math
         /// <summary>
         /// Replicates the second element of `simd` to all the elements of the result.
         /// </summary>
-        TupleSimd Y( ) const
+        [[nodiscard]] TupleSimd Y( ) const
         {
             return Traits::Trim( Traits::At<1>( simd ) );
         }
         /// <summary>
         /// Extracts the second element of `simd`.
         /// </summary>
-        value_type y( ) const
+        [[nodiscard]] value_type y( ) const
         {
             return Traits::Extract<1>( simd );
         }
@@ -1469,7 +1460,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Copies the `TupleSimd` setting the second element to its absolute value.
         /// </summary>
-        TupleSimd WithAbsY( ) const noexcept
+        [[nodiscard]] TupleSimd WithAbsY( ) const noexcept
         {
             return Traits::AbsY( simd );
         }
@@ -1483,7 +1474,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Copies the `TupleSimd` setting the second element to its negated value.
         /// </summary>
-        TupleSimd WithNegatedY( ) const
+        [[nodiscard]] TupleSimd WithNegatedY( ) const
         {
             return Traits::NegateY( simd );
         }
@@ -1498,7 +1489,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Copies the `TupleSimd` setting the first and second elements to their absolute values.
         /// </summary>
-        TupleSimd WithAbsXY( ) const noexcept
+        [[nodiscard]] TupleSimd WithAbsXY( ) const noexcept
         {
             return Traits::AbsXY( simd );
         }
@@ -1512,7 +1503,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Copies the `TupleSimd` setting the first and second elements to their negated values.
         /// </summary>
-        TupleSimd WithNegatedXY( ) const
+        [[nodiscard]] TupleSimd WithNegatedXY( ) const
         {
             return Traits::NegateXY( simd );
         }
@@ -1520,14 +1511,14 @@ namespace Harlinn::Math
         /// <summary>
         /// Replicates the third element of `simd` to all the elements of the result.
         /// </summary>
-        TupleSimd Z( ) const requires ( Size > 2 )
+        [[nodiscard]] TupleSimd Z( ) const requires ( Size > 2 )
         {
             return Traits::Trim( Traits::At<2>( simd ) );
         }
         /// <summary>
         /// Extracts the third element of `simd`.
         /// </summary>
-        value_type z( ) const requires ( Size > 2 )
+        [[nodiscard]] value_type z( ) const requires ( Size > 2 )
         {
             return Traits::Extract<2>( simd );
         }
@@ -1562,7 +1553,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Copies the `TupleSimd` setting the third element to its absolute value.
         /// </summary>
-        TupleSimd WithAbsZ( ) const noexcept requires ( Size > 2 )
+        [[nodiscard]] TupleSimd WithAbsZ( ) const noexcept requires ( Size > 2 )
         {
             return Traits::AbsZ( simd );
         }
@@ -1576,7 +1567,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Copies the `TupleSimd` setting the third element to its negated value.
         /// </summary>
-        TupleSimd WithNegatedZ( ) const requires ( Size > 2 )
+        [[nodiscard]] TupleSimd WithNegatedZ( ) const requires ( Size > 2 )
         {
             return Traits::NegateZ( simd );
         }
@@ -1607,14 +1598,14 @@ namespace Harlinn::Math
         /// <summary>
         /// Replicates the fourth element of `simd` to all the elements of the result.
         /// </summary>
-        TupleSimd W( ) const requires ( Size > 3 )
+        [[nodiscard]] TupleSimd W( ) const requires ( Size > 3 )
         {
             return Traits::Trim( Traits::At<3>( simd ) );
         }
         /// <summary>
         /// Extracts the fourth element of `simd`.
         /// </summary>
-        value_type w( ) const requires ( Size > 3 )
+        [[nodiscard]] value_type w( ) const requires ( Size > 3 )
         {
             return Traits::Extract<3>( simd );
         }
@@ -1651,7 +1642,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Copies the `TupleSimd` setting the fourth element to its absolute value.
         /// </summary>
-        TupleSimd WithAbsW( ) const noexcept requires ( Size > 3 )
+        [[nodiscard]] TupleSimd WithAbsW( ) const noexcept requires ( Size > 3 )
         {
             return Traits::AbsW( simd );
         }
@@ -1665,7 +1656,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Copies the `TupleSimd` setting the fourth element to its negated value.
         /// </summary>
-        TupleSimd WithNegatedW( ) const requires ( Size > 3 )
+        [[nodiscard]] TupleSimd WithNegatedW( ) const requires ( Size > 3 )
         {
             return Traits::NegateW( simd );
         }
@@ -1673,8 +1664,9 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns the element at index `idx` in `simd`.
         /// </summary>
-        value_type operator[]( size_t idx ) const
+        [[nodiscard]] value_type operator[]( size_t idx ) const
         {
+            assert( idx < Size );
             if constexpr ( Size == 1 )
             {
                 return Traits::Extract<0>( simd );
@@ -1791,20 +1783,20 @@ namespace Harlinn::Math
                         return Traits::Extract<7>( simd );
                 }
             }
-            return operator[]( idx% Size );
+            return operator[]( Size - 1 );
         }
 
         /// <summary>
         /// Returns a `TupleSimd` with all elements set to zero.
         /// </summary>
-        static TupleSimd Zero( ) noexcept
+        [[nodiscard]] static TupleSimd Zero( ) noexcept
         {
             return TupleSimd( Traits::Zero( ) );
         }
         /// <summary>
         /// Returns a `TupleSimd` with all elements set to one.
         /// </summary>
-        static TupleSimd One( ) noexcept
+        [[nodiscard]] static TupleSimd One( ) noexcept
         {
             return TupleSimd( Traits::Fill<Size>( static_cast< value_type >( 1 ) ) );
         }
@@ -1812,14 +1804,14 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns a `TupleSimd` the first element set to 1, and the other elements set to 0.
         /// </summary>
-        static TupleSimd UnitX( ) noexcept
+        [[nodiscard]] static TupleSimd UnitX( ) noexcept
         {
             return TupleSimd( Traits::Set( static_cast< value_type >( 1 ) ) );
         }
         /// <summary>
         /// Returns a `TupleSimd` the second element set to 1, and the other elements set to 0.
         /// </summary>
-        static TupleSimd UnitY( ) noexcept
+        [[nodiscard]] static TupleSimd UnitY( ) noexcept
         {
             return TupleSimd( Traits::Set( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) ) );
         }
@@ -1827,7 +1819,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns a `TupleSimd` the third element set to 1, and the other elements set to 0.
         /// </summary>
-        static TupleSimd UnitZ( ) noexcept requires ( Size >= 3 )
+        [[nodiscard]] static TupleSimd UnitZ( ) noexcept requires ( Size >= 3 )
         {
             return TupleSimd( Traits::Set( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) ) );
         }
@@ -1835,7 +1827,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns a `TupleSimd` the fourth element set to 1, and the other elements set to 0.
         /// </summary>
-        static TupleSimd UnitW( ) noexcept requires ( Size >= 4 )
+        [[nodiscard]] static TupleSimd UnitW( ) noexcept requires ( Size >= 4 )
         {
             return TupleSimd( Traits::Set( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) ) );
         }
@@ -1843,21 +1835,21 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns a `TupleSimd` containing the unit vector for the up direction.
         /// </summary>
-        static TupleSimd Up( ) noexcept requires ( Size >= 3 )
+        [[nodiscard]] static TupleSimd Up( ) noexcept requires ( Size >= 3 )
         {
             return TupleSimd( Traits::Set( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) ) );
         }
         /// <summary>
         /// Returns a `TupleSimd` containing the unit vector for the down direction.
         /// </summary>
-        static TupleSimd Down( ) noexcept requires ( Size >= 3 )
+        [[nodiscard]] static TupleSimd Down( ) noexcept requires ( Size >= 3 )
         {
             return TupleSimd( Traits::Set( static_cast< value_type >( -1 ), static_cast< value_type >( 0 ) ) );
         }
         /// <summary>
         /// Returns a `TupleSimd` containing the unit vector for the right direction.
         /// </summary>
-        static TupleSimd Right( ) noexcept requires ( Size >= 3 )
+        [[nodiscard]] static TupleSimd Right( ) noexcept requires ( Size >= 3 )
         {
             return TupleSimd( Traits::Set( static_cast< value_type >( 1 ) ) );
         }
@@ -1865,7 +1857,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns a `TupleSimd` containing the unit vector for the left direction.
         /// </summary>
-        static TupleSimd Left( ) noexcept requires ( Size >= 3 )
+        [[nodiscard]] static TupleSimd Left( ) noexcept requires ( Size >= 3 )
         {
             return TupleSimd( Traits::Set( static_cast< value_type >( -1 ) ) );
         }
@@ -1873,7 +1865,7 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns a `TupleSimd` containing the unit vector for the forward direction.
         /// </summary>
-        static TupleSimd Forward( ) noexcept requires ( Size >= 3 )
+        [[nodiscard]] static TupleSimd Forward( ) noexcept requires ( Size >= 3 )
         {
             return TupleSimd( Traits::Set( static_cast< value_type >( -1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) ) );
         }
@@ -1881,12 +1873,15 @@ namespace Harlinn::Math
         /// <summary>
         /// Returns a `TupleSimd` containing the unit vector for the backward direction.
         /// </summary>
-        static TupleSimd Backward( ) noexcept requires ( Size >= 3 )
+        [[nodiscard]] static TupleSimd Backward( ) noexcept requires ( Size >= 3 )
         {
             return TupleSimd( Traits::Set( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) ) );
         }
-
-        std::string ToString( ) const
+        
+        /// <summary>
+        /// Returns a string representation of the tuple.
+        /// </summary>
+        [[nodiscard]] std::string ToString( ) const
         {
             if constexpr ( Size == 2 )
             {
@@ -2021,35 +2016,63 @@ namespace Harlinn::Math
         }
 
 
-
-        Simd ToSimd( ) const noexcept
+        /// <summary>
+        /// Converts the tuple to a SIMD representation.
+        /// </summary>
+        /// <returns>A SIMD representation of the tuple.</returns>
+        [[nodiscard]] Simd ToSimd( ) const noexcept
         {
             return Simd( Traits::Load( values ) );
         }
 
-        operator Simd( ) const noexcept
+        /// <summary>
+        /// Converts the tuple to a SIMD representation.
+        /// </summary>
+        [[nodiscard]] operator Simd( ) const noexcept
         {
             return ToSimd( );
         }
 
+        /// <summary>
+        /// Compares the tuple with another tuple for equality.
+        /// </summary>
+        /// <param name="other">The other tuple to compare with.</param>
+        /// <returns>True if the tuples are equal, false otherwise.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
-        constexpr bool operator == ( const U& other ) const noexcept
+        [[nodiscard]] constexpr bool operator == ( const U& other ) const noexcept
         {
             return IsSameValue( x, other.x ) && IsSameValue( y, other.y );
         }
+        /// <summary>
+        /// Compares the tuple with another tuple for inequality.
+        /// </summary>
+        /// <typeparam name="U">The type of the other tuple.</typeparam>
+        /// <param name="other">The other tuple to compare with.</param>
+        /// <returns>True if the tuples are not equal, false otherwise.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
-        constexpr bool operator != ( const U& other ) const noexcept
+        [[nodiscard]] constexpr bool operator != ( const U& other ) const noexcept
         {
             return !IsSameValue( x, other.x ) || !IsSameValue( y, other.y );
         }
 
-        constexpr bool operator == ( value_type value ) const noexcept
+        /// <summary>
+        /// Compares the tuple with a scalar value for equality.
+        /// </summary>
+        /// <param name="value">The scalar value to compare with.</param>
+        /// <returns>True if each value of the tuple is equal to the scalar value, false otherwise.</returns>
+        [[nodiscard]] constexpr bool operator == ( value_type value ) const noexcept
         {
             return IsSameValue( x, value ) && IsSameValue( y, value );
         }
-        constexpr bool operator != ( value_type value ) const noexcept
+
+        /// <summary>
+        /// Compares the tuple with a scalar value for inequality.
+        /// </summary>
+        /// <param name="value">The scalar value to compare with.</param>
+        /// <returns>True if any value of the tuple is not equal to the scalar value, false otherwise.</returns>
+        [[nodiscard]] constexpr bool operator != ( value_type value ) const noexcept
         {
             return !IsSameValue( x, value ) || !IsSameValue( y, value );
         }
@@ -3601,7 +3624,7 @@ namespace Harlinn::Math
     inline bool AnyTrue( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
-        return Traits::AllTrue( Internal::ToSimd( v ) );
+        return Traits::AnyTrue( Internal::ToSimd( v ) );
     }
 
     // Less
@@ -5357,7 +5380,7 @@ namespace Harlinn::Math
             auto lengthSquared = LengthSquared( v );
 
             const auto zero = Traits::Zero( );
-            typename Traits::SIMDType infinity = { { 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000 } };
+            const auto infinity = Traits::Constants::Infinity;
 
             auto reciprocalLength = ReciprocalSqrt( lengthSquared );
 
@@ -11779,7 +11802,7 @@ namespace Harlinn::Math
     private:
         static constexpr MatrixData MakeDefaultValue( ) noexcept
         {
-            MatrixData m;
+            MatrixData m{};
             for ( int i = 0; i < N; ++i )
             {
                 for ( int j = 0; j < N; ++j )
@@ -11794,14 +11817,14 @@ namespace Harlinn::Math
             requires std::is_same_v<typename T::value_type, value_type>
         static MatrixData MakeData( const T& mat ) noexcept
         {
-            MatrixData result;
+            MatrixData result{};
             memcpy( result[ 0 ].data( ), mat.data( ), std::min( Size * Size, mat.size( ) ) * sizeof( value_type ) );
             return result;
         }
 
         static MatrixData MakeData( const value_type mat[ Size ][ Size ] ) noexcept
         {
-            MatrixData result;
+            MatrixData result{};
             memcpy( result[ 0 ].data( ), &mat[ 0 ][ 0 ], Size * Size * sizeof( value_type ) );
             return result;
         }

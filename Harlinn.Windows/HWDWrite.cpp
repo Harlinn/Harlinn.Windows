@@ -488,7 +488,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         CheckHRESULT( hr );
         return result;
     }
-    */
+    
     // ================================================================
     // FontCollection
     // ================================================================
@@ -556,6 +556,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         return result;
     }
 
+    
     // ================================================================
     // FontList
     // ================================================================
@@ -594,6 +595,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         Font result( font );
         return result;
     }
+    */
     // ================================================================
     // FontFamily
     // ================================================================

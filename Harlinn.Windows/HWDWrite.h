@@ -2351,7 +2351,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
     class FontFileEnumerator : public Unknown
     {
     public:
-        typedef Unknown Base;
+        using Base = Unknown;
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFileEnumerator, Unknown, IDWriteFontFileEnumerator, IUnknown )
 
@@ -2399,7 +2399,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
     class LocalizedStrings : public Unknown
     {
     public:
-        typedef Unknown Base;
+        using Base = Unknown;
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( LocalizedStrings, Unknown, IDWriteLocalizedStrings, IUnknown )
 
@@ -2689,6 +2689,13 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         }
     };
 
+
+    namespace Internal
+    {
+        class FontCollectionIterator;
+    }
+
+
     class FontFamily;
     class Font;
     /// <summary>
@@ -2700,21 +2707,84 @@ namespace Harlinn::Windows::Graphics::DirectWrite
     class FontCollection : public Unknown
     {
     public:
-        typedef Unknown Base;
+        using Base = Unknown;
+        using Iterator = Internal::FontCollectionIterator;
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontCollection, Unknown, IDWriteFontCollection, IUnknown )
 
-        HW_EXPORT UINT32 GetFontFamilyCount( ) const;
-        HW_EXPORT void GetFontFamily( UINT32 index, IDWriteFontFamily** fontFamily ) const;
-        HW_EXPORT FontFamily GetFontFamily( UINT32 index ) const;
-        HW_EXPORT std::vector<FontFamily> GetFontFamilies( ) const;
+        UINT32 GetFontFamilyCount( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetFontFamilyCount( );
+        }
 
-        HW_EXPORT void FindFamilyName( WCHAR const* familyName, UINT32* index, BOOL* exists ) const;
-        HW_EXPORT bool FindFamilyName( WCHAR const* familyName, UINT32* index ) const;
+        void GetFontFamily( UINT32 index, IDWriteFontFamily** fontFamily ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFontFamily( index, fontFamily );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetFontFromFontFace( IDWriteFontFace* fontFace, IDWriteFont** font ) const;
-        HW_EXPORT Font GetFontFromFontFace( IDWriteFontFace* fontFace ) const;
+        inline FontFamily GetFontFamily( UINT32 index ) const;
+        inline std::vector<FontFamily> GetFontFamilies( ) const;
+
+        void FindFamilyName( WCHAR const* familyName, UINT32* index, BOOL* exists ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->FindFamilyName( familyName, index, exists );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        bool FindFamilyName( WCHAR const* familyName, UINT32* index ) const
+        {
+            BOOL exists = FALSE;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->FindFamilyName( familyName, index, &exists );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return exists != FALSE;
+        }
+
+        void GetFontFromFontFace( IDWriteFontFace* fontFace, IDWriteFont** font ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFontFromFontFace( fontFace, font );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        inline Font GetFontFromFontFace( IDWriteFontFace* fontFace ) const;
+
+        /// <summary>
+        /// Returns an iterator to the first font family in the font collection.
+        /// </summary>
+        /// <returns>An iterator pointing to the first font family.</returns>
+        inline Iterator begin( ) const noexcept;
+
+        /// <summary>
+        /// Returns an iterator past the last font family in the font collection.
+        /// </summary>
+        /// <returns>An iterator pointing past the last font family.</returns>
+        inline Iterator end( ) const noexcept;
+
+        /// <summary>
+        /// Returns a reverse iterator to the last font family in the font collection.
+        /// </summary>
+        /// <returns>A reverse iterator pointing to the last font family.</returns>
+        inline std::reverse_iterator<Iterator> rbegin( ) const noexcept;
+
+        /// <summary>
+        /// Returns a reverse iterator before the first font family in the font collection.
+        /// </summary>
+        /// <returns>A reverse iterator pointing before the first font family.</returns>
+        inline std::reverse_iterator<Iterator> rend( ) const noexcept;
+
+
     };
+
+
+    namespace Internal
+    {
+        class FontListIterator;
+    }
+
 
     /// <summary>
     /// Represents a list of fonts.
@@ -2722,15 +2792,105 @@ namespace Harlinn::Windows::Graphics::DirectWrite
     class FontList : public Unknown
     {
     public:
-        typedef Unknown Base;
+        using Base = Unknown;
+        using Iterator = Internal::FontListIterator;
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontList, Unknown, IDWriteFontList, IUnknown )
 
-        HW_EXPORT void GetFontCollection( IDWriteFontCollection** fontCollection ) const;
-        HW_EXPORT FontCollection GetFontCollection( ) const;
-        HW_EXPORT UINT32 GetFontCount( ) const;
-        HW_EXPORT void GetFont( UINT32 index, IDWriteFont** font ) const;
-        HW_EXPORT Font GetFont( UINT32 index ) const;
+        /// <summary>
+        /// Gets the font collection that contains the fonts.
+        /// </summary>
+        /// <param name="fontCollection">
+        /// Receives a pointer to the font collection object.
+        /// </param>
+        void GetFontCollection( IDWriteFontCollection** fontCollection ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFontCollection( fontCollection );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        /// <summary>
+        /// Gets the font collection that contains the fonts.
+        /// </summary>
+        /// <returns>
+        /// A FontCollection object that represents the font collection.
+        /// </returns>
+        FontCollection GetFontCollection( ) const
+        {
+            IDWriteFontCollection* fontCollection = nullptr;
+            GetFontCollection( &fontCollection );
+            FontCollection result( fontCollection );
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the number of fonts in the font list.
+        /// </summary>
+        UINT32 GetFontCount( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetFontCount( );
+        }
+
+        /// <summary>
+        /// Gets a font given its zero-based index.
+        /// </summary>
+        /// <param name="index">
+        /// Zero-based index of the font in the font list.
+        /// </param>
+        /// <param name="font">
+        /// Receives a pointer to the newly created font object.
+        /// </param>
+        void GetFont( UINT32 index, IDWriteFont** font ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFont( index, font );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        /// <summary>
+        /// Gets a font given its zero-based index.
+        /// </summary>
+        /// <param name="index">
+        /// Zero-based index of the font in the font list.
+        /// </param>
+        /// <returns>
+        /// A Font object that represents the font.
+        /// </returns>
+        inline Font GetFont( UINT32 index ) const;
+
+        /// <summary>
+        /// Gets all fonts in the font list.
+        /// </summary>
+        /// <returns>
+        /// A vector of Font objects that represent the fonts.
+        /// </returns>
+        inline std::vector<Font> GetFonts( ) const;
+
+        /// <summary>
+        /// Returns an iterator to the first font in the font list.
+        /// </summary>
+        /// <returns>An iterator pointing to the first font.</returns>
+        inline Iterator begin( ) const noexcept;
+
+        /// <summary>
+        /// Returns an iterator past the last font in the font list.
+        /// </summary>
+        /// <returns>An iterator pointing past the last font.</returns>
+        inline Iterator end( ) const noexcept;
+
+        /// <summary>
+        /// Returns a reverse iterator to the last font in the font list.
+        /// </summary>
+        /// <returns>A reverse iterator pointing to the last font.</returns>
+        inline std::reverse_iterator<Iterator> rbegin( ) const noexcept;
+
+        /// <summary>
+        /// Returns a reverse iterator before the first font in the font list.
+        /// </summary>
+        /// <returns>A reverse iterator pointing before the first font.</returns>
+        inline std::reverse_iterator<Iterator> rend( ) const noexcept;
+
+
     };
 
     /// <summary>
@@ -2739,7 +2899,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
     class FontFamily : public FontList
     {
     public:
-        typedef FontList Base;
+        using Base = FontList;
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFamily, FontList, IDWriteFontFamily, IDWriteFontList )
 
@@ -2752,6 +2912,82 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         HW_EXPORT void GetMatchingFonts( DWRITE_FONT_WEIGHT weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style, IDWriteFontList** matchingFonts ) const;
         HW_EXPORT FontList GetMatchingFonts( DWRITE_FONT_WEIGHT weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style ) const;
     };
+
+    namespace Internal
+    {
+        struct FontCollectionTraits
+        {
+            using ListType = FontCollection;
+            using ItemType = FontFamily;
+            using IndexType = UInt32;
+
+            static IndexType Count( const ListType& list )
+            {
+                return list.GetFontFamilyCount( );
+            }
+
+            static ItemType At( const ListType& list, IndexType index )
+            {
+                return list.GetFontFamily( index );
+            }
+        };
+
+        /// <summary>
+        /// A random access iterator for iterating over font families in the font collection.
+        /// </summary>
+        class FontCollectionIterator : public Com::Internal::ListIterator<FontCollectionTraits>
+        {
+        public:
+            using Base = Com::Internal::ListIterator<FontCollectionTraits>;
+            // Inherit constructors
+            using Base::Base;
+        };
+    }
+
+
+    inline FontCollection::Iterator FontCollection::begin( ) const noexcept
+    {
+        return Iterator( this, 0 );
+    }
+
+    inline FontCollection::Iterator FontCollection::end( ) const noexcept
+    {
+        return Iterator( this, GetFontFamilyCount( ) );
+    }
+
+    inline std::reverse_iterator<FontCollection::Iterator> FontCollection::rbegin( ) const noexcept
+    {
+        return std::reverse_iterator<Iterator>( end( ) );
+    }
+
+    inline std::reverse_iterator<FontCollection::Iterator> FontCollection::rend( ) const noexcept
+    {
+        return std::reverse_iterator<Iterator>( begin( ) );
+    }
+
+
+
+
+    inline FontFamily FontCollection::GetFontFamily( UINT32 index ) const
+    {
+        IDWriteFontFamily* fontFamily = nullptr;
+        GetFontFamily( index, &fontFamily );
+        FontFamily result( fontFamily );
+        return result;
+    }
+
+    inline std::vector<FontFamily> FontCollection::GetFontFamilies( ) const
+    {
+        std::vector<FontFamily>::size_type fontFamilyCount = GetFontFamilyCount( );
+        std::vector<FontFamily> result( fontFamilyCount );
+        for ( UINT32 i = 0; i < fontFamilyCount; i++ )
+        {
+            FontFamily writeFontFamily = GetFontFamily( i );
+            result.emplace_back( std::move( writeFontFamily ) );
+        }
+        return result;
+    }
+
 
     /// <summary>
     /// Represents a physical font in a font collection. This interface is used to create 
@@ -2781,6 +3017,333 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         HW_EXPORT void CreateFontFace( IDWriteFontFace** fontFace ) const;
         HW_EXPORT FontFace CreateFontFace( ) const;
     };
+
+    inline Font FontCollection::GetFontFromFontFace( IDWriteFontFace* fontFace ) const
+    {
+        IDWriteFont* font = nullptr;
+        GetFontFromFontFace( fontFace, &font );
+        Font result( font );
+        return result;
+    }
+
+    inline Font FontList::GetFont( UINT32 index ) const
+    {
+        IDWriteFont* font;
+        GetFont( index, &font );
+        Font result( font );
+        return result;
+    }
+
+    inline std::vector<Font> FontList::GetFonts( ) const
+    {
+        std::vector<Font>::size_type fontCount = GetFontCount( );
+        std::vector<Font> result( fontCount );
+        for ( UINT32 i = 0; i < fontCount; i++ )
+        {
+            Font writeFont = GetFont( i );
+            result.emplace_back( std::move( writeFont ) );
+        }
+        return result;
+    }
+
+    namespace Internal
+    {
+        struct FontListTraits
+        {
+            using ListType = FontList;
+            using ItemType = Font;
+            using IndexType = UInt32;
+
+            static IndexType Count( const ListType& list )
+            {
+                return list.GetFontCount( );
+            }
+
+            static ItemType At( const ListType& list, IndexType index )
+            {
+                return list.GetFont( index );
+            }
+        };
+
+        /// <summary>
+        /// A random access iterator for iterating over fonts in the font list.
+        /// </summary>
+        class FontListIterator : public Com::Internal::ListIterator<FontListTraits>
+        {
+        public:
+            using Base = Com::Internal::ListIterator<FontListTraits>;
+            // Inherit constructors
+            using Base::Base; 
+        };
+
+        /*
+        /// <summary>
+        /// A random access iterator for iterating over fonts in the font list.
+        /// </summary>
+        class FontListIterator
+        {
+        private:
+            const FontList* fontList_;
+            UINT32 index_;
+            mutable Font font_;
+        public:
+            /// <summary>
+            /// Iterator category tag (for std::iterator_traits).
+            /// </summary>
+            using iterator_category = std::random_access_iterator_tag;
+            using value_type = Font;
+            using difference_type = std::ptrdiff_t;
+            using pointer = Font*;
+            using reference = Font&;
+
+            /// <summary>
+            /// Constructs an end iterator.
+            /// </summary>
+            FontListIterator( ) noexcept
+                : fontList_( nullptr ), index_( 0 ), font_( )
+            {}
+
+            /// <summary>
+            /// Constructs an iterator at the specified index.
+            /// </summary>
+            /// <param name="fontList">Pointer to the FontList being iterated.</param>
+            /// <param name="index">The index in the font list.</param>
+            FontListIterator( const FontList* fontList, UINT32 index ) noexcept
+                : fontList_( fontList ), index_( index )
+            {
+                if ( fontList_ && index_ < fontList_->GetFontCount( ) )
+                {
+                    font_ = fontList_->GetFont( index_ );
+                }
+            }
+
+            /// <summary>
+            /// Dereferences the iterator to get the current font.
+            /// </summary>
+            /// <returns>A reference to the Font object.</returns>
+            Font& operator*( ) noexcept
+            {
+                return font_;
+            }
+
+            /// <summary>
+            /// Accesses members of the current font.
+            /// </summary>
+            /// <returns>A pointer to the Font object.</returns>
+            Font* operator->( ) noexcept
+            {
+                return &font_;
+            }
+
+            /// <summary>
+            /// Pre-increment operator.
+            /// </summary>
+            /// <returns>Reference to this iterator after incrementing.</returns>
+            FontListIterator& operator++( ) noexcept
+            {
+                if ( fontList_ && index_ < fontList_->GetFontCount( ) )
+                {
+                    ++index_;
+                    if ( index_ < fontList_->GetFontCount( ) )
+                    {
+                        font_ = fontList_->GetFont( index_ );
+                    }
+                    else
+                    {
+                        font_ = Font( );
+                    }
+                }
+                return *this;
+            }
+
+            /// <summary>
+            /// Post-increment operator.
+            /// </summary>
+            /// <returns>A copy of this iterator before incrementing.</returns>
+            FontListIterator operator++( int ) noexcept
+            {
+                FontListIterator temp = *this;
+                ++( *this );
+                return temp;
+            }
+
+            /// <summary>
+            /// Pre-decrement operator.
+            /// </summary>
+            /// <returns>Reference to this iterator after decrementing.</returns>
+            FontListIterator& operator--( ) noexcept
+            {
+                if ( fontList_ && index_ > 0 )
+                {
+                    --index_;
+                    font_ = fontList_->GetFont( index_ );
+                }
+                return *this;
+            }
+
+            /// <summary>
+            /// Post-decrement operator.
+            /// </summary>
+            /// <returns>A copy of this iterator before decrementing.</returns>
+            FontListIterator operator--( int ) noexcept
+            {
+                FontListIterator temp = *this;
+                --( *this );
+                return temp;
+            }
+
+            /// <summary>
+            /// Addition operator.
+            /// </summary>
+            /// <param name="offset">The offset to add.</param>
+            /// <returns>A new iterator at the offset position.</returns>
+            FontListIterator operator+( difference_type offset ) const noexcept
+            {
+                FontListIterator result( *this );
+                result.index_ = static_cast< UINT32 >( static_cast< std::ptrdiff_t >( result.index_ ) + offset );
+                if ( result.fontList_ && result.index_ < result.fontList_->GetFontCount( ) )
+                {
+                    result.font_ = result.fontList_->GetFont( result.index_ );
+                }
+                return result;
+            }
+
+            /// <summary>
+            /// Subtraction operator.
+            /// </summary>
+            /// <param name="offset">The offset to subtract.</param>
+            /// <returns>A new iterator at the offset position.</returns>
+            FontListIterator operator-( difference_type offset ) const noexcept
+            {
+                return operator+( -offset );
+            }
+
+            /// <summary>
+            /// Addition assignment operator.
+            /// </summary>
+            /// <param name="offset">The offset to add.</param>
+            /// <returns>Reference to this iterator after adding.</returns>
+            FontListIterator& operator+=( difference_type offset ) noexcept
+            {
+                *this = operator+( offset );
+                return *this;
+            }
+
+            /// <summary>
+            /// Subtraction assignment operator.
+            /// </summary>
+            /// <param name="offset">The offset to subtract.</param>
+            /// <returns>Reference to this iterator after subtracting.</returns>
+            FontListIterator& operator-=( difference_type offset ) noexcept
+            {
+                return operator+=( -offset );
+            }
+
+            /// <summary>
+            /// Subscript operator for random access.
+            /// </summary>
+            /// <param name="offset">The index offset.</param>
+            /// <returns>The font at the offset.</returns>
+            Font operator[]( difference_type offset ) const noexcept
+            {
+                return *( operator+( offset ) );
+            }
+
+            /// <summary>
+            /// Equality operator.
+            /// </summary>
+            /// <param name="other">The iterator to compare with.</param>
+            /// <returns>True if both iterators point to the same position; otherwise, false.</returns>
+            bool operator==( const FontListIterator& other ) const noexcept
+            {
+                return fontList_ == other.fontList_ && index_ == other.index_;
+            }
+
+            /// <summary>
+            /// Inequality operator.
+            /// </summary>
+            /// <param name="other">The iterator to compare with.</param>
+            /// <returns>True if the iterators point to different positions; otherwise, false.</returns>
+            bool operator!=( const FontListIterator& other ) const noexcept
+            {
+                return !operator==( other );
+            }
+
+            /// <summary>
+            /// Less-than operator.
+            /// </summary>
+            /// <param name="other">The iterator to compare with.</param>
+            /// <returns>True if this iterator points to an earlier position; otherwise, false.</returns>
+            bool operator<( const FontListIterator& other ) const noexcept
+            {
+                return fontList_ == other.fontList_ && index_ < other.index_;
+            }
+
+            /// <summary>
+            /// Less-than-or-equal operator.
+            /// </summary>
+            /// <param name="other">The iterator to compare with.</param>
+            /// <returns>True if this iterator points to an earlier or equal position; otherwise, false.</returns>
+            bool operator<=( const FontListIterator& other ) const noexcept
+            {
+                return fontList_ == other.fontList_ && index_ <= other.index_;
+            }
+
+            /// <summary>
+            /// Greater-than operator.
+            /// </summary>
+            /// <param name="other">The iterator to compare with.</param>
+            /// <returns>True if this iterator points to a later position; otherwise, false.</returns>
+            bool operator>( const FontListIterator& other ) const noexcept
+            {
+                return fontList_ == other.fontList_ && index_ > other.index_;
+            }
+
+            /// <summary>
+            /// Greater-than-or-equal operator.
+            /// </summary>
+            /// <param name="other">The iterator to compare with.</param>
+            /// <returns>True if this iterator points to a later or equal position; otherwise, false.</returns>
+            bool operator>=( const FontListIterator& other ) const noexcept
+            {
+                return fontList_ == other.fontList_ && index_ >= other.index_;
+            }
+
+            /// <summary>
+            /// Difference operator.
+            /// </summary>
+            /// <param name="other">The iterator to subtract from this one.</param>
+            /// <returns>The difference between the iterators.</returns>
+            difference_type operator-( const FontListIterator& other ) const noexcept
+            {
+                return static_cast< difference_type >( index_ ) - static_cast< difference_type >( other.index_ );
+            }
+
+
+        };
+        */
+    }
+
+    inline FontList::Iterator FontList::begin( ) const noexcept
+    {
+        return Iterator( this, 0 );
+    }
+
+    inline FontList::Iterator FontList::end( ) const noexcept
+    {
+        return Iterator( this, GetFontCount( ) );
+    }
+
+    inline std::reverse_iterator<FontList::Iterator> FontList::rbegin( ) const noexcept
+    {
+        return std::reverse_iterator<Iterator>( end( ) );
+    }
+
+    inline std::reverse_iterator<FontList::Iterator> FontList::rend( ) const noexcept
+    {
+        return std::reverse_iterator<Iterator>( begin( ) );
+    }
+
 
 
     class InlineObject;
@@ -3210,6 +3773,11 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( Factory, Unknown, IDWriteFactory, IUnknown )
 
         HW_EXPORT Factory( DWRITE_FACTORY_TYPE factoryType );
+
+        Factory(FactoryType factoryType)
+            : Factory( static_cast< DWRITE_FACTORY_TYPE >( factoryType ) )
+        {}
+
 
         HW_EXPORT void GetSystemFontCollection( IDWriteFontCollection** fontCollection, BOOL checkForUpdates = FALSE ) const;
         HW_EXPORT FontCollection GetSystemFontCollection( bool checkForUpdates = false ) const;
