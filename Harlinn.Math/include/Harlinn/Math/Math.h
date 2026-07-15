@@ -563,8 +563,28 @@ namespace Harlinn::Math
         {
             if constexpr ( std::is_same_v<T, float> )
             {
+                /*
                 T result;
                 _mm_store_ss( &result, _mm_rsqrt_ps( _mm_set_ss( x ) ) );
+                return result;
+                */
+                if ( x == 0.f )
+                {
+                    return CopySign( std::numeric_limits<float>::infinity( ), x );
+                }
+                __m128 v = _mm_set_ss( x );
+                
+                // ~12-bit estimate
+                __m128 e = _mm_rsqrt_ss( v ); 
+
+                // Refine rsqrt with one Newton-Raphson step to improve precision
+
+                __m128 half = _mm_set_ss( 0.5f );
+                __m128 three_halves = _mm_set_ss( 1.5f );
+                e = _mm_mul_ss( e, _mm_sub_ss( three_halves,
+                    _mm_mul_ss( _mm_mul_ss( half, v ), _mm_mul_ss( e, e ) ) ) );
+                float result;
+                _mm_store_ss( &result, e );
                 return result;
             }
             else
@@ -3826,6 +3846,7 @@ namespace Harlinn::Math
         template<typename FloatT>
         struct FastPowImpl
         {
+            /*
             template<int n>
             static constexpr inline FloatT Pow( FloatT v )
             {
@@ -3846,6 +3867,28 @@ namespace Harlinn::Math
             static constexpr inline FloatT Pow<0>( FloatT v )
             {
                 return Constants< FloatT>::One;
+            }
+            */
+            template<int n> 
+            static constexpr inline FloatT Pow( FloatT v )
+            {
+                if constexpr ( n == 0 )
+                {
+                    return Constants<FloatT>::One;
+                }
+                else if constexpr ( n == 1 )
+                {
+                    return v;
+                }
+                else if constexpr ( n < 0 )
+                {
+                    return Constants<FloatT>::One / Pow<-n>( v );
+                }
+                else 
+                { 
+                    auto n2 = Pow<n / 2>( v ); 
+                    return n2 * n2 * Pow<n & 1>( v ); 
+                }
             }
         };
     }
@@ -4471,8 +4514,16 @@ namespace Harlinn::Math
         requires IsFloatingPoint<FloatT>
     constexpr inline FloatT Gaussian( FloatT x, FloatT mu = 0, FloatT sigma = 1 )
     {
-        return static_cast< FloatT >( 1 ) / Sqrt( static_cast< FloatT >( 2 ) * Constants<FloatT>::Pi * sigma * sigma ) *
-            FastExp( -Sqr( x - mu ) / ( static_cast< FloatT >( 2 ) * sigma * sigma ) );
+        if constexpr (std::is_same_v<FloatT, float>)
+        {
+            return static_cast< FloatT >( 1 ) / Sqrt( static_cast< FloatT >( 2 ) * Constants<FloatT>::Pi * sigma * sigma ) *
+                FastExp( -Sqr( x - mu ) / ( static_cast< FloatT >( 2 ) * sigma * sigma ) );
+        }
+        else
+        {
+            return static_cast< FloatT >( 1 ) / Sqrt( static_cast< FloatT >( 2 ) * Constants<FloatT>::Pi * sigma * sigma ) *
+                Exp( -Sqr( x - mu ) / ( static_cast< FloatT >( 2 ) * sigma * sigma ) );
+        }
     }
 
     /// <summary>
@@ -4633,7 +4684,7 @@ namespace Harlinn::Math
     template <typename T>
     constexpr inline bool IsPowerOf4( T v )
     {
-        return v == 1 << ( 2 * Log4Int( v ) );
+        return v == ( static_cast< T >( 1 ) << ( 2 * Log4Int( v ) ) );
     }
 
     /// <summary>
@@ -4679,7 +4730,7 @@ namespace Harlinn::Math
     template <typename T>
     constexpr inline T RoundUpPow4( T v )
     {
-        return IsPowerOf4( v ) ? v : ( 1 << ( 2 * ( 1 + Log4Int( v ) ) ) );
+        return IsPowerOf4( v ) ? v : ( static_cast< T >( 1 ) << ( 2 * ( 1 + Log4Int( v ) ) ) );
     }
 
     /// <summary>
@@ -5087,7 +5138,8 @@ namespace Harlinn::Math
     template <typename Func, typename FloatT>
     constexpr inline FloatT NewtonBisection( FloatT x0, FloatT x1, Func f, FloatT xEps = static_cast< FloatT >( 1e-6 ), FloatT fEps = static_cast< FloatT >( 1e-6 ) )
     {
-        FloatT fx0 = f( x0 ).first, fx1 = f( x1 ).first;
+        FloatT fx0 = f( x0 ).first; 
+        FloatT fx1 = f( x1 ).first;
         if ( Abs( fx0 ) < fEps )
         {
             return x0;

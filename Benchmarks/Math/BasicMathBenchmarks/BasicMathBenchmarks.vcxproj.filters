@@ -45,4 +45,7 @@
   <ItemGroup>
     <None Include="Output.md" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Output-2026-07-13.txt" />
+  </ItemGroup>
 </Project>

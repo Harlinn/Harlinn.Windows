@@ -1952,6 +1952,9 @@ namespace Harlinn::Math
         /// </summary>
         using Simd = TupleSimd<DerivedType>;
 
+        /// <summary>
+        /// A union that allows access to the tuple elements as an array or as individual components.
+        /// </summary>
         union
         {
             //! \unnamed{union}
@@ -2077,32 +2080,58 @@ namespace Harlinn::Math
             return !IsSameValue( x, value ) || !IsSameValue( y, value );
         }
 
-
+        /// <summary>
+        /// Compares the tuple with a SIMD value for equality.
+        /// </summary>
+        /// <typeparam name="U">The type of the SIMD value.</typeparam>
+        /// <param name="other">The SIMD value to compare with.</param>
+        /// <returns>True if the tuple is equal to the SIMD value, false otherwise.</returns>
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
-        bool operator == ( const U& other ) const noexcept
+        [[nodiscard]] bool operator == ( const U& other ) const noexcept
         {
             return Traits::AllEqual( Traits::Load( values ), other.simd );
         }
-
+        
+        /// <summary>
+        /// Compares the tuple with a SIMD value for inequality.
+        /// </summary>
+        /// <typeparam name="U">The type of the SIMD value.</typeparam>
+        /// <param name="other">The SIMD value to compare with.</param>
+        /// <returns>True if the tuple is not equal to the SIMD value, false otherwise.</returns>
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
-        bool operator != ( const U& other ) const noexcept
+        [[nodiscard]] bool operator != ( const U& other ) const noexcept
         {
             return Traits::AllEqual( Traits::Load( values ), other.simd ) == false;
         }
 
-        Simd operator-( ) const noexcept
+        /// <summary>
+        /// Negates the tuple.
+        /// </summary>
+        /// <returns>The negated tuple.</returns>
+        [[nodiscard]] Simd operator-( ) const noexcept
         {
             return Traits::Negate( Traits::Load( values ) );
         }
 
+        /// <summary>
+        /// Adds a SIMD value to the tuple.
+        /// </summary>
+        /// <param name="other">The SIMD value to add.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator += ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Add( Traits::Load( values ), other.simd ) );
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Adds a tuple to the current tuple.
+        /// </summary>
+        /// <typeparam name="U">The type of the tuple to add.</typeparam>
+        /// <param name="other">The tuple to add.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
         DerivedType& operator += ( const U& other ) noexcept
@@ -2112,6 +2141,11 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Adds a scalar value to each value of the tuple.
+        /// </summary>
+        /// <param name="value">The scalar value to add.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator += ( const value_type value ) noexcept
         {
             x += value;
@@ -2119,6 +2153,11 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Subtracts a SIMD value from the tuple.
+        /// </summary>
+        /// <param name="other">The SIMD value to subtract.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator -= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Sub( Traits::Load( values ), other.simd ) );
@@ -2134,6 +2173,11 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Subtracts a scalar value from each value of the tuple.
+        /// </summary>
+        /// <param name="value">The scalar value to subtract.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator -= ( const value_type value ) noexcept
         {
             x -= value;
@@ -2141,13 +2185,23 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
-
+        /// <summary>
+        /// Multiplies the tuple by a SIMD value.
+        /// </summary>
+        /// <param name="other">The SIMD value to multiply by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator *= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Mul( Traits::Load( values ), other.simd ) );
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Multiplies the tuple by another tuple.
+        /// </summary>
+        /// <typeparam name="U">The type of the tuple to multiply by.</typeparam>
+        /// <param name="other">The tuple to multiply by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
         DerivedType& operator *= ( const U& other ) noexcept
@@ -2157,6 +2211,11 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Multiplies each value of the tuple by a scalar value.
+        /// </summary>
+        /// <param name="value">The scalar value to multiply by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator *= ( const value_type value ) noexcept
         {
             x *= value;
@@ -2165,12 +2224,23 @@ namespace Harlinn::Math
         }
 
 
+        /// <summary>
+        /// Divides the tuple by a SIMD value.
+        /// </summary>
+        /// <param name="other">The SIMD value to divide by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator /= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Div( Traits::Load( values ), other.simd ) );
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Divides the tuple by another tuple.
+        /// </summary>
+        /// <typeparam name="U">The type of the tuple to divide by.</typeparam>
+        /// <param name="other">The tuple to divide by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
         DerivedType& operator /= ( const U& other ) noexcept
@@ -2180,6 +2250,11 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Divides each value of the tuple by a scalar value.
+        /// </summary>
+        /// <param name="value">The scalar value to divide by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator /= ( const value_type value ) noexcept
         {
             x /= value;
@@ -2188,141 +2263,261 @@ namespace Harlinn::Math
         }
 
 
-        static DerivedType Zero( )
+        /// <summary>
+        /// Returns a tuple with all values set to zero.
+        /// </summary>
+        /// <returns>The zero tuple.</returns>
+        [[nodiscard]] static DerivedType Zero( )
         {
             return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType One( )
+        /// <summary>
+        /// Returns a tuple with all values set to one.
+        /// </summary>
+        /// <returns>The one tuple.</returns>
+        [[nodiscard]] static DerivedType One( )
         {
             return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
         }
-        static DerivedType UnitX( )
+        /// <summary>
+        /// Returns a tuple with the X component set to one and the Y component set to zero.
+        /// </summary>
+        /// <returns>The unit X tuple.</returns>
+        [[nodiscard]] static DerivedType UnitX( )
         {
             return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType UnitY( )
+        /// <summary>
+        /// Returns a tuple with the X component set to zero and the Y component set to one.
+        /// </summary>
+        /// <returns>The unit Y tuple.</returns>
+        [[nodiscard]] static DerivedType UnitY( )
         {
             return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
         }
 
-
-        const_reference operator[]( size_t index ) const noexcept
+        /// <summary>
+        /// Returns a const reference to the element at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the element to access.</param>
+        /// <returns>A const reference to the element at the specified index.</returns>
+        [[nodiscard]] const_reference operator[]( size_t index ) const noexcept
         {
             return values[ index ];
         }
 
-        reference operator[]( size_t index ) noexcept
+        /// <summary>
+        /// Returns a reference to the element at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the element to access.</param>
+        /// <returns>A reference to the element at the specified index.</returns>
+        [[nodiscard]] reference operator[]( size_t index ) noexcept
         {
             return values[ index ];
         }
 
-        const_pointer data( ) const noexcept
+        /// <summary>
+        /// Returns a const pointer to the underlying array of elements.
+        /// </summary>
+        /// <returns>A const pointer to the underlying array of elements.</returns>
+        [[nodiscard]] const_pointer data( ) const noexcept
         {
             return values.data( );
         }
-        pointer data( ) noexcept
+        /// <summary>
+        /// Returns a pointer to the underlying array of elements.
+        /// </summary>
+        /// <returns>A pointer to the underlying array of elements.</returns>
+        [[nodiscard]] pointer data( ) noexcept
         {
             return values.data( );
         }
 
-        constexpr size_t size( ) const noexcept
+        /// <summary>
+        /// Returns the number of elements in the tuple.
+        /// </summary>
+        /// <returns>The number of elements in the tuple.</returns>
+        [[nodiscard]] constexpr size_t size( ) const noexcept
         {
             return Size;
         }
 
-        const_reference front( ) const noexcept
+        /// <summary>
+        /// Returns a const reference to the first element in the tuple.
+        /// </summary>
+        /// <returns>A const reference to the first element in the tuple.</returns>
+        [[nodiscard]] const_reference front( ) const noexcept
         {
             return values.front( );
         }
-        reference front( ) noexcept
+        /// <summary>
+        /// Returns a reference to the first element in the tuple.
+        /// </summary>
+        /// <returns>A reference to the first element in the tuple.</returns>
+        [[nodiscard]] reference front( ) noexcept
         {
             return values.front( );
         }
 
-        const_reference back( ) const noexcept
+        /// <summary>
+        /// Returns a const reference to the last element in the tuple.
+        /// </summary>
+        /// <returns>A const reference to the last element in the tuple.</returns>
+        [[nodiscard]] const_reference back( ) const noexcept
         {
             return values.back( );
         }
-        reference back( ) noexcept
+        /// <summary>
+        /// Returns a reference to the last element in the tuple.
+        /// </summary>
+        /// <returns>A reference to the last element in the tuple.</returns>
+        [[nodiscard]] reference back( ) noexcept
         {
             return values.back( );
         }
 
-        const_iterator begin( ) const noexcept
+        /// <summary>
+        /// Returns a const iterator to the first element in the tuple.
+        /// </summary>
+        /// <returns>A const iterator to the first element in the tuple.</returns>
+        [[nodiscard]] const_iterator begin( ) const noexcept
         {
             return values.begin( );
         }
-        const_iterator cbegin( ) const noexcept
+        /// <summary>
+        /// Returns a const iterator to the first element in the tuple.
+        /// </summary>
+        /// <returns>A const iterator to the first element in the tuple.</returns>
+        [[nodiscard]] const_iterator cbegin( ) const noexcept
         {
             return values.cbegin( );
         }
-        iterator begin( ) noexcept
+        /// <summary>
+        /// Returns an iterator to the first element in the tuple.
+        /// </summary>
+        /// <returns>An iterator to the first element in the tuple.</returns>
+        [[nodiscard]] iterator begin( ) noexcept
         {
             return values.begin( );
         }
-        const_iterator end( ) const noexcept
+        /// <summary>
+        /// Returns a const iterator to the element following the last element in the tuple.
+        /// </summary>
+        /// <returns>A const iterator to the element following the last element in the tuple.</returns>
+        [[nodiscard]] const_iterator end( ) const noexcept
         {
             return values.end( );
         }
-        const_iterator cend( ) const noexcept
+        /// <summary>
+        /// Returns a const iterator to the element following the last element in the tuple.
+        /// </summary>
+        /// <returns>A const iterator to the element following the last element in the tuple.</returns>
+        [[nodiscard]] const_iterator cend( ) const noexcept
         {
             return values.cend( );
         }
-        iterator end( ) noexcept
+        /// <summary>
+        /// Returns an iterator to the element following the last element in the tuple.
+        /// </summary>
+        /// <returns>An iterator to the element following the last element in the tuple.</returns>
+        [[nodiscard]] iterator end( ) noexcept
         {
             return values.end( );
         }
-        const_reverse_iterator rbegin( ) const noexcept
+        /// <summary>
+        /// Returns a const reverse iterator to the first element in the reversed tuple.
+        /// </summary>
+        /// <returns>A const reverse iterator to the first element in the reversed tuple.</returns>
+        [[nodiscard]] const_reverse_iterator rbegin( ) const noexcept
         {
             return values.rbegin( );
         }
-        reverse_iterator rbegin( ) noexcept
+        /// <summary>
+        /// Returns a reverse iterator to the first element in the reversed tuple.
+        /// </summary>
+        /// <returns>A reverse iterator to the first element in the reversed tuple.</returns>
+        [[nodiscard]] reverse_iterator rbegin( ) noexcept
         {
             return values.rbegin( );
         }
-        const_reverse_iterator rend( ) const noexcept
+        /// <summary>
+        /// Returns a const reverse iterator to the element following the last element in the reversed tuple.
+        /// </summary>
+        /// <returns>A const reverse iterator to the element following the last element in the reversed tuple.</returns>
+        [[nodiscard]] const_reverse_iterator rend( ) const noexcept
         {
             return values.rend( );
         }
-        reverse_iterator rend( ) noexcept
+        /// <summary>
+        /// Returns a reverse iterator to the element following the last element in the reversed tuple.
+        /// </summary>
+        /// <returns>A reverse iterator to the element following the last element in the reversed tuple.</returns>
+        [[nodiscard]] reverse_iterator rend( ) noexcept
         {
             return values.rend( );
         }
 
 
 
-
+        /// <summary>
+        /// Assigns values to the tuple.
+        /// </summary>
+        /// <param name="xv">The value to assign to the x component.</param>
+        /// <param name="yv">The value to assign to the y component.</param>
         void Assign( value_type xv, value_type yv ) noexcept
         {
             x = xv;
             y = yv;
         }
+        /// <summary>
+        /// Assigns values to the tuple from an array.
+        /// </summary>
+        /// <param name="src">The array containing the values to assign.</param>
         void Assign( const ArrayType& src ) noexcept
         {
             values = src;
         }
+        /// <summary>
+        /// Assigns values to the tuple from a SIMD type.
+        /// </summary>
+        /// <param name="src">The SIMD type containing the values to assign.</param>
         void Assign( SIMDType src ) noexcept
         {
             values = Traits::ToArray( src );
         }
 
-        bool HasNaN( ) const noexcept
+        /// <summary>
+        /// Checks if the tuple contains any NaN (Not a Number) values.
+        /// </summary>
+        /// <returns>True if any component of the tuple is NaN; otherwise, false.</returns>
+        [[nodiscard]] bool HasNaN( ) const noexcept
         {
             return std::isnan( x ) || std::isnan( y );
         }
 
-        bool IsFinite( ) const noexcept
+        /// <summary>
+        /// Checks if all components of the tuple are finite.
+        /// </summary>
+        /// <returns>True if all components are finite; otherwise, false.</returns>
+        [[nodiscard]] bool IsFinite( ) const noexcept
         {
             return std::isfinite( x ) && std::isfinite( y );
         }
 
-        bool IsInfinite( ) const noexcept
+        /// <summary>
+        /// Checks if any component of the tuple is infinite.
+        /// </summary>
+        /// <returns>True if any component is infinite; otherwise, false.</returns>
+        [[nodiscard]] bool IsInfinite( ) const noexcept
         {
             return std::isinf( x ) || std::isinf( y );
         }
 
-
-        std::string ToString( ) const
+        /// <summary>
+        /// Converts the tuple to a string representation.
+        /// </summary>
+        /// <returns>A string representation of the tuple.</returns>
+        [[nodiscard]] std::string ToString( ) const
         {
             return std::format( "[{}, {}]", x, y );
         }
@@ -2330,6 +2525,12 @@ namespace Harlinn::Math
 
     };
 
+
+    /// <summary>
+    /// Represents a 3-dimensional tuple.
+    /// </summary>
+    /// <typeparam name="DerivedT">The derived type.</typeparam>
+    /// <typeparam name="T">The type of the tuple elements.</typeparam>
     template<typename DerivedT, ArithmeticType T>
     class Tuple3 : public Internal::TupleBase
     {
@@ -2359,7 +2560,10 @@ namespace Harlinn::Math
         /// this type which holds a SIMD vector.  
         /// </summary>
         using Simd = TupleSimd<DerivedType>;
-
+        
+        /// <summary>
+        /// A union that allows access to the tuple elements as an array or as individual components.
+        /// </summary>
         union
         {
             //! \unnamed{union}
@@ -2375,27 +2579,49 @@ namespace Harlinn::Math
             };
         };
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Tuple3"/> class with default values.
+        /// </summary>
         Tuple3( ) noexcept
             : x{}, y{}, z{}
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Tuple3"/> class with the specified value for all components.
+        /// </summary>
+        /// <param name="v">The value to set for all components.</param>
         explicit Tuple3( value_type v ) noexcept
             : x( v ), y( v ), z( v )
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Tuple3"/> class with the specified values for each component.
+        /// </summary>
+        /// <param name="xv">The value for the x component.</param>
+        /// <param name="yv">The value for the y component.</param>
+        /// <param name="zv">The value for the z component.</param>
         Tuple3( value_type xv, value_type yv, value_type zv ) noexcept
             : x( xv ), y( yv ), z( zv )
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Tuple3"/> class with the specified array of values.
+        /// </summary>
+        /// <param name="a">The array of values to set for the components.</param>
         Tuple3( const ArrayType a ) noexcept
             : values( a )
         {
         }
 
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Tuple3"/> class with the specified SIMD type.
+        /// </summary>
+        /// <typeparam name="U">The SIMD type.</typeparam>
+        /// <param name="other">The SIMD value to initialize the tuple with.</param>
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         Tuple3( const U& other ) noexcept
@@ -2405,7 +2631,11 @@ namespace Harlinn::Math
 
 
 
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Tuple3"/> class with the specified tuple type.
+        /// </summary>
+        /// <typeparam name="U">The tuple type.</typeparam>
+        /// <param name="other">The tuple value to initialize the tuple with.</param>
         template<TupleType U>
             requires std::is_same_v<Traits, typename U::Traits>
         Tuple3( const U& other ) noexcept
@@ -2413,6 +2643,11 @@ namespace Harlinn::Math
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Tuple3"/> class with the specified tuple type, converting the values if necessary.
+        /// </summary>
+        /// <typeparam name="U">The tuple type.</typeparam>
+        /// <param name="other">The tuple value to initialize the tuple with.</param>
         template<TupleType U>
             requires ( std::is_same_v<Traits, typename U::Traits> == false )
         explicit Tuple3( const U& other ) noexcept
@@ -2421,6 +2656,12 @@ namespace Harlinn::Math
         }
 
 
+        /// <summary>
+        /// Assigns the values from the specified SIMD type to the current tuple.
+        /// </summary>
+        /// <typeparam name="U">The SIMD type.</typeparam>
+        /// <param name="other">The SIMD value to assign to the tuple.</param>
+        /// <returns>The current tuple with updated values.</returns>
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         DerivedType& operator = ( const U& other ) noexcept
@@ -2431,64 +2672,120 @@ namespace Harlinn::Math
 
 
 
-
-        Simd ToSimd( ) const noexcept
+        /// <summary>
+        /// Converts the current tuple to its SIMD representation.
+        /// </summary>
+        /// <returns>The SIMD representation of the current tuple.</returns>
+        [[nodiscard]] Simd ToSimd( ) const noexcept
         {
             return Simd( Traits::Load( values ) );
         }
 
-        operator Simd( ) const noexcept
+        /// <summary>
+        /// Converts the current tuple to its SIMD representation.
+        /// </summary>
+        /// <returns>The SIMD representation of the current tuple.</returns>
+        [[nodiscard]] operator Simd( ) const noexcept
         {
             return ToSimd( );
         }
 
+        /// <summary>
+        /// Compares the current tuple with the specified tuple for equality.
+        /// </summary>
+        /// <typeparam name="U">The tuple type.</typeparam>
+        /// <param name="other">The tuple to compare with.</param>
+        /// <returns>True if the tuples are equal; otherwise, false.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
-        constexpr bool operator == ( const U& other ) const noexcept
+        [[nodiscard]] constexpr bool operator == ( const U& other ) const noexcept
         {
             return IsSameValue( x, other.x ) && IsSameValue( y, other.y ) && IsSameValue( z, other.z );
         }
+        /// <summary>
+        /// Compares the current tuple with the specified tuple for inequality.
+        /// </summary>
+        /// <typeparam name="U">The tuple type.</typeparam>
+        /// <param name="other">The tuple to compare with.</param>
+        /// <returns>True if the tuples are not equal; otherwise, false.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
-        constexpr bool operator != ( const U& other ) const noexcept
+        [[nodiscard]] constexpr bool operator != ( const U& other ) const noexcept
         {
             return !IsSameValue( x, other.x ) || !IsSameValue( y, other.y ) || !IsSameValue( z, other.z );
         }
 
-        constexpr bool operator == ( value_type value ) const noexcept
+        /// <summary>
+        /// Compares the current tuple with the specified value for equality.
+        /// </summary>
+        /// <param name="value">The value to compare with.</param>
+        /// <returns>True if the tuple is equal to the value; otherwise, false.</returns>
+        [[nodiscard]] constexpr bool operator == ( value_type value ) const noexcept
         {
             return IsSameValue( x, value ) && IsSameValue( y, value ) && IsSameValue( z, value );
         }
-        constexpr bool operator != ( value_type value ) const noexcept
+        /// <summary>
+        /// Compares the current tuple with the specified value for inequality.
+        /// </summary>
+        /// <param name="value">The value to compare with.</param>
+        /// <returns>True if the tuple is not equal to the value; otherwise, false.</returns>
+        [[nodiscard]] constexpr bool operator != ( value_type value ) const noexcept
         {
             return !IsSameValue( x, value ) || !IsSameValue( y, value ) || !IsSameValue( z, value );
         }
 
+        /// <summary>
+        /// Compares the current tuple with the specified SIMD tuple for equality.
+        /// </summary>
+        /// <typeparam name="U">The SIMD tuple type.</typeparam>
+        /// <param name="other">The SIMD tuple to compare with.</param>
+        /// <returns>True if the tuples are equal; otherwise, false.</returns>
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
-        bool operator == ( const U& other ) const noexcept
+        [[nodiscard]] bool operator == ( const U& other ) const noexcept
         {
             return Traits::AllEqual( Traits::Load( values ), other.simd );
         }
 
+        /// <summary>
+        /// Compares the current tuple with the specified SIMD tuple for inequality.
+        /// </summary>
+        /// <typeparam name="U">The SIMD tuple type.</typeparam>
+        /// <param name="other">The SIMD tuple to compare with.</param>
+        /// <returns>True if the tuples are not equal; otherwise, false.</returns>
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
-        bool operator != ( const U& other ) const noexcept
+        [[nodiscard]] bool operator != ( const U& other ) const noexcept
         {
             return Traits::AnyNotEqual( Traits::Load( values ), other.simd );
         }
 
-        Simd operator-( ) const noexcept
+        /// <summary>
+        /// Negates the current tuple.
+        /// </summary>
+        /// <returns>The negated tuple.</returns>
+        [[nodiscard]] Simd operator-( ) const noexcept
         {
             return Traits::Negate( Traits::Load( values ) );
         }
 
+        /// <summary>
+        /// Adds the specified SIMD tuple to the current tuple.
+        /// </summary>
+        /// <param name="other">The SIMD tuple to add.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator += ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Add( Traits::Load( values ), other.simd ) );
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Adds the specified tuple to the current tuple.
+        /// </summary>
+        /// <typeparam name="U">The tuple type.</typeparam>
+        /// <param name="other">The tuple to add.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
         DerivedType& operator += ( const U& other ) noexcept
@@ -2499,6 +2796,11 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Adds the specified value to each element of the current tuple.
+        /// </summary>
+        /// <param name="value">The value to add.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator += ( const value_type value ) noexcept
         {
             x += value;
@@ -2507,12 +2809,23 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Subtracts the specified SIMD tuple from the current tuple.
+        /// </summary>
+        /// <param name="other">The SIMD tuple to subtract.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator -= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Sub( Traits::Load( values ), other.simd ) );
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Subtracts the specified tuple from the current tuple.
+        /// </summary>
+        /// <typeparam name="U">The tuple type.</typeparam>
+        /// <param name="other">The tuple to subtract.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
         DerivedType& operator -= ( const U& other ) noexcept
@@ -2523,6 +2836,11 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Subtracts the specified value from each element of the current tuple.
+        /// </summary>
+        /// <param name="value">The value to subtract.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator -= ( const value_type value ) noexcept
         {
             x -= value;
@@ -2531,12 +2849,23 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Multiplies the current tuple by the specified SIMD tuple.
+        /// </summary>
+        /// <param name="other">The SIMD tuple to multiply by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator *= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Mul( Traits::Load( values ), other.simd ) );
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Multiplies the current tuple by the specified tuple.
+        /// </summary>
+        /// <typeparam name="U">The tuple type.</typeparam>
+        /// <param name="other">The tuple to multiply by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
         DerivedType& operator *= ( const U& other ) noexcept
@@ -2547,6 +2876,11 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Multiplies each element of the current tuple by the specified value.
+        /// </summary>
+        /// <param name="value">The value to multiply by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator *= ( const value_type value ) noexcept
         {
             x *= value;
@@ -2555,13 +2889,23 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
-
+        /// <summary>
+        /// Divides the current tuple by the specified SIMD tuple.
+        /// </summary>
+        /// <param name="other">The SIMD tuple to divide by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator /= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Div( Traits::Load( values ), other.simd ) );
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Divides the current tuple by the specified tuple.
+        /// </summary>
+        /// <typeparam name="U">The tuple type.</typeparam>
+        /// <param name="other">The tuple to divide by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
         DerivedType& operator /= ( const U& other ) noexcept
@@ -2571,7 +2915,11 @@ namespace Harlinn::Math
             z /= other.z;
             return static_cast< DerivedType& >( *this );
         }
-
+        /// <summary>
+        /// Divides each element of the current tuple by the specified value.
+        /// </summary>
+        /// <param name="value">The value to divide by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator /= ( const value_type value ) noexcept
         {
             x /= value;
@@ -2580,195 +2928,405 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        const_reference operator[]( size_t index ) const noexcept
+        /// <summary>
+        /// Accesses the element at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the element to access.</param>
+        /// <returns>A reference to the element at the specified index.</returns>
+        [[nodiscard]] const_reference operator[]( size_t index ) const noexcept
         {
             return values[ index ];
         }
 
-        reference operator[]( size_t index ) noexcept
+        /// <summary>
+        /// Accesses the element at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the element to access.</param>
+        /// <returns>A reference to the element at the specified index.</returns>
+        [[nodiscard]] reference operator[]( size_t index ) noexcept
         {
             return values[ index ];
         }
 
-
-        static DerivedType Zero( ) noexcept
+        /// <summary>
+        /// Creates a tuple with all elements set to zero.
+        /// </summary>
+        /// <returns>A tuple with all elements set to zero.</returns>
+        static [[nodiscard]] DerivedType Zero( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType One( ) noexcept
+
+        /// <summary>
+        /// Creates a tuple with all elements set to one.
+        /// </summary>
+        /// <returns>A tuple with all elements set to one.</returns>
+        static [[nodiscard]] DerivedType One( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
         }
 
-        static DerivedType UnitX( ) noexcept
+        
+        /// <summary>
+        /// Creates a tuple with the X element set to one and the other elements set to zero.
+        /// </summary>
+        /// <returns>A tuple with the X element set to one and the other elements set to zero.</returns>
+        static [[nodiscard]] DerivedType UnitX( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType UnitY( ) noexcept
+
+        /// <summary>
+        /// Creates a tuple with the Y element set to one and the other elements set to zero.
+        /// </summary>
+        /// <returns>A tuple with the Y element set to one and the other elements set to zero.</returns>
+        static [[nodiscard]] DerivedType UnitY( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType UnitZ( ) noexcept
+
+        /// <summary>
+        /// Creates a tuple with the Z element set to one and the other elements set to zero.
+        /// </summary>
+        /// <returns>A tuple with the Z element set to one and the other elements set to zero.</returns>
+        static [[nodiscard]] DerivedType UnitZ( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
         }
-        static DerivedType Up( ) noexcept
+        /// <summary>
+        /// Creates a tuple with the Y element set to one and the other elements set to zero.
+        /// </summary>
+        /// <returns>A tuple with the Y element set to one and the other elements set to zero.</returns>
+        static [[nodiscard]] DerivedType Up( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType Down( ) noexcept
+        /// <summary>
+        /// Creates a tuple with the Y element set to negative one and the other elements set to zero.
+        /// </summary>
+        /// <returns>A tuple with the Y element set to negative one and the other elements set to zero.</returns>
+        static [[nodiscard]] DerivedType Down( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( -1 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType Right( ) noexcept
+        /// <summary>
+        /// Creates a tuple with the X element set to one and the other elements set to zero.
+        /// </summary>
+        /// <returns>A tuple with the X element set to one and the other elements set to zero.</returns>
+        static [[nodiscard]] DerivedType Right( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType Left( ) noexcept
+        /// <summary>
+        /// Creates a tuple with the X element set to negative one and the other elements set to zero.
+        /// </summary>
+        /// <returns>A tuple with the X element set to negative one and the other elements set to zero.</returns>
+        static [[nodiscard]] DerivedType Left( ) noexcept
         {
             return DerivedType( static_cast< value_type >( -1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType Forward( ) noexcept
+        /// <summary>
+        /// Creates a tuple with the Z element set to negative one and the other elements set to zero.
+        /// </summary>
+        /// <returns>A tuple with the Z element set to negative one and the other elements set to zero.</returns>
+        static [[nodiscard]] DerivedType Forward( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( -1 ) );
         }
-        static DerivedType Backward( ) noexcept
+        /// <summary>
+        /// Creates a tuple with the Z element set to one and the other elements set to zero.
+        /// </summary>
+        /// <returns>A tuple with the Z element set to one and the other elements set to zero.</returns>
+        static [[nodiscard]] DerivedType Backward( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
         }
 
-
-        const_pointer data( ) const noexcept
+        /// <summary>
+        /// Returns a const pointer to the underlying array of values.
+        /// </summary>
+        /// <returns>A const pointer to the underlying array of values.</returns>
+        [[nodiscard]] const_pointer data( ) const noexcept
         {
             return values.data( );
         }
-        pointer data( ) noexcept
+        
+        /// <summary>
+        /// Returns a pointer to the underlying array of values.
+        /// </summary>
+        /// <returns>A pointer to the underlying array of values.</returns>
+        [[nodiscard]] pointer data( ) noexcept
         {
             return values.data( );
         }
 
-        constexpr size_t size( ) const noexcept
+        /// <summary>
+        /// Returns the number of elements in the tuple.
+        /// </summary>
+        /// <returns>The number of elements in the tuple.</returns>
+        constexpr [[nodiscard]] size_t size( ) const noexcept
         {
             return Size;
         }
 
-        const_reference front( ) const noexcept
+        /// <summary>
+        /// Returns a const reference to the first element in the tuple.
+        /// </summary>
+        /// <returns>A const reference to the first element in the tuple.</returns>
+        [[nodiscard]] const_reference front( ) const noexcept
         {
             return values.front( );
         }
-        reference front( ) noexcept
+        /// <summary>
+        /// Returns a reference to the first element in the tuple.
+        /// </summary>
+        /// <returns>A reference to the first element in the tuple.</returns>
+        [[nodiscard]] reference front( ) noexcept
         {
             return values.front( );
         }
 
-        const_reference back( ) const noexcept
+        /// <summary>
+        /// Returns a const reference to the last element in the tuple.
+        /// </summary>
+        /// <returns>A const reference to the last element in the tuple.</returns>
+        [[nodiscard]] const_reference back( ) const noexcept
         {
             return values.back( );
         }
-        reference back( ) noexcept
+        /// <summary>
+        /// Returns a reference to the last element in the tuple.
+        /// </summary>
+        /// <returns>A reference to the last element in the tuple.</returns>
+        [[nodiscard]] reference back( ) noexcept
         {
             return values.back( );
         }
 
-        const_iterator begin( ) const noexcept
+        /// <summary>
+        /// Returns a const iterator to the first element in the tuple.
+        /// </summary>
+        /// <returns>A const iterator to the first element in the tuple.</returns>
+        [[nodiscard]] const_iterator begin( ) const noexcept
         {
             return values.begin( );
         }
-        const_iterator cbegin( ) const noexcept
+        /// <summary>
+        /// Returns a const iterator to the first element in the tuple.
+        /// </summary>
+        /// <returns>A const iterator to the first element in the tuple.</returns>
+        [[nodiscard]] const_iterator cbegin( ) const noexcept
         {
             return values.cbegin( );
         }
-        iterator begin( ) noexcept
+        /// <summary>
+        /// Returns an iterator to the first element in the tuple.
+        /// </summary>
+        /// <returns>An iterator to the first element in the tuple.</returns>
+        [[nodiscard]] iterator begin( ) noexcept
         {
             return values.begin( );
         }
-        const_iterator end( ) const noexcept
+        /// <summary>
+        /// Returns a const iterator to the element following the last element in the tuple.
+        /// </summary>
+        /// <returns>A const iterator to the element following the last element in the tuple.</returns>
+        [[nodiscard]] const_iterator end( ) const noexcept
         {
             return values.end( );
         }
-        const_iterator cend( ) const noexcept
+        /// <summary>
+        /// Returns a const iterator to the element following the last element in the tuple.
+        /// </summary>
+        /// <returns>A const iterator to the element following the last element in the tuple.</returns>
+        [[nodiscard]] const_iterator cend( ) const noexcept
         {
             return values.cend( );
         }
-        iterator end( ) noexcept
+        /// <summary>
+        /// Returns an iterator to the element following the last element in the tuple.
+        /// </summary>
+        /// <returns>An iterator to the element following the last element in the tuple.</returns>
+        [[nodiscard]] iterator end( ) noexcept
         {
             return values.end( );
         }
-        const_reverse_iterator rbegin( ) const noexcept
+        /// <summary>
+        /// Returns a const reverse iterator to the first element in the reversed tuple.
+        /// </summary>
+        /// <returns>A const reverse iterator to the first element in the reversed tuple.</returns>
+        [[nodiscard]] const_reverse_iterator rbegin( ) const noexcept
         {
             return values.rbegin( );
         }
-        reverse_iterator rbegin( ) noexcept
+        /// <summary>
+        /// Returns a reverse iterator to the first element in the reversed tuple.
+        /// </summary>
+        /// <returns>A reverse iterator to the first element in the reversed tuple.</returns>
+        [[nodiscard]] reverse_iterator rbegin( ) noexcept
         {
             return values.rbegin( );
         }
-        const_reverse_iterator rend( ) const noexcept
+        /// <summary>
+        /// Returns a const reverse iterator to the element following the last element in the reversed tuple.
+        /// </summary>
+        /// <returns>A const reverse iterator to the element following the last element in the reversed tuple.</returns>
+        [[nodiscard]] const_reverse_iterator rend( ) const noexcept
         {
             return values.rend( );
         }
-        reverse_iterator rend( ) noexcept
+        /// <summary>
+        /// Returns a reverse iterator to the element following the last element in the reversed tuple.
+        /// </summary>
+        /// <returns>A reverse iterator to the element following the last element in the reversed tuple.</returns>
+        [[nodiscard]] reverse_iterator rend( ) noexcept
         {
             return values.rend( );
         }
-
+        /// <summary>
+        /// Assigns the specified values to the tuple.
+        /// </summary>
+        /// <param name="xv">The value to assign to the x component.</param>
+        /// <param name="yv">The value to assign to the y component.</param>
+        /// <param name="zv">The value to assign to the z component.</param>
         void Assign( value_type xv, value_type yv, value_type zv ) noexcept
         {
             x = xv;
             y = yv;
             z = zv;
         }
+        /// <summary>
+        /// Assigns the specified array to the tuple.
+        /// </summary>
+        /// <param name="src">The array to assign to the tuple.</param>
         void Assign( const ArrayType& src ) noexcept
         {
             values = src;
         }
+        /// <summary>
+        /// Assigns the specified SIMD value to the tuple.
+        /// </summary>
+        /// <param name="src">The SIMD value to assign to the tuple.</param>
         void Assign( SIMDType src ) noexcept
         {
             values = Traits::ToArray( src );
         }
 
-        bool HasNaN( ) const noexcept
+        /// <summary>
+        /// Determines whether the tuple contains any NaN (Not a Number) values.
+        /// </summary>
+        /// <returns>True if the tuple contains any NaN values; otherwise, false.</returns>
+        [[nodiscard]] bool HasNaN( ) const noexcept
         {
             return std::isnan( x ) || std::isnan( y ) || std::isnan( z );
         }
 
-        bool IsFinite( ) const noexcept
+        /// <summary>
+        /// Determines whether all components of the tuple are finite.
+        /// </summary>
+        /// <returns>True if all components are finite; otherwise, false.</returns>
+        [[nodiscard]] bool IsFinite( ) const noexcept
         {
             return std::isfinite( x ) && std::isfinite( y ) && std::isfinite( z );
         }
 
-        bool IsInfinite( ) const noexcept
+        /// <summary>
+        /// Determines whether any component of the tuple is infinite.
+        /// </summary>
+        /// <returns>True if any component is infinite; otherwise, false.</returns>
+        [[nodiscard]] bool IsInfinite( ) const noexcept
         {
             return std::isinf( x ) || std::isinf( y ) || std::isinf( z );
         }
 
+        /// <summary>
+        /// Converts the tuple to a string representation.
+        /// </summary>
+        /// <returns>A string representation of the tuple.</returns>
         std::string ToString( ) const
         {
             return std::format( "[{}, {}, {}]", x, y, z );
         }
     };
 
+    /// <summary>
+    /// Represents a 4-component tuple.
+    /// </summary>
+    /// <typeparam name="DerivedT">The derived type.</typeparam>
+    /// <typeparam name="T">The value type.</typeparam>
     template<typename DerivedT, ArithmeticType T>
     class Tuple4 : public Internal::TupleBase
     {
     public:
+        /// <summary>
+        /// The derived type.
+        /// </summary>
         using DerivedType = DerivedT;
+        /// <summary>
+        /// The value type.
+        /// </summary>
         using value_type = T;
+        /// <summary>
+        /// The size type.
+        /// </summary>
         using size_type = size_t;
+        /// <summary>
+        /// The value type.
+        /// </summary>
         using ValueType = value_type;
+        /// <summary>
+        /// The size type.
+        /// </summary>
         using SizeType = size_type;
+        /// <summary>
+        /// The number of components in the tuple.
+        /// </summary>
         static constexpr size_type Size = 4;
 
+        /// <summary>
+        /// The SIMD traits for the tuple.
+        /// </summary>
         using Traits = SIMD::Traits<value_type, Size>;
+        /// <summary>
+        /// The SIMD type for the tuple.
+        /// </summary>
         using SIMDType = typename Traits::SIMDType;
+        /// <summary>
+        /// The array type for the tuple.
+        /// </summary>
         using ArrayType = typename Traits::ArrayType;
 
+        /// <summary>
+        /// The reference type for the array elements.
+        /// </summary>
         using reference = typename ArrayType::reference;
+        /// <summary>
+        /// The const reference type for the array elements.
+        /// </summary>
         using const_reference = typename ArrayType::const_reference;
+        /// <summary>
+        /// The pointer type for the array elements.
+        /// </summary>
         using pointer = typename ArrayType::pointer;
+        /// <summary>
+        /// The const pointer type for the array elements.
+        /// </summary>
         using const_pointer = typename ArrayType::const_pointer;
+        /// <summary>
+        /// The iterator type for the array elements.
+        /// </summary>
         using iterator = typename ArrayType::iterator;
+        /// <summary>
+        /// The const iterator type for the array elements.
+        /// </summary>
         using const_iterator = typename ArrayType::const_iterator;
+        /// <summary>
+        /// The reverse iterator type for the array elements.
+        /// </summary>
         using reverse_iterator = typename ArrayType::reverse_iterator;
+        /// <summary>
+        /// The const reverse iterator type for the array elements.
+        /// </summary>
         using const_reverse_iterator = typename ArrayType::const_reverse_iterator;
 
         /// <summary>
@@ -2777,6 +3335,9 @@ namespace Harlinn::Math
         /// </summary>
         using Simd = TupleSimd<DerivedType>;
 
+        /// <summary>
+        /// The union that allows access to the tuple elements as an array or as individual components.
+        /// </summary>
         union
         {
             //! \unnamed{union}
@@ -2794,26 +3355,45 @@ namespace Harlinn::Math
             };
         };
 
+        /// <summary>
+        /// Default constructor. Initializes all components to zero.
+        /// </summary>
         Tuple4( ) noexcept
             : x( static_cast< value_type >( 0 ) ), y( static_cast< value_type >( 0 ) ), z( static_cast< value_type >( 0 ) ), w( static_cast< value_type >( 0 ) )
         {
         }
 
+        /// <summary>
+        /// Constructor that initializes all components to the same value.
+        /// </summary>
         Tuple4( value_type value ) noexcept
             : x( value ), y( value ), z( value ), w( value )
         {
         }
 
+        /// <summary>
+        /// Constructor that initializes each component to a specific value.
+        /// </summary>
         Tuple4( value_type xv, value_type yv, value_type zv, value_type wv ) noexcept
             : x( xv ), y( yv ), z( zv ), w( wv )
         {
         }
 
+        /// <summary>
+        /// Constructor that initializes the tuple from an array.
+        /// </summary>
         Tuple4( const ArrayType& a ) noexcept
             : values( a )
         {
         }
 
+        /// <summary>
+        /// Constructor that initializes the tuple from another SIMD type.
+        /// </summary>
+        /// <typeparam name="U">
+        /// The type of the SIMD vector.
+        /// </typeparam>
+        /// <param name="other">The SIMD vector to initialize from.</param>
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         Tuple4( const U& other ) noexcept
@@ -2821,6 +3401,11 @@ namespace Harlinn::Math
         {
         }
 
+        /// <summary>
+        /// Constructor that initializes the tuple from another tuple of the same type.
+        /// </summary>
+        /// <typeparam name="U">The type of the other tuple.</typeparam>
+        /// <param name="other">The other tuple to initialize from.</param>
         template<TupleType U>
             requires std::is_same_v<Traits, typename U::Traits>
         Tuple4( const U& other ) noexcept
@@ -2828,6 +3413,11 @@ namespace Harlinn::Math
         {
         }
 
+        /// <summary>
+        /// Constructor that initializes the tuple from another tuple of a different type.
+        /// </summary>
+        /// <typeparam name="U">The type of the other tuple.</typeparam>
+        /// <param name="other">The other tuple to initialize from.</param>
         template<TupleType U>
             requires ( std::is_same_v<Traits, typename U::Traits> == false )
         explicit Tuple4( const U& other ) noexcept
@@ -2835,6 +3425,12 @@ namespace Harlinn::Math
         {
         }
 
+        /// <summary>
+        /// Assignment operator that assigns the values from another SIMD vector.
+        /// </summary>
+        /// <typeparam name="U">The type of the SIMD vector.</typeparam>
+        /// <param name="other">The SIMD vector to assign from.</param>
+        /// <returns>The updated tuple.</returns>
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
         DerivedType& operator = ( const U& other ) noexcept
@@ -2843,64 +3439,121 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        Simd ToSimd( ) const noexcept
+        /// <summary>
+        /// Converts the tuple to a SIMD vector.
+        /// </summary>
+        /// <returns>The SIMD vector representation of the tuple.</returns>
+        [[nodiscard]] Simd ToSimd( ) const noexcept
         {
             return Simd( Traits::Load( values ) );
         }
 
-        explicit operator Simd( ) const noexcept
+        /// <summary>
+        /// Converts the tuple to a SIMD vector.
+        /// </summary>
+        [[nodiscard]] explicit operator Simd( ) const noexcept
         {
             return ToSimd( );
         }
 
+        /// <summary>
+        /// Equality operator that compares the tuple with another tuple of the same size.
+        /// </summary>
+        /// <typeparam name="U">The type of the other tuple.</typeparam>
+        /// <param name="other">The other tuple to compare with.</param>
+        /// <returns>True if all elements are equal, false otherwise.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
-        constexpr bool operator == ( const U& other ) const noexcept
+        constexpr [[nodiscard]] bool operator == ( const U& other ) const noexcept
         {
             return IsSameValue( x, other.x ) && IsSameValue( y, other.y ) && IsSameValue( z, other.z ) && IsSameValue( w, other.w );
         }
 
+        /// <summary>
+        /// Inequality operator that compares the tuple with another tuple of the same size.
+        /// </summary>
+        /// <typeparam name="U">The type of the other tuple.</typeparam>
+        /// <param name="other">The other tuple to compare with.</param>
+        /// <returns>True if any element is not equal, false otherwise.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
-        constexpr bool operator != ( const U& other ) const noexcept
+        constexpr [[nodiscard]] bool operator != ( const U& other ) const noexcept
         {
             return !IsSameValue( x, other.x ) || !IsSameValue( y, other.y ) || !IsSameValue( z, other.z ) || !IsSameValue( w, other.w );
         }
 
-        constexpr bool operator == ( value_type value ) const noexcept
+        /// <summary>
+        /// Equality operator that compares the tuple with a scalar value.
+        /// </summary>
+        /// <param name="value">The scalar value to compare with.</param>
+        /// <returns>True if all elements are equal to the scalar value, false otherwise.</returns>
+        constexpr [[nodiscard]] bool operator == ( value_type value ) const noexcept
         {
             return IsSameValue( x, value ) && IsSameValue( y, value ) && IsSameValue( z, value ) && IsSameValue( w, value );
         }
-        constexpr bool operator != ( value_type value ) const noexcept
+        
+        /// <summary>
+        /// Inequality operator that compares the tuple with a scalar value.
+        /// </summary>
+        /// <param name="value">The scalar value to compare with.</param>
+        /// <returns>True if any element is not equal to the scalar value, false otherwise.</returns>
+        constexpr [[nodiscard]] bool operator != ( value_type value ) const noexcept
         {
             return !IsSameValue( x, value ) || !IsSameValue( y, value ) || !IsSameValue( z, value ) || !IsSameValue( w, value );
         }
 
+        /// <summary>
+        /// Equality operator that compares the tuple with a SIMD vector.
+        /// </summary>
+        /// <typeparam name="U">The type of the SIMD vector.</typeparam>
+        /// <param name="other">The SIMD vector to compare with.</param>
+        /// <returns>True if all elements are equal, false otherwise.</returns>
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
-        bool operator == ( const U& other ) const noexcept
+        [[nodiscard]] bool operator == ( const U& other ) const noexcept
         {
             return Traits::AllEqual( Traits::Load( values ), other.simd );
         }
 
+        /// <summary>
+        /// Inequality operator that compares the tuple with a SIMD vector.
+        /// </summary>
+        /// <typeparam name="U">The type of the SIMD vector.</typeparam>
+        /// <param name="other">The SIMD vector to compare with.</param>
+        /// <returns>True if any element is not equal, false otherwise.</returns>
         template<SimdType U>
             requires std::is_same_v<Traits, typename U::Traits>
-        bool operator != ( const U& other ) const noexcept
+        [[nodiscard]] bool operator != ( const U& other ) const noexcept
         {
             return Traits::AllEqual( Traits::Load( values ), other.simd ) == false;
         }
 
-        Simd operator-( ) const noexcept
+        /// <summary>
+        /// Negation operator that returns the negated SIMD vector.
+        /// </summary>
+        /// <returns>The negated SIMD vector.</returns>
+        [[nodiscard]] Simd operator-( ) const noexcept
         {
             return Traits::Negate( Traits::Load( values ) );
         }
 
+        /// <summary>
+        /// Addition assignment operator that adds a SIMD vector to the tuple.
+        /// </summary>
+        /// <param name="other">The SIMD vector to add.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator += ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Add( Traits::Load( values ), other.simd ) );
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Addition assignment operator that adds another tuple to this tuple.
+        /// </summary>
+        /// <typeparam name="U">The type of the other tuple.</typeparam>
+        /// <param name="other">The other tuple to add.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
         DerivedType& operator += ( const U& other ) noexcept
@@ -2912,6 +3565,11 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Addition assignment operator that adds a scalar value to each element of the tuple.
+        /// </summary>
+        /// <param name="value">The scalar value to add.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator += ( const value_type value ) noexcept
         {
             x += value;
@@ -2921,12 +3579,23 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Subtraction assignment operator that subtracts a SIMD vector from the tuple.
+        /// </summary>
+        /// <param name="other">The SIMD vector to subtract.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator -= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Sub( Traits::Load( values ), other.simd ) );
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Subtraction assignment operator that subtracts another tuple from this tuple.
+        /// </summary>
+        /// <typeparam name="U">The type of the other tuple.</typeparam>
+        /// <param name="other">The other tuple to subtract.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
         DerivedType& operator -= ( const U& other ) noexcept
@@ -2938,6 +3607,11 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Subtraction assignment operator that subtracts a scalar value from each element of the tuple.
+        /// </summary>
+        /// <param name="value">The scalar value to subtract.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator -= ( const value_type value ) noexcept
         {
             x -= value;
@@ -2947,13 +3621,23 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
-
+        /// <summary>
+        /// Multiplication assignment operator that multiplies each element of the tuple by a SIMD vector.
+        /// </summary>
+        /// <param name="other">The SIMD vector to multiply by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator *= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Mul( Traits::Load( values ), other.simd ) );
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Multiplication assignment operator that multiplies each element of the tuple by another tuple.
+        /// </summary>
+        /// <typeparam name="U">The type of the other tuple.</typeparam>
+        /// <param name="other">The other tuple to multiply by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
         DerivedType& operator *= ( const U& other ) noexcept
@@ -2965,6 +3649,11 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Multiplication assignment operator that multiplies each element of the tuple by a scalar value.
+        /// </summary>
+        /// <param name="value">The scalar value to multiply by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator *= ( const value_type value ) noexcept
         {
             x *= value;
@@ -2974,12 +3663,23 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Division assignment operator that divides each element of the tuple by a SIMD vector.
+        /// </summary>
+        /// <param name="other">The SIMD vector to divide by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator /= ( const Simd& other ) noexcept
         {
             values = Traits::ToArray( Traits::Div( Traits::Load( values ), other.simd ) );
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Division assignment operator that divides each element of the tuple by another tuple.
+        /// </summary>
+        /// <typeparam name="U">The type of the other tuple.</typeparam>
+        /// <param name="other">The other tuple to divide by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         template<TupleType U>
             requires ( U::Size == Size )
         DerivedType& operator /= ( const U& other ) noexcept
@@ -2991,6 +3691,11 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
+        /// <summary>
+        /// Division assignment operator that divides each element of the tuple by a scalar value.
+        /// </summary>
+        /// <param name="value">The scalar value to divide by.</param>
+        /// <returns>A reference to the updated tuple.</returns>
         DerivedType& operator /= ( const value_type value ) noexcept
         {
             x /= value;
@@ -3000,115 +3705,225 @@ namespace Harlinn::Math
             return static_cast< DerivedType& >( *this );
         }
 
-        const_reference operator[]( size_t index ) const noexcept
+        /// <summary>
+        /// Subscript operator to access elements of the tuple by index.
+        /// </summary>
+        /// <param name="index">The index of the element to access.</param>
+        /// <returns>A reference to the element at the specified index.</returns>
+        [[nodiscard]] const_reference operator[]( size_t index ) const noexcept
         {
             return values[ index ];
         }
 
-        reference operator[]( size_t index ) noexcept
+        /// <summary>
+        /// Subscript operator to access elements of the tuple by index.
+        /// </summary>
+        /// <param name="index">The index of the element to access.</param>
+        /// <returns>A reference to the element at the specified index.</returns>
+        [[nodiscard]] reference operator[]( size_t index ) noexcept
         {
             return values[ index ];
         }
 
-        static DerivedType Zero( ) noexcept
+        /// <summary>
+        /// Creates a tuple with all elements set to zero.
+        /// </summary>
+        /// <returns>A tuple with all elements set to zero.</returns>
+        static [[nodiscard]] DerivedType Zero( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType One( ) noexcept
+        /// <summary>
+        /// Creates a tuple with all elements set to one.
+        /// </summary>
+        /// <returns>A tuple with all elements set to one.</returns>
+        static [[nodiscard]] DerivedType One( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ), static_cast< value_type >( 1 ) );
         }
 
-        static DerivedType UnitX( ) noexcept
+        /// <summary>
+        /// Creates a tuple with the X element set to one and all other elements set to zero.
+        /// </summary>
+        /// <returns>A tuple with the X element set to one and all other elements set to zero.</returns>
+        static [[nodiscard]] DerivedType UnitX( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType UnitY( ) noexcept
+        /// <summary>
+        /// Creates a tuple with the Y element set to one and all other elements set to zero.
+        /// </summary>
+        /// <returns>A tuple with the Y element set to one and all other elements set to zero.</returns>
+        static [[nodiscard]] DerivedType UnitY( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType UnitZ( ) noexcept
+        /// <summary>
+        /// Creates a tuple with the Z element set to one and all other elements set to zero.
+        /// </summary>
+        /// <returns>A tuple with the Z element set to one and all other elements set to zero.</returns>
+        static [[nodiscard]] DerivedType UnitZ( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ), static_cast< value_type >( 0 ) );
         }
-        static DerivedType UnitW( ) noexcept
+        /// <summary>
+        /// Creates a tuple with the W element set to one and all other elements set to zero.
+        /// </summary>
+        /// <returns>A tuple with the W element set to one and all other elements set to zero.</returns>
+        static [[nodiscard]] DerivedType UnitW( ) noexcept
         {
             return DerivedType( static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 0 ), static_cast< value_type >( 1 ) );
         }
 
-        const_pointer data( ) const noexcept
+        /// <summary>
+        /// Returns a const pointer to the underlying array of elements.
+        /// </summary>
+        /// <returns>A const pointer to the underlying array of elements.</returns>
+        [[nodiscard]] const_pointer data( ) const noexcept
         {
             return values.data( );
         }
-        pointer data( ) noexcept
+        /// <summary>
+        /// Returns a pointer to the underlying array of elements.
+        /// </summary>
+        /// <returns>A pointer to the underlying array of elements.</returns>
+        [[nodiscard]] pointer data( ) noexcept
         {
             return values.data( );
         }
 
-        constexpr size_t size( ) const noexcept
+        /// <summary>
+        /// Returns the number of elements in the tuple.
+        /// </summary>
+        /// <returns>The number of elements in the tuple.</returns>
+        constexpr [[nodiscard]] size_t size( ) const noexcept
         {
             return Size;
         }
 
-        const_reference front( ) const noexcept
+        /// <summary>
+        /// Returns a const reference to the first element in the tuple.
+        /// </summary>
+        /// <returns>A const reference to the first element in the tuple.</returns>
+        [[nodiscard]] const_reference front( ) const noexcept
         {
             return values.front( );
         }
-        reference front( ) noexcept
+        
+        /// <summary>
+        /// Returns a reference to the first element in the tuple.
+        /// </summary>
+        /// <returns>A reference to the first element in the tuple.</returns>
+        [[nodiscard]] reference front( ) noexcept
         {
             return values.front( );
         }
 
-        const_reference back( ) const noexcept
+        /// <summary>
+        /// Returns a const reference to the last element in the tuple.
+        /// </summary>
+        /// <returns>A const reference to the last element in the tuple.</returns>
+        [[nodiscard]] const_reference back( ) const noexcept
         {
             return values.back( );
         }
-        reference back( ) noexcept
+        /// <summary>
+        /// Returns a reference to the last element in the tuple.
+        /// </summary>
+        /// <returns>A reference to the last element in the tuple.</returns>
+        [[nodiscard]] reference back( ) noexcept
         {
             return values.back( );
         }
 
-        const_iterator begin( ) const noexcept
+        /// <summary>
+        /// Returns a const iterator to the first element in the tuple.
+        /// </summary>
+        /// <returns>A const iterator to the first element in the tuple.</returns>
+        [[nodiscard]] const_iterator begin( ) const noexcept
         {
             return values.begin( );
         }
-        const_iterator cbegin( ) const noexcept
+        /// <summary>
+        /// Returns a const iterator to the first element in the tuple.
+        /// </summary>
+        /// <returns>A const iterator to the first element in the tuple.</returns>
+        [[nodiscard]] const_iterator cbegin( ) const noexcept
         {
             return values.cbegin( );
         }
-        iterator begin( ) noexcept
+        /// <summary>
+        /// Returns an iterator to the first element in the tuple.
+        /// </summary>
+        /// <returns>An iterator to the first element in the tuple.</returns>
+        [[nodiscard]] iterator begin( ) noexcept
         {
             return values.begin( );
         }
-        const_iterator end( ) const noexcept
+        /// <summary>
+        /// Returns a const iterator to the element following the last element in the tuple.
+        /// </summary>
+        /// <returns>A const iterator to the element following the last element in the tuple.</returns>
+        [[nodiscard]] const_iterator end( ) const noexcept
         {
             return values.end( );
         }
-        const_iterator cend( ) const noexcept
+        /// <summary>
+        /// Returns a const iterator to the element following the last element in the tuple.
+        /// </summary>
+        /// <returns>A const iterator to the element following the last element in the tuple.</returns>
+        [[nodiscard]] const_iterator cend( ) const noexcept
         {
             return values.cend( );
         }
-        iterator end( ) noexcept
+        /// <summary>
+        /// Returns an iterator to the element following the last element in the tuple.
+        /// </summary>
+        /// <returns>An iterator to the element following the last element in the tuple.</returns>
+        [[nodiscard]] iterator end( ) noexcept
         {
             return values.end( );
         }
-        const_reverse_iterator rbegin( ) const noexcept
+        /// <summary>
+        /// Returns a const reverse iterator to the first element in the reversed tuple.
+        /// </summary>
+        /// <returns>A const reverse iterator to the first element in the reversed tuple.</returns>
+        [[nodiscard]] const_reverse_iterator rbegin( ) const noexcept
         {
             return values.rbegin( );
         }
-        reverse_iterator rbegin( ) noexcept
+        /// <summary>
+        /// Returns a reverse iterator to the first element in the reversed tuple.
+        /// </summary>
+        /// <returns>A reverse iterator to the first element in the reversed tuple.</returns>
+        [[nodiscard]] reverse_iterator rbegin( ) noexcept
         {
             return values.rbegin( );
         }
-        const_reverse_iterator rend( ) const noexcept
+        /// <summary>
+        /// Returns a const reverse iterator to the element following the last element in the reversed tuple.
+        /// </summary>
+        /// <returns>A const reverse iterator to the element following the last element in the reversed tuple.</returns>
+        [[nodiscard]] const_reverse_iterator rend( ) const noexcept
         {
             return values.rend( );
         }
-        reverse_iterator rend( ) noexcept
+        /// <summary>
+        /// Returns a reverse iterator to the element following the last element in the reversed tuple.
+        /// </summary>
+        /// <returns>A reverse iterator to the element following the last element in the reversed tuple.</returns>
+        [[nodiscard]] reverse_iterator rend( ) noexcept
         {
             return values.rend( );
         }
 
+        /// <summary>
+        /// Assigns values to the tuple.
+        /// </summary>
+        /// <param name="xv">The value to assign to the x component.</param>
+        /// <param name="yv">The value to assign to the y component.</param>
+        /// <param name="zv">The value to assign to the z component.</param>
+        /// <param name="wv">The value to assign to the w component.</param>
         void Assign( value_type xv, value_type yv, value_type zv, value_type wv ) noexcept
         {
             x = xv;
@@ -3116,31 +3931,56 @@ namespace Harlinn::Math
             z = zv;
             w = wv;
         }
+
+        /// <summary>
+        /// Assigns values from an array to the tuple.
+        /// </summary>
+        /// <param name="src">The array containing the values to assign.</param>
         void Assign( const ArrayType& src ) noexcept
         {
             values = src;
         }
+        /// <summary>
+        /// Assigns values from a SIMD type to the tuple.
+        /// </summary>
+        /// <param name="src">The SIMD type containing the values to assign.</param>
         void Assign( SIMDType src ) noexcept
         {
             values = Traits::ToArray( src );
         }
 
-        bool HasNaN( ) const noexcept
+        /// <summary>
+        /// Checks if the tuple contains any NaN (Not a Number) values.
+        /// </summary>
+        /// <returns>True if any component of the tuple is NaN; otherwise, false.</returns>
+        [[nodiscard]] bool HasNaN( ) const noexcept
         {
             return std::isnan( x ) || std::isnan( y ) || std::isnan( z ) || std::isnan( w );
         }
 
-        bool IsFinite( ) const noexcept
+        /// <summary>
+        /// Checks if all components of the tuple are finite.
+        /// </summary>
+        /// <returns>True if all components are finite; otherwise, false.</returns>
+        [[nodiscard]] bool IsFinite( ) const noexcept
         {
             return std::isfinite( x ) && std::isfinite( y ) && std::isfinite( z ) && std::isfinite( w );
         }
 
-        bool IsInfinite( ) const noexcept
+        /// <summary>
+        /// Checks if any component of the tuple is infinite.
+        /// </summary>
+        /// <returns>True if any component is infinite; otherwise, false.</returns>
+        [[nodiscard]] bool IsInfinite( ) const noexcept
         {
             return std::isinf( x ) || std::isinf( y ) || std::isinf( z ) || std::isinf( w );
         }
 
-        std::string ToString( ) const
+        /// <summary>
+        /// Converts the tuple to a string representation.
+        /// </summary>
+        /// <returns>A string representation of the tuple.</returns>
+        [[nodiscard]] std::string ToString( ) const
         {
             return std::format( "[{}, {}, {}, {}]", x, y, z, w );
         }
@@ -3149,19 +3989,36 @@ namespace Harlinn::Math
 
 
     // Addition
+    
+    /// <summary>
+    /// Adds two SIMD types.
+    /// </summary>
+    /// <typeparam name="T">The type of the left-hand side operand.</typeparam>
+    /// <typeparam name="U">The type of the right-hand side operand.</typeparam>
+    /// <param name="lhs">The left-hand side operand.</param>
+    /// <param name="rhs">The right-hand side operand.</param>
+    /// <returns>The result of adding the two SIMD types.</returns>
     template<SimdType T, SimdType U>
         requires IsCompatible<T, U>
-    inline auto operator + ( const T& lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator + ( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = T;
         return ResultType( Traits::Add( lhs.simd, rhs.simd ) );
     }
 
-
+    
+    /// <summary>
+    /// Adds two SIMD or tuple types.
+    /// </summary>
+    /// <typeparam name="T">The type of the left-hand side operand.</typeparam>
+    /// <typeparam name="U">The type of the right-hand side operand.</typeparam>
+    /// <param name="lhs">The left-hand side operand.</param>
+    /// <param name="rhs">The right-hand side operand.</param>
+    /// <returns>The result of adding the two operands.</returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>&& Internal::HasTupleType<T, U>
-    inline auto operator + ( const T& lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator + ( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( Internal::AllAreTupleType<T, U> && T::Size < 3 )
@@ -3174,25 +4031,94 @@ namespace Harlinn::Math
             return ResultType( Traits::Add( Internal::ToSimd( lhs ), Internal::ToSimd( rhs ) ) );
         }
     }
-
+    
+    /// <summary>
+    /// Adds an arithmetic type to a SIMD type.
+    /// </summary>
+    /// <typeparam name="T">The type of the left-hand side operand.</typeparam>
+    /// <typeparam name="U">The type of the right-hand side operand.</typeparam>
+    /// <param name="lhs">The left-hand side operand.</param>
+    /// <param name="rhs">The right-hand side operand.</param>
+    /// <returns>The result of adding the arithmetic type to the SIMD type.</returns>
     template<ArithmeticType T, SimdType U>
-    inline auto operator + ( const T lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator + ( const T lhs, const U& rhs ) noexcept
     {
         using Traits = typename U::Traits;
         using ResultType = Internal::MakeResultType<U>;
         return ResultType( Traits::Add( Traits::Fill<Traits::Size>( static_cast< typename U::value_type >( lhs ) ), rhs.simd ) );
     }
 
+
+    /// <summary>
+    /// Adds a scalar value to every element of a SIMD vector.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The SIMD vector type. Must satisfy the <c>SimdType</c> concept and expose a
+    /// <c>Traits</c> type, a <c>value_type</c>, and a <c>simd</c> member.
+    /// </typeparam>
+    /// <typeparam name="U">
+    /// The scalar operand type. Must satisfy the <c>ArithmeticType</c> concept.
+    /// </typeparam>
+    /// <param name="lhs">The SIMD vector operand whose elements are added to.</param>
+    /// <param name="rhs">
+    /// The scalar operand. It is converted to <c>T::value_type</c> and broadcast across
+    /// all lanes before the addition is performed.
+    /// </param>
+    /// <returns>
+    /// A new SIMD result value where each lane equals the corresponding lane of
+    /// <paramref name="lhs"/> plus <paramref name="rhs"/>.
+    /// </returns>
+    /// <remarks>
+    /// The scalar is broadcast into a full-width SIMD register via
+    /// <c>Traits::Fill</c> and the addition is delegated to <c>Traits::Add</c>.
+    /// The operation is <c>noexcept</c> and performs no dynamic allocation.
+    /// </remarks>
+    /// <example>
+    /// <code language="cpp">
+    /// // Add 2 to every component of a SIMD vector.
+    /// auto result = simdVector + 2;
+    /// </code>
+    /// </example>
     template<SimdType T, ArithmeticType U>
-    inline auto operator + ( const T& lhs, const U rhs ) noexcept
+    inline [[nodiscard]] auto operator + ( const T& lhs, const U rhs ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Add( lhs.simd, Traits::Fill<Traits::Size>( static_cast< typename T::value_type >( rhs ) ) ) );
     }
 
+    /// <summary>
+    /// Computes the component-wise sum of a scalar value and a tuple, returning a new tuple
+    /// whose elements are the scalar added to each corresponding element of the tuple.
+    /// </summary>
+    /// <typeparam name="T">
+    /// An arithmetic scalar type used as the left-hand operand.
+    /// </typeparam>
+    /// <typeparam name="U">
+    /// A tuple type (satisfying <c>TupleType</c>) used as the right-hand operand. Its
+    /// nested <c>Traits</c> type provides the SIMD-backed load/add/fill operations and
+    /// <c>value_type</c> defines the element type of the result.
+    /// </typeparam>
+    /// <param name="lhs">
+    /// The scalar value added to every component of <paramref name="rhs"/>.
+    /// </param>
+    /// <param name="rhs">
+    /// The tuple whose components are each incremented by <paramref name="lhs"/>.
+    /// </param>
+    /// <returns>
+    /// A tuple containing the component-wise sums. For tuples with fewer than three
+    /// components the result is of type <c>U</c>; otherwise the result is the type
+    /// produced by <c>Internal::MakeResultType&lt;U&gt;</c>, computed using SIMD traits.
+    /// </returns>
+    /// <remarks>
+    /// This overload is noexcept and performs no dynamic allocation. For tuples of size
+    /// three or greater the scalar is broadcast via <c>Traits::Fill</c> and added to the
+    /// loaded tuple values through <c>Traits::Add</c>, enabling vectorized evaluation.
+    /// The scalar is cast to <c>U::value_type</c> before the operation, so mixed-type
+    /// arithmetic follows the tuple element type.
+    /// </remarks>
     template<ArithmeticType T, TupleType U>
-    inline auto operator + ( const T lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator + ( const T lhs, const U& rhs ) noexcept
     {
         using Traits = typename U::Traits;
         if constexpr ( U::Size < 3 )
@@ -3206,8 +4132,32 @@ namespace Harlinn::Math
         }
     }
 
+
+    /// <summary>
+    /// Adds a scalar value to each component of a tuple, returning a new tuple with the result.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The tuple type being operated on. Must satisfy the <c>TupleType</c> concept and expose
+    /// <c>Traits</c>, <c>Size</c> and <c>value_type</c> members.
+    /// </typeparam>
+    /// <typeparam name="U">
+    /// The scalar type of the right-hand operand. Must satisfy the <c>ArithmeticType</c> concept.
+    /// </typeparam>
+    /// <param name="lhs">The tuple whose components are the left-hand operands of the addition.</param>
+    /// <param name="rhs">The scalar value added to each component of <paramref name="lhs"/>.</param>
+    /// <returns>
+    /// A tuple in which every component equals the corresponding component of <paramref name="lhs"/>
+    /// plus <paramref name="rhs"/>. For tuples with fewer than three components the result is
+    /// constructed directly from the summed <c>x</c> and <c>y</c> values; otherwise the result is
+    /// computed using the SIMD-backed <c>Traits</c> operations.
+    /// </returns>
+    /// <remarks>
+    /// This operator is <c>noexcept</c>. For tuples with three or more components the scalar is
+    /// broadcast across all lanes via <c>Traits::Fill</c> and added using <c>Traits::Add</c> on the
+    /// loaded tuple values, after casting <paramref name="rhs"/> to the tuple's <c>value_type</c>.
+    /// </remarks>
     template<TupleType T, ArithmeticType U>
-    inline auto operator + ( const T& lhs, const U rhs ) noexcept
+    inline [[nodiscard]] auto operator + ( const T& lhs, const U rhs ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( T::Size < 3 )
@@ -3222,9 +4172,31 @@ namespace Harlinn::Math
     }
 
     // Subtraction
+    
+    /// <summary>
+    /// Performs component-wise subtraction of two compatible SIMD vector types.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The SIMD type of the left-hand operand. Also defines the result type and the
+    /// <c>Traits</c> used to perform the operation.
+    /// </typeparam>
+    /// <typeparam name="U">
+    /// The SIMD type of the right-hand operand. Must be compatible with <typeparamref name="T"/>
+    /// as constrained by <c>IsCompatible&lt;T, U&gt;</c>.
+    /// </typeparam>
+    /// <param name="lhs">The left-hand operand from which <paramref name="rhs"/> is subtracted.</param>
+    /// <param name="rhs">The right-hand operand to subtract from <paramref name="lhs"/>.</param>
+    /// <returns>
+    /// A value of type <typeparamref name="T"/> holding the component-wise difference
+    /// \( lhs_i - rhs_i \) for each element \( i \).
+    /// </returns>
+    /// <remarks>
+    /// This operator is <c>noexcept</c> and delegates to <c>T::Traits::Sub</c>, which maps to the
+    /// appropriate SIMD subtraction intrinsic for the underlying element type and width.
+    /// </remarks>
     template<SimdType T, SimdType U>
         requires IsCompatible<T, U>
-    inline auto operator - ( const T& lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator - ( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = T;
@@ -3232,9 +4204,32 @@ namespace Harlinn::Math
     }
 
 
+    /// <summary>
+    /// Computes the component-wise difference of two SIMD or tuple operands.
+    /// </summary>
+    /// <typeparam name="T">
+    /// The left-hand operand type. Must satisfy <c>SimdOrTupleType</c> and be compatible with <typeparamref name="U"/>.
+    /// </typeparam>
+    /// <typeparam name="U">
+    /// The right-hand operand type. Must satisfy <c>SimdOrTupleType</c> and be compatible with <typeparamref name="T"/>.
+    /// </typeparam>
+    /// <param name="lhs">The minuend (value subtracted from).</param>
+    /// <param name="rhs">The subtrahend (value to subtract).</param>
+    /// <returns>
+    /// The component-wise difference \( lhs - rhs \). When both operands are tuple types with fewer than
+    /// three components, a <typeparamref name="T"/> holding the subtracted <c>x</c> and <c>y</c> components is
+    /// returned; otherwise the result is produced through the SIMD subtraction path as the corresponding
+    /// SIMD result type.
+    /// </returns>
+    /// <remarks>
+    /// This overload participates in overload resolution only when <typeparamref name="T"/> and
+    /// <typeparamref name="U"/> are compatible and at least one of them is a tuple type. The implementation
+    /// selects between a direct scalar path for small tuples and the SIMD path via <c>Traits::Sub</c> for all
+    /// other cases. The operation is <c>noexcept</c>.
+    /// </remarks>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>&& Internal::HasTupleType<T, U>
-    inline auto operator - ( const T& lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator - ( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( Internal::AllAreTupleType<T, U> && T::Size < 3 )
@@ -3247,25 +4242,53 @@ namespace Harlinn::Math
             return ResultType( Traits::Sub( Internal::ToSimd( lhs ), Internal::ToSimd( rhs ) ) );
         }
     }
-
+    
+    /// <summary>
+    /// Performs component-wise subtraction of a scalar value from a SIMD vector.
+    /// </summary>
+    /// <typeparam name="T">The arithmetic type of the scalar value.</typeparam>
+    /// <typeparam name="U">The SIMD type of the right-hand operand.</typeparam>
+    /// <param name="lhs">The scalar value to subtract from.</param>
+    /// <param name="rhs">The SIMD vector to subtract.</param>
+    /// <returns>A SIMD vector of type <typeparamref name="U"/> holding the component-wise difference.</returns>
+    /// <remarks>
+    /// This operator is <c>noexcept</c> and delegates to <c>U::Traits::Sub</c>, which maps to the
+    /// appropriate SIMD subtraction intrinsic for the underlying element type and width.
+    /// </remarks>
     template<ArithmeticType T, SimdType U>
-    inline auto operator - ( const T lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator - ( const T lhs, const U& rhs ) noexcept
     {
         using Traits = typename U::Traits;
         using ResultType = Internal::MakeResultType<U>;
         return ResultType( Traits::Sub( Traits::Fill<Traits::Size>( static_cast< typename U::value_type >( lhs ) ), rhs.simd ) );
     }
 
+    /// <summary>
+    /// Performs component-wise subtraction of a SIMD vector from a scalar value.
+    /// </summary>
+    /// <typeparam name="T">The arithmetic type of the scalar value.</typeparam>
+    /// <typeparam name="U">The SIMD type of the left-hand operand.</typeparam>
+    /// <param name="lhs">The scalar value to subtract from.</param>
+    /// <param name="rhs">The SIMD vector to subtract.</param>
+    /// <returns>A SIMD vector of type <typeparamref name="T"/> holding the component-wise difference.</returns>
     template<SimdType T, ArithmeticType U>
-    inline auto operator - ( const T& lhs, const U rhs ) noexcept
+    inline [[nodiscard]] auto operator - ( const T& lhs, const U rhs ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Sub( lhs.simd, Traits::Fill<Traits::Size>( static_cast< typename T::value_type >( rhs ) ) ) );
     }
 
+    /// <summary>
+    /// Performs component-wise subtraction of a SIMD vector from a scalar value.
+    /// </summary>
+    /// <typeparam name="T">The arithmetic type of the scalar value.</typeparam>
+    /// <typeparam name="U">The tuple type of the right-hand operand.</typeparam>
+    /// <param name="lhs">The scalar value to subtract from.</param>
+    /// <param name="rhs">The tuple to subtract.</param>
+    /// <returns>A tuple of type <typeparamref name="U"/> holding the component-wise difference.</returns>
     template<ArithmeticType T, TupleType U>
-    inline auto operator - ( const T lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator - ( const T lhs, const U& rhs ) noexcept
     {
         using Traits = typename U::Traits;
         if constexpr ( U::Size < 3 )
@@ -3279,8 +4302,16 @@ namespace Harlinn::Math
         }
     }
 
+    /// <summary>
+    /// Performs component-wise subtraction of a scalar value from a tuple.
+    /// </summary>
+    /// <typeparam name="T">The tuple type of the left-hand operand.</typeparam>
+    /// <typeparam name="U">The arithmetic type of the scalar value.</typeparam>
+    /// <param name="lhs">The tuple to subtract from.</param>
+    /// <param name="rhs">The scalar value to subtract.</param>
+    /// <returns>A tuple of type <typeparamref name="T"/> holding the component-wise difference.</returns>
     template<TupleType T, ArithmeticType U>
-    inline auto operator - ( const T& lhs, const U rhs ) noexcept
+    inline [[nodiscard]] auto operator - ( const T& lhs, const U rhs ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( T::Size < 3 )
@@ -3298,7 +4329,7 @@ namespace Harlinn::Math
     // Multiplication
     template<SimdType T, SimdType U>
         requires IsCompatible<T, U>
-    inline auto operator * ( const T& lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator * ( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = T;
@@ -3307,7 +4338,7 @@ namespace Harlinn::Math
 
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>&& Internal::HasTupleType<T, U>
-    inline auto operator * ( const T& lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator * ( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( Internal::AllAreTupleType<T, U> && T::Size < 3 )
@@ -3322,7 +4353,7 @@ namespace Harlinn::Math
     }
 
     template<ArithmeticType T, SimdType U>
-    inline auto operator * ( const T lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator * ( const T lhs, const U& rhs ) noexcept
     {
         using Traits = typename U::Traits;
         using ResultType = U;
@@ -3330,7 +4361,7 @@ namespace Harlinn::Math
     }
 
     template<SimdType T, ArithmeticType U>
-    inline auto operator * ( const T& lhs, const U rhs ) noexcept
+    inline [[nodiscard]] auto operator * ( const T& lhs, const U rhs ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = T;
@@ -3338,7 +4369,7 @@ namespace Harlinn::Math
     }
 
     template<ArithmeticType T, TupleType U>
-    inline auto operator * ( const T lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator * ( const T lhs, const U& rhs ) noexcept
     {
         using Traits = typename U::Traits;
         if constexpr ( U::Size < 3 )
@@ -3353,7 +4384,7 @@ namespace Harlinn::Math
     }
 
     template<TupleType T, ArithmeticType U>
-    inline auto operator * ( const T& lhs, const U rhs ) noexcept
+    inline [[nodiscard]] auto operator * ( const T& lhs, const U rhs ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( T::Size < 3 )
@@ -3371,7 +4402,7 @@ namespace Harlinn::Math
     // Division
     template<SimdType T, SimdType U>
         requires IsCompatible<T, U>
-    inline auto operator / ( const T& lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator / ( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = T;
@@ -3381,7 +4412,7 @@ namespace Harlinn::Math
 
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>&& Internal::HasTupleType<T, U>
-    inline auto operator / ( const T& lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator / ( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( Internal::AllAreTupleType<T, U> && T::Size < 3 )
@@ -3396,7 +4427,7 @@ namespace Harlinn::Math
     }
 
     template<ArithmeticType T, SimdType U>
-    inline auto operator / ( const T lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator / ( const T lhs, const U& rhs ) noexcept
     {
         using Traits = typename U::Traits;
         using ResultType = Internal::MakeResultType<U>;
@@ -3404,7 +4435,7 @@ namespace Harlinn::Math
     }
 
     template<SimdType T, ArithmeticType U>
-    inline auto operator / ( const T& lhs, const U rhs ) noexcept
+    inline [[nodiscard]] auto operator / ( const T& lhs, const U rhs ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -3412,7 +4443,7 @@ namespace Harlinn::Math
     }
 
     template<ArithmeticType T, TupleType U>
-    inline auto operator / ( const T lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto operator / ( const T lhs, const U& rhs ) noexcept
     {
         using Traits = typename U::Traits;
         if constexpr ( U::Size < 3 )
@@ -3427,7 +4458,7 @@ namespace Harlinn::Math
     }
 
     template<TupleType T, ArithmeticType U>
-    inline auto operator / ( const T& lhs, const U rhs ) noexcept
+    inline [[nodiscard]] auto operator / ( const T& lhs, const U rhs ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( T::Size < 3 )
@@ -3447,7 +4478,7 @@ namespace Harlinn::Math
     /// Retrieves the lowest element of v 
     /// </summary>
     template<SimdType T>
-    inline auto First( const T& v )
+    inline [[nodiscard]] auto First( const T& v )
     {
         using Traits = typename T::Traits;
         return Traits::First( v.simd );
@@ -3456,7 +4487,7 @@ namespace Harlinn::Math
     /// Retrieves the lowest element of v 
     /// </summary>
     template<TupleType T>
-    inline auto First( const T& v )
+    inline [[nodiscard]] auto First( const T& v )
     {
         return v.x;
     }
@@ -3466,7 +4497,7 @@ namespace Harlinn::Math
     /// Calculates the horizontal sum of the elements in the vector.
     /// </summary>
     template<SimdType T>
-    inline T HSum( const T& t ) noexcept
+    inline [[nodiscard]] T HSum( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::HSum( t.simd );
@@ -3476,7 +4507,7 @@ namespace Harlinn::Math
     /// Calculates the horizontal sum of the elements in the vector.
     /// </summary>
     template<SimdType T>
-    inline typename T::value_type ScalarHSum( const T& t ) noexcept
+    inline [[nodiscard]] typename T::value_type ScalarHSum( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::First( Traits::HSum( t.simd ) );
@@ -3486,7 +4517,7 @@ namespace Harlinn::Math
     /// Calculates the horizontal sum of the elements in the vector.
     /// </summary>
     template<TupleType T>
-    inline typename T::value_type ScalarHSum( const T& t ) noexcept
+    inline [[nodiscard]] typename T::value_type ScalarHSum( const T& t ) noexcept
     {
         if constexpr ( T::Size == 2 )
         {
@@ -3514,7 +4545,7 @@ namespace Harlinn::Math
     /// Calculates the horizontal sum of the elements in the vector.
     /// </summary>
     template<TupleType T>
-    inline typename T::Simd HSum( const T& t ) noexcept
+    inline [[nodiscard]] typename T::Simd HSum( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Fill<Traits::Size>( ScalarHSum( t ) );
@@ -3522,14 +4553,14 @@ namespace Harlinn::Math
 
     // Avg
     template<SimdType T>
-    inline auto Avg( const T& t ) noexcept
+    inline [[nodiscard]] auto Avg( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
         return ResultType( Traits::Div( Traits::HSum( t.simd ), Traits::FillDivisor<Traits::Size>( static_cast< typename Traits::Type >( Traits::Size ) ) ) );
     }
     template<TupleType T>
-    inline auto Avg( const T& t ) noexcept
+    inline [[nodiscard]] auto Avg( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -3541,7 +4572,7 @@ namespace Harlinn::Math
     /// Calculates the average value of the elements in the argument.
     /// </summary>
     template<SimdOrTupleType T>
-    inline typename T::value_type ScalarAvg( const T& t ) noexcept
+    inline [[nodiscard]] typename T::value_type ScalarAvg( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         return ScalarHSum( t ) / static_cast< typename Traits::Type >( Traits::Size );
@@ -3551,14 +4582,14 @@ namespace Harlinn::Math
     /// Calculates the horizontal product of the elements in the vector.
     /// </summary>
     template<SimdType T>
-    inline T HProd( const T& t ) noexcept
+    inline [[nodiscard]] T HProd( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::HProd( t.simd );
     }
 
     template<SimdType T>
-    inline auto ScalarHProd( const T& t ) noexcept
+    inline [[nodiscard]] auto ScalarHProd( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::First( Math::HProd( t ).simd );
@@ -3568,7 +4599,7 @@ namespace Harlinn::Math
     /// Calculates the horizontal product of the elements in the vector.
     /// </summary>
     template<TupleType T, typename ResultT = typename T::value_type>
-    inline ResultT ScalarHProd( const T& t ) noexcept
+    inline [[nodiscard]] ResultT ScalarHProd( const T& t ) noexcept
     {
         if constexpr ( T::Size == 2 )
         {
@@ -3596,7 +4627,7 @@ namespace Harlinn::Math
     /// Calculates the horizontal product of the elements in the vector.
     /// </summary>
     template<TupleType T>
-    inline typename T::Simd HProd( const T& t ) noexcept
+    inline [[nodiscard]] typename T::Simd HProd( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Fill<Traits::Size>( ScalarHProd( t ) );
@@ -3609,7 +4640,7 @@ namespace Harlinn::Math
     /// Returns true if all the elements of the argument have all their bits set to 1 
     /// </summary>
     template<SimdOrTupleType T>
-    inline bool AllTrue( const T& v ) noexcept
+    inline [[nodiscard]] bool AllTrue( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllTrue( Internal::ToSimd( v ) );
@@ -3621,7 +4652,7 @@ namespace Harlinn::Math
     /// Returns true if any of the elements of the argument have all their bits set to 1 
     /// </summary>
     template<SimdOrTupleType T>
-    inline bool AnyTrue( const T& v ) noexcept
+    inline [[nodiscard]] bool AnyTrue( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyTrue( Internal::ToSimd( v ) );
@@ -3646,7 +4677,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto Less( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto Less( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -3662,7 +4693,7 @@ namespace Harlinn::Math
     /// element in the result will be set to 0.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline auto Less( const T& v1, U value ) noexcept
+    inline [[nodiscard]] auto Less( const T& v1, U value ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -3678,7 +4709,7 @@ namespace Harlinn::Math
     /// element in the result will be set to 0.
     /// </returns>
     template<ArithmeticType T, SimdOrTupleType U>
-    inline auto Less( T value, const U& v2 ) noexcept
+    inline [[nodiscard]] auto Less( T value, const U& v2 ) noexcept
     {
         using Traits = typename U::Traits;
         using ResultType = Internal::MakeResultType<U>;
@@ -3701,7 +4732,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline bool AllLess( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AllLess( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllLess( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) );
@@ -3714,7 +4745,7 @@ namespace Harlinn::Math
     /// true if all the elements of v1 is less than value, otherwise false.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline bool AllLess( const T& v1, U value ) noexcept
+    inline [[nodiscard]] bool AllLess( const T& v1, U value ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllLess( Internal::ToSimd( v1 ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ) );
@@ -3727,7 +4758,7 @@ namespace Harlinn::Math
     /// true value is less than any of the elements of v2, otherwise false.
     /// </returns>
     template< ArithmeticType T, SimdOrTupleType U>
-    inline bool AllLess( T value, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AllLess( T value, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllLess( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
@@ -3750,7 +4781,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline bool AnyLess( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AnyLess( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyLess( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) );
@@ -3763,7 +4794,7 @@ namespace Harlinn::Math
     /// true if any of the elements of v1 is less than value, otherwise false.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline bool AnyLess( const T& v1, U value ) noexcept
+    inline [[nodiscard]] bool AnyLess( const T& v1, U value ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyLess( Internal::ToSimd( v1 ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ) );
@@ -3776,7 +4807,7 @@ namespace Harlinn::Math
     /// true value is less than any of the elements of v2, otherwise false.
     /// </returns>
     template< ArithmeticType T, SimdOrTupleType U>
-    inline bool AnyLess( T value, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AnyLess( T value, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyLess( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
@@ -3801,7 +4832,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto LessOrEqual( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto LessOrEqual( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -3817,7 +4848,7 @@ namespace Harlinn::Math
     /// element in the result will be set to 0.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline auto LessOrEqual( const T& v1, const U value ) noexcept
+    inline [[nodiscard]] auto LessOrEqual( const T& v1, const U value ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -3833,7 +4864,7 @@ namespace Harlinn::Math
     /// element in the result will be set to 0.
     /// </returns>
     template<ArithmeticType T, SimdOrTupleType U>
-    inline auto LessOrEqual( const T value, const U& v2 ) noexcept
+    inline [[nodiscard]] auto LessOrEqual( const T value, const U& v2 ) noexcept
     {
         using Traits = typename U::Traits;
         using ResultType = Internal::MakeResultType<U>;
@@ -3856,7 +4887,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline bool AllLessOrEqual( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AllLessOrEqual( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllLessOrEqual( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) );
@@ -3869,7 +4900,7 @@ namespace Harlinn::Math
     /// true if all the elements of v1 is less than, or equal to, value, otherwise false.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline bool AllLessOrEqual( const T& v1, const U value ) noexcept
+    inline [[nodiscard]] bool AllLessOrEqual( const T& v1, const U value ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllLessOrEqual( Internal::ToSimd( v1 ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ) );
@@ -3882,7 +4913,7 @@ namespace Harlinn::Math
     /// true value is less than, or equal to, any of the elements of v2, otherwise false.
     /// </returns>
     template< ArithmeticType T, SimdOrTupleType U>
-    inline bool AllLessOrEqual( const T value, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AllLessOrEqual( const T value, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllLessOrEqual( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
@@ -3905,7 +4936,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline bool AnyLessOrEqual( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AnyLessOrEqual( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyLessOrEqual( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) );
@@ -3918,7 +4949,7 @@ namespace Harlinn::Math
     /// true if any of the elements of v1 is less than, or equal to, value, otherwise false.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline bool AnyLessOrEqual( const T& v1, const U value ) noexcept
+    inline [[nodiscard]] bool AnyLessOrEqual( const T& v1, const U value ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyLessOrEqual( Internal::ToSimd( v1 ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ) );
@@ -3931,7 +4962,7 @@ namespace Harlinn::Math
     /// true value is less than, or equal to, any of the elements of v2, otherwise false.
     /// </returns>
     template< ArithmeticType T, SimdOrTupleType U>
-    inline bool AnyLessOrEqual( const T value, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AnyLessOrEqual( const T value, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyLessOrEqual( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
@@ -3962,7 +4993,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U>
-    inline auto Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    inline [[nodiscard]] auto Equal( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -3991,7 +5022,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
         requires IsCompatible<S, T>
-    inline auto Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
+    inline [[nodiscard]] auto Equal( const S& lhs, const T& rhs, U epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -4021,7 +5052,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U>
-    inline bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    inline [[nodiscard]] bool AllEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AllEqual( Internal::ToSimd( lhs ), Internal::ToSimd( rhs ), Internal::ToSimd( epsilon ) );
@@ -4046,7 +5077,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
         requires IsCompatible<S, T>
-    inline bool AllEqual( const S& lhs, const T& rhs, const U epsilon ) noexcept
+    inline [[nodiscard]] bool AllEqual( const S& lhs, const T& rhs, const U epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AllEqual( Internal::ToSimd( lhs ), Internal::ToSimd( rhs ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
@@ -4075,7 +5106,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U>
-    inline bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
+    inline [[nodiscard]] bool AnyEqual( const S& lhs, const T& rhs, const U& epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AnyEqual( Internal::ToSimd( lhs ), Internal::ToSimd( rhs ), Internal::ToSimd( epsilon ) );
@@ -4100,7 +5131,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
         requires IsCompatible<S, T>
-    inline bool AnyEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
+    inline [[nodiscard]] bool AnyEqual( const S& lhs, const T& rhs, U epsilon ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::AnyEqual( Internal::ToSimd( lhs ), Internal::ToSimd( rhs ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( epsilon ) ) );
@@ -4126,7 +5157,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto Equal( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto Equal( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -4142,7 +5173,7 @@ namespace Harlinn::Math
     /// element in the result will be set to 0.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline auto Equal( const T& v1, U value ) noexcept
+    inline [[nodiscard]] auto Equal( const T& v1, U value ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -4158,7 +5189,7 @@ namespace Harlinn::Math
     /// element in the result will be set to 0.
     /// </returns>
     template<ArithmeticType T, SimdOrTupleType U>
-    inline auto Equal( const T value, const U& v2 ) noexcept
+    inline [[nodiscard]] auto Equal( const T value, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -4182,7 +5213,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline bool AllEqual( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AllEqual( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllEqual( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) );
@@ -4195,7 +5226,7 @@ namespace Harlinn::Math
     /// true if all the elements of v1 is equal to value, otherwise false.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline bool AllEqual( const T& v1, const U value ) noexcept
+    inline [[nodiscard]] bool AllEqual( const T& v1, const U value ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllEqual( Internal::ToSimd( v1 ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ) );
@@ -4208,7 +5239,7 @@ namespace Harlinn::Math
     /// true value is equal to all the elements of v2, otherwise false.
     /// </returns>
     template<ArithmeticType T, SimdOrTupleType U>
-    inline bool AllEqual( T value, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AllEqual( T value, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllEqual( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
@@ -4232,7 +5263,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline bool AnyEqual( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AnyEqual( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyEqual( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) );
@@ -4245,7 +5276,7 @@ namespace Harlinn::Math
     /// true if any of the elements of v1 is equal to value, otherwise false.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline bool AnyEqual( const T& v1, const U value ) noexcept
+    inline [[nodiscard]] bool AnyEqual( const T& v1, const U value ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyEqual( Internal::ToSimd( v1 ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ) );
@@ -4258,7 +5289,7 @@ namespace Harlinn::Math
     /// true value is equal to any of the elements of v2, otherwise false.
     /// </returns>
     template<ArithmeticType T, SimdOrTupleType U>
-    inline bool AnyEqual( const T value, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AnyEqual( const T value, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyEqual( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
@@ -4283,7 +5314,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto NotEqual( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto NotEqual( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -4299,7 +5330,7 @@ namespace Harlinn::Math
     /// element in the result will be set to 0.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline auto NotEqual( const T& v1, const U value ) noexcept
+    inline [[nodiscard]] auto NotEqual( const T& v1, const U value ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -4315,7 +5346,7 @@ namespace Harlinn::Math
     /// element in the result will be set to 0.
     /// </returns>
     template<ArithmeticType T, SimdOrTupleType U>
-    inline auto NotEqual( T value, const U& v2 ) noexcept
+    inline [[nodiscard]] auto NotEqual( T value, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -4338,7 +5369,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline bool AllNotEqual( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AllNotEqual( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllNotEqual( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) );
@@ -4351,7 +5382,7 @@ namespace Harlinn::Math
     /// true if all the elements of v1 is not equal to value, otherwise false.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline bool AllNotEqual( const T& v1, const U value ) noexcept
+    inline [[nodiscard]] bool AllNotEqual( const T& v1, const U value ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllNotEqual( Internal::ToSimd( v1 ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ) );
@@ -4364,7 +5395,7 @@ namespace Harlinn::Math
     /// true value is not equal to all the elements of v2, otherwise false.
     /// </returns>
     template<ArithmeticType T, SimdOrTupleType U>
-    inline bool AllNotEqual( T value, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AllNotEqual( T value, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllNotEqual( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
@@ -4388,7 +5419,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline bool AnyNotEqual( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AnyNotEqual( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyNotEqual( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) );
@@ -4401,7 +5432,7 @@ namespace Harlinn::Math
     /// true if any of the elements of v1 is not equal to value, otherwise false.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline bool AnyNotEqual( const T& v1, const U value ) noexcept
+    inline [[nodiscard]] bool AnyNotEqual( const T& v1, const U value ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyNotEqual( Internal::ToSimd( v1 ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ) );
@@ -4414,7 +5445,7 @@ namespace Harlinn::Math
     /// true value is not equal to any of the elements of v2, otherwise false.
     /// </returns>
     template< ArithmeticType T, SimdOrTupleType U>
-    inline bool AnyNotEqual( const T value, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AnyNotEqual( const T value, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyNotEqual( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
@@ -4442,7 +5473,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto GreaterOrEqual( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto GreaterOrEqual( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -4458,7 +5489,7 @@ namespace Harlinn::Math
     /// element in the result will be set to 0.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline auto GreaterOrEqual( const T& v1, const U value ) noexcept
+    inline [[nodiscard]] auto GreaterOrEqual( const T& v1, const U value ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -4474,7 +5505,7 @@ namespace Harlinn::Math
     /// element in the result will be set to 0.
     /// </returns>
     template<ArithmeticType T, SimdOrTupleType U>
-    inline auto GreaterOrEqual( const T value, const U& v2 ) noexcept
+    inline [[nodiscard]] auto GreaterOrEqual( const T value, const U& v2 ) noexcept
     {
         using Traits = typename U::Traits;
         using ResultType = Internal::MakeResultType<U>;
@@ -4497,7 +5528,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline bool AllGreaterOrEqual( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AllGreaterOrEqual( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllGreaterOrEqual( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) );
@@ -4510,7 +5541,7 @@ namespace Harlinn::Math
     /// true if all the elements of v1 is greater than, or equal to, value, otherwise false.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline bool AllGreaterOrEqual( const T& v1, const U value ) noexcept
+    inline [[nodiscard]] bool AllGreaterOrEqual( const T& v1, const U value ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllGreaterOrEqual( Internal::ToSimd( v1 ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ) );
@@ -4523,7 +5554,7 @@ namespace Harlinn::Math
     /// true value is greater than, or equal to, any of the elements of v2, otherwise false.
     /// </returns>
     template< ArithmeticType T, SimdOrTupleType U>
-    inline bool AllGreaterOrEqual( const T value, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AllGreaterOrEqual( const T value, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllGreaterOrEqual( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
@@ -4546,7 +5577,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline bool AnyGreaterOrEqual( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AnyGreaterOrEqual( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyGreaterOrEqual( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) );
@@ -4559,7 +5590,7 @@ namespace Harlinn::Math
     /// true if any of the elements of v1 is greater than, or equal to, value, otherwise false.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline bool AnyGreaterOrEqual( const T& v1, const U value ) noexcept
+    inline [[nodiscard]] bool AnyGreaterOrEqual( const T& v1, const U value ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyGreaterOrEqual( Internal::ToSimd( v1 ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ) );
@@ -4572,7 +5603,7 @@ namespace Harlinn::Math
     /// true value is greater than, or equal to, any of the elements of v2, otherwise false.
     /// </returns>
     template< ArithmeticType T, SimdOrTupleType U>
-    inline bool AnyGreaterOrEqual( const T value, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AnyGreaterOrEqual( const T value, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyGreaterOrEqual( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
@@ -4599,7 +5630,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto Greater( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto Greater( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -4615,7 +5646,7 @@ namespace Harlinn::Math
     /// element in the result will be set to 0.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline auto Greater( const T& v1, U value ) noexcept
+    inline [[nodiscard]] auto Greater( const T& v1, U value ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -4631,7 +5662,7 @@ namespace Harlinn::Math
     /// element in the result will be set to 0.
     /// </returns>
     template<ArithmeticType T, SimdOrTupleType U>
-    inline auto Greater( T value, const U& v2 ) noexcept
+    inline [[nodiscard]] auto Greater( T value, const U& v2 ) noexcept
     {
         using Traits = typename U::Traits;
         using ResultType = Internal::MakeResultType<U>;
@@ -4654,7 +5685,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline bool AllGreater( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AllGreater( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllGreater( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) );
@@ -4667,7 +5698,7 @@ namespace Harlinn::Math
     /// true if all the elements of v1 is greater than value, otherwise false.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline bool AllGreater( const T& v1, U value ) noexcept
+    inline [[nodiscard]] bool AllGreater( const T& v1, U value ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllGreater( Internal::ToSimd( v1 ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ) );
@@ -4680,7 +5711,7 @@ namespace Harlinn::Math
     /// true value is greater than any of the elements of v2, otherwise false.
     /// </returns>
     template< ArithmeticType T, SimdOrTupleType U>
-    inline bool AllGreater( T value, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AllGreater( T value, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AllGreater( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
@@ -4703,7 +5734,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline bool AnyGreater( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AnyGreater( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyGreater( Internal::ToSimd( v1 ), Internal::ToSimd( v2 ) );
@@ -4716,7 +5747,7 @@ namespace Harlinn::Math
     /// true if any of the elements of v1 is greater than value, otherwise false.
     /// </returns>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline bool AnyGreater( const T& v1, U value ) noexcept
+    inline [[nodiscard]] bool AnyGreater( const T& v1, U value ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyGreater( Internal::ToSimd( v1 ), Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ) );
@@ -4729,7 +5760,7 @@ namespace Harlinn::Math
     /// true value is greater than any of the elements of v2, otherwise false.
     /// </returns>
     template< ArithmeticType T, SimdOrTupleType U>
-    inline bool AnyGreater( T value, const U& v2 ) noexcept
+    inline [[nodiscard]] bool AnyGreater( T value, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::AnyGreater( Traits::Fill<Traits::Size>( static_cast< typename Traits::Type >( value ) ), Internal::ToSimd( v2 ) );
@@ -4754,7 +5785,7 @@ namespace Harlinn::Math
     /// </param>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U>
-    inline S Select( const S& v1, const T& v2, const U& control ) noexcept
+    inline [[nodiscard]] S Select( const S& v1, const T& v2, const U& control ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -4774,7 +5805,7 @@ namespace Harlinn::Math
     /// element in the result will be set to 0.
     /// </returns>
     template<SimdOrTupleType T>
-    inline auto IsNaN( const T& t ) noexcept
+    inline [[nodiscard]] auto IsNaN( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -4793,7 +5824,7 @@ namespace Harlinn::Math
     /// element in the result will be set to 0.
     /// </returns>
     template<SimdOrTupleType T>
-    inline auto IsInf( const T& t ) noexcept
+    inline [[nodiscard]] auto IsInf( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -4807,7 +5838,7 @@ namespace Harlinn::Math
     /// Computes the absolute value of each element held by the argument.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Abs( const T& t ) noexcept
+    inline [[nodiscard]] auto Abs( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( TupleType<T> && T::Size < 3 )
@@ -4827,7 +5858,7 @@ namespace Harlinn::Math
     /// Computes the absolute value of each element held by the argument.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto FastAbs( const T& t ) noexcept
+    inline [[nodiscard]] auto FastAbs( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( TupleType<T> && T::Size < 3 )
@@ -4850,7 +5881,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto Min( const T& lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto Min( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( TupleType<T> && TupleType<U> && T::Size < 3 )
@@ -4872,7 +5903,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto Max( const T& lhs, const U& rhs ) noexcept
+    inline [[nodiscard]] auto Max( const T& lhs, const U& rhs ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( TupleType<T> && TupleType<U> && T::Size < 3 )
@@ -4892,7 +5923,7 @@ namespace Harlinn::Math
     /// Computes the square value of each element held by the argument.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Sqr( const T& t ) noexcept
+    inline [[nodiscard]] auto Sqr( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( TupleType<T> && T::Size < 3 )
@@ -4923,7 +5954,7 @@ namespace Harlinn::Math
     /// Computes the ceiling of each element held by the argument.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Ceil( const T& t ) noexcept
+    inline [[nodiscard]] auto Ceil( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( TupleType<T> && T::Size < 3 )
@@ -4943,7 +5974,7 @@ namespace Harlinn::Math
     /// Computes the floor of each element held by the argument.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Floor( const T& t ) noexcept
+    inline [[nodiscard]] auto Floor( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( TupleType<T> && T::Size < 3 )
@@ -4964,7 +5995,7 @@ namespace Harlinn::Math
     /// Rounds each element held by the argument towards the nearest even integer.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Round( const T& t ) noexcept
+    inline [[nodiscard]] auto Round( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( TupleType<T> && T::Size < 3 )
@@ -4985,7 +6016,7 @@ namespace Harlinn::Math
     /// Rounds each element held by the argument to the nearest integer in the direction of zero.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Trunc( const T& t ) noexcept
+    inline [[nodiscard]] auto Trunc( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( TupleType<T> && T::Size < 3 )
@@ -5009,7 +6040,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType T, SimdType U, ArithmeticType NumberT>
         requires IsCompatible<T, U>
-    inline auto Lerp( const T& a, const U& b, NumberT t ) noexcept
+    inline [[nodiscard]] auto Lerp( const T& a, const U& b, NumberT t ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -5025,7 +6056,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U, ArithmeticType NumberT>
         requires IsCompatible<T, U>&& Internal::HasTupleType<T, U>
-    inline auto Lerp( const T& a, const U& b, NumberT t ) noexcept
+    inline [[nodiscard]] auto Lerp( const T& a, const U& b, NumberT t ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -5049,7 +6080,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType S, SimdType T, SimdType U>
         requires IsCompatible<S, T, U>
-    inline auto Lerp( const S& a, const T& b, const U& t ) noexcept
+    inline [[nodiscard]] auto Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<S>;
@@ -5064,7 +6095,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U>&& Internal::HasTupleType<S, T, U>
-    inline auto Lerp( const S& a, const T& b, const U& t ) noexcept
+    inline [[nodiscard]] auto Lerp( const S& a, const T& b, const U& t ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( TupleType<T> && TupleType<U> && T::Size < 3 )
@@ -5087,7 +6118,7 @@ namespace Harlinn::Math
     /// in t outside [0,1).
     /// </summary>
     template<ArithmeticType NumberT1, ArithmeticType NumberT2, SimdOrTupleType T>
-    inline auto Lerp( const NumberT1 a, const NumberT2 b, const T& t ) noexcept
+    inline [[nodiscard]] auto Lerp( const NumberT1 a, const NumberT2 b, const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -5106,7 +6137,7 @@ namespace Harlinn::Math
     /// </summary>
     template<ArithmeticType S, SimdType T, SimdType U>
         requires IsCompatible<T, U>
-    inline auto Lerp2( const S t, const T& a, const U& b ) noexcept
+    inline [[nodiscard]] auto Lerp2( const S t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -5122,7 +6153,7 @@ namespace Harlinn::Math
     /// </summary>
     template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>&& Internal::HasTupleType<T, U>
-    inline auto Lerp2( const S t, const T& a, const U& b ) noexcept
+    inline [[nodiscard]] auto Lerp2( const S t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -5148,7 +6179,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType S, SimdType T, SimdType U>
         requires IsCompatible<S, T, U>
-    inline auto Lerp2( const S& t, const T& a, const U& b ) noexcept
+    inline [[nodiscard]] auto Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -5165,7 +6196,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U>&& Internal::HasTupleType<S, T, U>
-    inline auto Lerp2( const S& t, const T& a, const U& b ) noexcept
+    inline [[nodiscard]] auto Lerp2( const S& t, const T& a, const U& b ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -5188,7 +6219,7 @@ namespace Harlinn::Math
     /// in t outside [0,1).
     /// </summary>
     template<SimdType S, ArithmeticType T, ArithmeticType U>
-    inline auto Lerp2( const S& t, const T a, const U b ) noexcept
+    inline [[nodiscard]] auto Lerp2( const S& t, const T a, const U b ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -5202,7 +6233,7 @@ namespace Harlinn::Math
     /// in t outside [0,1).
     /// </summary>
     template<TupleType S, ArithmeticType T, ArithmeticType U>
-    inline auto Lerp2( const S& t, const T a, const U b ) noexcept
+    inline [[nodiscard]] auto Lerp2( const S& t, const T a, const U b ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -5223,7 +6254,7 @@ namespace Harlinn::Math
     // Permute
 
     template<int shuffleMask, SimdOrTupleType T>
-    inline T Permute( const T& t ) noexcept
+    inline [[nodiscard]] T Permute( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -5240,7 +6271,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType S, SimdType T, SimdType U>
         requires IsCompatible<S, T, U>
-    inline auto Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
+    inline [[nodiscard]] auto Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
     {
         using Traits = typename S::Traits;
         using ResultType = Internal::MakeResultType<S>;
@@ -5255,7 +6286,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U>&& Internal::HasTupleType<S, T, U>
-    inline auto Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
+    inline [[nodiscard]] auto Clamp( const S& v, const T& lowerBounds, const U& upperBounds ) noexcept
     {
         using Traits = typename S::Traits;
         if constexpr ( TupleType<S> && TupleType<T> && TupleType<U> && S::Size < 3 )
@@ -5276,7 +6307,7 @@ namespace Harlinn::Math
     /// otherwise the value of nearest boundary is returned.
     /// </summary>
     template<SimdType S, ArithmeticType T, ArithmeticType U>
-    inline auto Clamp( const S& v, const T lowerBounds, const U upperBounds ) noexcept
+    inline [[nodiscard]] auto Clamp( const S& v, const T lowerBounds, const U upperBounds ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = typename Traits::Type;
@@ -5290,7 +6321,7 @@ namespace Harlinn::Math
     /// otherwise the value of nearest boundary is returned.
     /// </summary>
     template<TupleType S, ArithmeticType T, ArithmeticType U>
-    inline auto Clamp( const S& v, const T lowerBounds, const U upperBounds ) noexcept
+    inline [[nodiscard]] auto Clamp( const S& v, const T lowerBounds, const U upperBounds ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = typename Traits::Type;
@@ -5314,7 +6345,7 @@ namespace Harlinn::Math
     /// </summary>
     template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto Clamp( const S v, const T& lowerBounds, const U& upperBounds ) noexcept
+    inline [[nodiscard]] auto Clamp( const S v, const T& lowerBounds, const U& upperBounds ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
@@ -5332,7 +6363,7 @@ namespace Harlinn::Math
 
 
     template<SimdOrTupleType S>
-    inline auto ClampZero( const S& v ) noexcept
+    inline [[nodiscard]] auto ClampZero( const S& v ) noexcept
     {
         using Traits = typename S::Traits;
         using ResultType = Internal::MakeResultType<S>;
@@ -5358,7 +6389,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T>
         requires IsCompatible<S, T>
-    inline auto InBounds( const S& v, const T& bounds ) noexcept
+    inline [[nodiscard]] auto InBounds( const S& v, const T& bounds ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<S>;
@@ -5372,7 +6403,7 @@ namespace Harlinn::Math
     {
         template<SimdType S, SimdType T, SimdType U>
             requires IsCompatible<S, T, U>
-        inline S ClampLengthImpl( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
+        inline [[nodiscard]] S ClampLengthImpl( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
         {
             using Traits = typename S::Traits;
             using Simd = S;
@@ -5429,7 +6460,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U>
-    inline auto ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
+    inline [[nodiscard]] auto ClampLength( const S& v, const T& lengthMin, const U& lengthMax ) noexcept
     {
         return Internal::ClampLengthImpl( Internal::ToSimdType( v ), Internal::ToSimdType( lengthMin ), Internal::ToSimdType( lengthMax ) );
     }
@@ -5450,7 +6481,7 @@ namespace Harlinn::Math
     /// minimum and maximum.
     /// </returns>
     template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
-    inline auto ClampLength( const S& v, const T lengthMin, const U lengthMax ) noexcept
+    inline [[nodiscard]] auto ClampLength( const S& v, const T lengthMin, const U lengthMax ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = typename Traits::Type;
@@ -5475,7 +6506,7 @@ namespace Harlinn::Math
         /// </returns>
         template<SimdType S, SimdType T>
             requires IsCompatible<S, T>
-        inline S ReflectImpl( const S& incident, const T& normal ) noexcept
+        inline [[nodiscard]] S ReflectImpl( const S& incident, const T& normal ) noexcept
         {
             using Traits = typename S::Traits;
             using Simd = S;
@@ -5499,7 +6530,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T>
         requires IsCompatible<S, T>
-    inline auto Reflect( const S& incident, const T& normal ) noexcept
+    inline [[nodiscard]] auto Reflect( const S& incident, const T& normal ) noexcept
     {
         return Internal::ReflectImpl( Internal::ToSimdType( incident ), Internal::ToSimdType( normal ) );
     }
@@ -5526,7 +6557,7 @@ namespace Harlinn::Math
         /// </returns>
         template<SimdType S, SimdType T, SimdType U>
             requires IsCompatible<S, T, U>
-        inline S RefractImpl( const S& incident, const T& normal, const U& refractionIndex ) noexcept
+        inline [[nodiscard]] S RefractImpl( const S& incident, const T& normal, const U& refractionIndex ) noexcept
         {
             using Traits = typename S::Traits;
             using FloatT = typename Traits::Type;
@@ -5573,7 +6604,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U>
-    inline auto Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
+    inline [[nodiscard]] auto Refract( const S& incident, const T& normal, const U& refractionIndex ) noexcept
     {
         return Internal::RefractImpl( Internal::ToSimdType( incident ), Internal::ToSimdType( normal ), Internal::ToSimdType( refractionIndex ) );
     }
@@ -5598,7 +6629,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
         requires IsCompatible<S, T>
-    inline auto Refract( const S& incident, const T& normal, const U refractionIndex ) noexcept
+    inline [[nodiscard]] auto Refract( const S& incident, const T& normal, const U refractionIndex ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = typename Traits::Type;
@@ -5617,7 +6648,7 @@ namespace Harlinn::Math
     /// The vector orthogonal to <c>v</c>.
     /// </returns>
     template<SimdOrTupleType S>
-    inline auto Orthogonal( const S& v ) noexcept
+    inline [[nodiscard]] auto Orthogonal( const S& v ) noexcept
     {
         using Traits = typename S::Traits;
         using ResultType = Internal::MakeResultType<S>;
@@ -5631,7 +6662,7 @@ namespace Harlinn::Math
     /// Saturates the elements of v to the range 0.0 to 1.0.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Saturate( const T& v ) noexcept
+    inline [[nodiscard]] auto Saturate( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -5644,7 +6675,7 @@ namespace Harlinn::Math
     /// Calculates the square root of each element in the argument.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Sqrt( const T& v ) noexcept
+    inline [[nodiscard]] auto Sqrt( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( TupleType<T> && T::Size < 3 )
@@ -5665,7 +6696,7 @@ namespace Harlinn::Math
     /// Calculates the cube root of each element in the argument.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Cbrt( const T& v ) noexcept
+    inline [[nodiscard]] auto Cbrt( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( TupleType<T> && T::Size < 3 )
@@ -5689,7 +6720,7 @@ namespace Harlinn::Math
     /// 0.f, the result is 0.f.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto SafeSqrt( const T& v ) noexcept
+    inline [[nodiscard]] auto SafeSqrt( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( TupleType<T> && T::Size < 3 )
@@ -5711,7 +6742,7 @@ namespace Harlinn::Math
     /// Calculates the reciprocal square root of each element in the argument.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto ReciprocalSqrt( const T& v ) noexcept
+    inline [[nodiscard]] auto ReciprocalSqrt( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
@@ -5733,7 +6764,7 @@ namespace Harlinn::Math
     /// Calculates the reciprocal of each element in the argument.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Reciprocal( const T& t ) noexcept
+    inline [[nodiscard]] auto Reciprocal( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
@@ -5756,7 +6787,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType S, SimdType T, SimdType U>
         requires IsCompatible<S, T, U>
-    inline auto FMA( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMA( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -5769,7 +6800,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U>&& Internal::HasTupleType<S, T, U>
-    inline auto FMA( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMA( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -5782,7 +6813,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
         requires IsCompatible<S, T>
-    inline auto FMA( const S& a, const T& b, const U c ) noexcept
+    inline [[nodiscard]] auto FMA( const S& a, const T& b, const U c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -5795,7 +6826,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, ArithmeticType T, SimdOrTupleType U>
         requires IsCompatible<S, U>
-    inline auto FMA( const S& a, const T b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMA( const S& a, const T b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -5808,7 +6839,7 @@ namespace Harlinn::Math
     /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
     /// </summary>
     template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
-    inline auto FMA( const S& a, const T b, const U c ) noexcept
+    inline [[nodiscard]] auto FMA( const S& a, const T b, const U c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -5821,7 +6852,7 @@ namespace Harlinn::Math
     /// </summary>
     template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto FMA( const S a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMA( const S a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -5833,7 +6864,7 @@ namespace Harlinn::Math
     /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
     /// </summary>
     template<ArithmeticType S, SimdOrTupleType T, ArithmeticType U>
-    inline auto FMA( const S a, const T& b, const U c ) noexcept
+    inline [[nodiscard]] auto FMA( const S a, const T& b, const U c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -5845,7 +6876,7 @@ namespace Harlinn::Math
     /// Multiplies the corresponding elements of a and b, adding the result to the corresponding element of c.
     /// </summary>
     template<ArithmeticType S, ArithmeticType T, SimdOrTupleType U>
-    inline auto FMA( const S a, const T b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMA( const S a, const T b, const U& c ) noexcept
     {
         using Traits = typename U::Traits;
         using Type = Traits::Type;
@@ -5859,46 +6890,46 @@ namespace Harlinn::Math
 
     template <SimdType T, typename C>
         requires IsArithmetic<C>
-    constexpr inline T EvaluatePolynomial( const T& t, C c )
+    constexpr inline [[nodiscard]] T EvaluatePolynomial( const T& t, C c )
     {
         using Traits = typename T::Traits;
         return Traits::Fill<Traits::Size>( c );
     }
     template <SimdType T, SimdType C>
         requires IsCompatible<T, C>
-    constexpr inline T EvaluatePolynomial( const T& t, C c )
+    constexpr inline [[nodiscard]] T EvaluatePolynomial( const T& t, C c )
     {
         return c;
     }
 
     template <SimdType T, typename C, typename... Args>
         requires IsArithmetic<C>
-    constexpr inline T EvaluatePolynomial( const T& t, C c, Args... remaining );
+    constexpr inline [[nodiscard]] T EvaluatePolynomial( const T& t, C c, Args... remaining );
 
     template <TupleType T, typename C, typename... Args>
         requires IsArithmetic<C>
-    constexpr inline typename T::Simd EvaluatePolynomial( const T& t, C c, Args... remaining );
+    constexpr inline [[nodiscard]] typename T::Simd EvaluatePolynomial( const T& t, C c, Args... remaining );
 
     template <SimdType T, SimdType C, typename... Args>
         requires IsCompatible<T, C>
-    constexpr inline T EvaluatePolynomial( const T& t, const C& c, Args... remaining );
+    constexpr inline [[nodiscard]] T EvaluatePolynomial( const T& t, const C& c, Args... remaining );
 
     template <TupleType T, SimdType C, typename... Args>
         requires IsCompatible<T, C>
-    constexpr inline typename T::Simd EvaluatePolynomial( const T& t, const C& c, Args... remaining );
+    constexpr inline [[nodiscard]] typename T::Simd EvaluatePolynomial( const T& t, const C& c, Args... remaining );
 
     template <SimdType T, TupleType C, typename... Args>
         requires IsCompatible<T, C>
-    constexpr inline T EvaluatePolynomial( const T& t, const C& c, Args... remaining );
+    constexpr inline [[nodiscard]] T EvaluatePolynomial( const T& t, const C& c, Args... remaining );
 
     template <TupleType T, TupleType C, typename... Args>
         requires IsCompatible<T, C>
-    constexpr inline typename T::Simd EvaluatePolynomial( const T& t, const C& c, Args... remaining );
+    constexpr inline [[nodiscard]] typename T::Simd EvaluatePolynomial( const T& t, const C& c, Args... remaining );
 
 
     template <SimdType T, typename C, typename... Args>
         requires IsArithmetic<C>
-    constexpr inline T EvaluatePolynomial( const T& t, C c, Args... remaining )
+    constexpr inline [[nodiscard]] T EvaluatePolynomial( const T& t, C c, Args... remaining )
     {
         using Traits = typename T::Traits;
         return FMA( t, EvaluatePolynomial( t, remaining... ), T( Traits::Fill<Traits::Size>( c ) ) );
@@ -5906,7 +6937,7 @@ namespace Harlinn::Math
 
     template <TupleType T, typename C, typename... Args>
         requires IsArithmetic<C>
-    constexpr inline typename T::Simd EvaluatePolynomial( const T& t, C c, Args... remaining )
+    constexpr inline [[nodiscard]] typename T::Simd EvaluatePolynomial( const T& t, C c, Args... remaining )
     {
         using Traits = typename T::Traits;
         using SimdType = typename T::Simd;
@@ -5916,7 +6947,7 @@ namespace Harlinn::Math
 
     template <SimdType T, SimdType C, typename... Args>
         requires IsCompatible<T, C>
-    constexpr inline T EvaluatePolynomial( const T& t, const C& c, Args... remaining )
+    constexpr inline [[nodiscard]] T EvaluatePolynomial( const T& t, const C& c, Args... remaining )
     {
         using Traits = typename T::Traits;
         return FMA( t, EvaluatePolynomial( t, remaining... ), c );
@@ -5924,7 +6955,7 @@ namespace Harlinn::Math
 
     template <TupleType T, SimdType C, typename... Args>
         requires IsCompatible<T, C>
-    constexpr inline typename T::Simd EvaluatePolynomial( const T& t, const C& c, Args... remaining )
+    constexpr inline [[nodiscard]] typename T::Simd EvaluatePolynomial( const T& t, const C& c, Args... remaining )
     {
         using Traits = typename T::Traits;
         using SimdType = typename T::Simd;
@@ -5934,7 +6965,7 @@ namespace Harlinn::Math
 
     template <SimdType T, TupleType C, typename... Args>
         requires IsCompatible<T, C>
-    constexpr inline T EvaluatePolynomial( const T& t, const C& c, Args... remaining )
+    constexpr inline [[nodiscard]] T EvaluatePolynomial( const T& t, const C& c, Args... remaining )
     {
         using Traits = typename T::Traits;
         using SimdType = typename C::Simd;
@@ -5943,7 +6974,7 @@ namespace Harlinn::Math
     }
     template <TupleType T, TupleType C, typename... Args>
         requires IsCompatible<T, C>
-    constexpr inline typename T::Simd EvaluatePolynomial( const T& t, const C& c, Args... remaining )
+    constexpr inline [[nodiscard]] typename T::Simd EvaluatePolynomial( const T& t, const C& c, Args... remaining )
     {
         using Traits = typename T::Traits;
         using TSimdType = typename T::Simd;
@@ -5965,7 +6996,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U>
-    inline auto FMSub( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMSub( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -5981,7 +7012,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
         requires IsCompatible<S, T>
-    inline auto FMSub( const S& a, const T& b, const U c ) noexcept
+    inline [[nodiscard]] auto FMSub( const S& a, const T& b, const U c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -5997,7 +7028,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, ArithmeticType T, SimdOrTupleType U>
         requires IsCompatible<S, U>
-    inline auto FMSub( const S& a, const T b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMSub( const S& a, const T b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6012,7 +7043,7 @@ namespace Harlinn::Math
     /// The final results are rounded to the nearest floating point values.
     /// </summary>
     template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
-    inline auto FMSub( const S& a, const T b, const U c ) noexcept
+    inline [[nodiscard]] auto FMSub( const S& a, const T b, const U c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6028,7 +7059,7 @@ namespace Harlinn::Math
     /// </summary>
     template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto FMSub( const S a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMSub( const S a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -6043,7 +7074,7 @@ namespace Harlinn::Math
     /// The final results are rounded to the nearest floating point values.
     /// </summary>
     template<ArithmeticType S, SimdOrTupleType T, ArithmeticType U>
-    inline auto FMSub( const S a, const T& b, const U c ) noexcept
+    inline auto [[nodiscard]] FMSub( const S a, const T& b, const U c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -6058,7 +7089,7 @@ namespace Harlinn::Math
     /// The final results are rounded to the nearest floating point values.
     /// </summary>
     template<ArithmeticType S, ArithmeticType T, SimdOrTupleType U>
-    inline auto FMSub( const S a, const T b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMSub( const S a, const T b, const U& c ) noexcept
     {
         using Traits = typename U::Traits;
         using Type = Traits::Type;
@@ -6075,7 +7106,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U>
-    inline auto FMAddSub( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMAddSub( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6091,7 +7122,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
         requires IsCompatible<S, T>
-    inline auto FMAddSub( const S& a, const T& b, const U c ) noexcept
+    inline [[nodiscard]] auto FMAddSub( const S& a, const T& b, const U c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6107,7 +7138,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, ArithmeticType T, SimdOrTupleType U>
         requires IsCompatible<S, U>
-    inline auto FMAddSub( const S& a, const T b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMAddSub( const S& a, const T b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6122,7 +7153,7 @@ namespace Harlinn::Math
     /// are rounded to the nearest floating point values.
     /// </summary>
     template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
-    inline auto FMAddSub( const S& a, const T b, const U c ) noexcept
+    inline [[nodiscard]] auto FMAddSub( const S& a, const T b, const U c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6138,7 +7169,7 @@ namespace Harlinn::Math
     /// </summary>
     template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto FMAddSub( const S a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMAddSub( const S a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -6153,7 +7184,7 @@ namespace Harlinn::Math
     /// are rounded to the nearest floating point values.
     /// </summary>
     template<ArithmeticType S, SimdOrTupleType T, ArithmeticType U>
-    inline auto FMAddSub( const S a, const T& b, const U c ) noexcept
+    inline [[nodiscard]] auto FMAddSub( const S a, const T& b, const U c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -6168,7 +7199,7 @@ namespace Harlinn::Math
     /// are rounded to the nearest floating point values.
     /// </summary>
     template<ArithmeticType S, ArithmeticType T, SimdOrTupleType U>
-    inline auto FMAddSub( const S a, const T b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMAddSub( const S a, const T b, const U& c ) noexcept
     {
         using Traits = typename U::Traits;
         using Type = Traits::Type;
@@ -6187,7 +7218,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U>
-    inline auto FMSubAdd( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMSubAdd( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6203,7 +7234,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
         requires IsCompatible<S, T>
-    inline auto FMSubAdd( const S& a, const T& b, const U c ) noexcept
+    inline [[nodiscard]] auto FMSubAdd( const S& a, const T& b, const U c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6219,7 +7250,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, ArithmeticType T, SimdOrTupleType U>
         requires IsCompatible<S, U>
-    inline auto FMSubAdd( const S& a, const T b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMSubAdd( const S& a, const T b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6234,7 +7265,7 @@ namespace Harlinn::Math
     /// The final results are rounded to the nearest floating point values.
     /// </summary>
     template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
-    inline auto FMSubAdd( const S& a, const T b, const U c ) noexcept
+    inline [[nodiscard]] auto FMSubAdd( const S& a, const T b, const U c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6250,7 +7281,7 @@ namespace Harlinn::Math
     /// </summary>
     template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto FMSubAdd( const S a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMSubAdd( const S a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -6265,7 +7296,7 @@ namespace Harlinn::Math
     /// The final results are rounded to the nearest floating point values.
     /// </summary>
     template<ArithmeticType S, SimdOrTupleType T, ArithmeticType U>
-    inline auto FMSubAdd( const S a, const T& b, const U c ) noexcept
+    inline [[nodiscard]] auto FMSubAdd( const S a, const T& b, const U c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -6280,7 +7311,7 @@ namespace Harlinn::Math
     /// The final results are rounded to the nearest floating point values.
     /// </summary>
     template<ArithmeticType S, ArithmeticType T, SimdOrTupleType U>
-    inline auto FMSubAdd( const S a, const T b, const U& c ) noexcept
+    inline [[nodiscard]] auto FMSubAdd( const S a, const T b, const U& c ) noexcept
     {
         using Traits = typename U::Traits;
         using Type = Traits::Type;
@@ -6298,7 +7329,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U>
-    inline auto FNMAdd( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] auto FNMAdd( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6314,7 +7345,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
         requires IsCompatible<S, T>
-    inline auto FNMAdd( const S& a, const T& b, const U c ) noexcept
+    inline [[nodiscard]] auto FNMAdd( const S& a, const T& b, const U c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6330,7 +7361,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, ArithmeticType T, SimdOrTupleType U>
         requires IsCompatible<S, U>
-    inline auto FNMAdd( const S& a, const T b, const U& c ) noexcept
+    inline [[nodiscard]] auto FNMAdd( const S& a, const T b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6345,7 +7376,7 @@ namespace Harlinn::Math
     /// floating point values.
     /// </summary>
     template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
-    inline auto FNMAdd( const S& a, const T b, const U c ) noexcept
+    inline [[nodiscard]] auto FNMAdd( const S& a, const T b, const U c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6361,7 +7392,7 @@ namespace Harlinn::Math
     /// </summary>
     template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto FNMAdd( const S a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] auto FNMAdd( const S a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -6376,7 +7407,7 @@ namespace Harlinn::Math
     /// floating point values.
     /// </summary>
     template<ArithmeticType S, SimdOrTupleType T, ArithmeticType U>
-    inline auto FNMAdd( const S a, const T& b, const U c ) noexcept
+    inline [[nodiscard]] auto FNMAdd( const S a, const T& b, const U c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -6391,7 +7422,7 @@ namespace Harlinn::Math
     /// floating point values.
     /// </summary>
     template<ArithmeticType S, ArithmeticType T, SimdOrTupleType U>
-    inline auto FNMAdd( const S a, const T b, const U& c ) noexcept
+    inline [[nodiscard]] auto FNMAdd( const S a, const T b, const U& c ) noexcept
     {
         using Traits = typename U::Traits;
         using Type = Traits::Type;
@@ -6409,7 +7440,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U>
-    inline auto FNMSub( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] auto FNMSub( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6425,7 +7456,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, SimdOrTupleType T, ArithmeticType U>
         requires IsCompatible<S, T>
-    inline auto FNMSub( const S& a, const T& b, const U c ) noexcept
+    inline [[nodiscard]] auto FNMSub( const S& a, const T& b, const U c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6441,7 +7472,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType S, ArithmeticType T, SimdOrTupleType U>
         requires IsCompatible<S, U>
-    inline auto FNMSub( const S& a, const T b, const U& c ) noexcept
+    inline [[nodiscard]] auto FNMSub( const S& a, const T b, const U& c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6456,7 +7487,7 @@ namespace Harlinn::Math
     /// to the nearest floating point value.
     /// </summary>
     template<SimdOrTupleType S, ArithmeticType T, ArithmeticType U>
-    inline auto FNMSub( const S& a, const T b, const U c ) noexcept
+    inline [[nodiscard]] auto FNMSub( const S& a, const T b, const U c ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = Traits::Type;
@@ -6472,7 +7503,7 @@ namespace Harlinn::Math
     /// </summary>
     template<ArithmeticType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto FNMSub( const S a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] auto FNMSub( const S a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -6487,7 +7518,7 @@ namespace Harlinn::Math
     /// to the nearest floating point value.
     /// </summary>
     template<ArithmeticType S, SimdOrTupleType T, ArithmeticType U>
-    inline auto FNMSub( const S a, const T& b, const U c ) noexcept
+    inline [[nodiscard]] auto FNMSub( const S a, const T& b, const U c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -6502,7 +7533,7 @@ namespace Harlinn::Math
     /// to the nearest floating point value.
     /// </summary>
     template<ArithmeticType S, ArithmeticType T, SimdOrTupleType U>
-    inline auto FNMSub( const S a, const T b, const U& c ) noexcept
+    inline [[nodiscard]] auto FNMSub( const S a, const T b, const U& c ) noexcept
     {
         using Traits = typename U::Traits;
         using Type = Traits::Type;
@@ -6517,7 +7548,7 @@ namespace Harlinn::Math
     /// Calculates the sine of each element in the argument expressed in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Sin( const T& v ) noexcept
+    inline [[nodiscard]] auto Sin( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6530,7 +7561,7 @@ namespace Harlinn::Math
     /// Calculates the sine of each element in the argument expressed in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto FastSin( const T& v ) noexcept
+    inline [[nodiscard]] auto FastSin( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6543,7 +7574,7 @@ namespace Harlinn::Math
     /// Calculates the cosine of each element in the argument expressed in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Cos( const T& v ) noexcept
+    inline [[nodiscard]] auto Cos( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6556,7 +7587,7 @@ namespace Harlinn::Math
     /// Calculates the cosine of each element in the argument expressed in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto FastCos( const T& v ) noexcept
+    inline [[nodiscard]] auto FastCos( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6569,7 +7600,7 @@ namespace Harlinn::Math
     /// Calculates the sine and cosine of each element in the argument expressed in radians.
     /// </summary>
     template<SimdType T>
-    inline T SinCos( const T& v, T* cosines ) noexcept
+    inline [[nodiscard]] T SinCos( const T& v, T* cosines ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::SinCos( v.simd, &cosines->simd );
@@ -6579,7 +7610,7 @@ namespace Harlinn::Math
     /// Calculates the sine and cosine of each element in the argument expressed in radians.
     /// </summary>
     template<TupleType T>
-    inline typename T::Simd SinCos( const T& v, typename T::Simd* cosines ) noexcept
+    inline [[nodiscard]] typename T::Simd SinCos( const T& v, typename T::Simd* cosines ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::SinCos( Traits::Load( v.values ), &cosines->simd );
@@ -6591,7 +7622,7 @@ namespace Harlinn::Math
     /// Calculates the sine and cosine of each element in the argument expressed in radians.
     /// </summary>
     template<SimdType T>
-    inline T FastSinCos( const T& v, T* cosines ) noexcept
+    inline [[nodiscard]] T FastSinCos( const T& v, T* cosines ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::FastSinCos( v.simd, &cosines->simd );
@@ -6601,7 +7632,7 @@ namespace Harlinn::Math
     /// Calculates the sine and cosine of each element in the argument expressed in radians.
     /// </summary>
     template<TupleType T>
-    inline typename T::Simd FastSinCos( const T& v, typename T::Simd* cosines ) noexcept
+    inline [[nodiscard]] typename T::Simd FastSinCos( const T& v, typename T::Simd* cosines ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::FastSinCos( Traits::Load( v.values ), &cosines->simd );
@@ -6613,7 +7644,7 @@ namespace Harlinn::Math
     /// Calculates the tangent of each element in the argument expressed in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Tan( const T& v ) noexcept
+    inline [[nodiscard]] auto Tan( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6626,7 +7657,7 @@ namespace Harlinn::Math
     /// Calculates the tangent of each element in the argument expressed in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto FastTan( const T& v ) noexcept
+    inline [[nodiscard]] auto FastTan( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6639,7 +7670,7 @@ namespace Harlinn::Math
     /// Calculates the inverse sine of each element in the argument, in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto ASin( const T& v ) noexcept
+    inline [[nodiscard]] auto ASin( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6652,7 +7683,7 @@ namespace Harlinn::Math
     /// Calculates the inverse cosine of each element in the argument, in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto ACos( const T& v ) noexcept
+    inline [[nodiscard]] auto ACos( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6665,7 +7696,7 @@ namespace Harlinn::Math
     /// Calculates the inverse tangent of each element in the argument, in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto ATan( const T& v ) noexcept
+    inline [[nodiscard]] auto ATan( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6678,7 +7709,7 @@ namespace Harlinn::Math
     /// Calculates the inverse tangent of each element in the argument, in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto FastATan( const T& v ) noexcept
+    inline [[nodiscard]] auto FastATan( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6693,7 +7724,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto ATan2( const T& x, const U& y ) noexcept
+    inline [[nodiscard]] auto ATan2( const T& x, const U& y ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6708,7 +7739,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto FastATan2( const T& x, const U& y ) noexcept
+    inline [[nodiscard]] auto FastATan2( const T& x, const U& y ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6731,7 +7762,7 @@ namespace Harlinn::Math
         /// Returns a SimdType holding the angles modulo 2PI.
         /// </returns>
         template<SimdType T>
-        inline T ModAnglesImpl( const T& angles )
+        inline [[nodiscard]] T ModAnglesImpl( const T& angles )
         {
             using Traits = typename T::Traits;
             using FloatT = typename Traits::Type;
@@ -6753,7 +7784,7 @@ namespace Harlinn::Math
     /// Returns a SimdType holding the angles modulo 2PI.
     /// </returns>
     template<SimdOrTupleType T>
-    inline auto ModAngles( const T& angles )
+    inline [[nodiscard]] auto ModAngles( const T& angles )
     {
         return Internal::ModAnglesImpl( Internal::ToSimdType( angles ) );
     }
@@ -6769,7 +7800,7 @@ namespace Harlinn::Math
         /// </summary>
         template<SimdType T, SimdType U>
             requires IsCompatible<T, U>
-        inline T AddAnglesImpl( const T& v1, const U& v2 ) noexcept
+        inline [[nodiscard]] T AddAnglesImpl( const T& v1, const U& v2 ) noexcept
         {
             using Traits = typename T::Traits;
             using FloatT = typename Traits::Type;
@@ -6794,7 +7825,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto AddAngles( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto AddAngles( const T& v1, const U& v2 ) noexcept
     {
         return Internal::AddAnglesImpl( Internal::ToSimdType( v1 ), Internal::ToSimdType( v2 ) );
     }
@@ -6810,7 +7841,7 @@ namespace Harlinn::Math
         /// </summary>
         template<SimdType T, SimdType U>
             requires IsCompatible<T, U>
-        inline T SubtractAnglesImpl( const T& v1, const U& v2 ) noexcept
+        inline [[nodiscard]] T SubtractAnglesImpl( const T& v1, const U& v2 ) noexcept
         {
             using Traits = typename T::Traits;
             using FloatT = typename Traits::Type;
@@ -6835,7 +7866,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto SubtractAngles( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto SubtractAngles( const T& v1, const U& v2 ) noexcept
     {
         return Internal::SubtractAnglesImpl( Internal::ToSimdType( v1 ), Internal::ToSimdType( v2 ) );
     }
@@ -6847,7 +7878,7 @@ namespace Harlinn::Math
     /// Calculates the hyperbolic sine of each element in the argument expressed in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto SinH( const T& v ) noexcept
+    inline [[nodiscard]] auto SinH( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6860,7 +7891,7 @@ namespace Harlinn::Math
     /// Calculates the hyperbolic cosine of each element in the argument expressed in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto CosH( const T& v ) noexcept
+    inline [[nodiscard]] auto CosH( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6873,7 +7904,7 @@ namespace Harlinn::Math
     /// Calculates the hyperbolic tangent of each element in the argument expressed in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto TanH( const T& v ) noexcept
+    inline [[nodiscard]] auto TanH( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6886,7 +7917,7 @@ namespace Harlinn::Math
     /// Calculates the inverse hyperbolic sine of each element in the argument, in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto ASinH( const T& v ) noexcept
+    inline [[nodiscard]] auto ASinH( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6899,7 +7930,7 @@ namespace Harlinn::Math
     /// Calculates the inverse hyperbolic cosine of each element in the argument, in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto ACosH( const T& v ) noexcept
+    inline [[nodiscard]] auto ACosH( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6912,7 +7943,7 @@ namespace Harlinn::Math
     /// Calculates the inverse hyperbolic tangent of each element in the argument, in radians.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto ATanH( const T& v ) noexcept
+    inline [[nodiscard]] auto ATanH( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6925,7 +7956,7 @@ namespace Harlinn::Math
     /// Calculates the natural logarithm of each element in the argument.
     /// </summary>
     template<SimdType T>
-    inline auto Log( const T& v ) noexcept
+    inline [[nodiscard]] auto Log( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6936,7 +7967,7 @@ namespace Harlinn::Math
     /// Calculates the natural logarithm of each element in the argument.
     /// </summary>
     template<TupleType T>
-    inline auto Log( const T& v ) noexcept
+    inline [[nodiscard]] auto Log( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( T::Size == 2 )
@@ -6968,7 +7999,7 @@ namespace Harlinn::Math
     /// Calculates the natural logarithm of 1 + each element in the argument.
     /// </summary>
     template<SimdType T>
-    inline auto Log1P( const T& v ) noexcept
+    inline [[nodiscard]] auto Log1P( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -6979,7 +8010,7 @@ namespace Harlinn::Math
     /// Calculates the natural logarithm of 1 + each element in the argument.
     /// </summary>
     template<TupleType T>
-    inline auto Log1P( const T& v ) noexcept
+    inline [[nodiscard]] auto Log1P( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( T::Size == 2 )
@@ -7010,7 +8041,7 @@ namespace Harlinn::Math
     /// Calculates the base-10 logarithm of each element in the argument.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Log10( const T& v ) noexcept
+    inline [[nodiscard]] auto Log10( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -7023,7 +8054,7 @@ namespace Harlinn::Math
     /// Calculates the base-2 logarithm, $$log_{2}_$$, of each element in the argument.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Log2( const T& v ) noexcept
+    inline [[nodiscard]] auto Log2( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -7036,32 +8067,10 @@ namespace Harlinn::Math
     /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument.
     /// </summary>
     template<SimdType T>
-    inline auto Exp( const T& v ) noexcept
+    inline [[nodiscard]] auto Exp( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
-        /*
-        using Tuple = typename T::TupleType;
-        if constexpr ( T::Size == 2 )
-        {
-            Tuple t( v );
-            return ResultType( Exp( t.x ), Exp( t.y ) );
-        }
-        else if constexpr ( T::Size == 3 )
-        {
-            Tuple t( v );
-            return ResultType( Exp( t.x ), Exp( t.y ), Exp( t.z ) );
-        }
-        else if constexpr ( T::Size == 4 )
-        {
-            Tuple t( v );
-            return ResultType( Exp( t.x ), Exp( t.y ), Exp( t.z ), Exp( t.w ) );
-        }
-        else
-        {
-            return ResultType( Traits::Exp( v.simd ) );
-        }
-        */
         return ResultType( Traits::Exp( v.simd ) );
     }
 
@@ -7069,7 +8078,7 @@ namespace Harlinn::Math
     /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument.
     /// </summary>
     template<TupleType T>
-    inline auto Exp( const T& v ) noexcept
+    inline [[nodiscard]] auto Exp( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -7097,7 +8106,7 @@ namespace Harlinn::Math
     /// Calculates the base-10 exponential of each element in the argument.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Exp10( const T& v ) noexcept
+    inline [[nodiscard]] auto Exp10( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -7110,7 +8119,7 @@ namespace Harlinn::Math
     /// Calculates the base-2 exponential of each element in the argument.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Exp2( const T& v ) noexcept
+    inline [[nodiscard]] auto Exp2( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -7123,7 +8132,7 @@ namespace Harlinn::Math
     /// Calculates  $$e$$ (Euler's number, 2.7182818...), raised to the power of each element in the argument, $$-1.0$$.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto ExpM1( const T& v ) noexcept
+    inline [[nodiscard]] auto ExpM1( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -7137,7 +8146,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto Pow( const T& base, const U& exponent ) noexcept
+    inline [[nodiscard]] auto Pow( const T& base, const U& exponent ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -7148,7 +8157,7 @@ namespace Harlinn::Math
     /// Calculates the elements in base raised to the value of exponent.
     /// </summary>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline auto Pow( const T& base, const U exponent ) noexcept
+    inline [[nodiscard]] auto Pow( const T& base, const U exponent ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
@@ -7160,7 +8169,7 @@ namespace Harlinn::Math
     /// Returns the value of base raised to the corresponding elements in exponent.
     /// </summary>
     template<ArithmeticType T, SimdOrTupleType U>
-    inline auto Pow( const T& base, const U& exponent ) noexcept
+    [[nodiscard]] inline auto Pow( const T& base, const U& exponent ) noexcept
     {
         using Traits = typename U::Traits;
         using Type = typename Traits::Type;
@@ -7176,7 +8185,7 @@ namespace Harlinn::Math
             using Traits = typename T::Traits;
             using ValueType = Traits::Type;
             template<int n>
-            static constexpr inline T Pow( const T& v )
+            static constexpr inline [[nodiscard]] T Pow( const T& v )
             {
                 if constexpr ( n < 0 )
                 {
@@ -7187,12 +8196,12 @@ namespace Harlinn::Math
             }
 
             template<>
-            static constexpr inline T Pow<1>( const T& v )
+            static constexpr inline [[nodiscard]] T Pow<1>( const T& v )
             {
                 return v;
             }
             template<>
-            static constexpr inline T Pow<0>( const T& v )
+            static constexpr inline [[nodiscard]] T Pow<0>( const T& v )
             {
                 return Traits::Fill<Traits::Size>( Constants<ValueType>::One );
             }
@@ -7200,13 +8209,13 @@ namespace Harlinn::Math
     }
 
     template<int n, SimdType T>
-    inline T FastPow( const T& v )
+    inline [[nodiscard]] T FastPow( const T& v )
     {
         return Internal::SimdFastPowImpl<T>::Pow<n>( v );
     }
 
     template<int n, TupleType T>
-    inline typename T::Simd FastPow( const T& v )
+    inline [[nodiscard]] typename T::Simd FastPow( const T& v )
     {
         return Internal::SimdFastPowImpl<typename T::Simd>::Pow<n>( v );
     }
@@ -7220,7 +8229,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto FMod( const T& x, const U& y ) noexcept
+    inline [[nodiscard]] auto FMod( const T& x, const U& y ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -7231,7 +8240,7 @@ namespace Harlinn::Math
     /// Computes the floating-point remainder of the division operation $x/y$.
     /// </summary>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline auto FMod( const T& x, const U y ) noexcept
+    inline [[nodiscard]] auto FMod( const T& x, const U y ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
@@ -7243,7 +8252,7 @@ namespace Harlinn::Math
     /// Computes the floating-point remainder of the division operation $x/y$.
     /// </summary>
     template<ArithmeticType T, SimdOrTupleType U>
-    inline auto FMod( const T x, const U& y ) noexcept
+    inline [[nodiscard]] auto FMod( const T x, const U& y ) noexcept
     {
         using Traits = typename U::Traits;
         using Type = typename Traits::Type;
@@ -7260,7 +8269,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto Hypot( const T& x, const U& y ) noexcept
+    inline [[nodiscard]] auto Hypot( const T& x, const U& y ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -7273,7 +8282,7 @@ namespace Harlinn::Math
     /// stages of the computation.
     /// </summary>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline auto Hypot( const T& x, const U y ) noexcept
+    inline [[nodiscard]] auto Hypot( const T& x, const U y ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
@@ -7287,7 +8296,7 @@ namespace Harlinn::Math
     /// stages of the computation.
     /// </summary>
     template<ArithmeticType T, SimdOrTupleType U>
-    inline auto Hypot( const T x, const U& y ) noexcept
+    inline [[nodiscard]] auto Hypot( const T x, const U& y ) noexcept
     {
         using Traits = typename U::Traits;
         using Type = typename Traits::Type;
@@ -7304,7 +8313,7 @@ namespace Harlinn::Math
         /// </summary>
         template<SimdType T, SimdType U, SimdType V, SimdType W>
             requires IsCompatible<T, U, V, W>
-        inline T HermiteImpl( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
+        inline [[nodiscard]] T HermiteImpl( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, typename T::value_type t ) noexcept
         {
             using Traits = typename T::Traits;
             using FloatT = typename T::value_type;
@@ -7328,7 +8337,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U, SimdOrTupleType V, SimdOrTupleType W, ArithmeticType X>
         requires IsCompatible<T, U, V, W>
-    inline auto Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, const X t ) noexcept
+    inline [[nodiscard]] auto Hermite( const T& firstPosition, const U& firstTangent, const V& secondPosition, const W& secondTangent, const X t ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
@@ -7342,7 +8351,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType T, SimdType U>
         requires IsCompatible<T, U>
-    inline auto Dot( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto Dot( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = T;
@@ -7354,7 +8363,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>&& Internal::HasSimdType<T, U>&& Internal::HasTupleType<T, U>
-    inline auto Dot( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto Dot( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -7365,7 +8374,7 @@ namespace Harlinn::Math
     /// Calculates the dot product between v1 and v2.
     /// </summary>
     template<SimdOrTupleType T, ArithmeticType U>
-    inline auto Dot( const T& v1, const U v2 ) noexcept
+    inline [[nodiscard]] auto Dot( const T& v1, const U v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
@@ -7377,7 +8386,7 @@ namespace Harlinn::Math
     /// Calculates the dot product between v1 and v2.
     /// </summary>
     template<ArithmeticType T, SimdOrTupleType U>
-    inline auto Dot( const T v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto Dot( const T v1, const U& v2 ) noexcept
     {
         using Traits = typename U::Traits;
         using Type = typename Traits::Type;
@@ -7387,7 +8396,7 @@ namespace Harlinn::Math
 
     template<TupleType T, TupleType U>
         requires IsCompatible<T, U>
-    constexpr inline typename T::Simd Dot( const T& v1, const U& v2 ) noexcept
+    constexpr inline [[nodiscard]] typename T::Simd Dot( const T& v1, const U& v2 ) noexcept
     {
         using ResultType = typename T::Simd;
         if constexpr ( T::Size == 2 )
@@ -7410,7 +8419,7 @@ namespace Harlinn::Math
     /// </summary>
     template<int mask, SimdType T, SimdType U>
         requires IsCompatible<T, U>
-    inline auto Dot( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto Dot( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = T;
@@ -7422,7 +8431,7 @@ namespace Harlinn::Math
     /// </summary>
     template<int mask, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>&& Internal::HasSimdType<T, U>&& Internal::HasTupleType<T, U>
-    inline auto Dot( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto Dot( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -7433,7 +8442,7 @@ namespace Harlinn::Math
     /// Calculates the dot product between v1 and v2.
     /// </summary>
     template<int mask, SimdOrTupleType T, ArithmeticType U>
-    inline auto Dot( const T& v1, const U v2 ) noexcept
+    inline [[nodiscard]] auto Dot( const T& v1, const U v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
@@ -7445,7 +8454,7 @@ namespace Harlinn::Math
     /// Calculates the dot product between v1 and v2.
     /// </summary>
     template<int mask, ArithmeticType T, SimdOrTupleType U>
-    inline auto Dot( const T v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto Dot( const T v1, const U& v2 ) noexcept
     {
         using Traits = typename U::Traits;
         using Type = typename Traits::Type;
@@ -7457,7 +8466,7 @@ namespace Harlinn::Math
 
     template<SimdType T, SimdType U>
         requires IsCompatible<T, U>
-    constexpr inline typename T::value_type ScalarDot( const T& v1, const U& v2 ) noexcept
+    constexpr inline [[nodiscard]] typename T::value_type ScalarDot( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::First( Math::Dot( v1, v2 ).simd );
@@ -7465,7 +8474,7 @@ namespace Harlinn::Math
 
     template<TupleType T, SimdType U>
         requires IsCompatible<T, U>
-    constexpr inline typename T::value_type ScalarDot( const T& v1, const U& v2 ) noexcept
+    constexpr inline [[nodiscard]] typename T::value_type ScalarDot( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::First( Math::Dot( v1, v2 ).simd );
@@ -7473,7 +8482,7 @@ namespace Harlinn::Math
 
     template<SimdType T, TupleType U>
         requires IsCompatible<T, U>
-    constexpr inline typename T::value_type ScalarDot( const T& v1, const U& v2 ) noexcept
+    constexpr [[nodiscard]] inline typename T::value_type ScalarDot( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::First( Math::Dot( v1, v2 ).simd );
@@ -7481,7 +8490,7 @@ namespace Harlinn::Math
 
     template<TupleType T, TupleType U>
         requires IsCompatible<T, U>
-    constexpr inline typename T::value_type ScalarDot( const T& v1, const U& v2 ) noexcept
+    constexpr [[nodiscard]] inline typename T::value_type ScalarDot( const T& v1, const U& v2 ) noexcept
     {
         if constexpr ( T::Size == 2 )
         {
@@ -7505,7 +8514,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto AbsDot( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto AbsDot( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -7519,7 +8528,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto ScalarAbsDot( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto ScalarAbsDot( const T& v1, const U& v2 ) noexcept
     {
         return Math::FastAbs( ScalarDot( v1, v2 ) );
     }
@@ -7531,7 +8540,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType T, SimdType U>
         requires IsCompatible<T, U>
-    inline auto Cross( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto Cross( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = T;
@@ -7543,7 +8552,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>&& Internal::HasTupleType<T, U>
-    inline auto Cross( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto Cross( const T& v1, const U& v2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -7555,7 +8564,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto UnitCross( const T& v1, const U& v2 ) noexcept
+    inline [[nodiscard]] auto UnitCross( const T& v1, const U& v2 ) noexcept
     {
         return Normalize( Cross( v1, v2 ) );
     }
@@ -7567,7 +8576,7 @@ namespace Harlinn::Math
     /// Calculates the squared length of v.
     /// </summary>
     template<SimdType T>
-    inline auto LengthSquared( const T& v ) noexcept
+    inline [[nodiscard]] auto LengthSquared( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = T;
@@ -7578,7 +8587,7 @@ namespace Harlinn::Math
     /// Calculates the squared length of v.
     /// </summary>
     template<TupleType T>
-    inline auto LengthSquared( const T& v ) noexcept
+    inline [[nodiscard]] auto LengthSquared( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = typename T::Simd;
@@ -7601,14 +8610,14 @@ namespace Harlinn::Math
     // ScalarLengthSquared
 
     template<SimdType T>
-    inline auto ScalarLengthSquared( const T& v ) noexcept
+    inline [[nodiscard]] auto ScalarLengthSquared( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::First( Math::LengthSquared( v ).simd );
     }
 
     template<TupleType T>
-    inline auto ScalarLengthSquared( const T& v ) noexcept
+    inline [[nodiscard]] auto ScalarLengthSquared( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         if constexpr ( T::Size == 2 )
@@ -7632,7 +8641,7 @@ namespace Harlinn::Math
     /// Calculates the length of v.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Length( const T& v ) noexcept
+    inline [[nodiscard]] auto Length( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -7645,7 +8654,7 @@ namespace Harlinn::Math
     /// Calculates the length of v.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto ScalarLength( const T& v ) noexcept
+    inline [[nodiscard]] auto ScalarLength( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::First( Math::Length( v ).simd );
@@ -7657,7 +8666,7 @@ namespace Harlinn::Math
     /// Normalizes v.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto Normalize( const T& v ) noexcept
+    inline [[nodiscard]] auto Normalize( const T& v ) noexcept
     {
         return v / Length( v );
     }
@@ -7669,7 +8678,7 @@ namespace Harlinn::Math
     /// Calculates the reciprocal length of v.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto ReciprocalLength( const T& v ) noexcept
+    inline [[nodiscard]] auto ReciprocalLength( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
@@ -7684,7 +8693,7 @@ namespace Harlinn::Math
     /// Calculates the reciprocal length of v.
     /// </summary>
     template<SimdOrTupleType T>
-    inline auto ScalarReciprocalLength( const T& v ) noexcept
+    inline [[nodiscard]] auto ScalarReciprocalLength( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
@@ -7699,7 +8708,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType T, SimdType U>
         requires IsCompatible<T, U>
-    inline auto DistanceSquared( const T& p1, const U& p2 ) noexcept
+    inline [[nodiscard]] auto DistanceSquared( const T& p1, const U& p2 ) noexcept
     {
         using Traits = typename T::Traits;
         auto diff = Traits::Sub( p1.simd, p2.simd );
@@ -7712,7 +8721,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>&& Internal::HasTupleType<T, U>
-    inline auto DistanceSquared( const T& p1, const U& p2 ) noexcept
+    inline [[nodiscard]] auto DistanceSquared( const T& p1, const U& p2 ) noexcept
     {
         using Traits = typename T::Traits;
         auto diff = Traits::Sub( Internal::ToSimd( p2 ), Internal::ToSimd( p1 ) );
@@ -7727,7 +8736,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>&& Internal::HasSimdType<T, U>
-    inline auto ScalarDistanceSquared( const T& p1, const U& p2 ) noexcept
+    inline [[nodiscard]] auto ScalarDistanceSquared( const T& p1, const U& p2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::First( DistanceSquared( p1, p2 ).simd );
@@ -7738,7 +8747,7 @@ namespace Harlinn::Math
     /// </summary>
     template<TupleType T, TupleType U>
         requires IsCompatible<T, U>
-    constexpr inline auto ScalarDistanceSquared( const T& p1, const U& p2 ) noexcept
+    constexpr [[nodiscard]] inline auto ScalarDistanceSquared( const T& p1, const U& p2 ) noexcept
     {
         using Traits = typename T::Traits;
         using Traits = typename T::Traits;
@@ -7773,7 +8782,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto Distance( const T& p1, const U& p2 ) noexcept
+    inline [[nodiscard]] auto Distance( const T& p1, const U& p2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -7784,7 +8793,7 @@ namespace Harlinn::Math
 
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U>
-    inline auto ScalarDistance( const T& p1, const U& p2 ) noexcept
+    inline [[nodiscard]] auto ScalarDistance( const T& p1, const U& p2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::First( Distance( p1, p2 ).simd );
@@ -7797,8 +8806,8 @@ namespace Harlinn::Math
     /// and the product of the third and fourth argument.
     /// </summary>
     template<SimdTupleOrArithmeticType S, SimdOrTupleType T, SimdTupleOrArithmeticType U, SimdTupleOrArithmeticType V>
-    //requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
-    inline auto DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+        //requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>
+    inline [[nodiscard]] auto DifferenceOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         auto v34 = v3 * v4;
         return FMA( v1, v2, -v34 );
@@ -7811,8 +8820,8 @@ namespace Harlinn::Math
     /// and the product of the third and fourth argument.
     /// </summary>
     template<SimdTupleOrArithmeticType S, SimdOrTupleType T, SimdTupleOrArithmeticType U, SimdTupleOrArithmeticType V>
-    //requires IsCompatible<S, T> && IsCompatible<S, U> && IsCompatible<S, V>
-    inline auto SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
+        //requires IsCompatible<S, T> && IsCompatible<S, U> && IsCompatible<S, V>
+    inline [[nodiscard]] auto SumOfProducts( const S& v1, const T& v2, const U& v3, const V& v4 ) noexcept
     {
         auto v34 = v3 * v4;
         return FMA( v1, v2, v34 );
@@ -7843,7 +8852,7 @@ namespace Harlinn::Math
         /// </param>
         template<SimdType S, SimdType T, SimdType U, SimdType V, SimdType W>
             requires IsCompatible<S, T, U, V, W>
-        inline S BaryCentricImpl( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
+        inline [[nodiscard]] S BaryCentricImpl( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
         {
             using Traits = typename S::Traits;
             using Simd = S;
@@ -7876,7 +8885,7 @@ namespace Harlinn::Math
     /// </param>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U, SimdOrTupleType V, SimdOrTupleType W>
         requires IsCompatible<S, T>&& IsCompatible<S, U>&& IsCompatible<S, V>&& IsCompatible<S, W>
-    inline auto BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
+    inline [[nodiscard]] auto BaryCentric( const S& p1, const T& p2, const U& p3, const V& f, const W& g ) noexcept
     {
         return Internal::BaryCentricImpl( Internal::ToSimdType( p1 ), Internal::ToSimdType( p2 ), Internal::ToSimdType( p3 ), Internal::ToSimdType( f ), Internal::ToSimdType( g ) );
     }
@@ -7902,7 +8911,7 @@ namespace Harlinn::Math
     /// </param>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U, ArithmeticType V, ArithmeticType W>
         requires IsCompatible<S, T, U>
-    inline auto BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
+    inline [[nodiscard]] auto BaryCentric( const S& p1, const T& p2, const U& p3, const V f, const W g ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = typename Traits::Type;
@@ -7935,7 +8944,7 @@ namespace Harlinn::Math
         /// </param>
         template<SimdType S, SimdType T, SimdType U, SimdType V, SimdType W>
             requires IsCompatible<S, T, U, V, W>
-        inline S CatmullRomImpl( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+        inline [[nodiscard]] S CatmullRomImpl( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
         {
             using Traits = typename S::Traits;
             using FloatT = typename Traits::Type;
@@ -7992,7 +9001,7 @@ namespace Harlinn::Math
     /// </param>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U, SimdOrTupleType V, SimdOrTupleType W>
         requires IsCompatible<S, T, U, V, W>
-    inline S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
+    inline [[nodiscard]] S CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W& t ) noexcept
     {
         return Internal::CatmullRomImpl( Internal::ToSimdType( p1 ), Internal::ToSimdType( p2 ), Internal::ToSimdType( p3 ), Internal::ToSimdType( p4 ), Internal::ToSimdType( t ) );
     }
@@ -8019,7 +9028,7 @@ namespace Harlinn::Math
         /// </param>
         template<SimdType S, SimdType T, SimdType U, SimdType V>
             requires IsCompatible<S, T, U, V>
-        inline S CatmullRomImpl( const S& p1, const T& p2, const U& p3, const V& p4, const typename S::value_type t ) noexcept
+        inline [[nodiscard]] S CatmullRomImpl( const S& p1, const T& p2, const U& p3, const V& p4, const typename S::value_type t ) noexcept
         {
             using Traits = typename S::Traits;
             using FloatT = typename Traits::Type;
@@ -8061,7 +9070,7 @@ namespace Harlinn::Math
     /// </param>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U, SimdOrTupleType V, ArithmeticType W>
         requires IsCompatible<S, T, U, V>
-    inline auto CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
+    inline [[nodiscard]] auto CatmullRom( const S& p1, const T& p2, const U& p3, const V& p4, const W t ) noexcept
     {
         using Traits = typename S::Traits;
         using Type = typename Traits::Type;
@@ -8081,7 +9090,7 @@ namespace Harlinn::Math
     /// The lowest value held by the argument.
     /// </returns>
     template<SimdType T>
-    inline auto MinComponentValue( const T& v ) noexcept
+    inline [[nodiscard]] auto MinComponentValue( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::HorizontalMin( v.simd );
@@ -8097,7 +9106,7 @@ namespace Harlinn::Math
     /// The lowest value held by the argument.
     /// </returns>
     template<TupleType T>
-    constexpr inline auto MinComponentValue( const T& v ) noexcept
+    constexpr inline [[nodiscard]] auto MinComponentValue( const T& v ) noexcept
     {
         if constexpr ( T::Size == 2 )
         {
@@ -8128,7 +9137,7 @@ namespace Harlinn::Math
     /// The highest value held by the argument.
     /// </returns>
     template<SimdType T>
-    inline auto MaxComponentValue( const T& v ) noexcept
+    inline [[nodiscard]] auto MaxComponentValue( const T& v ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::HorizontalMax( v.simd );
@@ -8145,7 +9154,7 @@ namespace Harlinn::Math
     /// The highest value held by the argument.
     /// </returns>
     template<TupleType T>
-    constexpr inline auto MaxComponentValue( const T& v ) noexcept
+    constexpr inline [[nodiscard]] auto MaxComponentValue( const T& v ) noexcept
     {
         if constexpr ( T::Size == 2 )
         {
@@ -8168,12 +9177,12 @@ namespace Harlinn::Math
     namespace Internal
     {
         template<typename FloatT, size_t N>
-        constexpr size_t MinIndex( const std::array<FloatT, N>& values, size_t first, size_t second )
+        constexpr [[nodiscard]] size_t MinIndex( const std::array<FloatT, N>& values, size_t first, size_t second )
         {
             return values[ first ] <= values[ second ] ? first : second;
         }
         template<typename FloatT, size_t N>
-        constexpr size_t MaxIndex( const std::array<FloatT, N>& values, size_t first, size_t second )
+        constexpr [[nodiscard]] size_t MaxIndex( const std::array<FloatT, N>& values, size_t first, size_t second )
         {
             return values[ first ] >= values[ second ] ? first : second;
         }
@@ -8190,7 +9199,7 @@ namespace Harlinn::Math
     /// The offset of the highest value held by the argument.
     /// </returns>
     template<TupleType T>
-    constexpr inline size_t MaxComponentIndex( const T& v ) noexcept
+    constexpr inline [[nodiscard]] size_t MaxComponentIndex( const T& v ) noexcept
     {
         if constexpr ( T::Size == 2 )
         {
@@ -8216,7 +9225,7 @@ namespace Harlinn::Math
     /// The offset of the highest value held by the argument.
     /// </returns>
     template<SimdType T>
-    constexpr inline size_t MaxComponentIndex( const T& v ) noexcept
+    constexpr inline [[nodiscard]] size_t MaxComponentIndex( const T& v ) noexcept
     {
         using TupleT = T::TupleType;
         TupleT tmp( v );
@@ -8233,7 +9242,7 @@ namespace Harlinn::Math
     /// The offset of the lowest value held by the argument.
     /// </returns>
     template<TupleType T>
-    constexpr inline size_t MinComponentIndex( const T& v ) noexcept
+    constexpr inline [[nodiscard]] size_t MinComponentIndex( const T& v ) noexcept
     {
         if constexpr ( T::Size == 2 )
         {
@@ -8259,7 +9268,7 @@ namespace Harlinn::Math
     /// The offset of the lowest value held by the argument.
     /// </returns>
     template<SimdType T, typename ResultT = typename T::value_type >
-    constexpr inline size_t MinComponentIndex( const T& v ) noexcept
+    constexpr [[nodiscard]] inline size_t MinComponentIndex( const T& v ) noexcept
     {
         using TupleT = T::TupleType;
         TupleT tmp( v );
@@ -8269,7 +9278,7 @@ namespace Harlinn::Math
     // NextUp
 
     template<SimdOrTupleType T>
-    inline auto NextUp( const T& t ) noexcept
+    inline [[nodiscard]] auto NextUp( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -8280,7 +9289,7 @@ namespace Harlinn::Math
     // NextDown
 
     template<SimdOrTupleType T>
-    inline auto NextDown( const T& t ) noexcept
+    inline [[nodiscard]] auto NextDown( const T& t ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = Internal::MakeResultType<T>;
@@ -8292,7 +9301,7 @@ namespace Harlinn::Math
 
     template<SimdType S, SimdType T >
         requires IsCompatible<S, T>
-    inline S AddAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S AddAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Add( a.simd, b.simd ) ) );
@@ -8300,7 +9309,7 @@ namespace Harlinn::Math
 
     template<SimdType S, TupleType T >
         requires IsCompatible<S, T>
-    inline S AddAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S AddAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Add( a.simd, Traits::Load( b.values ) ) ) );
@@ -8308,7 +9317,7 @@ namespace Harlinn::Math
 
     template<TupleType S, SimdType T >
         requires IsCompatible<S, T>
-    inline T AddAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] T AddAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Add( Traits::Load( a.values ), b.simd ) ) );
@@ -8316,7 +9325,7 @@ namespace Harlinn::Math
 
     template<TupleType S, TupleType T >
         requires IsCompatible<S, T>
-    inline typename S::Simd AddAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] typename S::Simd AddAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Add( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
@@ -8329,7 +9338,7 @@ namespace Harlinn::Math
 
     template<SimdType S, SimdType T >
         requires IsCompatible<S, T>
-    inline S AddAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S AddAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Add( a.simd, b.simd ) ) );
@@ -8337,7 +9346,7 @@ namespace Harlinn::Math
 
     template<SimdType S, TupleType T >
         requires IsCompatible<S, T>
-    inline S AddAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S AddAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Add( a.simd, Traits::Load( b.values ) ) ) );
@@ -8345,7 +9354,7 @@ namespace Harlinn::Math
 
     template<TupleType S, SimdType T >
         requires IsCompatible<S, T>
-    inline T AddAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] T AddAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Add( Traits::Load( a.values ), b.simd ) ) );
@@ -8353,7 +9362,7 @@ namespace Harlinn::Math
 
     template<TupleType S, TupleType T >
         requires IsCompatible<S, T>
-    inline typename S::Simd AddAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] typename S::Simd AddAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Add( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
@@ -8363,7 +9372,7 @@ namespace Harlinn::Math
 
     template<SimdType S, SimdType T >
         requires IsCompatible<S, T>
-    inline S SubAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S SubAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Sub( a.simd, b.simd ) ) );
@@ -8371,7 +9380,7 @@ namespace Harlinn::Math
 
     template<SimdType S, TupleType T >
         requires IsCompatible<S, T>
-    inline S SubAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S SubAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Sub( a.simd, Traits::Load( b.values ) ) ) );
@@ -8379,7 +9388,7 @@ namespace Harlinn::Math
 
     template<TupleType S, SimdType T >
         requires IsCompatible<S, T>
-    inline T SubAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] T SubAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Sub( Traits::Load( a.values ), b.simd ) ) );
@@ -8387,7 +9396,7 @@ namespace Harlinn::Math
 
     template<TupleType S, TupleType T >
         requires IsCompatible<S, T>
-    inline typename S::Simd SubAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] typename S::Simd SubAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Sub( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
@@ -8397,7 +9406,7 @@ namespace Harlinn::Math
 
     template<SimdType S, SimdType T >
         requires IsCompatible<S, T>
-    inline S SubAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S SubAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Sub( a.simd, b.simd ) ) );
@@ -8405,7 +9414,7 @@ namespace Harlinn::Math
 
     template<SimdType S, TupleType T >
         requires IsCompatible<S, T>
-    inline S SubAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S SubAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Sub( a.simd, Traits::Load( b.values ) ) ) );
@@ -8413,7 +9422,7 @@ namespace Harlinn::Math
 
     template<TupleType S, SimdType T >
         requires IsCompatible<S, T>
-    inline T SubAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] T SubAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Sub( Traits::Load( a.values ), b.simd ) ) );
@@ -8421,7 +9430,7 @@ namespace Harlinn::Math
 
     template<TupleType S, TupleType T >
         requires IsCompatible<S, T>
-    inline typename S::Simd SubAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] typename S::Simd SubAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Sub( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
@@ -8431,7 +9440,7 @@ namespace Harlinn::Math
 
     template<SimdType S, SimdType T >
         requires IsCompatible<S, T>
-    inline S MulAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S MulAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Mul( a.simd, b.simd ) ) );
@@ -8439,7 +9448,7 @@ namespace Harlinn::Math
 
     template<SimdType S, TupleType T >
         requires IsCompatible<S, T>
-    inline S MulAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S MulAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Mul( a.simd, Traits::Load( b.values ) ) ) );
@@ -8447,7 +9456,7 @@ namespace Harlinn::Math
 
     template<TupleType S, SimdType T >
         requires IsCompatible<S, T>
-    inline T MulAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] T MulAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Mul( Traits::Load( a.values ), b.simd ) ) );
@@ -8455,7 +9464,7 @@ namespace Harlinn::Math
 
     template<TupleType S, TupleType T >
         requires IsCompatible<S, T>
-    inline typename S::Simd MulAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] typename S::Simd MulAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Mul( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
@@ -8465,7 +9474,7 @@ namespace Harlinn::Math
 
     template<SimdType S, SimdType T >
         requires IsCompatible<S, T>
-    inline S MulAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S MulAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Mul( a.simd, b.simd ) ) );
@@ -8473,7 +9482,7 @@ namespace Harlinn::Math
 
     template<SimdType S, TupleType T >
         requires IsCompatible<S, T>
-    inline S MulAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S MulAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Mul( a.simd, Traits::Load( b.values ) ) ) );
@@ -8481,7 +9490,7 @@ namespace Harlinn::Math
 
     template<TupleType S, SimdType T >
         requires IsCompatible<S, T>
-    inline T MulAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] T MulAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Mul( Traits::Load( a.values ), b.simd ) ) );
@@ -8489,7 +9498,7 @@ namespace Harlinn::Math
 
     template<TupleType S, TupleType T >
         requires IsCompatible<S, T>
-    inline typename S::Simd MulAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] typename S::Simd MulAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Mul( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
@@ -8499,7 +9508,7 @@ namespace Harlinn::Math
 
     template<SimdType S, SimdType T >
         requires IsCompatible<S, T>
-    inline S DivAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S DivAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Div( a.simd, b.simd ) ) );
@@ -8507,7 +9516,7 @@ namespace Harlinn::Math
 
     template<SimdType S, TupleType T >
         requires IsCompatible<S, T>
-    inline S DivAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S DivAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Div( a.simd, Traits::Load( b.values ) ) ) );
@@ -8515,7 +9524,7 @@ namespace Harlinn::Math
 
     template<TupleType S, SimdType T >
         requires IsCompatible<S, T>
-    inline T DivAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] T DivAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Div( Traits::Load( a.values ), b.simd ) ) );
@@ -8523,7 +9532,7 @@ namespace Harlinn::Math
 
     template<TupleType S, TupleType T >
         requires IsCompatible<S, T>
-    inline typename S::Simd DivAdjustUp( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] typename S::Simd DivAdjustUp( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Div( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
@@ -8533,7 +9542,7 @@ namespace Harlinn::Math
 
     template<SimdType S, SimdType T >
         requires IsCompatible<S, T>
-    inline S DivAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S DivAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Div( a.simd, b.simd ) ) );
@@ -8541,7 +9550,7 @@ namespace Harlinn::Math
 
     template<SimdType S, TupleType T >
         requires IsCompatible<S, T>
-    inline S DivAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] S DivAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Div( a.simd, Traits::Load( b.values ) ) ) );
@@ -8549,7 +9558,7 @@ namespace Harlinn::Math
 
     template<TupleType S, SimdType T >
         requires IsCompatible<S, T>
-    inline T DivAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] T DivAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Div( Traits::Load( a.values ), b.simd ) ) );
@@ -8557,7 +9566,7 @@ namespace Harlinn::Math
 
     template<TupleType S, TupleType T >
         requires IsCompatible<S, T>
-    inline typename S::Simd DivAdjustDown( const S& a, const T& b ) noexcept
+    inline [[nodiscard]] typename S::Simd DivAdjustDown( const S& a, const T& b ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Div( Traits::Load( a.values ), Traits::Load( b.values ) ) ) );
@@ -8567,13 +9576,13 @@ namespace Harlinn::Math
     // SqrtAdjustUp
 
     template<SimdType S >
-    inline S SqrtAdjustUp( const S& v ) noexcept
+    inline [[nodiscard]] S SqrtAdjustUp( const S& v ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Sqrt( v.simd ) ) );
     }
     template<TupleType S >
-    inline typename S::Simd SqrtAdjustUp( const S& v ) noexcept
+    inline [[nodiscard]] typename S::Simd SqrtAdjustUp( const S& v ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextUp( Traits::Sqrt( Traits::Load( v.values ) ) ) );
@@ -8582,13 +9591,13 @@ namespace Harlinn::Math
     // SqrtAdjustDown
 
     template<SimdType S >
-    inline S SqrtAdjustDown( const S& v ) noexcept
+    inline [[nodiscard]] S SqrtAdjustDown( const S& v ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Sqrt( v.simd ) ) );
     }
     template<TupleType S >
-    inline typename S::Simd SqrtAdjustDown( const S& v ) noexcept
+    inline [[nodiscard]] typename S::Simd SqrtAdjustDown( const S& v ) noexcept
     {
         using Traits = typename S::Traits;
         return Traits::Trim( Traits::NextDown( Traits::Sqrt( Traits::Load( v.values ) ) ) );
@@ -8601,7 +9610,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, SimdType T, SimdType U>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMAAdjustUp( NumberT a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustUp( NumberT a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8613,7 +9622,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, SimdType T, TupleType U>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMAAdjustUp( NumberT a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustUp( NumberT a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8625,7 +9634,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, TupleType T, SimdType U>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FMAAdjustUp( NumberT a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] U FMAAdjustUp( NumberT a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8637,7 +9646,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FMAAdjustUp( NumberT a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] ResultT FMAAdjustUp( NumberT a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8651,7 +9660,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, SimdType T, SimdType U>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMAAdjustUp( const T& a, NumberT b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustUp( const T& a, NumberT b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8663,7 +9672,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, SimdType T, TupleType U>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMAAdjustUp( const T& a, NumberT b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustUp( const T& a, NumberT b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8675,7 +9684,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, TupleType T, SimdType U>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FMAAdjustUp( const T& a, NumberT b, const U& c ) noexcept
+    inline [[nodiscard]] U FMAAdjustUp( const T& a, NumberT b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8687,7 +9696,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FMAAdjustUp( const T& a, NumberT b, const U& c ) noexcept
+    inline [[nodiscard]] ResultT FMAAdjustUp( const T& a, NumberT b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8701,7 +9710,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType S, SimdType T, SimdType U>
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, b.simd, c.simd ) ) );
@@ -8712,7 +9721,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType S, SimdType T, TupleType U>
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values ) ) ) );
@@ -8723,7 +9732,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType S, TupleType T, SimdType U>
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] U FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, Traits::Load( b.values ), c.simd ) ) );
@@ -8734,7 +9743,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType S, TupleType T, TupleType U>
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline S FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] S FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextUp( Traits::FMAdd( a.simd, Traits::Load( b.values ), Traits::Load( c.values ) ) ) );
@@ -8747,7 +9756,7 @@ namespace Harlinn::Math
     /// </summary>
     template<TupleType S, SimdType T, SimdType U>
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values ), b.simd, c.simd ) ) );
@@ -8758,7 +9767,7 @@ namespace Harlinn::Math
     /// </summary>
     template<TupleType S, SimdType T, TupleType U>
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values ), b.simd, Traits::Load( c.values ) ) ) );
@@ -8769,7 +9778,7 @@ namespace Harlinn::Math
     /// </summary>
     template<TupleType S, TupleType T, SimdType U>
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] U FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values ), Traits::Load( b.values ), c.simd ) ) );
@@ -8780,7 +9789,7 @@ namespace Harlinn::Math
     /// </summary>
     template<TupleType S, TupleType T, TupleType U, typename ResultT = typename T::Simd >
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline ResultT FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] ResultT FMAAdjustUp( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextUp( Traits::FMAdd( Traits::Load( a.values ), Traits::Load( b.values ), Traits::Load( c.values ) ) ) );
@@ -8793,7 +9802,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, SimdType T, SimdType U>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMAAdjustDown( NumberT a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustDown( NumberT a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8805,7 +9814,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, SimdType T, TupleType U>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMAAdjustDown( NumberT a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustDown( NumberT a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8817,7 +9826,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, TupleType T, SimdType U>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FMAAdjustDown( NumberT a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] U FMAAdjustDown( NumberT a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8829,7 +9838,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FMAAdjustDown( NumberT a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] ResultT FMAAdjustDown( NumberT a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8843,7 +9852,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, SimdType T, SimdType U>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMAAdjustDown( const T& a, NumberT b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustDown( const T& a, NumberT b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8855,7 +9864,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, SimdType T, TupleType U>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline T FMAAdjustDown( const T& a, NumberT b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustDown( const T& a, NumberT b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8867,7 +9876,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, TupleType T, SimdType U>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline U FMAAdjustDown( const T& a, NumberT b, const U& c ) noexcept
+    inline [[nodiscard]] U FMAAdjustDown( const T& a, NumberT b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8879,7 +9888,7 @@ namespace Harlinn::Math
     /// </summary>
     template<typename NumberT, TupleType T, TupleType U, typename ResultT = typename T::Simd>
         requires std::is_arithmetic_v<NumberT>&& IsCompatible<T, U>
-    inline ResultT FMAAdjustDown( const T& a, NumberT b, const U& c ) noexcept
+    inline [[nodiscard]] ResultT FMAAdjustDown( const T& a, NumberT b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = Traits::Type;
@@ -8893,7 +9902,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType S, SimdType T, SimdType U>
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, b.simd, c.simd ) ) );
@@ -8904,7 +9913,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType S, SimdType T, TupleType U>
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, b.simd, Traits::Load( c.values ) ) ) );
@@ -8915,7 +9924,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType S, TupleType T, SimdType U>
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] U FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, Traits::Load( b.values ), c.simd ) ) );
@@ -8926,7 +9935,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType S, TupleType T, TupleType U>
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline S FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] S FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextDown( Traits::FMAdd( a.simd, Traits::Load( b.values ), Traits::Load( c.values ) ) ) );
@@ -8939,7 +9948,7 @@ namespace Harlinn::Math
     /// </summary>
     template<TupleType S, SimdType T, SimdType U>
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values ), b.simd, c.simd ) ) );
@@ -8950,7 +9959,7 @@ namespace Harlinn::Math
     /// </summary>
     template<TupleType S, SimdType T, TupleType U>
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] T FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values ), b.simd, Traits::Load( c.values ) ) ) );
@@ -8961,7 +9970,7 @@ namespace Harlinn::Math
     /// </summary>
     template<TupleType S, TupleType T, SimdType U>
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline U FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] U FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values ), Traits::Load( b.values ), c.simd ) ) );
@@ -8972,7 +9981,7 @@ namespace Harlinn::Math
     /// </summary>
     template<TupleType S, TupleType T, TupleType U, typename ResultT = typename T::Simd >
         requires IsCompatible<S, T>&& IsCompatible<T, U>
-    inline ResultT FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
+    inline [[nodiscard]] ResultT FMAAdjustDown( const S& a, const T& b, const U& c ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::Trim( Traits::NextDown( Traits::FMAdd( Traits::Load( a.values ), Traits::Load( b.values ), Traits::Load( c.values ) ) ) );
@@ -8980,6 +9989,9 @@ namespace Harlinn::Math
 
 
 
+    /// <summary>
+    /// A specialization of the Vector class for 2D vectors with float components.
+    /// </summary>
     template<>
     class Vector<float, 2> : public Tuple2<Vector<float, 2>, float>, public Internal::VectorBase
     {
@@ -8988,6 +10000,9 @@ namespace Harlinn::Math
         using Base::Base;
     };
 
+    /// <summary>
+    /// A specialization of the Vector class for 2D vectors with Int32 components.
+    /// </summary>
     template<>
     class Vector<Int32, 2> : public Tuple2<Vector<Int32, 2>, Int32>, public Internal::VectorBase
     {
@@ -8998,8 +10013,9 @@ namespace Harlinn::Math
 
 
 
-
-
+    /// <summary>
+    /// A specialization of the Vector class for 2D vectors with double components.
+    /// </summary>
     template<>
     class Vector<double, 2> : public Tuple2<Vector<double, 2>, double>, public Internal::VectorBase
     {
@@ -9007,7 +10023,10 @@ namespace Harlinn::Math
         using Base = Tuple2<Vector<double, 2>, double>;
         using Base::Base;
     };
-
+    
+    /// <summary>
+    /// A specialization of the Vector class for 2D vectors with UInt32 components.
+    /// </summary>
     template<>
     class Vector<UInt32, 2> : public Tuple2<Vector<UInt32, 2>, UInt32>, public Internal::VectorBase
     {
@@ -9017,6 +10036,9 @@ namespace Harlinn::Math
     };
 
 
+    /// <summary>
+    /// A specialization of the Vector class for 3D vectors with float components.
+    /// </summary>
     template<>
     class Vector<float, 3> : public Tuple3<Vector<float, 3>, float>, public Internal::VectorBase
     {
@@ -9025,6 +10047,9 @@ namespace Harlinn::Math
         using Base::Base;
     };
 
+    /// <summary>
+    /// A specialization of the Vector class for 3D vectors with Int32 components.
+    /// </summary>
     template<>
     class Vector<Int32, 3> : public Tuple3<Vector<Int32, 3>, Int32>, public Internal::VectorBase
     {
@@ -9033,7 +10058,9 @@ namespace Harlinn::Math
         using Base::Base;
     };
 
-
+    /// <summary>
+    /// A specialization of the Vector class for 3D vectors with double components.
+    /// </summary>
     template<>
     class Vector<double, 3> : public Tuple3<Vector<double, 3>, double>, public Internal::VectorBase
     {
@@ -9042,6 +10069,9 @@ namespace Harlinn::Math
         using Base::Base;
     };
 
+    /// <summary>
+    /// A specialization of the Vector class for 3D vectors with UInt32 components.
+    /// </summary>
     template<>
     class Vector<UInt32, 3> : public Tuple3<Vector<UInt32, 3>, UInt32>, public Internal::VectorBase
     {
@@ -9050,7 +10080,9 @@ namespace Harlinn::Math
         using Base::Base;
     };
 
-
+    /// <summary>
+    /// A specialization of the Vector class for 4D vectors with float components.
+    /// </summary>
     template<>
     class Vector<float, 4> : public Tuple4<Vector<float, 4>, float>, public Internal::VectorBase
     {
@@ -9059,6 +10091,9 @@ namespace Harlinn::Math
         using Base::Base;
     };
 
+    /// <summary>
+    /// A specialization of the Vector class for 4D vectors with Int32 components.
+    /// </summary>
     template<>
     class Vector<Int32, 4> : public Tuple4<Vector<Int32, 4>, Int32>, public Internal::VectorBase
     {
@@ -9068,7 +10103,9 @@ namespace Harlinn::Math
     };
 
 
-
+    /// <summary>
+    /// A specialization of the Vector class for 4D vectors with double components.
+    /// </summary>
     template<>
     class Vector<double, 4> : public Tuple4<Vector<double, 4>, double>, public Internal::VectorBase
     {
@@ -9076,7 +10113,10 @@ namespace Harlinn::Math
         using Base = Tuple4<Vector<double, 4>, double>;
         using Base::Base;
     };
-
+    
+    /// <summary>
+    /// A specialization of the Vector class for 4D vectors with UInt32 components.
+    /// </summary>
     template<>
     class Vector<UInt32, 4> : public Tuple4<Vector<UInt32, 4>, UInt32>, public Internal::VectorBase
     {
@@ -9103,7 +10143,7 @@ namespace Harlinn::Math
         /// </returns>
         template<VectorSimdType S, VectorSimdType T>
             requires IsCompatible<S, T>
-        inline S AngleBetweenImpl( const S& v1, const T& v2 ) noexcept
+        inline [[nodiscard]] S AngleBetweenImpl( const S& v1, const T& v2 ) noexcept
         {
             using Traits = typename S::Traits;
             using SIMDType = typename Traits::SIMDType;
@@ -9141,7 +10181,7 @@ namespace Harlinn::Math
     /// </returns>
     template<VectorOrVectorSimdType S, VectorOrVectorSimdType T>
         requires IsCompatible<S, T>
-    inline auto AngleBetween( const S& v1, const T& v2 ) noexcept
+    inline [[nodiscard]] auto AngleBetween( const S& v1, const T& v2 ) noexcept
     {
         return Internal::AngleBetweenImpl( Internal::ToSimdType( v1 ), Internal::ToSimdType( v2 ) );
     }
@@ -9163,7 +10203,7 @@ namespace Harlinn::Math
         /// </returns>
         template<VectorSimdType S, VectorSimdType T>
             requires IsCompatible<S, T>
-        inline S AngleBetweenNormalizedImpl( const S& v1, const T& v2 ) noexcept
+        inline [[nodiscard]] S AngleBetweenNormalizedImpl( const S& v1, const T& v2 ) noexcept
         {
             using Traits = typename S::Traits;
             using SIMDType = typename Traits::SIMDType;
@@ -9192,33 +10232,59 @@ namespace Harlinn::Math
     /// </returns>
     template<VectorOrVectorSimdType S, VectorOrVectorSimdType T>
         requires IsCompatible<S, T>
-    inline auto AngleBetweenNormalized( const S& v1, const T& v2 ) noexcept
+    inline [[nodiscard]] auto AngleBetweenNormalized( const S& v1, const T& v2 ) noexcept
     {
         return Internal::AngleBetweenNormalizedImpl( Internal::ToSimdType( v1 ), Internal::ToSimdType( v2 ) );
     }
 
 
     // Vector2* Definitions
+    /// <summary>
+    /// A 2D vector with float components.
+    /// </summary>
     using Vector2f = Vector<float, 2>;
+    /// <summary>
+    /// A 2D vector with double components.
+    /// </summary>
     using Vector2d = Vector<double, 2>;
+    /// <summary>
+    /// A 2D vector with int components.
+    /// </summary>
     using Vector2i = Vector<int, 2>;
 
     static_assert( sizeof( Vector2f ) == sizeof( std::array<float, 2> ) );
 
     // Vector3* Definitions
+    /// <summary>
+    /// A 3D vector with float components.
+    /// </summary>
     using Vector3f = Vector<float, 3>;
+    /// <summary>
+    /// A 3D vector with double components.
+    /// </summary>
     using Vector3d = Vector<double, 3>;
+    /// <summary>
+    /// A 3D vector with int components.
+    /// </summary>
     using Vector3i = Vector<int, 3>;
 
     // Vector4* Definitions
+    /// <summary>
+    /// A 4D vector with float components.
+    /// </summary>
     using Vector4f = Vector<float, 4>;
+    /// <summary>
+    /// A 4D vector with double components.
+    /// </summary>
     using Vector4d = Vector<double, 4>;
+    /// <summary>
+    /// A 4D vector with int components.
+    /// </summary>
     using Vector4i = Vector<int, 4>;
 
 
     template<ArithmeticType T, size_t N>
     class Scalar;
-
 
     template<>
     class Scalar<float, 2> : public Tuple2<Scalar<float, 2>, float>, public Internal::ScalarBase
@@ -9306,6 +10372,9 @@ namespace Harlinn::Math
     template<ArithmeticType T, size_t N>
     class Point;
 
+    /// <summary>
+    /// A 2D point with int components.
+    /// </summary>
     template<>
     class Point<Int32, 2> : public Tuple2<Point<Int32, 2>, Int32>, public Internal::PointBase
     {
@@ -9313,8 +10382,14 @@ namespace Harlinn::Math
         using Base = Tuple2<Point<Int32, 2>, Int32>;
         using Base::Base;
     };
+    /// <summary>
+    /// A 2D point with int components.
+    /// </summary>
     using Point2i = Point<Int32, 2>;
 
+    /// <summary>
+    /// A 3D point with int components.
+    /// </summary>
     template<>
     class Point<Int32, 3> : public Tuple3<Point<Int32, 3>, Int32>, public Internal::PointBase
     {
@@ -9323,8 +10398,14 @@ namespace Harlinn::Math
         using Base::Base;
     };
 
+    /// <summary>
+    /// A 3D point with int components.
+    /// </summary>
     using Point3i = Point<Int32, 3>;
 
+    /// <summary>
+    /// A 2D point with float components.
+    /// </summary>
     template<>
     class Point<float, 2> : public Tuple2<Point<float, 2>, float>, public Internal::PointBase
     {
@@ -9332,6 +10413,9 @@ namespace Harlinn::Math
         using Base = Tuple2<Point<float, 2>, float>;
         using Base::Base;
     };
+    /// <summary>
+    /// A 2D point with float components.
+    /// </summary>
     using Point2f = Point<float, 2>;
 
 
@@ -9384,7 +10468,10 @@ namespace Harlinn::Math
         return Point2f( u, v0 );
     }
 
-
+     
+    /// <summary>
+    /// A 3D point with float components.
+    /// </summary>
     template<>
     class Point<float, 3> : public Tuple3<Point<float, 3>, float>, public Internal::PointBase
     {
@@ -9392,6 +10479,9 @@ namespace Harlinn::Math
         using Base = Tuple3<Point<float, 3>, float>;
         using Base::Base;
     };
+    /// <summary>
+    /// A 3D point with float components.
+    /// </summary>
     using Point3f = Point<float, 3>;
 
 
@@ -9414,7 +10504,7 @@ namespace Harlinn::Math
         /// </returns>
         template<PointSimdType S, PointSimdType T, PointSimdType U>
             requires IsCompatible<S, T>&& IsCompatible<S, U>
-        inline S LinePointDistanceImpl( const S& linePoint1, const T& linePoint2, const U& point ) noexcept
+        inline [[nodiscard]] S LinePointDistanceImpl( const S& linePoint1, const T& linePoint2, const U& point ) noexcept
         {
             auto pointVector = point - linePoint1;
             auto lineVector = linePoint2 - linePoint1;
@@ -9448,7 +10538,7 @@ namespace Harlinn::Math
     /// </returns>
     template<PointOrPointSimdType S, PointOrPointSimdType T, PointOrPointSimdType U>
         requires IsCompatible<S, T>&& IsCompatible<S, U>
-    inline auto LinePointDistance( const S& linePoint1, const T& linePoint2, const U& point ) noexcept
+    inline [[nodiscard]] auto LinePointDistance( const S& linePoint1, const T& linePoint2, const U& point ) noexcept
     {
         return LinePointDistance( Internal::ToSimdType( linePoint1 ), Internal::ToSimdType( linePoint2 ), Internal::ToSimdType( point ) );
     }
@@ -9457,6 +10547,9 @@ namespace Harlinn::Math
     template<ArithmeticType T, size_t N>
     class Normal;
 
+    /// <summary>
+    /// A 3D normal with float components.
+    /// </summary>
     template<>
     class Normal<float, 3> : public Tuple3<Normal<float, 3>, float>, public Internal::NormalBase
     {
@@ -9465,6 +10558,9 @@ namespace Harlinn::Math
         using Base::Base;
     };
 
+    /// <summary>
+    /// A 3D normal with float components.
+    /// </summary>
     using Normal3f = Normal<float, 3>;
 
 
@@ -9494,26 +10590,26 @@ namespace Harlinn::Math
     namespace Internal
     {
         template<QuaternionSimdType T>
-        inline constexpr const typename T::SIMDType ToSimd( const T& q ) noexcept
+        inline constexpr const [[nodiscard]] typename T::SIMDType ToSimd( const T& q ) noexcept
         {
             return q.simd;
         }
 
         template<QuaternionType T>
-        inline typename T::SIMDType ToSimd( const T& q ) noexcept
+        inline [[nodiscard]] typename T::SIMDType ToSimd( const T& q ) noexcept
         {
             using Traits = typename T::Traits;
             return Traits::Load( q.values );
         }
 
         template<QuaternionSimdType T>
-        inline constexpr const T& ToSimdType( const T& q ) noexcept
+        inline constexpr [[nodiscard]] const T& ToSimdType( const T& q ) noexcept
         {
             return q;
         }
 
         template<QuaternionType T>
-        inline const typename T::Simd ToSimdType( const T& q ) noexcept
+        inline [[nodiscard]] const typename T::Simd ToSimdType( const T& q ) noexcept
         {
             return typename T::Simd( q );
         }
@@ -9527,6 +10623,55 @@ namespace Harlinn::Math
 
 
 
+    /// <summary>
+    /// SIMD-accelerated representation of a quaternion, providing efficient
+    /// construction and manipulation of rotations using CPU vector intrinsics.
+    /// </summary>
+    /// <typeparam name="QuaternionT">
+    /// The underlying (non-SIMD) quaternion type this class accelerates. It
+    /// supplies the associated <c>Traits</c>, <c>ValueType</c> and SIMD type
+    /// information used throughout this class. The quaternion is stored as the
+    /// four components \( (x, y, z, w) \), where \( w \) is the scalar part and
+    /// \( (x, y, z) \) is the vector part.
+    /// </typeparam>
+    /// <remarks>
+    /// <para>
+    /// Instances are aligned according to <c>QuaternionT::Traits::AlignAs</c> so
+    /// that the packed <c>SIMDType</c> value can be loaded and stored using
+    /// aligned vector operations. The four components are held in the single
+    /// <c>simd</c> data member.
+    /// </para>
+    /// <para>
+    /// This type exposes several construction paths, including:
+    /// <list type="bullet">
+    ///   <item><description>Direct component construction \( (x, y, z, w) \).</description></item>
+    ///   <item><description>Construction from Euler angles (pitch, yaw, roll).</description></item>
+    ///   <item><description>Construction from a vector or SIMD value plus a scalar \( w \).</description></item>
+    ///   <item><description>Construction of a rotation from a normalized axis and an angle via <c>FromNormalizedAxisAndAngle</c>.</description></item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// The following member type aliases are provided:
+    /// <list type="bullet">
+    ///   <item><description><c>QuaternionType</c>: the underlying non-SIMD quaternion type.</description></item>
+    ///   <item><description><c>ValueType</c> / <c>value_type</c>: the scalar component type (for example <c>float</c>).</description></item>
+    ///   <item><description><c>Vector</c> / <c>VectorSimd</c>: the 3-component vector types used for axis and Euler-angle inputs.</description></item>
+    ///   <item><description><c>Normal</c> / <c>NormalSimd</c>: the associated 3-component normal types.</description></item>
+    ///   <item><description><c>Simd</c>: an alias for this SIMD quaternion type.</description></item>
+    ///   <item><description><c>Matrix</c> / <c>MatrixSimd</c>: the 4x4 matrix types corresponding to this quaternion's rotation.</description></item>
+    ///   <item><description><c>Traits</c> / <c>SIMDType</c>: the SIMD trait helpers and packed SIMD storage type.</description></item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// The static constant <c>Size</c> is the logical number of components (4),
+    /// and <c>Capacity</c> is the number of scalar slots in the underlying
+    /// <c>SIMDType</c>.
+    /// </para>
+    /// <para>
+    /// This type performs no dynamic allocation and does not throw; the
+    /// SIMD-based operations are designed for high-performance rotation math.
+    /// </para>
+    /// </remarks>
     template<typename QuaternionT>
     class alignas( QuaternionT::Traits::AlignAs ) QuaternionSimd : public Internal::QuaternionSimdBase
     {
@@ -9675,7 +10820,7 @@ namespace Harlinn::Math
         /// </returns>
         template<SimdType T>
             requires IsCompatible<T, VectorSimd>
-        static QuaternionSimd FromNormalizedAxisAndAngle( const T& normalizedAxis, float angle ) noexcept
+        static [[nodiscard]] QuaternionSimd FromNormalizedAxisAndAngle( const T& normalizedAxis, float angle ) noexcept
         {
             using Constants = Traits::Constants;
 
@@ -9704,7 +10849,7 @@ namespace Harlinn::Math
         /// </returns>
         template<TupleType T>
             requires IsCompatible<T, Vector>
-        static QuaternionSimd FromNormalizedAxisAndAngle( const T& normalizedAxis, float angle ) noexcept
+        static [[nodiscard]] QuaternionSimd FromNormalizedAxisAndAngle( const T& normalizedAxis, float angle ) noexcept
         {
             return FromNormalizedAxisAndAngle( normalizedAxis.ToSimd( ), angle );
         }
@@ -9723,7 +10868,7 @@ namespace Harlinn::Math
         /// </returns>
         //template<SimdType T>
         //    requires IsCompatible<T, Vector>
-        static QuaternionSimd FromAxisAndAngle( const Math::Vector<float, 3>::Simd& axis, float angle ) noexcept
+        static [[nodiscard]] QuaternionSimd FromAxisAndAngle( const Math::Vector<float, 3>::Simd& axis, float angle ) noexcept
         {
             return FromNormalizedAxisAndAngle( Normalize( axis ), angle );
         }
@@ -9741,7 +10886,7 @@ namespace Harlinn::Math
         /// </returns>
         //template<TupleType T>
         //    requires IsCompatible<T, Vector>
-        static QuaternionSimd FromAxisAndAngle( const Math::Vector<float, 3>& axis, float angle ) noexcept
+        static [[nodiscard]] QuaternionSimd FromAxisAndAngle( const Math::Vector<float, 3>& axis, float angle ) noexcept
         {
             return FromNormalizedAxisAndAngle( Normalize( axis ), angle );
         }
@@ -9757,7 +10902,7 @@ namespace Harlinn::Math
         /// </returns>
         template<size_t N>
             requires ( N > 2 )
-        static QuaternionSimd FromMatrix( const std::array<SIMDType, N>& matrix ) noexcept;
+        static [[nodiscard]] QuaternionSimd FromMatrix( const std::array<SIMDType, N>& matrix ) noexcept;
 
         /// <summary>
         /// Creates a rotation quaternion from a rotation matrix.
@@ -9768,7 +10913,7 @@ namespace Harlinn::Math
         /// <returns>
         /// The rotation quaternion.
         /// </returns>
-        static QuaternionSimd FromMatrix( const MatrixSimd& matrix ) noexcept
+        static [[nodiscard]] QuaternionSimd FromMatrix( const MatrixSimd& matrix ) noexcept
         {
             return FromMatrix( matrix.simd );
         }
@@ -9781,7 +10926,7 @@ namespace Harlinn::Math
         /// <returns>
         /// The rotation quaternion.
         /// </returns>
-        static QuaternionSimd FromMatrix( const Matrix& matrix ) noexcept;
+        static [[nodiscard]] QuaternionSimd FromMatrix( const Matrix& matrix ) noexcept;
 
 
         /// <summary>
@@ -9798,7 +10943,7 @@ namespace Harlinn::Math
         /// </returns>
         template<SimdType T, SimdType U>
             requires IsCompatible<T, VectorSimd, U>
-        static QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        static [[nodiscard]] QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             const auto fromDirNormalized = Normalize( fromDir );
             const auto toDirNormalized = Normalize( toDir );
@@ -9845,7 +10990,7 @@ namespace Harlinn::Math
         /// </returns>
         template<SimdType T, TupleType U>
             requires IsCompatible<T, VectorSimd, U>
-        static QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        static [[nodiscard]] QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             return ShortestArc( fromDir, toDir.ToSimd( ) );
         }
@@ -9863,7 +11008,7 @@ namespace Harlinn::Math
         /// </returns>
         template<TupleType T, SimdType U>
             requires IsCompatible<T, VectorSimd, U>
-        static QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        static [[nodiscard]] QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             return ShortestArc( fromDir.ToSimd( ), toDir );
         }
@@ -9881,7 +11026,7 @@ namespace Harlinn::Math
         /// </returns>
         template<TupleType T, TupleType U>
             requires IsCompatible<T, VectorSimd, U>
-        static QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        static [[nodiscard]] QuaternionSimd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             return ShortestArc( fromDir.ToSimd( ), toDir.ToSimd( ) );
         }
@@ -9897,7 +11042,7 @@ namespace Harlinn::Math
         /// <returns>
         /// The identity quaternion.
         /// </returns>
-        static constexpr QuaternionSimd Identity( ) noexcept
+        static constexpr [[nodiscard]] QuaternionSimd Identity( ) noexcept
         {
             constexpr SIMDType identity = { {0.f,0.f,0.f,1.f} };
             return QuaternionSimd( identity );
@@ -9909,7 +11054,7 @@ namespace Harlinn::Math
         /// <returns>
         /// A quaternion with all elements set to zero.
         /// </returns>
-        static constexpr QuaternionSimd Zero( ) noexcept
+        static constexpr [[nodiscard]] QuaternionSimd Zero( ) noexcept
         {
             constexpr SIMDType zero = { {0.f,0.f,0.f,0.f} };
             return QuaternionSimd( zero );
@@ -9930,21 +11075,21 @@ namespace Harlinn::Math
 
         QuaternionSimd& operator = ( const QuaternionType& quaternion ) noexcept;
 
-        bool operator == ( const QuaternionSimd& other ) const noexcept
+        bool [[nodiscard]] operator == ( const QuaternionSimd& other ) const noexcept
         {
             return Traits::AllEqual( simd, other.simd );
         }
 
-        bool operator != ( const QuaternionSimd& other ) const noexcept
+        bool [[nodiscard]] operator != ( const QuaternionSimd& other ) const noexcept
         {
             return Traits::AllEqual( simd, other.simd ) == false;
         }
 
-        bool operator == ( const QuaternionType& other ) const noexcept;
-        bool operator != ( const QuaternionType& other ) const noexcept;
+        bool [[nodiscard]] operator == ( const QuaternionType& other ) const noexcept;
+        bool [[nodiscard]] operator != ( const QuaternionType& other ) const noexcept;
 
 
-        QuaternionSimd operator - ( ) const noexcept
+        [[nodiscard]] QuaternionSimd operator - ( ) const noexcept
         {
             return QuaternionSimd( Traits::Negate( simd ) );
         }
@@ -10005,7 +11150,7 @@ namespace Harlinn::Math
         /// <returns>
         /// The rotation about y-axis (y), then x-axis (x), then z-axis (z)
         /// </returns>
-        inline VectorSimd ToEuler( ) const noexcept;
+        inline [[nodiscard]] VectorSimd ToEuler( ) const noexcept;
 
     };
 
@@ -10156,7 +11301,7 @@ namespace Harlinn::Math
         /// </returns>
         template<SimdType T>
             requires IsCompatible<T, VectorSimd>
-        static Simd FromNormalizedAxisAndAngle( const T& normalizedAxis, float angle ) noexcept
+        static [[nodiscard]] Simd FromNormalizedAxisAndAngle( const T& normalizedAxis, float angle ) noexcept
         {
             return Simd::FromNormalizedAxisAndAngle( normalizedAxis, angle );
         }
@@ -10175,7 +11320,7 @@ namespace Harlinn::Math
         /// </returns>
         template<TupleType T>
             requires IsCompatible<T, Vector>
-        static Simd FromNormalizedAxisAndAngle( const T& normalizedAxis, float angle ) noexcept
+        static [[nodiscard]] Simd FromNormalizedAxisAndAngle( const T& normalizedAxis, float angle ) noexcept
         {
             return Simd::FromNormalizedAxisAndAngle( normalizedAxis, angle );
         }
@@ -10194,7 +11339,7 @@ namespace Harlinn::Math
         /// </returns>
         template<SimdType T>
             requires IsCompatible<T, VectorSimd>
-        static Simd FromAxisAndAngle( const T& axis, float angle ) noexcept
+        static [[nodiscard]] Simd FromAxisAndAngle( const T& axis, float angle ) noexcept
         {
             return Simd::FromAxisAndAngle( axis, angle );
         }
@@ -10213,7 +11358,7 @@ namespace Harlinn::Math
         /// </returns>
         template<TupleType T>
             requires IsCompatible<T, Vector>
-        static Simd FromAxisAndAngle( const T& axis, float angle ) noexcept
+        static [[nodiscard]] Simd FromAxisAndAngle( const T& axis, float angle ) noexcept
         {
             return Simd::FromAxisAndAngle( axis, angle );
         }
@@ -10227,7 +11372,7 @@ namespace Harlinn::Math
         /// <returns>
         /// The rotation quaternion.
         /// </returns>
-        static Simd FromMatrix( const MatrixSimd& matrix ) noexcept
+        static [[nodiscard]] Simd FromMatrix( const MatrixSimd& matrix ) noexcept
         {
             return Simd::FromMatrix( matrix );
         }
@@ -10240,7 +11385,7 @@ namespace Harlinn::Math
         /// <returns>
         /// The rotation quaternion.
         /// </returns>
-        static Simd FromMatrix( const Matrix& matrix ) noexcept
+        static [[nodiscard]] Simd FromMatrix( const Matrix& matrix ) noexcept
         {
             return Simd::FromMatrix( matrix );
         }
@@ -10260,7 +11405,7 @@ namespace Harlinn::Math
         /// </returns>
         template<SimdType T, SimdType U>
             requires IsCompatible<T, VectorSimd, U>
-        static Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        static [[nodiscard]] Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             return Simd::ShortestArc( fromDir, toDir );
         }
@@ -10279,7 +11424,7 @@ namespace Harlinn::Math
         /// </returns>
         template<SimdType T, TupleType U>
             requires IsCompatible<T, VectorSimd, U>
-        static Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        static [[nodiscard]] Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             return Simd::ShortestArc( fromDir, toDir );
         }
@@ -10298,7 +11443,7 @@ namespace Harlinn::Math
         /// </returns>
         template<TupleType T, SimdType U>
             requires IsCompatible<T, VectorSimd, U>
-        static Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        static [[nodiscard]] Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             return Simd::ShortestArc( fromDir, toDir );
         }
@@ -10317,7 +11462,7 @@ namespace Harlinn::Math
         /// </returns>
         template<TupleType T, TupleType U>
             requires IsCompatible<T, VectorSimd, U>
-        static Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
+        static [[nodiscard]] Simd ShortestArc( const T& fromDir, const U& toDir ) noexcept
         {
             return Simd::ShortestArc( fromDir, toDir );
         }
@@ -10328,7 +11473,7 @@ namespace Harlinn::Math
         /// <returns>
         /// The identity quaternion.
         /// </returns>
-        static constexpr Quaternion Identity( ) noexcept
+        static constexpr [[nodiscard]] Quaternion Identity( ) noexcept
         {
             return Quaternion( static_cast< ValueType >( 0. ), static_cast< ValueType >( 0. ), static_cast< ValueType >( 0. ), static_cast< ValueType >( 1. ) );
         }
@@ -10344,7 +11489,7 @@ namespace Harlinn::Math
         /// that axis for the quaternion.
         /// </summary>
         /// <returns></returns>
-        AxisAngle ToAxisAngle( ) const noexcept
+        [[nodiscard]] AxisAngle ToAxisAngle( ) const noexcept
         {
             return AxisAngle{ .Axis = v, .Angle = static_cast< ValueType >( 2. ) * ACos( w ) };
         }
@@ -10359,7 +11504,7 @@ namespace Harlinn::Math
         /// <remarks>
         /// Adopted from https://github.com/microsoft/DirectXTK12
         /// </remarks>
-        VectorSimd ToEuler( ) const noexcept
+        [[nodiscard]] VectorSimd ToEuler( ) const noexcept
         {
             const float xx = Sqr( v.x );
             const float yy = Sqr( v.y );
@@ -10401,119 +11546,119 @@ namespace Harlinn::Math
         }
 
 
-        Simd ToSimd( ) const noexcept
+        [[nodiscard]] Simd ToSimd( ) const noexcept
         {
             return Simd( Traits::Load( values ) );
         }
 
-        operator Simd( ) const noexcept
+        [[nodiscard]] operator Simd( ) const noexcept
         {
             return ToSimd( );
         }
 
-        bool operator == ( const Simd& other ) const noexcept
+        [[nodiscard]] bool operator == ( const Simd& other ) const noexcept
         {
             return Traits::AllEqual( Traits::Load( values ), other.simd );
         }
 
-        bool operator != ( const Simd& other ) const noexcept
+        [[nodiscard]] bool operator != ( const Simd& other ) const noexcept
         {
             return Traits::AnyNotEqual( Traits::Load( values ), other.simd );
         }
 
-        bool operator == ( const Quaternion& other ) const noexcept
+        [[nodiscard]] bool operator == ( const Quaternion& other ) const noexcept
         {
             return values == other.values;
         }
-        bool operator != ( const Quaternion& other ) const noexcept
+        [[nodiscard]] bool operator != ( const Quaternion& other ) const noexcept
         {
             return values != other.values;
         }
 
-        Simd operator - ( ) const noexcept
+        [[nodiscard]] Simd operator - ( ) const noexcept
         {
             return Simd( Traits::Negate( Traits::Load( values ) ) );
         }
 
-        const_reference operator[]( size_t index ) const noexcept
+        [[nodiscard]] const_reference operator[]( size_t index ) const noexcept
         {
             return values[ index ];
         }
 
-        reference operator[]( size_t index ) noexcept
+        [[nodiscard]] reference operator[]( size_t index ) noexcept
         {
             return values[ index ];
         }
 
-        const_pointer data( ) const noexcept
+        [[nodiscard]] const_pointer data( ) const noexcept
         {
             return values.data( );
         }
-        pointer data( ) noexcept
+        [[nodiscard]] pointer data( ) noexcept
         {
             return values.data( );
         }
 
-        constexpr size_t size( ) const noexcept
+        constexpr [[nodiscard]] size_t size( ) const noexcept
         {
             return Size;
         }
 
-        const_reference front( ) const noexcept
+        [[nodiscard]] const_reference front( ) const noexcept
         {
             return values.front( );
         }
-        reference front( ) noexcept
+        [[nodiscard]] reference front( ) noexcept
         {
             return values.front( );
         }
 
-        const_reference back( ) const noexcept
+        [[nodiscard]] const_reference back( ) const noexcept
         {
             return values.back( );
         }
-        reference back( ) noexcept
+        [[nodiscard]] reference back( ) noexcept
         {
             return values.back( );
         }
 
-        const_iterator begin( ) const noexcept
+        [[nodiscard]] const_iterator begin( ) const noexcept
         {
             return values.begin( );
         }
-        const_iterator cbegin( ) const noexcept
+        [[nodiscard]] const_iterator cbegin( ) const noexcept
         {
             return values.cbegin( );
         }
-        iterator begin( ) noexcept
+        [[nodiscard]] iterator begin( ) noexcept
         {
             return values.begin( );
         }
-        const_iterator end( ) const noexcept
+        [[nodiscard]] const_iterator end( ) const noexcept
         {
             return values.end( );
         }
-        const_iterator cend( ) const noexcept
+        [[nodiscard]] const_iterator cend( ) const noexcept
         {
             return values.cend( );
         }
-        iterator end( ) noexcept
+        [[nodiscard]] iterator end( ) noexcept
         {
             return values.end( );
         }
-        const_reverse_iterator rbegin( ) const noexcept
+        [[nodiscard]] const_reverse_iterator rbegin( ) const noexcept
         {
             return values.rbegin( );
         }
-        reverse_iterator rbegin( ) noexcept
+        [[nodiscard]] reverse_iterator rbegin( ) noexcept
         {
             return values.rbegin( );
         }
-        const_reverse_iterator rend( ) const noexcept
+        [[nodiscard]] const_reverse_iterator rend( ) const noexcept
         {
             return values.rend( );
         }
-        reverse_iterator rend( ) noexcept
+        [[nodiscard]] reverse_iterator rend( ) noexcept
         {
             return values.rend( );
         }
@@ -10582,7 +11727,7 @@ namespace Harlinn::Math
 
     template<QuaternionOrQuaternionSimdType T, QuaternionOrQuaternionSimdType U>
         requires IsCompatibleQuaternion<T, U>
-    auto operator + ( const T& q1, const U& q2 ) noexcept
+    [[nodiscard]] auto operator + ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = typename T::Simd;
@@ -10592,7 +11737,7 @@ namespace Harlinn::Math
     // Scalar Addition
 
     template<QuaternionOrQuaternionSimdType T, ArithmeticType U>
-    auto operator + ( const T& q1, const U value ) noexcept
+    [[nodiscard]] auto operator + ( const T& q1, const U value ) noexcept
     {
         using Traits = typename T::Traits;
         using FloatT = typename Traits::Type;
@@ -10602,7 +11747,7 @@ namespace Harlinn::Math
         return ResultType( Traits::Add( Internal::ToSimd( q1 ), Traits::Set( v, zero, zero, zero ) ) );
     }
     template<ArithmeticType T, QuaternionOrQuaternionSimdType U>
-    auto operator + ( const T value, const U& q2 ) noexcept
+    [[nodiscard]] auto operator + ( const T value, const U& q2 ) noexcept
     {
         using Traits = typename U::Traits;
         using FloatT = typename Traits::Type;
@@ -10616,7 +11761,7 @@ namespace Harlinn::Math
 
     template<QuaternionOrQuaternionSimdType T, QuaternionOrQuaternionSimdType U>
         requires IsCompatibleQuaternion<T, U>
-    auto operator - ( const T& q1, const U& q2 ) noexcept
+    [[nodiscard]] auto operator - ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = typename T::Simd;
@@ -10626,7 +11771,7 @@ namespace Harlinn::Math
     // Scalar Subtraction
 
     template<QuaternionOrQuaternionSimdType T, ArithmeticType U>
-    auto operator - ( const T& q1, const U value ) noexcept
+    [[nodiscard]] auto operator - ( const T& q1, const U value ) noexcept
     {
         using Traits = typename T::Traits;
         using FloatT = typename Traits::Type;
@@ -10637,7 +11782,7 @@ namespace Harlinn::Math
     }
 
     template<ArithmeticType T, QuaternionOrQuaternionSimdType U>
-    auto operator - ( const T value, const U& q2 ) noexcept
+    [[nodiscard]] auto operator - ( const T value, const U& q2 ) noexcept
     {
         using Traits = typename U::Traits;
         using FloatT = typename Traits::Type;
@@ -10653,7 +11798,7 @@ namespace Harlinn::Math
 
     template<QuaternionOrQuaternionSimdType T, QuaternionOrQuaternionSimdType U>
         requires IsCompatibleQuaternion<T, U>
-    auto operator * ( const T& q1, const U& q2 ) noexcept
+    [[nodiscard]] auto operator * ( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = typename T::Simd;
@@ -10663,7 +11808,7 @@ namespace Harlinn::Math
     // Scalar Multiplication
 
     template<ArithmeticType T, QuaternionOrQuaternionSimdType U>
-    auto operator * ( const T value, const U& q2 ) noexcept
+    [[nodiscard]] auto operator * ( const T value, const U& q2 ) noexcept
     {
         using Traits = typename U::Traits;
         using FloatT = typename Traits::Type;
@@ -10671,7 +11816,7 @@ namespace Harlinn::Math
         return ResultType( Traits::Mul( Traits::Fill( static_cast< FloatT >( value ) ), Internal::ToSimd( q2 ) ) );
     }
     template<QuaternionOrQuaternionSimdType T, ArithmeticType U>
-    auto operator * ( const T& q1, const U value ) noexcept
+    [[nodiscard]] auto operator * ( const T& q1, const U value ) noexcept
     {
         using Traits = typename T::Traits;
         using FloatT = typename Traits::Type;
@@ -10682,7 +11827,7 @@ namespace Harlinn::Math
     // Scalar Division
 
     template<QuaternionOrQuaternionSimdType T, ArithmeticType U>
-    auto operator / ( const T& q1, const U value ) noexcept
+    [[nodiscard]] auto operator / ( const T& q1, const U value ) noexcept
     {
         using Traits = typename T::Traits;
         using FloatT = typename Traits::Type;
@@ -10691,7 +11836,7 @@ namespace Harlinn::Math
     }
 
     template<ArithmeticType T, QuaternionOrQuaternionSimdType U>
-    auto operator / ( const T value, const U& q2 ) noexcept
+    [[nodiscard]] auto operator / ( const T value, const U& q2 ) noexcept
     {
         using Traits = typename U::Traits;
         using FloatT = typename Traits::Type;
@@ -10714,7 +11859,7 @@ namespace Harlinn::Math
     /// </returns>
     template<QuaternionOrQuaternionSimdType T, QuaternionOrQuaternionSimdType U>
         requires IsCompatibleQuaternion<T, U>
-    auto Dot( const T& q1, const U& q2 ) noexcept
+    [[nodiscard]] auto Dot( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = typename T::Simd;
@@ -10735,7 +11880,7 @@ namespace Harlinn::Math
     /// </returns>
     template<QuaternionOrQuaternionSimdType T, QuaternionOrQuaternionSimdType U>
         requires IsCompatibleQuaternion<T, U>
-    auto ScalarDot( const T& q1, const U& q2 ) noexcept
+    [[nodiscard]] auto ScalarDot( const T& q1, const U& q2 ) noexcept
     {
         using Traits = typename T::Traits;
         return Traits::First( Traits::Dot( Internal::ToSimd( q1 ), Internal::ToSimd( q2 ) ) );
@@ -10754,7 +11899,7 @@ namespace Harlinn::Math
     /// The magnitude of the quaternion.
     /// </returns>
     template<QuaternionOrQuaternionSimdType T>
-    auto Length( const T& q ) noexcept
+    [[nodiscard]] auto Length( const T& q ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = typename T::Simd;
@@ -10772,7 +11917,7 @@ namespace Harlinn::Math
     /// The magnitude of the quaternion.
     /// </returns>
     template<QuaternionOrQuaternionSimdType T>
-    auto ScalarLength( const T& q ) noexcept
+    [[nodiscard]] auto ScalarLength( const T& q ) noexcept
     {
         using Traits = typename T::Traits;
         auto qSimd = Internal::ToSimd( q );
@@ -10792,7 +11937,7 @@ namespace Harlinn::Math
     /// The square of the magnitude of the quaternion.
     /// </returns>
     template<QuaternionOrQuaternionSimdType T>
-    auto LengthSquared( const T& q ) noexcept
+    [[nodiscard]] auto LengthSquared( const T& q ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = typename T::Simd;
@@ -10810,7 +11955,7 @@ namespace Harlinn::Math
     /// The square of the magnitude of the quaternion.
     /// </returns>
     template<QuaternionOrQuaternionSimdType T>
-    auto ScalarLengthSquared( const T& q ) noexcept
+    [[nodiscard]] auto ScalarLengthSquared( const T& q ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = typename T::Simd;
@@ -10832,7 +11977,7 @@ namespace Harlinn::Math
     /// The reciprocal of the magnitude of the quaternion.
     /// </returns>
     template<QuaternionOrQuaternionSimdType T>
-    auto ReciprocalLength( const T& q1 ) noexcept
+    [[nodiscard]] auto ReciprocalLength( const T& q1 ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
@@ -10851,7 +11996,7 @@ namespace Harlinn::Math
     /// The reciprocal of the magnitude of the quaternion.
     /// </returns>
     template<QuaternionOrQuaternionSimdType T>
-    auto ScalarReciprocalLength( const T& q1 ) noexcept
+    [[nodiscard]] auto ScalarReciprocalLength( const T& q1 ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
@@ -10872,7 +12017,7 @@ namespace Harlinn::Math
     /// The conjugate of the quaternion
     /// </returns>
     template<QuaternionOrQuaternionSimdType T>
-    auto Conjugate( const T& q ) noexcept
+    [[nodiscard]] auto Conjugate( const T& q ) noexcept
     {
         using Traits = typename T::Traits;
         using SIMDType = typename Traits::SIMDType;
@@ -10893,7 +12038,7 @@ namespace Harlinn::Math
     /// The normalized quaternion.
     /// </returns>
     template<QuaternionOrQuaternionSimdType T>
-    auto Normalize( const T& q ) noexcept
+    [[nodiscard]] auto Normalize( const T& q ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = typename T::Simd;
@@ -10913,7 +12058,7 @@ namespace Harlinn::Math
         /// The inverse quaternion.
         /// </returns>
         template<QuaternionSimdType T>
-        T InverseImpl( const T& q ) noexcept
+        [[nodiscard]] T InverseImpl( const T& q ) noexcept
         {
             using Traits = typename T::Traits;
             using FloatT = typename Traits::Type;
@@ -10943,7 +12088,7 @@ namespace Harlinn::Math
     /// The inverse quaternion.
     /// </returns>
     template<QuaternionOrQuaternionSimdType T>
-    auto Inverse( const T& q ) noexcept
+    [[nodiscard]] auto Inverse( const T& q ) noexcept
     {
         return Internal::InverseImpl( Internal::ToSimdType( q ) );
     }
@@ -10961,7 +12106,7 @@ namespace Harlinn::Math
         /// The natural logarithm of q1.
         /// </returns>
         template<QuaternionSimdType T>
-        T LogImpl( const T& q1 ) noexcept
+        [[nodiscard]] T LogImpl( const T& q1 ) noexcept
         {
             using Traits = typename T::Traits;
             using FloatT = typename Traits::Type;
@@ -10995,7 +12140,7 @@ namespace Harlinn::Math
     /// The natural logarithm of q1.
     /// </returns>
     template<QuaternionOrQuaternionSimdType T>
-    auto Log( const T& q ) noexcept
+    [[nodiscard]] auto Log( const T& q ) noexcept
     {
         return Internal::LogImpl( Internal::ToSimdType( q ) );
     }
@@ -11017,7 +12162,7 @@ namespace Harlinn::Math
     /// <returns></returns>
     template<QuaternionOrQuaternionSimdType T, QuaternionOrQuaternionSimdType U, SimdOrTupleType V>
         requires IsCompatibleQuaternion<T, U> && ( V::Size == 4 )
-    auto Slerp( const T& q1, const U& q2, const V& t ) noexcept
+    [[nodiscard]] auto Slerp( const T& q1, const U& q2, const V& t ) noexcept
     {
         using Traits = typename T::Traits;
         using ResultType = typename T::Simd;
@@ -11040,7 +12185,7 @@ namespace Harlinn::Math
     /// <returns></returns>
     template<QuaternionOrQuaternionSimdType T, QuaternionOrQuaternionSimdType U, ArithmeticType V>
         requires IsCompatibleQuaternion<T, U>
-    auto Slerp( const T& q1, const U& q2, const V t ) noexcept
+    [[nodiscard]] auto Slerp( const T& q1, const U& q2, const V t ) noexcept
     {
         using Traits = typename T::Traits;
         using Type = typename Traits::Type;
@@ -11064,7 +12209,7 @@ namespace Harlinn::Math
         /// </returns>
         template<SimdType S, QuaternionSimdType T >
             requires ( S::Size == 3 )
-        S RotateImpl( const S& v, const T& rotationQuaternion )
+        [[nodiscard]] S RotateImpl( const S& v, const T& rotationQuaternion )
         {
             using Traits = typename T::Traits;
             using Constants = typename Traits::Constants;
@@ -11096,7 +12241,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S, QuaternionOrQuaternionSimdType T >
         requires ( S::Size == 3 )
-    auto Rotate( const S& v, const T& rotationQuaternion )
+    [[nodiscard]] auto Rotate( const S& v, const T& rotationQuaternion )
     {
         return Internal::RotateImpl( Internal::ToSimdType( v ), Internal::ToSimdType( rotationQuaternion ) );
     }
@@ -11120,7 +12265,7 @@ namespace Harlinn::Math
         /// </returns>
         template<SimdType S, QuaternionSimdType T >
             requires ( S::Size == 3 )
-        S InverseRotateImpl( const S& v, const T& rotationQuaternion )
+        [[nodiscard]] S InverseRotateImpl( const S& v, const T& rotationQuaternion )
         {
             using Traits = typename T::Traits;
             using Constants = typename Traits::Constants;
@@ -11148,7 +12293,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S, QuaternionOrQuaternionSimdType T >
         requires ( S::Size == 3 )
-    S InverseRotate( const S& v, const T& rotationQuaternion )
+    inline [[nodiscard]] S InverseRotate( const S& v, const T& rotationQuaternion )
     {
         return Internal::InverseRotateImpl( Internal::ToSimdType( v ), Internal::ToSimdType( rotationQuaternion ) );
     }
@@ -11168,7 +12313,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<T, U> && ( T::Size == 3 )
-    inline auto ShortestArc( const T& fromDir, const U& toDir ) noexcept
+    inline [[nodiscard]] auto ShortestArc( const T& fromDir, const U& toDir ) noexcept
     {
         using q = Quaternion<typename T::value_type>::Simd;
         return q::ShortestArc( fromDir, toDir );
@@ -11178,7 +12323,7 @@ namespace Harlinn::Math
 
     template<SimdType T, SimdType U>
         requires IsCompatible<T, U>
-    constexpr inline auto ScalarAngleBetween( const T& v1, const U& v2 )
+    constexpr inline [[nodiscard]] auto ScalarAngleBetween( const T& v1, const U& v2 )
     {
         using Traits = typename T::Traits;
         using TupleType = typename T::TupleType;
@@ -11202,14 +12347,14 @@ namespace Harlinn::Math
 
     template<SimdType T, TupleType U>
         requires IsCompatible<T, U>
-    constexpr inline auto ScalarAngleBetween( const T& v1, const U& v2 )
+    constexpr inline [[nodiscard]] auto ScalarAngleBetween( const T& v1, const U& v2 )
     {
         return ScalarAngleBetween( v1, typename U::Simd( v2 ) );
     }
 
     template<TupleType T, SimdType U>
         requires IsCompatible<T, U>
-    constexpr inline auto ScalarAngleBetween( const T& v1, const U& v2 )
+    constexpr inline [[nodiscard]] auto ScalarAngleBetween( const T& v1, const U& v2 )
     {
         return ScalarAngleBetween( typename T::Simd( v1 ), v2 );
     }
@@ -11217,7 +12362,7 @@ namespace Harlinn::Math
 
 
     template<typename DerivedT, typename FloatT>
-    constexpr inline FloatT ScalarAngleBetween( const Tuple3<DerivedT, FloatT>& v1, const Tuple3<DerivedT, FloatT>& v2 )
+    constexpr inline [[nodiscard]] FloatT ScalarAngleBetween( const Tuple3<DerivedT, FloatT>& v1, const Tuple3<DerivedT, FloatT>& v2 )
     {
         auto dotProduct = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 
@@ -11248,7 +12393,7 @@ namespace Harlinn::Math
     }
 
     template<typename DerivedT, typename FloatT>
-    inline Tuple3<DerivedT, FloatT> AngleBetween( const Tuple3<DerivedT, FloatT>& v1, const Tuple3<DerivedT, FloatT>& v2 )
+    inline [[nodiscard]] Tuple3<DerivedT, FloatT> AngleBetween( const Tuple3<DerivedT, FloatT>& v1, const Tuple3<DerivedT, FloatT>& v2 )
     {
         auto angle = ScalarAngleBetween( v1, v2 );
         return Tuple3<DerivedT, FloatT>( angle, angle, angle );
@@ -11302,25 +12447,25 @@ namespace Harlinn::Math
     namespace Internal
     {
         template<SquareMatrixSimdType T>
-        const auto& ToSimd( const T& m )
+        inline [[nodiscard]] const auto& ToSimd( const T& m )
         {
             return m.simd;
         }
 
         template<SquareMatrixType T>
-        auto ToSimd( const T& m )
+        inline [[nodiscard]] auto ToSimd( const T& m )
         {
             return m.ToSimd( ).simd;
         }
 
         template<SquareMatrixSimdType T>
-        const auto& ToSimdType( const T& m )
+        inline [[nodiscard]] const auto& ToSimdType( const T& m )
         {
             return m;
         }
 
         template<SquareMatrixType T>
-        auto ToSimdType( const T& m )
+        inline [[nodiscard]] auto ToSimdType( const T& m )
         {
             return m.ToSimd( );
         }
@@ -11364,11 +12509,11 @@ namespace Harlinn::Math
 
         SIMDType simd;
 
-        static SIMDType ToSimd( const ArrayType& matrix )
+        static [[nodiscard]] SIMDType ToSimd( const ArrayType& matrix )
         {
             return Traits::Load( matrix[ 0 ].data( ) );
         }
-        static ArrayType ToMatrix( const SquareMatrixSimd& simd )
+        static [[nodiscard]] ArrayType ToMatrix( const SquareMatrixSimd& simd )
         {
             ArrayType result;
             Traits::Store( result[ 0 ].data( ), simd.simd );
@@ -11421,16 +12566,16 @@ namespace Harlinn::Math
 
         SIMDType simd;
 
-        static SIMDType ToSimd( const ArrayType& matrix )
+        static [[nodiscard]] SIMDType ToSimd( const ArrayType& matrix )
         {
             return Traits::Load( matrix[ 0 ].data( ) );
         }
-        static SIMDType ToSimd( const value_type matrix[ Size ][ Size ] )
+        static [[nodiscard]] SIMDType ToSimd( const value_type matrix[ Size ][ Size ] )
         {
             return Traits::Load( &matrix[ 0 ][ 0 ] );
         }
 
-        static ArrayType ToMatrix( const SquareMatrixSimd& simd )
+        static [[nodiscard]] ArrayType ToMatrix( const SquareMatrixSimd& simd )
         {
             ArrayType result;
             Traits::Store( result[ 0 ].data( ), simd.simd );
@@ -11465,26 +12610,26 @@ namespace Harlinn::Math
         {
         }
 
-        bool operator == ( const SquareMatrixSimd& other ) const
+        [[nodiscard]] bool operator == ( const SquareMatrixSimd& other ) const
         {
             return Traits::AllEqual( simd, other.simd );
         }
-        bool operator != ( const SquareMatrixSimd& other ) const
+        [[nodiscard]] bool operator != ( const SquareMatrixSimd& other ) const
         {
             return Traits::AllEqual( simd, other.simd ) == false;
         }
 
-        static SquareMatrixSimd Zero( )
+        static [[nodiscard]] SquareMatrixSimd Zero( )
         {
             return SquareMatrixSimd( ZeroValues );
         }
 
-        static SquareMatrixSimd Identity( )
+        static [[nodiscard]] SquareMatrixSimd Identity( )
         {
             return SquareMatrixSimd( IdentityValues );
         }
 
-        bool IsIdentity( ) const
+        [[nodiscard]] bool IsIdentity( ) const
         {
             return Traits::AllEqual( simd, IdentityValues );
         }
@@ -11513,7 +12658,7 @@ namespace Harlinn::Math
         static constexpr std::array<SIMDType, 3> ZeroValues{ Traits::Constants::Zero, Traits::Constants::Zero, Traits::Constants::Zero };
         static constexpr std::array<SIMDType, 3> IdentityValues{ Traits::Constants::IdentityR1, Traits::Constants::IdentityR2, Traits::Constants::IdentityR3 };
 
-        static std::array<SIMDType, 3> ToSimd( const ArrayType& matrix )
+        static [[nodiscard]] std::array<SIMDType, 3> ToSimd( const ArrayType& matrix )
         {
             std::array<SIMDType, 3> result;
             result[ 0 ] = Traits::Load( matrix[ 0 ] );
@@ -11521,7 +12666,7 @@ namespace Harlinn::Math
             result[ 2 ] = Traits::Load( matrix[ 2 ] );
             return result;
         }
-        static std::array<SIMDType, 3> ToSimd( const value_type matrix[ Size ][ Size ] )
+        static [[nodiscard]] std::array<SIMDType, 3> ToSimd( const value_type matrix[ Size ][ Size ] )
         {
             std::array<SIMDType, 3> result;
             result[ 0 ] = Traits::Load( matrix[ 0 ] );
@@ -11530,7 +12675,7 @@ namespace Harlinn::Math
             return result;
         }
 
-        static ArrayType ToMatrix( const SquareMatrixSimd& simd )
+        static [[nodiscard]] ArrayType ToMatrix( const SquareMatrixSimd& simd )
         {
             ArrayType result;
             Traits::Store( result[ 0 ].data( ), simd.simd[ 0 ] );
@@ -11586,39 +12731,39 @@ namespace Harlinn::Math
 
 
 
-        bool operator == ( const SquareMatrixSimd& other ) const
+        [[nodiscard]] bool operator == ( const SquareMatrixSimd& other ) const
         {
             return Traits::AllEqual( simd[ 0 ], other.simd[ 0 ] ) &&
                 Traits::AllEqual( simd[ 1 ], other.simd[ 1 ] ) &&
                 Traits::AllEqual( simd[ 2 ], other.simd[ 2 ] );
         }
-        bool operator != ( const SquareMatrixSimd& other ) const
+        [[nodiscard]] bool operator != ( const SquareMatrixSimd& other ) const
         {
             return Traits::AllEqual( simd[ 0 ], other.simd[ 0 ] ) == false ||
                 Traits::AllEqual( simd[ 1 ], other.simd[ 1 ] ) == false ||
                 Traits::AllEqual( simd[ 2 ], other.simd[ 2 ] ) == false;
         }
 
-        bool IsIdentity( ) const
+        [[nodiscard]] bool IsIdentity( ) const
         {
             return Traits::AllEqual( simd[ 0 ], Constants::IdentityR1 ) &&
                 Traits::AllEqual( simd[ 1 ], Constants::IdentityR2 ) &&
                 Traits::AllEqual( simd[ 2 ], Constants::IdentityR3 );
         }
 
-        static SquareMatrixSimd Zero( )
+        static [[nodiscard]] SquareMatrixSimd Zero( )
         {
             return SquareMatrixSimd( ZeroValues );
         }
 
-        static SquareMatrixSimd Identity( )
+        static [[nodiscard]] SquareMatrixSimd Identity( )
         {
             return SquareMatrixSimd( IdentityValues );
         }
 
         template<SimdType S>
             requires ( S::Size > 2 )
-        SquareMatrixSimd operator * ( const S& v ) const noexcept
+        [[nodiscard]] SquareMatrixSimd operator * ( const S& v ) const noexcept
         {
             std::array<SIMDType, 3> result;
             result[ 0 ] = Traits::Mul( simd[ 0 ], v.simd );
@@ -11653,7 +12798,7 @@ namespace Harlinn::Math
         static constexpr std::array<SIMDType, 4> ZeroValues{ Traits::Constants::Zero, Traits::Constants::Zero, Traits::Constants::Zero, Traits::Constants::Zero };
         static constexpr std::array<SIMDType, 4> IdentityValues{ Traits::Constants::IdentityR1, Traits::Constants::IdentityR2, Traits::Constants::IdentityR3, Traits::Constants::IdentityR4 };
 
-        static std::array<SIMDType, 4> ToSimd( const ArrayType matrix )
+        static [[nodiscard]] std::array<SIMDType, 4> ToSimd( const ArrayType matrix )
         {
             std::array<SIMDType, 4> result;
             result[ 0 ] = Traits::Load( matrix[ 0 ] );
@@ -11663,7 +12808,7 @@ namespace Harlinn::Math
             return result;
         }
 
-        static std::array<SIMDType, 4> ToSimd( const value_type matrix[ Size ][ Size ] )
+        static [[nodiscard]] std::array<SIMDType, 4> ToSimd( const value_type matrix[ Size ][ Size ] )
         {
             std::array<SIMDType, 4> result;
             result[ 0 ] = Traits::Load( matrix[ 0 ] );
@@ -11673,7 +12818,7 @@ namespace Harlinn::Math
             return result;
         }
 
-        static ArrayType ToMatrix( const SquareMatrixSimd& simd )
+        static [[nodiscard]] ArrayType ToMatrix( const SquareMatrixSimd& simd )
         {
             ArrayType result;
             Traits::Store( result[ 0 ].data( ), simd.simd[ 0 ] );
@@ -11733,14 +12878,14 @@ namespace Harlinn::Math
         {
         }
 
-        bool operator == ( const SquareMatrixSimd& other ) const
+        [[nodiscard]] bool operator == ( const SquareMatrixSimd& other ) const
         {
             return Traits::AllEqual( simd[ 0 ], other.simd[ 0 ] ) &&
                 Traits::AllEqual( simd[ 1 ], other.simd[ 1 ] ) &&
                 Traits::AllEqual( simd[ 2 ], other.simd[ 2 ] ) &&
                 Traits::AllEqual( simd[ 3 ], other.simd[ 3 ] );
         }
-        bool operator != ( const SquareMatrixSimd& other ) const
+        [[nodiscard]] bool operator != ( const SquareMatrixSimd& other ) const
         {
             return Traits::AllEqual( simd[ 0 ], other.simd[ 0 ] ) == false ||
                 Traits::AllEqual( simd[ 1 ], other.simd[ 1 ] ) == false ||
@@ -11748,7 +12893,7 @@ namespace Harlinn::Math
                 Traits::AllEqual( simd[ 3 ], other.simd[ 3 ] ) == false;
         }
 
-        bool IsIdentity( ) const
+        [[nodiscard]] bool IsIdentity( ) const
         {
             return Traits::AllEqual( simd[ 0 ], Constants::IdentityR1 ) &&
                 Traits::AllEqual( simd[ 1 ], Constants::IdentityR2 ) &&
@@ -11756,12 +12901,12 @@ namespace Harlinn::Math
                 Traits::AllEqual( simd[ 3 ], Constants::IdentityR4 );
         }
 
-        static SquareMatrixSimd Zero( )
+        static [[nodiscard]] SquareMatrixSimd Zero( )
         {
             return SquareMatrixSimd( ZeroValues );
         }
 
-        static SquareMatrixSimd Identity( )
+        static [[nodiscard]] SquareMatrixSimd Identity( )
         {
             //return SquareMatrixSimd( IdentityValues );
             return SquareMatrixSimd(
@@ -11800,7 +12945,7 @@ namespace Harlinn::Math
         using ArrayType = typename MatrixData::value_type;
 
     private:
-        static constexpr MatrixData MakeDefaultValue( ) noexcept
+        static constexpr [[nodiscard]] MatrixData MakeDefaultValue( ) noexcept
         {
             MatrixData m{};
             for ( int i = 0; i < N; ++i )
@@ -11815,14 +12960,14 @@ namespace Harlinn::Math
 
         template<SimpleSpanLike T>
             requires std::is_same_v<typename T::value_type, value_type>
-        static MatrixData MakeData( const T& mat ) noexcept
+        static [[nodiscard]] MatrixData MakeData( const T& mat ) noexcept
         {
             MatrixData result{};
             memcpy( result[ 0 ].data( ), mat.data( ), std::min( Size * Size, mat.size( ) ) * sizeof( value_type ) );
             return result;
         }
 
-        static MatrixData MakeData( const value_type mat[ Size ][ Size ] ) noexcept
+        static [[nodiscard]] MatrixData MakeData( const value_type mat[ Size ][ Size ] ) noexcept
         {
             MatrixData result{};
             memcpy( result[ 0 ].data( ), &mat[ 0 ][ 0 ], Size * Size * sizeof( value_type ) );
@@ -11835,7 +12980,7 @@ namespace Harlinn::Math
 
     public:
         // SquareMatrix Public Methods
-        constexpr static SquareMatrix Zero( ) noexcept
+        constexpr static [[nodiscard]] SquareMatrix Zero( ) noexcept
         {
             SquareMatrix zeroMatrix( ZeroValue );
             return zeroMatrix;
@@ -11891,7 +13036,7 @@ namespace Harlinn::Math
             Internal::InitMatrix( std::make_index_sequence<N * N>( ), data_, v, args... );
         }
         template <typename... Args>
-        static SquareMatrix Diag( value_type v, Args... args )
+        static [[nodiscard]] SquareMatrix Diag( value_type v, Args... args )
         {
             SquareMatrix m;
             Internal::InitDiagonalMatrix( std::make_index_sequence<N>( ), m.data_, v, args... );
@@ -11907,38 +13052,38 @@ namespace Harlinn::Math
             return data_[ index ];
         }
 
-        Simd ToSimd( ) const noexcept
+        [[nodiscard]] Simd ToSimd( ) const noexcept
         {
             return Simd( *this );
         }
 
-        operator Simd( ) const noexcept
+        [[nodiscard]] operator Simd( ) const noexcept
         {
             return ToSimd( );
         }
 
 
-        bool operator==( const SquareMatrix& other ) const
+        [[nodiscard]] bool operator==( const SquareMatrix& other ) const
         {
             return data_ == other.data_;
         }
 
-        bool operator!=( const SquareMatrix& other ) const
+        [[nodiscard]] bool operator!=( const SquareMatrix& other ) const
         {
             return data_ != other.data_;
         }
 
-        bool operator<( const SquareMatrix& other ) const
+        [[nodiscard]] bool operator<( const SquareMatrix& other ) const
         {
             return data_ < other.data_;
         }
 
-        bool IsIdentity( ) const
+        [[nodiscard]] bool IsIdentity( ) const
         {
             return data_ == DefaultValue;
         }
 
-        std::string ToString( ) const
+        [[nodiscard]] std::string ToString( ) const
         {
             std::string s = "[ [";
             for ( int i = 0; i < N; ++i )
@@ -11975,7 +13120,7 @@ namespace Harlinn::Math
     {
         template<SquareMatrixSimdType T1, SquareMatrixSimdType T2>
             requires IsCompatibleMatrix<T1, T2>
-        inline T1 AddImpl( const T1& m1, const T2& m2 ) noexcept
+        inline [[nodiscard]] T1 AddImpl( const T1& m1, const T2& m2 ) noexcept
         {
             using Traits = typename T1::Traits;
             using Simd = T1;
@@ -12014,14 +13159,14 @@ namespace Harlinn::Math
 
     template<SquareMatrixSimdType T1, SquareMatrixSimdType T2>
         requires IsCompatibleMatrix<T1, T2>
-    inline auto operator+( const T1& m1, const T2& m2 ) noexcept
+    inline [[nodiscard]] auto operator+( const T1& m1, const T2& m2 ) noexcept
     {
         return Internal::AddImpl( m1, m2 );
     }
 
     template<SquareMatrixOrSquareMatrixSimdType T1, SquareMatrixOrSquareMatrixSimdType T2>
         requires IsCompatibleMatrix<T1, T2>&& Internal::HasSquareMatrixType<T1, T2>
-    inline auto operator+( const T1& m1, const T2& m2 ) noexcept
+    inline [[nodiscard]] auto operator+( const T1& m1, const T2& m2 ) noexcept
     {
         return Internal::AddImpl( Internal::ToSimdType( m1 ), Internal::ToSimdType( m2 ) );
     }
@@ -12034,7 +13179,7 @@ namespace Harlinn::Math
     {
         template<SquareMatrixSimdType T1, SquareMatrixSimdType T2>
             requires IsCompatibleMatrix<T1, T2>
-        inline T1 SubImpl( const T1& m1, const T2& m2 ) noexcept
+        inline [[nodiscard]] T1 SubImpl( const T1& m1, const T2& m2 ) noexcept
         {
             using Traits = typename T1::Traits;
             using Simd = T1;
@@ -12072,14 +13217,14 @@ namespace Harlinn::Math
 
     template<SquareMatrixSimdType T1, SquareMatrixSimdType T2>
         requires IsCompatibleMatrix<T1, T2>
-    inline auto operator-( const T1& m1, const T2& m2 ) noexcept
+    inline [[nodiscard]] auto operator-( const T1& m1, const T2& m2 ) noexcept
     {
         return Internal::SubImpl( m1, m2 );
     }
 
     template<SquareMatrixOrSquareMatrixSimdType T1, SquareMatrixOrSquareMatrixSimdType T2>
         requires IsCompatibleMatrix<T1, T2>&& Internal::HasSquareMatrixType<T1, T2>
-    inline auto operator-( const T1& m1, const T2& m2 ) noexcept
+    inline [[nodiscard]] auto operator-( const T1& m1, const T2& m2 ) noexcept
     {
         return Internal::SubImpl( Internal::ToSimdType( m1 ), Internal::ToSimdType( m2 ) );
     }
@@ -12089,7 +13234,7 @@ namespace Harlinn::Math
     namespace Internal
     {
         template<SquareMatrixSimdType T1, ArithmeticType T2>
-        T1 MulImpl( const T1& m, const T2 value ) noexcept
+        [[nodiscard]] T1 MulImpl( const T1& m, const T2 value ) noexcept
         {
             using Traits = typename T1::Traits;
             using Simd = T1;
@@ -12129,32 +13274,32 @@ namespace Harlinn::Math
     }
 
     template<SquareMatrixSimdType T1, ArithmeticType T2>
-    inline auto operator*( const T1& m, const T2 value ) noexcept
+    inline [[nodiscard]] auto operator*( const T1& m, const T2 value ) noexcept
     {
         return Internal::MulImpl( m, value );
     }
 
     template<ArithmeticType T1, SquareMatrixSimdType T2 >
-    inline auto operator*( const T1 value, const T2& m ) noexcept
+    inline [[nodiscard]] auto operator*( const T1 value, const T2& m ) noexcept
     {
         return Internal::MulImpl( m, value );
     }
 
     template<SquareMatrixType T1, ArithmeticType T2>
-    inline auto operator*( const T1& m, const T2 value ) noexcept
+    inline [[nodiscard]] auto operator*( const T1& m, const T2 value ) noexcept
     {
         return Internal::MulImpl( m.ToSimd( ), value );
     }
 
     template<ArithmeticType T1, SquareMatrixType T2 >
-    inline auto operator*( const T1 value, const T2& m ) noexcept
+    inline [[nodiscard]] auto operator*( const T1 value, const T2& m ) noexcept
     {
         return Internal::MulImpl( m.ToSimd( ), value );
     }
 
 
 
-    inline typename SquareMatrix<float, 4>::Simd Multiply( const typename SquareMatrix<float, 4>::Simd& matrix1, const typename SquareMatrix<float, 4>::Simd& matrix2 )
+    inline [[nodiscard]] typename SquareMatrix<float, 4>::Simd Multiply( const typename SquareMatrix<float, 4>::Simd& matrix1, const typename SquareMatrix<float, 4>::Simd& matrix2 )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
         using Simd = typename SquareMatrix<float, 4>::Simd;
@@ -12205,7 +13350,7 @@ namespace Harlinn::Math
     }
 
 
-    inline typename SquareMatrix<float, 3>::Simd Multiply( const typename SquareMatrix<float, 3>::Simd& matrix1, const typename SquareMatrix<float, 3>::Simd& matrix2 )
+    inline [[nodiscard]] typename SquareMatrix<float, 3>::Simd Multiply( const typename SquareMatrix<float, 3>::Simd& matrix1, const typename SquareMatrix<float, 3>::Simd& matrix2 )
     {
         using Traits = typename SquareMatrix<float, 3>::Traits;
         using Simd = typename SquareMatrix<float, 3>::Simd;
@@ -12248,7 +13393,7 @@ namespace Harlinn::Math
 
     }
 
-    inline typename SquareMatrix<float, 2>::Simd Multiply( const typename SquareMatrix<float, 2>::Simd& matrix1, const typename SquareMatrix<float, 2>::Simd& matrix2 )
+    inline [[nodiscard]] typename SquareMatrix<float, 2>::Simd Multiply( const typename SquareMatrix<float, 2>::Simd& matrix1, const typename SquareMatrix<float, 2>::Simd& matrix2 )
     {
         using Traits = typename SquareMatrix<float, 2>::Traits;
         using Simd = typename SquareMatrix<float, 2>::Simd;
@@ -12275,14 +13420,14 @@ namespace Harlinn::Math
 
     template<SquareMatrixSimdType T1, SquareMatrixSimdType T2>
         requires IsCompatibleMatrix<T1, T2>
-    inline T2 operator*( const T1& m1, const T2& m2 ) noexcept
+    inline [[nodiscard]] T2 operator*( const T1& m1, const T2& m2 ) noexcept
     {
         return Math::Multiply( m1, m2 );
     }
 
     template<SquareMatrixOrSquareMatrixSimdType T1, SquareMatrixOrSquareMatrixSimdType T2>
         requires IsCompatibleMatrix<T1, T2>&& Internal::HasSquareMatrixType<T1, T2>
-    inline T2 operator*( const T1& m1, const T2& m2 ) noexcept
+    inline [[nodiscard]] T2 operator*( const T1& m1, const T2& m2 ) noexcept
     {
         return Math::Multiply( Internal::ToSimdType( m1 ), Internal::ToSimdType( m2 ) );
     }
@@ -12293,7 +13438,7 @@ namespace Harlinn::Math
     /// </summary>
     template<SimdType T1, SimdType T2>
         requires IsCompatible<T1, T2>&& FloatingPointType<typename T1::value_type>
-    typename SquareMatrix<typename T1::value_type, T1::Size>::Simd OuterProduct( const T1& a, const T2& b )
+    inline [[nodiscard]] typename SquareMatrix<typename T1::value_type, T1::Size>::Simd OuterProduct( const T1& a, const T2& b )
     {
         using S = typename SquareMatrix<typename T1::value_type, T1::Size>::Simd;
         using Traits = typename S::Traits;
@@ -12315,7 +13460,7 @@ namespace Harlinn::Math
 
     template<SimdOrTupleType T1, SimdOrTupleType T2>
         requires IsCompatible<T1, T2>&& Internal::HasTupleType<T1,T2> && FloatingPointType<typename T1::value_type>
-    typename SquareMatrix<typename T1::value_type, T1::Size>::Simd OuterProduct( const T1& a, const T2& b )
+    inline [[nodiscard]] typename SquareMatrix<typename T1::value_type, T1::Size>::Simd OuterProduct( const T1& a, const T2& b )
     {
         return OuterProduct( Internal::ToSimdType( a ), Internal::ToSimdType( b ) );
     }
@@ -12326,7 +13471,7 @@ namespace Harlinn::Math
     namespace Internal
     {
         template<SquareMatrixSimdType T1, ArithmeticType T2>
-        T1 DivImpl( const T1& m, const T2 value ) noexcept
+        inline [[nodiscard]] T1 DivImpl( const T1& m, const T2 value ) noexcept
         {
             using Traits = typename T1::Traits;
             using Simd = T1;
@@ -12367,13 +13512,13 @@ namespace Harlinn::Math
 
 
     template<SquareMatrixSimdType T1, ArithmeticType T2>
-    inline auto operator/( const T1& m, const T2 value ) noexcept
+    inline [[nodiscard]] auto operator/( const T1& m, const T2 value ) noexcept
     {
         return Internal::DivImpl( m, value );
     }
 
     template<SquareMatrixType T1, ArithmeticType T2>
-    inline auto operator/( const T1& m, const T2 value ) noexcept
+    inline [[nodiscard]] auto operator/( const T1& m, const T2 value ) noexcept
     {
         return Internal::DivImpl( m.ToSimd( ), value );
     }
@@ -12390,7 +13535,7 @@ namespace Harlinn::Math
     /// Returns a Vector&lt;float,4&gt;::Simd with all the
     /// elements set to the determinant of the matrix. 
     /// </returns>
-    inline typename Vector<float, 4>::Simd Determinant( const typename SquareMatrix<float, 4>::Simd& matrix )
+    inline [[nodiscard]] typename Vector<float, 4>::Simd Determinant( const typename SquareMatrix<float, 4>::Simd& matrix )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
         using ResultType = typename Vector<float, 4>::Simd;
@@ -12444,7 +13589,7 @@ namespace Harlinn::Math
     /// Returns a Vector&lt;float,4&gt;::Simd with all the
     /// elements set to the determinant of the matrix.
     /// </returns>
-    inline typename Vector<float, 4>::Simd Determinant( const SquareMatrix<float, 4ULL>& matrix )
+    inline [[nodiscard]] typename Vector<float, 4>::Simd Determinant( const SquareMatrix<float, 4ULL>& matrix )
     {
         return Math::Determinant( matrix.ToSimd( ) );
     }
@@ -12458,7 +13603,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The determinant of the matrix.
     /// </returns>
-    inline float ScalarDeterminant( const SquareMatrix<float, 4>::Simd& matrix )
+    inline [[nodiscard]] float ScalarDeterminant( const SquareMatrix<float, 4>::Simd& matrix )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
         return Traits::First( Math::Determinant( matrix ).simd );
@@ -12473,14 +13618,14 @@ namespace Harlinn::Math
     /// <returns>
     /// The determinant of the matrix.
     /// </returns>
-    inline float ScalarDeterminant( const SquareMatrix<float, 4>& matrix )
+    inline [[nodiscard]] float ScalarDeterminant( const SquareMatrix<float, 4>& matrix )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
         return Traits::First( Math::Determinant( matrix.ToSimd( ) ).simd );
     }
 
 
-    inline typename Vector<float, 3>::Simd Determinant( const typename SquareMatrix<float, 3>::Simd& matrix )
+    inline [[nodiscard]] typename Vector<float, 3>::Simd Determinant( const typename SquareMatrix<float, 3>::Simd& matrix )
     {
         using Traits = typename SquareMatrix<float, 3>::Traits;
         using Simd = typename Vector<float, 3>::Simd;
@@ -12501,18 +13646,18 @@ namespace Harlinn::Math
         return Simd( Traits::Dot( v0, det ) );
     }
 
-    inline typename Vector<float, 3>::Simd Determinant( const typename SquareMatrix<float, 3>& matrix )
+    inline [[nodiscard]] typename Vector<float, 3>::Simd Determinant( const typename SquareMatrix<float, 3>& matrix )
     {
         typename SquareMatrix<float, 3>::Simd simd = matrix.ToSimd( );
         return Math::Determinant( simd );
     }
-    inline float ScalarDeterminant( const SquareMatrix<float, 3>::Simd& matrix )
+    inline [[nodiscard]] float ScalarDeterminant( const SquareMatrix<float, 3>::Simd& matrix )
     {
         using Traits = typename SquareMatrix<float, 3>::Traits;
         return Traits::First( Math::Determinant( matrix ).simd );
     }
 
-    inline float ScalarDeterminant( const SquareMatrix<float, 3>& matrix )
+    inline [[nodiscard]] float ScalarDeterminant( const SquareMatrix<float, 3>& matrix )
     {
         using Traits = typename SquareMatrix<float, 3>::Traits;
         return Traits::First( Math::Determinant( matrix.ToSimd( ) ).simd );
@@ -12522,7 +13667,7 @@ namespace Harlinn::Math
 
 
 
-    inline SquareMatrix<float, 3>::Simd Transpose( const SquareMatrix<float, 3>::Simd& matrix )
+    inline [[nodiscard]] SquareMatrix<float, 3>::Simd Transpose( const SquareMatrix<float, 3>::Simd& matrix )
     {
         using Traits = typename SquareMatrix<float, 3>::Traits;
         using MatrixSimd = SquareMatrix<float, 3>::Simd;
@@ -12539,7 +13684,7 @@ namespace Harlinn::Math
         return result;
     }
 
-    inline SquareMatrix<float, 3>::Simd Transpose( const SquareMatrix<float, 3>& matrix )
+    inline [[nodiscard]] SquareMatrix<float, 3>::Simd Transpose( const SquareMatrix<float, 3>& matrix )
     {
         return Transpose( matrix.ToSimd( ) );
     }
@@ -12553,7 +13698,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transposed matrix.
     /// </returns>
-    inline SquareMatrix<float, 4>::Simd Transpose( const SquareMatrix<float, 4>::Simd& matrix )
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd Transpose( const SquareMatrix<float, 4>::Simd& matrix )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
         using MatrixSimd = SquareMatrix<float, 4>::Simd;
@@ -12582,7 +13727,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transposed matrix.
     /// </returns>
-    inline SquareMatrix<float, 4>::Simd Transpose( const SquareMatrix<float, 4>& matrix )
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd Transpose( const SquareMatrix<float, 4>& matrix )
     {
         return Transpose( matrix.ToSimd( ) );
     }
@@ -12603,7 +13748,7 @@ namespace Harlinn::Math
     /// Inverse returns an infinite matrix.
     /// </returns>
     
-    inline SquareMatrix<float, 4>::Simd Inverse( const SquareMatrix<float, 4>::Simd& matrix, typename Vector<float, 4>::Simd* determinant = nullptr )
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd Inverse( const SquareMatrix<float, 4>::Simd& matrix, typename Vector<float, 4>::Simd* determinant = nullptr )
     {
         using Traits = typename SquareMatrix<float, 4>::Traits;
         using MatrixSimd = SquareMatrix<float, 4>::Simd;
@@ -13008,12 +14153,12 @@ namespace Harlinn::Math
     /// provided matrix is singular with a determinant equal to 0, 
     /// Inverse returns an infinite matrix.
     /// </returns>
-    inline typename SquareMatrix<float, 4>::Simd Inverse( const SquareMatrix<float, 4>& matrix, typename Vector<float, 4>::Simd* determinant = nullptr )
+    inline [[nodiscard]] typename SquareMatrix<float, 4>::Simd Inverse( const SquareMatrix<float, 4>& matrix, typename Vector<float, 4>::Simd* determinant = nullptr )
     {
         return Inverse( matrix.ToSimd( ), determinant );
     }
 
-    inline typename SquareMatrix<float, 3>::Simd Inverse( const typename SquareMatrix<float, 3>::Simd& matrix, typename Vector<float, 3>::Simd* determinant = nullptr )
+    inline [[nodiscard]] typename SquareMatrix<float, 3>::Simd Inverse( const typename SquareMatrix<float, 3>::Simd& matrix, typename Vector<float, 3>::Simd* determinant = nullptr )
     {
         using Traits = typename SquareMatrix<float, 3>::Traits;
         using Simd = typename SquareMatrix<float, 3>::Simd;
@@ -13092,26 +14237,26 @@ namespace Harlinn::Math
         return result;
     }
 
-    inline typename SquareMatrix<float, 3>::Simd Inverse( const SquareMatrix<float, 3>& matrix, typename Vector<float, 3>::Simd* determinant = nullptr )
+    inline [[nodiscard]] typename SquareMatrix<float, 3>::Simd Inverse( const SquareMatrix<float, 3>& matrix, typename Vector<float, 3>::Simd* determinant = nullptr )
     {
         return Inverse( matrix.ToSimd( ), determinant );
     }
 
 
-    inline typename SquareMatrix<float, 2>::Simd Transpose( const typename SquareMatrix<float, 2>::Simd& matrix )
+    inline [[nodiscard]] typename SquareMatrix<float, 2>::Simd Transpose( const typename SquareMatrix<float, 2>::Simd& matrix )
     {
         using Traits = SquareMatrix<float, 2>::Traits;
         using Simd = typename SquareMatrix<float, 2>::Simd;
         return Simd( Traits::Swizzle< SIMD::Shuffle_v<3, 1, 2, 0>>( matrix.simd ) );
     }
 
-    inline SquareMatrix<float, 2>::Simd Transpose( const SquareMatrix<float, 2>& matrix )
+    inline [[nodiscard]] SquareMatrix<float, 2>::Simd Transpose( const SquareMatrix<float, 2>& matrix )
     {
         return Transpose( matrix.ToSimd( ) );
     }
 
 
-    inline typename Vector<float, 2>::Simd Determinant( const typename SquareMatrix<float, 2>::Simd& matrix )
+    inline [[nodiscard]] typename Vector<float, 2>::Simd Determinant( const typename SquareMatrix<float, 2>::Simd& matrix )
     {
         using Traits = SquareMatrix<float, 2>::Traits;
         using Simd = typename Vector<float, 2>::Simd;
@@ -13124,13 +14269,13 @@ namespace Harlinn::Math
         return Simd( Traits::Add( rmm1, rmm2 ) );
     }
 
-    inline typename Vector<float, 2>::Simd Determinant( const SquareMatrix<float, 2>& matrix )
+    inline [[nodiscard]] typename Vector<float, 2>::Simd Determinant( const SquareMatrix<float, 2>& matrix )
     {
         return Determinant( matrix.ToSimd( ) );
     }
 
 
-    inline typename SquareMatrix<float, 2>::Simd Inverse( const typename SquareMatrix<float, 2>::Simd& matrix, typename SquareMatrix<float, 2>::Simd* determinant = nullptr )
+    inline [[nodiscard]] typename SquareMatrix<float, 2>::Simd Inverse( const typename SquareMatrix<float, 2>::Simd& matrix, typename SquareMatrix<float, 2>::Simd* determinant = nullptr )
     {
         using Traits = SquareMatrix<float, 2>::Traits;
         using Simd = typename SquareMatrix<float, 2>::Simd;
@@ -13150,7 +14295,7 @@ namespace Harlinn::Math
         return Simd( Traits::Mul( rmm1, rmm2 ) );
     }
 
-    inline SquareMatrix<float, 2>::Simd Inverse( const SquareMatrix<float, 2>& matrix )
+    inline [[nodiscard]] SquareMatrix<float, 2>::Simd Inverse( const SquareMatrix<float, 2>& matrix )
     {
         return Inverse( matrix.ToSimd( ) );
     }
@@ -13178,7 +14323,7 @@ namespace Harlinn::Math
     /// is multiplied by accumulating scaled rows of the matrix.
     /// </para>
     /// </remarks>
-    inline SquareMatrix<float, 4>::Simd Translation( float offsetX, float offsetY, float offsetZ )
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd Translation( float offsetX, float offsetY, float offsetZ )
     {
         using Simd = SquareMatrix<float, 4>::Simd;
         using Traits = Simd::Traits;
@@ -13206,7 +14351,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdType S>
         requires ( S::Size > 2 ) && std::is_same_v<typename S::value_type, float>
-    inline SquareMatrix<float, 4>::Simd Translation( const S& offsets )
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd Translation( const S& offsets )
     {
         using Simd = SquareMatrix<float, 4>::Simd;
         using Traits = Simd::Traits;
@@ -13236,13 +14381,13 @@ namespace Harlinn::Math
     /// </returns>
     template<TupleType S>
         requires ( S::Size > 2 ) && std::is_same_v<typename S::value_type, float>
-    inline SquareMatrix<float, 4>::Simd Translation( const S& offsets )
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd Translation( const S& offsets )
     {
         return Translation( offsets.x, offsets.y, offsets.z );
     }
 
 
-    inline SquareMatrix<float, 3>::Simd Translation( float offsetX, float offsetY )
+    inline [[nodiscard]] SquareMatrix<float, 3>::Simd Translation( float offsetX, float offsetY )
     {
         using Simd = SquareMatrix<float, 3>::Simd;
         using Traits = Simd::Traits;
@@ -13274,7 +14419,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The scaling matrix.
     /// </returns>
-    inline SquareMatrix<float, 4>::Simd Scaling( float scaleX, float scaleY, float scaleZ )
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd Scaling( float scaleX, float scaleY, float scaleZ )
     {
         using Simd = SquareMatrix<float, 4>::Simd;
         using Traits = Simd::Traits;
@@ -13301,7 +14446,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The scaling matrix.
     /// </returns>
-    inline SquareMatrix<float, 4>::Simd Scaling( float scale )
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd Scaling( float scale )
     {
         return Scaling( scale, scale, scale );
     }
@@ -13318,7 +14463,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdType S>
         requires ( S::Size > 2 )
-    inline SquareMatrix<float, 4>::Simd Scaling( const S& v ) noexcept
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd Scaling( const S& v ) noexcept
     {
         using SourceTraits = typename S::Traits;
         using MatrixSimd = SquareMatrix<float, 4>::Simd;
@@ -13352,7 +14497,7 @@ namespace Harlinn::Math
     /// </returns>
     template<TupleType S>
         requires ( S::Size > 2 )
-    inline SquareMatrix<float, 4>::Simd Scaling( const S& v ) noexcept
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd Scaling( const S& v ) noexcept
     {
         using SourceTraits = typename S::Traits;
         using MatrixSimd = SquareMatrix<float, 4>::Simd;
@@ -13370,7 +14515,7 @@ namespace Harlinn::Math
 
     }
 
-    inline SquareMatrix<float, 3>::Simd Scaling( float scaleX, float scaleY )
+    inline [[nodiscard]] SquareMatrix<float, 3>::Simd Scaling( float scaleX, float scaleY )
     {
         using Simd = SquareMatrix<float, 3>::Simd;
         using Traits = Simd::Traits;
@@ -13417,7 +14562,7 @@ namespace Harlinn::Math
     /// </example> 
     template<SimdType S>
         requires ( S::Size > 2 )
-    inline SquareMatrix<float, 4>::Simd Rotation( const S& v ) noexcept
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd Rotation( const S& v ) noexcept
     {
         using Simd = SquareMatrix<float, 4>::Simd;
         using Traits = Simd::Traits;
@@ -13475,7 +14620,7 @@ namespace Harlinn::Math
     /// </returns>
     template<TupleType S>
         requires ( S::Size > 2 )
-    inline SquareMatrix<float, 4>::Simd Rotation( const S& v ) noexcept
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd Rotation( const S& v ) noexcept
     {
         return Rotation( v.ToSimd( ) );
     }
@@ -13496,7 +14641,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation matrix.
     /// </returns>
-    inline SquareMatrix<float, 4>::Simd Rotation( float xAxisRotation, float yAxisRotation, float zAxisRotation ) noexcept
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd Rotation( float xAxisRotation, float yAxisRotation, float zAxisRotation ) noexcept
     {
         using Simd = Vector<float, 3>::Simd;
         using Traits = Simd::Traits;
@@ -13526,7 +14671,7 @@ namespace Harlinn::Math
     /// auto rotMatrix = Math::RotationX(angle);
     /// </code>
     /// </example>
-    inline SquareMatrix<float, 4>::Simd RotationX( float angle ) noexcept
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd RotationX( float angle ) noexcept
     {
         using Traits = SquareMatrix<float, 4>::Traits;
         using Constants = Traits::Constants;
@@ -13571,7 +14716,7 @@ namespace Harlinn::Math
     /// auto rotMatrix = Math::RotationY(angle);
     /// </code>
     /// </example>
-    inline SquareMatrix<float, 4>::Simd RotationY( float angle ) noexcept
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd RotationY( float angle ) noexcept
     {
         using Traits = SquareMatrix<float, 4>::Traits;
         using Constants = Traits::Constants;
@@ -13619,7 +14764,7 @@ namespace Harlinn::Math
     /// auto rotMatrix = Math::RotationZ(angle);
     /// </code>
     /// </example>
-    inline SquareMatrix<float, 4>::Simd RotationZ( float angle ) noexcept
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd RotationZ( float angle ) noexcept
     {
         using Traits = SquareMatrix<float, 4>::Traits;
         using Constants = Traits::Constants;
@@ -13668,7 +14813,7 @@ namespace Harlinn::Math
     /// <exception cref="static_assert">Fails at compile-time if S::Size is not greater than 2.</exception>
     template<SimdType S>
         requires ( S::Size > 2 )
-    inline SquareMatrix<float, 4>::Simd RotationNormal( const S& normalizedAxis, float angle ) noexcept
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd RotationNormal( const S& normalizedAxis, float angle ) noexcept
     {
         using Traits = SIMD::Traits<float, 4>;
         using Constants = typename Traits::Constants;
@@ -13747,7 +14892,7 @@ namespace Harlinn::Math
     /// </remarks>
     template<TupleType S>
         requires ( S::Size > 2 )
-    inline SquareMatrix<float, 4>::Simd RotationNormal( const S& normalizedAxis, float angle ) noexcept
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd RotationNormal( const S& normalizedAxis, float angle ) noexcept
     {
         using Simd = typename S::Simd;
         return RotationNormal( Simd( normalizedAxis ), angle );
@@ -13768,7 +14913,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S>
         requires ( S::Size > 2 )
-    inline SquareMatrix<float, 4>::Simd RotationAxis( const S& axis, float angle ) noexcept
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd RotationAxis( const S& axis, float angle ) noexcept
     {
         return RotationNormal( Normalize( axis ), angle );
     }
@@ -13783,7 +14928,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The rotation matrix.
     /// </returns>
-    inline SquareMatrix<float, 4>::Simd Rotation( const Quaternion<float>::Simd& q ) noexcept
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd Rotation( const Quaternion<float>::Simd& q ) noexcept
     {
         using Traits = SIMD::Traits<float, 4>;
         using MatrixSimd = typename SquareMatrix<float, 4>::Simd;
@@ -13841,7 +14986,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The rotation matrix.
     /// </returns>
-    inline SquareMatrix<float, 4>::Simd Rotation( const Quaternion<float>& q ) noexcept
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd Rotation( const Quaternion<float>& q ) noexcept
     {
         return Rotation( q.ToSimd( ) );
     }
@@ -13856,7 +15001,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The rotation matrix.
     /// </returns>
-    inline SquareMatrix<float, 4>::Simd RotationQuaternion( const Quaternion<float>::Simd& q ) noexcept
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd RotationQuaternion( const Quaternion<float>::Simd& q ) noexcept
     {
         return Rotation( q );
     }
@@ -13870,7 +15015,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The rotation matrix.
     /// </returns>
-    inline SquareMatrix<float, 4>::Simd RotationQuaternion( const Quaternion<float>& q ) noexcept
+    inline [[nodiscard]] SquareMatrix<float, 4>::Simd RotationQuaternion( const Quaternion<float>& q ) noexcept
     {
         return Rotation( q.ToSimd( ) );
     }
@@ -13902,7 +15047,7 @@ namespace Harlinn::Math
         /// <returns>
         /// The transformation matrix.
         /// </returns>
-        inline SquareMatrix<float, 4>::Simd TransformationMatrixImpl( const Point3f::Simd& scalingOrigin,
+        inline [[nodiscard]] SquareMatrix<float, 4>::Simd TransformationMatrixImpl( const Point3f::Simd& scalingOrigin,
             const Quaternion<float>::Simd& scalingOrientationQuaternion,
             const Vector<float, 3>::Simd& scaling,
             const Point3f::Simd& rotationOrigin,
@@ -13965,7 +15110,7 @@ namespace Harlinn::Math
     /// </returns>
     template<PointOrPointSimdType PointT, QuaternionOrQuaternionSimdType QuaternionT, VectorOrVectorSimdType VectorT>
         requires ( PointT::Size == 3 ) && ( VectorT::Size == 3 ) && std::is_same_v<typename PointT::value_type, typename QuaternionT::value_type>&& std::is_same_v<typename PointT::value_type, typename VectorT::value_type>
-    inline SquareMatrix<typename PointT::value_type, 4>::Simd TransformationMatrix( const PointT& scalingOrigin,
+    inline [[nodiscard]] SquareMatrix<typename PointT::value_type, 4>::Simd TransformationMatrix( const PointT& scalingOrigin,
         const QuaternionT& scalingOrientationQuaternion,
         const VectorT& scaling,
         const PointT& rotationOrigin,
@@ -14000,9 +15145,9 @@ namespace Harlinn::Math
         /// <returns></returns>
         template<SimdType S, SimdType T, typename U, SimdType W>
             requires ( S::Size > 2 ) && ( T::Size > 2 ) && ( W::Size > 2 ) && IsFloatingPoint<U>&&
-        std::is_same_v<typename S::value_type, U>&& std::is_same_v<typename T::value_type, U>&&
-            std::is_same_v<typename W::value_type, U>
-            inline SquareMatrix<U, 4>::Simd AffineTransformationMatrixImpl( const S& scaling,
+                std::is_same_v<typename S::value_type, U>&& std::is_same_v<typename T::value_type, U>&&
+                std::is_same_v<typename W::value_type, U>
+        inline [[nodiscard]] SquareMatrix<U, 4>::Simd AffineTransformationMatrixImpl( const S& scaling,
                 const T& rotationOrigin,
                 const QuaternionSimd<Quaternion<U>>& rotationQuaternion,
                 const W& translation ) noexcept
@@ -14041,10 +15186,10 @@ namespace Harlinn::Math
     /// <returns></returns>
     template<SimdOrTupleType S, SimdOrTupleType T, QuaternionOrQuaternionSimdType U, SimdOrTupleType W>
         requires ( S::Size > 2 ) && ( T::Size > 2 ) && ( W::Size > 2 ) &&
-    std::is_same_v<typename S::value_type, typename T::value_type>&&
-        std::is_same_v<typename S::value_type, typename U::value_type>&&
-        std::is_same_v<typename S::value_type, typename W::value_type>
-        inline SquareMatrix<typename S::value_type, 4>::Simd AffineTransformationMatrix( const S& scaling,
+            std::is_same_v<typename S::value_type, typename T::value_type>&&
+            std::is_same_v<typename S::value_type, typename U::value_type>&&
+            std::is_same_v<typename S::value_type, typename W::value_type>
+    inline [[nodiscard]] SquareMatrix<typename S::value_type, 4>::Simd AffineTransformationMatrix( const S& scaling,
             const T& rotationOrigin,
             const U& rotationQuaternion,
             const W& translation ) noexcept
@@ -14072,7 +15217,7 @@ namespace Harlinn::Math
         /// </returns>
         template<SimdType S, SimdType T, SimdType U>
             requires IsCompatible<S, T, U> && ( S::Size == 3 )
-        inline SquareMatrix<typename S::value_type, 4>::Simd LookToImpl( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
+        inline [[nodiscard]] SquareMatrix<typename S::value_type, 4>::Simd LookToImpl( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
         {
             using Traits = SIMD::Traits<typename S::value_type, 4>;
             using Constants = typename Traits::Constants;
@@ -14118,7 +15263,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U> && ( S::Size == 3 )
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
+    inline [[nodiscard]] SquareMatrix<typename S::value_type, 4>::Simd LookTo( const S& cameraPosition, const T& cameraDirection, const U& upDirection ) noexcept
     {
         return Internal::LookToImpl( Internal::ToSimdType( cameraPosition ), Internal::ToSimdType( cameraDirection ), Internal::ToSimdType( upDirection ) );
     }
@@ -14143,7 +15288,7 @@ namespace Harlinn::Math
     /// </returns>
     template<SimdOrTupleType S, SimdOrTupleType T, SimdOrTupleType U>
         requires IsCompatible<S, T, U> && ( S::Size == 3 )
-    inline SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
+    inline [[nodiscard]] SquareMatrix<typename S::value_type, 4>::Simd LookAt( const S& cameraPosition, const T& focusPosition, const U& upDirection ) noexcept
     {
         auto cameraDirection = focusPosition - cameraPosition;
         return Internal::LookToImpl( Internal::ToSimdType( cameraPosition ), cameraDirection, Internal::ToSimdType( upDirection ) );
@@ -14169,7 +15314,7 @@ namespace Harlinn::Math
     /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
-    inline SquareMatrix<T, 4>::Simd PerspectiveProjection( T viewWidth, T viewHeight, T nearZ, T farZ ) noexcept
+    inline [[nodiscard]] SquareMatrix<T, 4>::Simd PerspectiveProjection( T viewWidth, T viewHeight, T nearZ, T farZ ) noexcept
     {
         using Traits = SIMD::Traits<T, 4>;
         using Constants = typename Traits::Constants;
@@ -14207,7 +15352,7 @@ namespace Harlinn::Math
     /// </returns>
     template<typename T>
         requires IsFloatingPoint<T>
-    inline SquareMatrix<T, 4>::Simd PerspectiveFovProjection( T fovAngleY, T aspectRatio, T nearZ, T farZ ) noexcept
+    inline [[nodiscard]] SquareMatrix<T, 4>::Simd PerspectiveFovProjection( T fovAngleY, T aspectRatio, T nearZ, T farZ ) noexcept
     {
         using Traits = SIMD::Traits<T, 4>;
         using Constants = typename Traits::Constants;
@@ -14230,9 +15375,9 @@ namespace Harlinn::Math
     }
 
     template<typename QuaternionT>
-    template<size_t N>
-        requires ( N > 2 )
-    inline QuaternionSimd<QuaternionT> QuaternionSimd<QuaternionT>::FromMatrix( const std::array<SIMDType, N>& matrix ) noexcept
+        template<size_t N>
+            requires ( N > 2 )
+    inline [[nodiscard]] QuaternionSimd<QuaternionT> QuaternionSimd<QuaternionT>::FromMatrix( const std::array<SIMDType, N>& matrix ) noexcept
     {
         using Traits = SIMD::Traits<float, 4>;
         using Constants = Traits::Constants;
@@ -14324,8 +15469,9 @@ namespace Harlinn::Math
         t0 = Length( Math::Vector<value_type, 4>::Simd( t2 ) ).simd;
         return Simd( Traits::Div( t2, t0 ) );
     }
+    
     template<typename QuaternionT>
-    inline QuaternionSimd<QuaternionT> QuaternionSimd<QuaternionT>::FromMatrix( const Matrix& matrix ) noexcept
+    inline [[nodiscard]] QuaternionSimd<QuaternionT> QuaternionSimd<QuaternionT>::FromMatrix( const Matrix& matrix ) noexcept
     {
         return FromMatrix( matrix.ToSimd( ) );
     }
@@ -14335,11 +15481,15 @@ namespace Harlinn::Math
     /// Transforms a 2D vector by a matrix
     /// </summary>
     /// <param name="v">
+    /// The vector.
     /// </param>
     /// <param name="matrix">
+    /// The transformation matrix.
     /// </param>
-    /// <returns></returns>
-    inline Vector<float, 2>::Simd Transform( const Vector<float, 2>::Simd& v, const SquareMatrix<float, 3>::Simd& matrix ) noexcept
+    /// <returns>
+    /// The transformation result.
+    /// </returns>
+    inline [[nodiscard]] Vector<float, 2>::Simd Transform( const Vector<float, 2>::Simd& v, const SquareMatrix<float, 3>::Simd& matrix ) noexcept
     {
         using Traits = Vector<float, 2>::Traits;
         using Simd = Vector<float, 2>::Simd;
@@ -14358,7 +15508,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>::Simd& v, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
+    inline [[nodiscard]] Vector<float, 3>::Simd Transform( const Vector<float, 3>::Simd& v, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
     {
         using Traits = Vector<float, 3>::Traits;
         using Simd = Vector<float, 3>::Simd;
@@ -14376,7 +15526,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>& v, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
+    inline [[nodiscard]] Vector<float, 3>::Simd Transform( const Vector<float, 3>& v, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
     {
         return Transform( v.ToSimd( ), matrix );
     }
@@ -14393,7 +15543,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>::Simd& v, const SquareMatrix<float, 4>& matrix ) noexcept
+    inline [[nodiscard]] Vector<float, 3>::Simd Transform( const Vector<float, 3>::Simd& v, const SquareMatrix<float, 4>& matrix ) noexcept
     {
         return Transform( v, matrix.ToSimd( ) );
     }
@@ -14410,13 +15560,13 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Vector<float, 3>::Simd Transform( const Vector<float, 3>& v, const SquareMatrix<float, 4>& matrix ) noexcept
+    inline [[nodiscard]] Vector<float, 3>::Simd Transform( const Vector<float, 3>& v, const SquareMatrix<float, 4>& matrix ) noexcept
     {
         return Transform( v.ToSimd( ), matrix.ToSimd( ) );
     }
 
 
-    inline Vector<float, 4>::Simd Transform( const Vector<float, 4>::Simd& v, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
+    inline [[nodiscard]] Vector<float, 4>::Simd Transform( const Vector<float, 4>::Simd& v, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
     {
         using Traits = Vector<float, 4>::Traits;
         using Simd = Vector<float, 4>::Simd;
@@ -14436,7 +15586,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Point2f::Simd Transform( const Point2f::Simd& p, const SquareMatrix<float, 3>::Simd& matrix ) noexcept
+    inline [[nodiscard]] Point2f::Simd Transform( const Point2f::Simd& p, const SquareMatrix<float, 3>::Simd& matrix ) noexcept
     {
         using Traits = SquareMatrix<float, 3>::Traits;
         using Simd = Point2f::Simd;
@@ -14455,7 +15605,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Point3f::Simd Transform( const Point3f::Simd& p, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
+    inline [[nodiscard]] Point3f::Simd Transform( const Point3f::Simd& p, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
     {
         using Traits = SquareMatrix<float, 4>::Traits;
         using Simd = Point3f::Simd;
@@ -14474,7 +15624,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Point3f::Simd Transform( const Point3f& p, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
+    inline [[nodiscard]] Point3f::Simd Transform( const Point3f& p, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
     {
         return Transform( p.ToSimd( ), matrix );
     }
@@ -14491,7 +15641,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Point3f::Simd Transform( const Point3f::Simd& p, const SquareMatrix<float, 4>& matrix ) noexcept
+    inline [[nodiscard]] Point3f::Simd Transform( const Point3f::Simd& p, const SquareMatrix<float, 4>& matrix ) noexcept
     {
         return Transform( p, matrix.ToSimd( ) );
     }
@@ -14508,7 +15658,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Point3f::Simd Transform( const Point3f& p, const SquareMatrix<float, 4>& matrix ) noexcept
+    inline [[nodiscard]] Point3f::Simd Transform( const Point3f& p, const SquareMatrix<float, 4>& matrix ) noexcept
     {
         return Transform( p.ToSimd( ), matrix.ToSimd( ) );
     }
@@ -14525,7 +15675,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 3>::Simd& matrix ) noexcept
+    inline [[nodiscard]] Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 3>::Simd& matrix ) noexcept
     {
         using Traits = SquareMatrix<float, 3>::Traits;
         using Simd = Normal3f::Simd;
@@ -14544,7 +15694,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
+    inline [[nodiscard]] Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
     {
         using Traits = SquareMatrix<float, 3>::Traits;
         using Simd = Normal3f::Simd;
@@ -14563,7 +15713,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 3>::Simd& matrix ) noexcept
+    inline [[nodiscard]] Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 3>::Simd& matrix ) noexcept
     {
         return Transform( n.ToSimd( ), matrix );
     }
@@ -14580,7 +15730,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
+    inline [[nodiscard]] Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 4>::Simd& matrix ) noexcept
     {
         return Transform( n.ToSimd( ), matrix );
     }
@@ -14597,7 +15747,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 3>& matrix ) noexcept
+    inline [[nodiscard]] Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 3>& matrix ) noexcept
     {
         return Transform( n, matrix.ToSimd( ) );
     }
@@ -14614,7 +15764,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 4>& matrix ) noexcept
+    inline [[nodiscard]] Normal3f::Simd Transform( const Normal3f::Simd& n, const SquareMatrix<float, 4>& matrix ) noexcept
     {
         return Transform( n, matrix.ToSimd( ) );
     }
@@ -14631,7 +15781,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 3>& matrix ) noexcept
+    inline [[nodiscard]] Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 3>& matrix ) noexcept
     {
         return Transform( n.ToSimd( ), matrix.ToSimd( ) );
     }
@@ -14648,7 +15798,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The transformation result.
     /// </returns>
-    inline Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 4>& matrix ) noexcept
+    inline [[nodiscard]] Normal3f::Simd Transform( const Normal3f& n, const SquareMatrix<float, 4>& matrix ) noexcept
     {
         return Transform( n.ToSimd( ), matrix.ToSimd( ) );
     }
@@ -14698,8 +15848,8 @@ namespace Harlinn::Math
     /// Returns the coordinate projected into screen space.
     /// </returns>
     template<SimdType S, typename FloatT = S::value_type, typename MatrixT = typename SquareMatrix<FloatT, 4>::Simd>
-    S Project( const S& v, FloatT viewportX, FloatT viewportY, FloatT viewportWidth, FloatT viewportHeight, FloatT viewportMinZ, FloatT viewportMaxZ,
-        const MatrixT& projection, const MatrixT& viewTransform, const MatrixT& WorldTransform ) noexcept
+    inline [[nodiscard]] S Project( const S& v, FloatT viewportX, FloatT viewportY, FloatT viewportWidth, FloatT viewportHeight, FloatT viewportMinZ, FloatT viewportMaxZ,
+                                      const MatrixT& projection, const MatrixT& viewTransform, const MatrixT& WorldTransform ) noexcept
     {
         using Traits = SIMD::Traits<FloatT, 4>;
         const FloatT halfViewportWidth = viewportWidth * static_cast< FloatT >( 0.5 );
@@ -14773,7 +15923,7 @@ namespace Harlinn::Math
         }
     }
 
-    inline bool Decompose( const SquareMatrix<float, 4>::Simd& matrix, Vector3f::Simd* outScale, Quaternion<float>::Simd* outRotQuat, Vector3f::Simd* outTrans ) noexcept
+    inline [[nodiscard]] bool Decompose( const SquareMatrix<float, 4>::Simd& matrix, Vector3f::Simd* outScale, Quaternion<float>::Simd* outRotQuat, Vector3f::Simd* outTrans ) noexcept
     {
         constexpr float DecomposeEpsilon = 0.0001f;
 
