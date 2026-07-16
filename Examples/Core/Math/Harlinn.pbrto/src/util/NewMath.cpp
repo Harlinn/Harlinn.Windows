@@ -201,7 +201,7 @@ PBRTO_EXPORT Float InvertCatmullRom( pstdo::span<const Float> nodes, pstdo::span
 
         return { Fhat - u, fhat };
         };
-    Float t = NewtonBisection( 0, 1, eval );
+    Float t = NewtonBisection( 0.f, 1.f, eval );
     return x0 + t * width;
 }
 

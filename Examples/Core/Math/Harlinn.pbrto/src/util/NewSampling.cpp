@@ -423,7 +423,7 @@ namespace pbrto
                 d0 + d1 + 2 * ( f0 - f1 ) );
             return { Fhat - u, fhat };
             };
-        Float t = NewtonBisection( 0, 1, eval );
+        Float t = NewtonBisection( 0.f, 1.f, eval );
 
         if ( fval )
             *fval = fhat;
@@ -486,7 +486,7 @@ namespace pbrto
                 d0 + d1 + 2 * ( f0 - f1 ) );
             return { Fhat - u, fhat };
             };
-        Float t = NewtonBisection( 0, 1, eval );
+        Float t = NewtonBisection( 0.f, 1.f, eval );
 
         if ( fval )
             *fval = fhat;
