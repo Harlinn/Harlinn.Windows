@@ -3744,7 +3744,7 @@ namespace Harlinn::Math
     /// The windowed sinc function of x.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T WindowedSinc( T x, T radius, T tau )
+    constexpr inline [[nodiscard]] T WindowedSinc( T x, T radius, T tau )
     {
         if ( Abs( x ) > radius )
         {
@@ -3765,7 +3765,7 @@ namespace Harlinn::Math
     /// <param name="b">The divisor.</param>
     /// <returns>The floating-point remainder of a divided by b.</returns>
     template<FloatingPointType T>
-    constexpr inline T Mod( T a, T b )
+    constexpr inline [[nodiscard]] T Mod( T a, T b )
     {
         return FMod( a, b );
     }
@@ -3783,7 +3783,7 @@ namespace Harlinn::Math
     /// The angle in radians.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T Radians( T deg )
+    constexpr inline [[nodiscard]] T Radians( T deg )
     {
         return ( Constants<T>::Pi / static_cast < T >( 180 ) ) * deg;
     }
@@ -3799,7 +3799,7 @@ namespace Harlinn::Math
     /// </param>
     /// <returns>The angle in degrees.</returns>
     template<FloatingPointType T>
-    constexpr inline T Degrees( T rad )
+    constexpr inline [[nodiscard]] T Degrees( T rad )
     {
         return ( static_cast< T >( 180 ) / Constants<T>::Pi ) * rad;
     }
@@ -3825,7 +3825,7 @@ namespace Harlinn::Math
     /// The interpolated value.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T SmoothStep( T x, T a, T b )
+    constexpr inline [[nodiscard]] T SmoothStep( T x, T a, T b )
     {
         if ( a == b )
         {
@@ -3849,7 +3849,7 @@ namespace Harlinn::Math
     /// The square root of the input value, or zero if the input is negative.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T SafeSqrt( T x )
+    constexpr inline [[nodiscard]] T SafeSqrt( T x )
     {
         return Sqrt( std::max( Constants<T>::Zero, x ) );
     }
@@ -3874,7 +3874,7 @@ namespace Harlinn::Math
     /// </returns>
     template<typename T>
         requires IsArithmetic<T> || Internal::IsComplex<T>
-    constexpr inline T Sqr( T v )
+    constexpr inline [[nodiscard]] T Sqr( T v )
     {
         return v * v;
     }
@@ -3885,31 +3885,8 @@ namespace Harlinn::Math
         template<FloatingPointType FloatT>
         struct FastPowImpl
         {
-            /*
-            template<int n>
-            static constexpr inline FloatT Pow( FloatT v )
-            {
-                if constexpr ( n < 0 )
-                {
-                    return Constants< FloatT>::One / Pow<-n>( v );
-                }
-                auto n2 = Pow<n / 2>( v );
-                return n2 * n2 * Pow<n & 1>( v );
-            }
-
-            template<>
-            static constexpr inline FloatT Pow<1>( FloatT v )
-            {
-                return v;
-            }
-            template<>
-            static constexpr inline FloatT Pow<0>( FloatT v )
-            {
-                return Constants< FloatT>::One;
-            }
-            */
             template<int n> 
-            static constexpr inline FloatT Pow( FloatT v )
+            static constexpr inline [[nodiscard]] FloatT Pow( FloatT v )
             {
                 if constexpr ( n == 0 )
                 {
@@ -3948,7 +3925,7 @@ namespace Harlinn::Math
     /// The result of v raised to the power of n.
     /// </returns>
     template<int n, FloatingPointType T>
-    constexpr inline T FastPow( T v )
+    constexpr inline [[nodiscard]] T FastPow( T v )
     {
         return Internal::FastPowImpl<T>::Pow<n>( v );
     }
@@ -3973,7 +3950,7 @@ namespace Harlinn::Math
     /// The result of the polynomial evaluation.
     /// </returns>
     template <ArithmeticType T, ArithmeticType C>
-    constexpr inline T EvaluatePolynomial( T t, C c )
+    constexpr inline [[nodiscard]] T EvaluatePolynomial( T t, C c )
     {
         return c;
     }
@@ -4003,7 +3980,7 @@ namespace Harlinn::Math
 	/// The result of the polynomial evaluation.
     /// </returns>
     template <ArithmeticType T, ArithmeticType C, ArithmeticType ... Args>
-    constexpr inline T EvaluatePolynomial( T t, C c, Args... remaining )
+    constexpr inline [[nodiscard]] T EvaluatePolynomial( T t, C c, Args... remaining )
     {
         return FMA( t, EvaluatePolynomial( t, remaining... ), c );
     }
@@ -4021,7 +3998,7 @@ namespace Harlinn::Math
     /// The arc sine of the clamped input.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T SafeASin( T x )
+    constexpr inline [[nodiscard]] T SafeASin( T x )
     {
         return ASin( Clamp( x, Constants< T >::MinusOne, Constants< T >::One ) );
     }
@@ -4039,7 +4016,7 @@ namespace Harlinn::Math
     /// The arc cosine of the clamped input.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T SafeACos( T x )
+    constexpr inline [[nodiscard]] T SafeACos( T x )
     {
         return ACos( Clamp( x, Constants< T >::MinusOne, Constants< T >::One ) );
     }
@@ -4057,7 +4034,7 @@ namespace Harlinn::Math
     /// The next representable floating-point value greater than v.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T NextFloatUp( T v )
+    constexpr inline [[nodiscard]] T NextFloatUp( T v )
     {
         return NextUp( v );
     }
@@ -4075,7 +4052,7 @@ namespace Harlinn::Math
     /// The next representable floating-point value less than v.
     /// </returns>
     template<FloatingPointType T>
-    constexpr T NextFloatDown( T v )
+    constexpr inline [[nodiscard]] T NextFloatDown( T v )
     {
         return NextDown( v );
     }
@@ -4093,7 +4070,7 @@ namespace Harlinn::Math
     /// The gamma function value for n.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T Gamma( int n )
+    constexpr inline [[nodiscard]] T Gamma( int n )
     {
         return ( static_cast< T >( n ) * Constants<T>::MachineEpsilon ) / ( Constants< T >::One - static_cast< T >( n ) * Constants<T>::MachineEpsilon );
     }
@@ -4114,7 +4091,7 @@ namespace Harlinn::Math
     /// The adjusted result of the addition.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T AddAdjustUp( T a, T b )
+    constexpr inline [[nodiscard]] T AddAdjustUp( T a, T b )
     {
         return NextUp( a + b );
     }
@@ -4135,7 +4112,7 @@ namespace Harlinn::Math
 	/// The adjusted result of the addition.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T AddAdjustDown( T a, T b )
+    constexpr inline [[nodiscard]] T AddAdjustDown( T a, T b )
     {
         return NextDown( a + b );
     }
@@ -4156,7 +4133,7 @@ namespace Harlinn::Math
     /// The adjusted result of the subtraction.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T SubAdjustUp( T a, T b )
+    constexpr inline [[nodiscard]] T SubAdjustUp( T a, T b )
     {
         return AddAdjustUp( a, -b );
     }
@@ -4177,7 +4154,7 @@ namespace Harlinn::Math
 	/// The adjusted result of the subtraction.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T SubAdjustDown( T a, T b )
+    constexpr inline [[nodiscard]] T SubAdjustDown( T a, T b )
     {
         return AddAdjustDown( a, -b );
     }
@@ -4198,7 +4175,7 @@ namespace Harlinn::Math
 	/// The adjusted result of the multiplication.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T MulAdjustUp( T a, T b )
+    constexpr inline [[nodiscard]] T MulAdjustUp( T a, T b )
     {
         return NextUp( a * b );
     }
@@ -4219,7 +4196,7 @@ namespace Harlinn::Math
 	/// The adjusted result of the multiplication.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T MulAdjustDown( T a, T b )
+    constexpr inline [[nodiscard]] T MulAdjustDown( T a, T b )
     {
         return NextDown( a * b );
     }
@@ -4240,7 +4217,7 @@ namespace Harlinn::Math
 	/// The adjusted result of the division.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T DivAdjustUp( T a, T b )
+    constexpr inline [[nodiscard]] T DivAdjustUp( T a, T b )
     {
         return NextUp( a / b );
     }
@@ -4261,7 +4238,7 @@ namespace Harlinn::Math
 	/// The adjusted result of the division.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T DivAdjustDown( T a, T b )
+    constexpr inline [[nodiscard]] T DivAdjustDown( T a, T b )
     {
         return NextDown( a / b );
     }
@@ -4279,7 +4256,7 @@ namespace Harlinn::Math
 	/// The adjusted result of the square root.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T SqrtAdjustUp( T a )
+    constexpr inline [[nodiscard]] T SqrtAdjustUp( T a )
     {
         return NextUp( Sqrt( a ) );
     }
@@ -4297,7 +4274,7 @@ namespace Harlinn::Math
 	/// The adjusted result of the square root.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T SqrtAdjustDown( T a )
+    constexpr inline [[nodiscard]] T SqrtAdjustDown( T a )
     {
         return std::max<T>( 0, NextDown( Sqrt( a ) ) );
     }
@@ -4319,7 +4296,7 @@ namespace Harlinn::Math
     /// </param>
     /// <returns></returns>
     template<FloatingPointType T>
-    constexpr inline T FMAAdjustUp( T a, T b, T c )
+    constexpr inline [[nodiscard]] T FMAAdjustUp( T a, T b, T c )
     {
         return NextUp( FMA( a, b, c ) );
     }
@@ -4343,7 +4320,7 @@ namespace Harlinn::Math
     /// The adjusted result of the fused multiply-add.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T FMAAdjustDown( T a, T b, T c )
+    constexpr inline [[nodiscard]] T FMAAdjustDown( T a, T b, T c )
     {
         return NextDown( FMA( a, b, c ) );
     }
@@ -4361,7 +4338,7 @@ namespace Harlinn::Math
     /// The base-2 logarithm of x.
     /// </returns>
     template<FloatingPointType T>
-    constexpr inline T FastLog2( T x )
+    constexpr inline [[nodiscard]] T FastLog2( T x )
     {
         return Log2( x );
     }
@@ -4375,7 +4352,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The integer part of the base-2 logarithm of v.
     /// </returns>
-    constexpr inline int Log2Int( float v )
+    constexpr inline [[nodiscard]] int Log2Int( float v )
     {
         if ( v < 1.f )
         {
@@ -4397,7 +4374,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The integer part of the base-2 logarithm of v.
     /// </returns>
-    constexpr inline int Log2Int( double v )
+    constexpr inline [[nodiscard]] int Log2Int( double v )
     {
         if ( v < 1. )
         {
@@ -4419,7 +4396,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The integer part of the base-2 logarithm of v.
     /// </returns>
-    constexpr inline int Log2Int( UInt32 v )
+    constexpr inline [[nodiscard]] int Log2Int( UInt32 v )
     {
         unsigned long index = 0;
         if ( IndexOfBitFromMSB( &index, v ) )
@@ -4438,7 +4415,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The integer part of the base-2 logarithm of v.
     /// </returns>
-    constexpr inline int Log2Int( Int32 v )
+    constexpr inline [[nodiscard]] int Log2Int( Int32 v )
     {
         return Log2Int( std::bit_cast< UInt32 >( v ) );
     }
@@ -4452,7 +4429,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The integer part of the base-2 logarithm of v.
     /// </returns>
-    constexpr inline int Log2Int( UInt64 v )
+    constexpr inline [[nodiscard]] int Log2Int( UInt64 v )
     {
         unsigned long index = 0;
         IndexOfBitFromMSB( &index, v );
@@ -4468,7 +4445,7 @@ namespace Harlinn::Math
     /// <returns>
     /// The integer part of the base-2 logarithm of v.
     /// </returns>
-    constexpr inline int Log2Int( Int64 v )
+    constexpr inline [[nodiscard]] int Log2Int( Int64 v )
     {
         return Log2Int( std::bit_cast< UInt64 >( v ) );
     }
@@ -4485,9 +4462,8 @@ namespace Harlinn::Math
     /// <returns>
     /// The integer part of the base-4 logarithm of v.
     /// </returns>
-    template <typename T>
-        requires std::is_arithmetic_v<T>
-    constexpr inline int Log4Int( T v )
+    template <ArithmeticType T>
+    constexpr inline [[nodiscard]] int Log4Int( T v )
     {
         return Log2Int( v ) / 2;
     }
@@ -4503,7 +4479,7 @@ namespace Harlinn::Math
     /// <returns>
     /// An efficient approximation of the exponential function e^x.
     /// </returns>
-    constexpr inline float FastExp( float x )
+    constexpr inline [[nodiscard]] float FastExp( float x )
     {
         // Compute $x'$ such that $\roman{e}^x = 2^{x'}$
         float xp = x * 1.442695041f;
@@ -4550,7 +4526,7 @@ namespace Harlinn::Math
     /// The value of the PDF at point x.
     /// </returns>
     template<FloatingPointType FloatT>
-    constexpr inline FloatT Gaussian( FloatT x, FloatT mu = 0, FloatT sigma = 1 )
+    constexpr inline [[nodiscard]] FloatT Gaussian( FloatT x, FloatT mu = 0, FloatT sigma = 1 )
     {
         if constexpr (std::is_same_v<FloatT, float>)
         {
@@ -4586,7 +4562,7 @@ namespace Harlinn::Math
     /// The value of the integral of the PDF between x0 and x1.
     /// </returns>
     template<FloatingPointType FloatT>
-    constexpr inline FloatT GaussianIntegral( FloatT x0, FloatT x1, FloatT mu = 0, FloatT sigma = 1 )
+    constexpr inline [[nodiscard]] FloatT GaussianIntegral( FloatT x0, FloatT x1, FloatT mu = 0, FloatT sigma = 1 )
     {
         FloatT sigmaRoot2 = sigma * Constants<FloatT>::Sqrt2;
         return static_cast< FloatT >( 0.5 ) * ( std::erf( ( mu - x0 ) / sigmaRoot2 ) - std::erf( ( mu - x1 ) / sigmaRoot2 ) );
@@ -4608,7 +4584,7 @@ namespace Harlinn::Math
     /// The value of the PDF at point x.
     /// </returns>
     template<FloatingPointType FloatT>
-    constexpr inline FloatT Logistic( FloatT x, FloatT s )
+    constexpr inline [[nodiscard]] FloatT Logistic( FloatT x, FloatT s )
     {
         x = Abs( x );
         return Exp( -x / s ) / ( s * Sqr( 1 + Exp( -x / s ) ) );
@@ -4630,7 +4606,7 @@ namespace Harlinn::Math
     /// The value of the CDF at point x.
     /// </returns>
     template<FloatingPointType FloatT>
-    constexpr inline FloatT LogisticCDF( FloatT x, FloatT s )
+    constexpr inline [[nodiscard]] FloatT LogisticCDF( FloatT x, FloatT s )
     {
         return static_cast< FloatT >( 1 ) / ( static_cast< FloatT >( 1 ) + Exp( -x / s ) );
     }
@@ -4657,7 +4633,7 @@ namespace Harlinn::Math
     /// The value of the trimmed PDF at point x.
     /// </returns>
     template<FloatingPointType FloatT>
-    constexpr inline FloatT TrimmedLogistic( FloatT x, FloatT s, FloatT a, FloatT b )
+    constexpr inline [[nodiscard]] FloatT TrimmedLogistic( FloatT x, FloatT s, FloatT a, FloatT b )
     {
         return Logistic( x, s ) / ( LogisticCDF( b, s ) - LogisticCDF( a, s ) );
     }
@@ -4686,7 +4662,7 @@ namespace Harlinn::Math
     /// </returns>
     template<typename Predicate>
         requires std::is_invocable_r_v<bool, Predicate, size_t>
-    constexpr inline size_t FindInterval( size_t sz, const Predicate& pred )
+    constexpr inline [[nodiscard]] size_t FindInterval( size_t sz, const Predicate& pred )
     {
         using ssize_t = std::make_signed_t<size_t>;
         ssize_t size = static_cast<ssize_t>( sz ) - 2; 
@@ -4716,7 +4692,7 @@ namespace Harlinn::Math
     /// Returns true if v is a power of 4.
     /// </returns>
     template <typename T>
-    constexpr inline bool IsPowerOf4( T v )
+    constexpr inline [[nodiscard]] bool IsPowerOf4( T v )
     {
         return v == ( static_cast< T >( 1 ) << ( 2 * Log4Int( v ) ) );
     }
@@ -4730,7 +4706,7 @@ namespace Harlinn::Math
     /// <returns>
     /// Returns v rounded up to the next power of 2.
     /// </returns>
-    constexpr inline Int32 RoundUpPow2( Int32 v )
+    constexpr inline [[nodiscard]] Int32 RoundUpPow2( Int32 v )
     {
         return NextPowerOfTwo( v );
     }
@@ -4744,7 +4720,7 @@ namespace Harlinn::Math
     /// <returns>
     /// Returns v rounded up to the next power of 2.
     /// </returns>
-    constexpr inline Int64 RoundUpPow2( Int64 v )
+    constexpr inline [[nodiscard]] Int64 RoundUpPow2( Int64 v )
     {
         return NextPowerOfTwo( v );
     }
@@ -4762,7 +4738,7 @@ namespace Harlinn::Math
     /// Returns v rounded up to the next power of 4.
     /// </returns>
     template <typename T>
-    constexpr inline T RoundUpPow4( T v )
+    constexpr inline [[nodiscard]] T RoundUpPow4( T v )
     {
         return IsPowerOf4( v ) ? v : ( static_cast< T >( 1 ) << ( 2 * ( 1 + Log4Int( v ) ) ) );
     }
@@ -4847,12 +4823,12 @@ namespace Harlinn::Math
             return *this;
         }
 
-        constexpr explicit operator ValueType( ) const noexcept
+        constexpr explicit [[nodiscard]] operator ValueType( ) const noexcept
         {
             return sum_;
         }
 
-        std::string ToString( ) const;
+        constexpr [[nodiscard]] std::string ToString( ) const;
 
     private:
 
@@ -4887,15 +4863,15 @@ namespace Harlinn::Math
             : v( v ), err( err )
         {
         }
-        constexpr explicit operator float( ) const noexcept
+        constexpr explicit [[nodiscard]] operator float( ) const noexcept
         {
             return float( v ) + float( err );
         }
-        constexpr explicit operator double( ) const noexcept
+        constexpr explicit [[nodiscard]] operator double( ) const noexcept
         {
             return double( v ) + double( err );
         }
-        std::string ToString( ) const;
+        constexpr [[nodiscard]] std::string ToString( ) const;
     };
 
 
@@ -4915,7 +4891,7 @@ namespace Harlinn::Math
     /// A compensated float representing the product of a and b.
     /// </returns>
     template<FloatingPointType FloatT>
-    constexpr inline CompensatedFloat<FloatT> TwoProd( FloatT a, FloatT b )
+    constexpr inline [[nodiscard]] CompensatedFloat<FloatT> TwoProd( FloatT a, FloatT b )
     {
         FloatT ab = a * b;
         return { ab, FMA( a, b, -ab ) };
@@ -4937,7 +4913,7 @@ namespace Harlinn::Math
     /// A compensated float representing the sum of a and b.
     /// </returns>
     template<FloatingPointType FloatT>
-    constexpr inline CompensatedFloat<FloatT> TwoSum( FloatT a, FloatT b )
+    constexpr inline [[nodiscard]] CompensatedFloat<FloatT> TwoSum( FloatT a, FloatT b )
     {
         FloatT s = a + b, delta = s - a;
         return { s, ( a - ( s - delta ) ) + ( b - delta ) };
@@ -4974,7 +4950,7 @@ namespace Harlinn::Math
     /// A compensated float representing the difference of products a*b - c*d.
     /// </returns>
     template <FloatingPointType Ta, FloatingPointType Tb, FloatingPointType Tc, FloatingPointType Td>
-    constexpr inline auto DifferenceOfProducts( Ta a, Tb b, Tc c, Td d )
+    constexpr inline [[nodiscard]] auto DifferenceOfProducts( Ta a, Tb b, Tc c, Td d )
     {
         auto cd = c * d;
         auto differenceOfProducts = FMA( a, b, -cd );
@@ -5013,7 +4989,7 @@ namespace Harlinn::Math
     /// A compensated float representing the sum of products a*b + c*d.
     /// </returns>
     template <FloatingPointType Ta, FloatingPointType Tb, FloatingPointType Tc, FloatingPointType Td>
-    constexpr inline auto SumOfProducts( Ta a, Tb b, Tc c, Td d )
+    constexpr inline [[nodiscard]] auto SumOfProducts( Ta a, Tb b, Tc c, Td d )
     {
         auto cd = c * d;
         auto sumOfProducts = FMA( a, b, cd );
@@ -5025,7 +5001,7 @@ namespace Harlinn::Math
     {
         // InnerProduct Helper Functions
         template<FloatingPointType FloatT>
-        constexpr CompensatedFloat<FloatT> InnerProduct( FloatT a, FloatT b )
+        constexpr [[nodiscard]] CompensatedFloat<FloatT> InnerProduct( FloatT a, FloatT b )
         {
             return TwoProd( a, b );
         }
@@ -5036,7 +5012,7 @@ namespace Harlinn::Math
         // Accurate summation, dot product and polynomial evaluation in complex
         // floating point arithmetic, Graillat and Menissier-Morain.
         template <FloatingPointType FloatT, typename... T>
-        constexpr inline CompensatedFloat<FloatT> InnerProduct( FloatT a, FloatT b, T... terms )
+        constexpr inline [[nodiscard]] CompensatedFloat<FloatT> InnerProduct( FloatT a, FloatT b, T... terms )
         {
             auto ab = TwoProd( a, b );
             auto tp = InnerProduct( terms... );
@@ -5066,7 +5042,7 @@ namespace Harlinn::Math
     /// </returns>
     template <FloatingPointType FloatT, typename... T>
         requires std::conjunction_v<std::is_arithmetic<T>...>
-    constexpr inline FloatT InnerProduct( FloatT term, T... terms )
+    constexpr inline [[nodiscard]] FloatT InnerProduct( FloatT term, T... terms )
     {
         auto ip = Internal::InnerProduct( term, terms... );
         return static_cast< FloatT >( ip );
@@ -5100,7 +5076,7 @@ namespace Harlinn::Math
     /// True if the roots were found, false otherwise.
     /// </returns>
     template <FloatingPointType FloatT, typename... T>
-    constexpr inline bool Quadratic( FloatT a, FloatT b, FloatT c, FloatT* t0, FloatT* t1 )
+    constexpr inline [[nodiscard]] bool Quadratic( FloatT a, FloatT b, FloatT c, FloatT* t0, FloatT* t1 )
     {
         // Handle case of $a=0$ for quadratic solution
         if ( a == static_cast< FloatT >( 0 ) )
@@ -5162,7 +5138,7 @@ namespace Harlinn::Math
     /// </returns>
     template <typename Func, FloatingPointType FloatT>
         requires std::is_invocable_r_v<std::pair<FloatT, FloatT>, Func, FloatT>
-    constexpr inline FloatT NewtonBisection( FloatT x0, FloatT x1, Func f, FloatT xEps = static_cast< FloatT >( 1e-6 ), FloatT fEps = static_cast< FloatT >( 1e-6 ) )
+    constexpr inline [[nodiscard]] FloatT NewtonBisection( FloatT x0, FloatT x1, Func f, FloatT xEps = static_cast< FloatT >( 1e-6 ), FloatT fEps = static_cast< FloatT >( 1e-6 ) )
     {
         FloatT fx0 = f( x0 ).first; 
         FloatT fx1 = f( x1 ).first;
@@ -5314,7 +5290,7 @@ namespace Harlinn::Math
         /// The error.
         /// </param>
         /// <returns></returns>
-        constexpr static Interval FromValueAndError( value_type v, value_type err )
+        constexpr static [[nodiscard]] Interval FromValueAndError( value_type v, value_type err )
         {
             if ( err == static_cast< value_type >( 0 ) )
             {
@@ -5346,35 +5322,35 @@ namespace Harlinn::Math
         /// <returns>
         /// The upper bound of the interval.
         /// </returns>
-        constexpr value_type UpperBound( ) const { return upperBound_; }
+        constexpr [[nodiscard]] value_type UpperBound( ) const { return upperBound_; }
         /// <summary>
 		/// Returns the lower bound of the interval.
         /// </summary>
         /// <returns>
         /// The lower bound of the interval.
         /// </returns>
-        constexpr value_type LowerBound( ) const { return lowerBound_; }
+        constexpr [[nodiscard]] value_type LowerBound( ) const { return lowerBound_; }
         /// <summary>
 		/// Returns the midpoint of the interval.
         /// </summary>
         /// <returns>
         /// The midpoint of the interval.
         /// </returns>
-        constexpr value_type Midpoint( ) const { return ( lowerBound_ + upperBound_ ) / 2; }
+        constexpr [[nodiscard]] value_type Midpoint( ) const { return ( lowerBound_ + upperBound_ ) / 2; }
         /// <summary>
 		/// Returns the width of the interval.
         /// </summary>
         /// <returns>
         /// The width of the interval.
         /// </returns>
-        constexpr value_type Width( ) const { return upperBound_ - lowerBound_; }
+        constexpr [[nodiscard]] value_type Width( ) const { return upperBound_ - lowerBound_; }
 
         /// <summary>
 		/// Returns the i'th bound of the interval.
         /// </summary>
         /// <param name="i"></param>
         /// <returns></returns>
-        constexpr value_type operator[]( size_t i ) const
+        constexpr [[nodiscard]] value_type operator[]( size_t i ) const
         {
             return i == 0 ? lowerBound_ : upperBound_;
         }
@@ -5382,7 +5358,7 @@ namespace Harlinn::Math
         /// <summary>
 		/// Returns the midpoint of the interval as a value_type.
         /// </summary>
-        constexpr explicit operator value_type( ) const
+        constexpr explicit [[nodiscard]] operator value_type( ) const
         {
             return Midpoint( );
         }
@@ -5396,7 +5372,7 @@ namespace Harlinn::Math
         /// <returns>
         /// True if the interval exactly represents the value v, false otherwise.
         /// </returns>
-        constexpr bool Exactly( value_type v ) const
+        constexpr [[nodiscard]] bool Exactly( value_type v ) const
         {
             return lowerBound_ == v && upperBound_ == v;
         }
@@ -5410,7 +5386,7 @@ namespace Harlinn::Math
         /// <returns>
         /// True if the interval exactly represents the value v, false otherwise.
         /// </returns>
-        constexpr bool operator==( value_type v ) const
+        constexpr [[nodiscard]] bool operator==( value_type v ) const
         {
             return Exactly( v );
         }
@@ -5419,7 +5395,7 @@ namespace Harlinn::Math
 		/// Returns the negation of the interval.
         /// </summary>
         /// <returns></returns>
-        constexpr Interval operator-( ) const
+        constexpr [[nodiscard]] Interval operator-( ) const
         {
             return { -upperBound_, -lowerBound_ };
         }
@@ -5433,7 +5409,7 @@ namespace Harlinn::Math
         /// <returns>
         /// The sum of this interval and another interval.
         /// </returns>
-        constexpr Interval operator+( const Interval& i ) const
+        constexpr [[nodiscard]] Interval operator+( const Interval& i ) const
         {
             return { AddAdjustDown( lowerBound_, i.lowerBound_ ), AddAdjustUp( upperBound_, i.upperBound_ ) };
         }
@@ -5447,7 +5423,7 @@ namespace Harlinn::Math
         /// <returns>
         /// The difference of this interval and another interval.
         /// </returns>
-        constexpr Interval operator-( const Interval& i ) const
+        constexpr [[nodiscard]] Interval operator-( const Interval& i ) const
         {
             return { SubAdjustDown( lowerBound_, i.upperBound_ ), SubAdjustUp( upperBound_, i.lowerBound_ ) };
         }
@@ -5461,7 +5437,7 @@ namespace Harlinn::Math
         /// <returns>
         /// The product of this interval and another interval.
         /// </returns>
-        constexpr Interval operator*( const Interval& i ) const
+        constexpr [[nodiscard]] Interval operator*( const Interval& i ) const
         {
             value_type lp[ 4 ] =
             {
@@ -5479,12 +5455,6 @@ namespace Harlinn::Math
             };
             return { Min( lp[ 0 ], lp[ 1 ], lp[ 2 ], lp[ 3 ] ),
                     Max( hp[ 0 ], hp[ 1 ], hp[ 2 ], hp[ 3 ] ) };
-
-
-            /*
-            return { std::min( {lp[ 0 ], lp[ 1 ], lp[ 2 ], lp[ 3 ]} ),
-                    std::max( {hp[ 0 ], hp[ 1 ], hp[ 2 ], hp[ 3 ]} ) };
-            */
         }
 
         /// <summary>
@@ -5496,7 +5466,7 @@ namespace Harlinn::Math
         /// <returns>
         /// The quotient of this interval and another interval.
         /// </returns>
-        constexpr Interval operator/( const Interval& i ) const;
+        constexpr [[nodiscard]] Interval operator/( const Interval& i ) const;
 
         /// <summary>
 		/// Returns true if this interval is equal to another interval.
@@ -5507,7 +5477,7 @@ namespace Harlinn::Math
         /// <returns>
         /// True if this interval is equal to another interval.
         /// </returns>
-        constexpr bool operator==( const Interval& i ) const
+        constexpr [[nodiscard]] bool operator==( const Interval& i ) const
         {
             return lowerBound_ == i.lowerBound_ && upperBound_ == i.upperBound_;
         }
@@ -5521,7 +5491,7 @@ namespace Harlinn::Math
         /// <returns>
         /// True if this interval does not contain the value f.
         /// </returns>
-        constexpr bool operator!=( value_type f ) const
+        constexpr [[nodiscard]] bool operator!=( value_type f ) const
         {
             return f < lowerBound_ || f > upperBound_;
         }
@@ -5532,7 +5502,7 @@ namespace Harlinn::Math
         /// <returns>
         /// A string representation of the interval.
         /// </returns>
-        std::string ToString( ) const;
+        [[nodiscard]] std::string ToString( ) const;
 
         /// <summary>
 		/// Adds another interval to this interval.
@@ -5543,7 +5513,7 @@ namespace Harlinn::Math
         /// <returns>
         /// A reference to this interval.
         /// </returns>
-        constexpr Interval& operator+=( Interval i )
+        constexpr [[nodiscard]] Interval& operator+=( Interval i )
         {
             *this = Interval( *this + i );
             return *this;
@@ -5676,7 +5646,7 @@ namespace Harlinn::Math
     /// True if the value is within the interval, false otherwise.
     /// </returns>
     template<FloatingPointType FloatT>
-    constexpr inline bool InRange( FloatT value, const Interval<FloatT>& interval )
+    constexpr inline [[nodiscard]] bool InRange( FloatT value, const Interval<FloatT>& interval )
     {
         return value >= interval.LowerBound( ) && value <= interval.UpperBound( );
     }
@@ -5697,13 +5667,13 @@ namespace Harlinn::Math
     /// True if the intervals overlap, false otherwise.
     /// </returns>
     template<FloatingPointType FloatT>
-    constexpr inline bool InRange( const Interval<FloatT>& first, const Interval<FloatT>& second )
+    constexpr inline [[nodiscard]] bool InRange( const Interval<FloatT>& first, const Interval<FloatT>& second )
     {
         return first.LowerBound( ) <= second.UpperBound( ) && first.UpperBound( ) >= second.LowerBound( );
     }
 
     template<FloatingPointType FloatT>
-    constexpr inline Interval<FloatT> Interval<FloatT>::operator/( const Interval<FloatT>& interval ) const
+    constexpr inline [[nodiscard]] Interval<FloatT> Interval<FloatT>::operator/( const Interval<FloatT>& interval ) const
     {
         if ( InRange( static_cast< FloatT >( 0 ), interval ) )
         {
@@ -5732,7 +5702,7 @@ namespace Harlinn::Math
     /// The squared interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    constexpr inline Interval<FloatT> Sqr( const Interval<FloatT>& interval )
+    constexpr inline [[nodiscard]] Interval<FloatT> Sqr( const Interval<FloatT>& interval )
     {
         FloatT alow = Abs( interval.LowerBound( ) );
         FloatT ahigh = Abs( interval.UpperBound( ) );
@@ -5748,9 +5718,9 @@ namespace Harlinn::Math
     }
 
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> MulPow2( FloatT s, const Interval<FloatT>& i );
+    inline [[nodiscard]] Interval<FloatT> MulPow2( FloatT s, const Interval<FloatT>& i );
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> MulPow2( const Interval<FloatT>& i, FloatT s );
+    inline [[nodiscard]] Interval<FloatT> MulPow2( const Interval<FloatT>& i, FloatT s );
 
     /// <summary>
 	/// Adds a floating-point value to an interval.
@@ -5768,7 +5738,7 @@ namespace Harlinn::Math
     /// The resulting interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> operator+( FloatT f, const Interval<FloatT>& i )
+    inline [[nodiscard]] Interval<FloatT> operator+( FloatT f, const Interval<FloatT>& i )
     {
         return Interval<FloatT>( f ) + i;
     }
@@ -5789,7 +5759,7 @@ namespace Harlinn::Math
 	/// The resulting interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> operator-( FloatT f, const Interval<FloatT>& i )
+    inline [[nodiscard]] Interval<FloatT> operator-( FloatT f, const Interval<FloatT>& i )
     {
         return Interval<FloatT>( f ) - i;
     }
@@ -5810,7 +5780,7 @@ namespace Harlinn::Math
 	/// The resulting interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> operator*( FloatT f, const Interval<FloatT>& i )
+    inline [[nodiscard]] Interval<FloatT> operator*( FloatT f, const Interval<FloatT>& i )
     {
         if ( f > static_cast< FloatT >( 0 ) )
         {
@@ -5838,7 +5808,7 @@ namespace Harlinn::Math
 	/// The resulting interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> operator/( FloatT f, const Interval<FloatT>& i )
+    inline [[nodiscard]] Interval<FloatT> operator/( FloatT f, const Interval<FloatT>& i )
     {
         if ( InRange( static_cast< FloatT >( 0 ), i ) )
         {
@@ -5873,7 +5843,7 @@ namespace Harlinn::Math
     /// The resulting interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> operator+( const Interval<FloatT>& i, FloatT f )
+    inline [[nodiscard]] Interval<FloatT> operator+( const Interval<FloatT>& i, FloatT f )
     {
         return i + Interval( f );
     }
@@ -5894,7 +5864,7 @@ namespace Harlinn::Math
 	/// The resulting interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> operator-( const Interval<FloatT>& i, FloatT f )
+    inline [[nodiscard]] Interval<FloatT> operator-( const Interval<FloatT>& i, FloatT f )
     {
         return i - Interval( f );
     }
@@ -5915,7 +5885,7 @@ namespace Harlinn::Math
 	/// The resulting interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> operator*( const Interval<FloatT>& i, FloatT f )
+    inline [[nodiscard]] Interval<FloatT> operator*( const Interval<FloatT>& i, FloatT f )
     {
         if ( f > static_cast< FloatT >( 0 ) )
             return Interval( MulAdjustDown( f, i.LowerBound( ) ), MulAdjustUp( f, i.UpperBound( ) ) );
@@ -5939,7 +5909,7 @@ namespace Harlinn::Math
 	/// The resulting interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> operator/( const Interval<FloatT>& i, FloatT f )
+    inline [[nodiscard]] Interval<FloatT> operator/( const Interval<FloatT>& i, FloatT f )
     {
         if ( f == static_cast< FloatT >( 0 ) )
         {
@@ -5969,7 +5939,7 @@ namespace Harlinn::Math
     /// The floor of the lower bound of the interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline FloatT Floor( const Interval<FloatT>& i )
+    inline [[nodiscard]] FloatT Floor( const Interval<FloatT>& i )
     {
         return Floor( i.LowerBound( ) );
     }
@@ -5987,7 +5957,7 @@ namespace Harlinn::Math
 	/// The ceiling of the upper bound of the interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline FloatT Ceil( const Interval<FloatT>& i )
+    inline [[nodiscard]] FloatT Ceil( const Interval<FloatT>& i )
     {
         return Ceil( i.UpperBound( ) );
     }
@@ -6005,7 +5975,7 @@ namespace Harlinn::Math
 	/// The floor of the lower bound of the interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline FloatT floor( const Interval<FloatT>& i )
+    inline [[nodiscard]] FloatT floor( const Interval<FloatT>& i )
     {
         return Floor( i );
     }
@@ -6023,7 +5993,7 @@ namespace Harlinn::Math
 	/// The ceiling of the upper bound of the interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline FloatT ceil( const Interval<FloatT>& i )
+    inline [[nodiscard]] FloatT ceil( const Interval<FloatT>& i )
     {
         return Ceil( i );
     }
@@ -6044,7 +6014,7 @@ namespace Harlinn::Math
 	/// The minimum of the lower bounds of the two intervals.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline FloatT Min( const Interval<FloatT>& a, const Interval<FloatT>& b )
+    inline [[nodiscard]] FloatT Min( const Interval<FloatT>& a, const Interval<FloatT>& b )
     {
         return std::min( a.LowerBound( ), b.LowerBound( ) );
     }
@@ -6065,7 +6035,7 @@ namespace Harlinn::Math
 	/// The maximum of the upper bounds of the two intervals.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline FloatT Max( const Interval<FloatT>& a, const Interval<FloatT>& b )
+    inline [[nodiscard]] FloatT Max( const Interval<FloatT>& a, const Interval<FloatT>& b )
     {
         return std::max( a.UpperBound( ), b.UpperBound( ) );
     }
@@ -6086,7 +6056,7 @@ namespace Harlinn::Math
 	/// The minimum of the lower bounds of the two intervals.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline FloatT min( const Interval<FloatT>& a, const Interval<FloatT>& b )
+    inline [[nodiscard]] FloatT min( const Interval<FloatT>& a, const Interval<FloatT>& b )
     {
         return Min( a, b );
     }
@@ -6107,7 +6077,7 @@ namespace Harlinn::Math
 	/// The maximum of the upper bounds of the two intervals.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline FloatT max( const Interval<FloatT>& a, const Interval<FloatT>& b )
+    inline [[nodiscard]] FloatT max( const Interval<FloatT>& a, const Interval<FloatT>& b )
     {
         return Max( a, b );
     }
@@ -6125,7 +6095,7 @@ namespace Harlinn::Math
 	/// The square root of the interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> Sqrt( const Interval<FloatT>& i )
+    inline [[nodiscard]] Interval<FloatT> Sqrt( const Interval<FloatT>& i )
     {
         return { SqrtAdjustDown( i.LowerBound( ) ), SqrtAdjustUp( i.UpperBound( ) ) };
     }
@@ -6143,7 +6113,7 @@ namespace Harlinn::Math
     /// The square root of the interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> sqrt( const Interval<FloatT>& i )
+    inline [[nodiscard]] Interval<FloatT> sqrt( const Interval<FloatT>& i )
     {
         return Sqrt( i );
     }
@@ -6163,9 +6133,11 @@ namespace Harlinn::Math
     /// <param name="c">
 	/// The third interval.
     /// </param>
-    /// <returns></returns>
+    /// <returns>
+    /// The fused multiply-add of the three intervals.
+    /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> FMA( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c )
+    inline [[nodiscard]] Interval<FloatT> FMA( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c )
     {
         FloatT low = Min( FMAAdjustDown( a.LowerBound( ), b.LowerBound( ), c.LowerBound( ) ),
             FMAAdjustDown( a.UpperBound( ), b.LowerBound( ), c.LowerBound( ) ),
@@ -6200,7 +6172,7 @@ namespace Harlinn::Math
     /// The difference of products of the arguments.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> DifferenceOfProducts( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c, const Interval<FloatT>& d )
+    inline [[nodiscard]] Interval<FloatT> DifferenceOfProducts( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c, const Interval<FloatT>& d )
     {
         FloatT ab[ 4 ] =
         {
@@ -6257,13 +6229,13 @@ namespace Harlinn::Math
 	/// The sum of products of the arguments.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> SumOfProducts( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c, const Interval<FloatT>& d )
+    inline [[nodiscard]] Interval<FloatT> SumOfProducts( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c, const Interval<FloatT>& d )
     {
         return DifferenceOfProducts( a, b, -c, d );
     }
 
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> MulPow2( FloatT s, const Interval<FloatT>& i )
+    inline [[nodiscard]] Interval<FloatT> MulPow2( FloatT s, const Interval<FloatT>& i )
     {
         return MulPow2( i, s );
     }
@@ -6284,7 +6256,7 @@ namespace Harlinn::Math
 	/// The resulting interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> MulPow2( const Interval<FloatT>& i, FloatT s )
+    inline [[nodiscard]] Interval<FloatT> MulPow2( const Interval<FloatT>& i, FloatT s )
     {
         FloatT as = std::abs( s );
 
@@ -6306,7 +6278,7 @@ namespace Harlinn::Math
     /// The absolute value of the interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> Abs( const Interval<FloatT>& i )
+    inline [[nodiscard]] Interval<FloatT> Abs( const Interval<FloatT>& i )
     {
         if ( i.LowerBound( ) >= static_cast< FloatT >( 0 ) )
         {
@@ -6338,7 +6310,7 @@ namespace Harlinn::Math
 	/// The absolute value of the interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> abs( const Interval<FloatT>& i )
+    inline [[nodiscard]] Interval<FloatT> abs( const Interval<FloatT>& i )
     {
         return Abs( i );
     }
@@ -6356,7 +6328,7 @@ namespace Harlinn::Math
 	/// The arc-cosine of the interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> ACos( const Interval<FloatT>& i )
+    inline [[nodiscard]] Interval<FloatT> ACos( const Interval<FloatT>& i )
     {
         FloatT low = ACos( std::min<FloatT>( static_cast< FloatT >( 1 ), i.UpperBound( ) ) );
         FloatT high = ACos( std::max<FloatT>( static_cast< FloatT >( -1 ), i.LowerBound( ) ) );
@@ -6377,7 +6349,7 @@ namespace Harlinn::Math
 	/// The sine of the interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> Sin( const Interval<FloatT>& i )
+    inline [[nodiscard]] Interval<FloatT> Sin( const Interval<FloatT>& i )
     {
         FloatT low = Math::Sin( std::max<FloatT>( static_cast< FloatT >( 0 ), i.LowerBound( ) ) );
         FloatT high = Math::Sin( i.UpperBound( ) );
@@ -6412,7 +6384,7 @@ namespace Harlinn::Math
 	/// The cosine of the interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> Cos( const Interval<FloatT>& i )
+    inline [[nodiscard]] Interval<FloatT> Cos( const Interval<FloatT>& i )
     {
         FloatT low = Math::Cos( std::max<FloatT>( static_cast< FloatT >( 0 ), i.LowerBound( ) ) );
         FloatT high = Math::Cos( i.UpperBound( ) );
@@ -6511,7 +6483,7 @@ namespace Harlinn::Math
 	/// True if the roots were found, false otherwise.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline bool Quadratic( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c, Interval<FloatT>* t0, Interval<FloatT>* t1 )
+    inline [[nodiscard]] bool Quadratic( const Interval<FloatT>& a, const Interval<FloatT>& b, const Interval<FloatT>& c, Interval<FloatT>* t0, Interval<FloatT>* t1 )
     {
         // Find quadratic discriminant
         auto discrim = DifferenceOfProducts( b, b, MulPow2( static_cast< FloatT >( 4 ), a ), c );
@@ -6553,7 +6525,7 @@ namespace Harlinn::Math
     /// The sum of squares of the interval.
     /// </returns>
     template<FloatingPointType FloatT>
-    inline Interval<FloatT> SumSquares( const Interval<FloatT>& i )
+    inline [[nodiscard]] Interval<FloatT> SumSquares( const Interval<FloatT>& i )
     {
         return Sqr( i );
     }
@@ -6577,7 +6549,7 @@ namespace Harlinn::Math
     /// The sum of squares of the intervals.
     /// </returns>
     template <FloatingPointType FloatT, FloatingPointType... Args>
-    inline Interval<FloatT> SumSquares( const Interval<FloatT>& i, Args... args )
+    inline [[nodiscard]] Interval<FloatT> SumSquares( const Interval<FloatT>& i, Args... args )
     {
         Interval ss = FMA( i, i, SumSquares( args... ) );
         return Interval( std::max<FloatT>( 0, ss.LowerBound( ) ), ss.UpperBound( ) );
@@ -6594,7 +6566,7 @@ namespace Harlinn::Math
         /// <returns>
         /// The 32-bit single-precision floating-point number.
         /// </returns>
-        constexpr float HalfToFloat( const UInt16 value )
+        constexpr [[nodiscard]] float HalfToFloat( const UInt16 value )
         {
             constexpr UInt32 Magic = 113UL << 23UL;
             constexpr UInt32 ShiftedExp = 0x7c00 << 13;
@@ -6621,7 +6593,7 @@ namespace Harlinn::Math
             return std::bit_cast< float >( result );
         }
 
-        constexpr UInt16 FloatToHalf( float value )
+        constexpr [[nodiscard]] UInt16 FloatToHalf( float value )
         {
             constexpr UInt32 FloatInfinity = 255UL << 23UL;
             constexpr UInt32 HalfInfinity = 31UL << 23UL;
@@ -6693,26 +6665,26 @@ namespace Harlinn::Math
         {
         }
 
-        static constexpr Half FromBits( UInt16 value ) noexcept
+        static constexpr [[nodiscard]] Half FromBits( UInt16 value ) noexcept
         {
             return Half( value );
         }
 
-        constexpr UInt16 Bits( ) const noexcept
+        constexpr [[nodiscard]] UInt16 Bits( ) const noexcept
         {
             return value_;
         }
 
-        explicit constexpr operator float( ) const noexcept
+        explicit constexpr [[nodiscard]] operator float( ) const noexcept
         {
             return Internal::HalfToFloat( value_ );
         }
-        explicit constexpr operator double( ) const noexcept
+        explicit constexpr [[nodiscard]] operator double( ) const noexcept
         {
             return static_cast< double >( Internal::HalfToFloat( value_ ) );
         }
 
-        constexpr bool operator==( const Half& other ) const noexcept
+        constexpr [[nodiscard]] bool operator==( const Half& other ) const noexcept
         {
             if ( value_ == other.value_ )
             {
@@ -6720,34 +6692,34 @@ namespace Harlinn::Math
             }
             return ( value_ == NegativeZero && other.value_ == PositiveZero ) || ( value_ == PositiveZero && other.value_ == NegativeZero );
         }
-        constexpr bool operator!=( const Half& other ) const noexcept
+        constexpr [[nodiscard]] bool operator!=( const Half& other ) const noexcept
         {
             return !( *this == other );
         }
 
-        constexpr Half operator-( ) const noexcept
+        constexpr [[nodiscard]] Half operator-( ) const noexcept
         {
             return Half( static_cast< UInt16 >( value_ ^ ( 1 << 15 ) ) );
         }
 
-        constexpr int Sign( ) const noexcept
+        constexpr [[nodiscard]] int Sign( ) const noexcept
         {
             return ( value_ >> 15 ) ? -1 : 1;
         }
 
-        constexpr bool IsInf( ) const noexcept
+        constexpr [[nodiscard]] bool IsInf( ) const noexcept
         {
             return value_ == PositiveInfinity || value_ == NegativeInfinity;
         }
 
-        constexpr bool IsNaN( ) const noexcept
+        constexpr [[nodiscard]] bool IsNaN( ) const noexcept
         {
             return ( ( value_ & ExponentMask ) == ExponentMask &&
                 ( value_ & SignificandMask ) != 0 );
         }
 
 
-        constexpr Half NextUp( ) const noexcept
+        constexpr [[nodiscard]] Half NextUp( ) const noexcept
         {
             if ( IsInf( ) && Sign( ) == 1 )
             {
@@ -6771,7 +6743,7 @@ namespace Harlinn::Math
             return up;
         }
 
-        constexpr Half NextDown( ) const noexcept
+        constexpr [[nodiscard]] Half NextDown( ) const noexcept
         {
             if ( IsInf( ) && Sign( ) == -1 )
             {
@@ -6803,13 +6775,13 @@ namespace std
     struct formatter<Harlinn::Math::Half, CharT>
     {
         formatter<float, CharT> floatFormatter;
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        constexpr [[nodiscard]] auto parse( basic_format_parse_context<CharT>& ctx )
         {
             return floatFormatter.parse( ctx );
         }
 
         template <typename FormatContext>
-        auto format( const Harlinn::Math::Half& half, FormatContext& ctx ) const
+        [[nodiscard]] auto format( const Harlinn::Math::Half& half, FormatContext& ctx ) const
         {
             float v = static_cast< float >( half );
             return floatFormatter.format( v, ctx );
@@ -6819,13 +6791,13 @@ namespace std
     template<typename CharT>
     struct formatter<Harlinn::Math::Interval<float>, CharT>
     {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        constexpr [[nodiscard]] auto parse( basic_format_parse_context<CharT>& ctx )
         {
             return ctx.begin( );
         }
 
         template <typename FormatContext>
-        auto format( const Harlinn::Math::Interval<float>& value, FormatContext& ctx ) const
+        [[nodiscard]] auto format( const Harlinn::Math::Interval<float>& value, FormatContext& ctx ) const
         {
             if constexpr ( is_same_v<CharT, wchar_t> )
             {
@@ -6840,13 +6812,13 @@ namespace std
     template<typename CharT>
     struct formatter<Harlinn::Math::Interval<double>, CharT>
     {
-        constexpr auto parse( basic_format_parse_context<CharT>& ctx )
+        constexpr [[nodiscard]] auto parse( basic_format_parse_context<CharT>& ctx )
         {
             return ctx.begin( );
         }
 
         template <typename FormatContext>
-        auto format( const Harlinn::Math::Interval<double>& value, FormatContext& ctx ) const
+        [[nodiscard]] auto format( const Harlinn::Math::Interval<double>& value, FormatContext& ctx ) const
         {
             if constexpr ( is_same_v<CharT, wchar_t> )
             {
