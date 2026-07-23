@@ -3003,7 +3003,8 @@ namespace pbrto
     }
     inline bool SameHemisphere( const Vector3f::Simd w, const Vector3f::Simd wp )
     {
-        return w.z() * wp.z() > 0;
+        return (w * wp).z( ) > 0;
+        //return w.z() * wp.z() > 0;
     }
 
 
@@ -3013,7 +3014,8 @@ namespace pbrto
     }
     inline bool SameHemisphere( const Vector3f::Simd w, const Normal3f::Simd wp )
     {
-        return w.z( ) * wp.z( ) > 0;
+        return (w * wp).z( ) > 0;
+        //return w.z( ) * wp.z( ) > 0;
     }
 
     // OctahedralVector Definition
@@ -3060,7 +3062,7 @@ namespace pbrto
         }
 
 
-        explicit operator Vector3f( ) const
+        explicit operator Vector3f::Simd( ) const
         {
             Vector3f v;
             v.x = -1 + 2 * ( x / 65535.f );

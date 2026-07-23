@@ -141,7 +141,7 @@ namespace pbrto
         CompactLightBounds( ) = default;
 
         CompactLightBounds( const LightBounds& lb, const Bounds3f& allb )
-            : w( Vector3f(OctahedralVector(  Normalize( lb.w ) )) ),
+            : w( Vector3f::Simd(OctahedralVector(  Normalize( lb.w ) )) ),
               phi( lb.phi ),
               qCosTheta_o( QuantizeCos( lb.cosTheta_o ) ),
               qCosTheta_e( QuantizeCos( lb.cosTheta_e ) ),

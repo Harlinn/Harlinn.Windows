@@ -7,7 +7,14 @@ executed with the `--new` command line option. Without the `--new` option, the a
 executes the original [pbrt](https://github.com/mmp/pbrt-v4) CPU based rendering machinery.
 
 The modified rendering machinery renders [kroken/camera-1.pbrt](https://github.com/mmp/pbrt-v4-scenes/blob/master/kroken/camera-1.pbrt) 
-91 % faster than the original Visual Studio 2022 build of pbrt.
+significantly faster than the original Visual Studio 2022 build of pbrt. 
+
+I'm now building pbrto.exe using the latest Visual Studio 2026 build tools, and 
+the performance of the original pbrt rendering machinery has improved significantly, 
+but my modified version is still a bit faster.
+
+My notes below about the performance of pbrto were based on a Visual Studio 2022 build of pbrto.
+
 
 Rolling the original [pbrt](https://github.com/mmp/pbrt-v4) CPU based rendering machinery, and my modified version of this machinery,
 into a single app; makes it easier to verify that my modifications works as expected while exercising functionality provided by

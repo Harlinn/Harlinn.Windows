@@ -748,17 +748,39 @@ namespace pbrto
     }
 
 
+    /*
     inline SampledSpectrum Bilerp( pstdo::array<Float, 2> p, pstdo::span<const SampledSpectrum> v )
     {
+        
         return ( 
             (( 1 - p[ 0 ] ) * ( 1 - p[ 1 ] )) * v[ 0 ] + 
             (p[ 0 ] * ( 1 - p[ 1 ] )) * v[ 1 ] +
             (( 1 - p[ 0 ] ) * p[ 1 ]) * v[ 2 ] + 
             (p[ 0 ] * p[ 1 ]) * v[ 3 ] );
+        
+        
 
         //return ( ( 1 - p[ 0 ] ) * ( 1 - p[ 1 ] ) * v[ 0 ] + p[ 0 ] * ( 1 - p[ 1 ] ) * v[ 1 ] +
         //    ( 1 - p[ 0 ] ) * p[ 1 ] * v[ 2 ] + p[ 0 ] * p[ 1 ] * v[ 3 ] );
     }
+    */
+
+
+    inline SampledSpectrum Bilerp( const std::array<Float, 2>& p, const std::array<SampledSpectrum, 4>& v )
+    {
+        float coeff00 = ( 1 - p[ 0 ] ) * ( 1 - p[ 1 ] );
+        float coeff01 = ( 1 - p[ 0 ] ) * p[ 1 ];
+        float coeff10 = p[ 0 ] * ( 1 - p[ 1 ] );
+        float coeff11 = p[ 0 ] * p[ 1 ];
+
+        return (
+            coeff00 * v[ 0 ] +
+            coeff10 * v[ 1 ] +
+            coeff01 * v[ 2 ] +
+            coeff11 * v[ 3 ] );
+    }
+
+
 
     inline SampledSpectrum Lerp2( Float t, const SampledSpectrum& s1, const SampledSpectrum& s2 )
     {

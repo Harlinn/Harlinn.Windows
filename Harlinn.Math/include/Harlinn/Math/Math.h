@@ -33,6 +33,9 @@ namespace Harlinn::Math
     struct Constants : public std::false_type
     {};
 
+    /// <summary>
+    /// Constants for the float type.
+    /// </summary>
     template<>
     struct Constants<float> : public std::true_type
     {
@@ -84,6 +87,9 @@ namespace Harlinn::Math
 
 
     };
+    /// <summary>
+    /// Constants for the double type.
+    /// </summary>
     template<>
     struct Constants<double> : public std::true_type
     {
