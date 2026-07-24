@@ -824,35 +824,42 @@ namespace pbrto
     template <typename... Ts>
     class TaggedPointer
     {
+    private:
+        static_assert( sizeof( uintptr_t ) <= sizeof( uint64_t ),
+            "Expected pointer size to be <= 64 bits" );
+        // TaggedPointer Private Members
+        static constexpr int tagShift = 57;
+        static constexpr int tagBits = 64 - tagShift;
+        static constexpr uint64_t tagMask = ( ( 1ull << tagBits ) - 1 ) << tagShift;
+        static constexpr uint64_t ptrMask = ~tagMask;
+        uint64_t bits = 0;
     public:
         // TaggedPointer Public Types
         using Types = TypePack<Ts...>;
 
         // TaggedPointer Public Methods
-        TaggedPointer( ) = default;
+        constexpr TaggedPointer( ) noexcept = default;
         template <typename T>
-        PBRT_CPU_GPU TaggedPointer( T* ptr )
+            requires ( TypeIndex<T>( ) != 0 )
+        PBRT_CPU_GPU constexpr TaggedPointer( T* ptr ) noexcept
         {
-            uint64_t iptr = reinterpret_cast< uint64_t >( ptr );
-            NDCHECK_EQ( iptr & ptrMask, iptr );
+            uint64_t iptr = std::bit_cast< uint64_t >( ptr );
+            //NDCHECK_EQ( iptr & ptrMask, iptr );
             constexpr unsigned int type = TypeIndex<T>( );
             bits = iptr | ( ( uint64_t )type << tagShift );
         }
 
         PBRT_CPU_GPU
-            TaggedPointer( std::nullptr_t np ) {}
+            constexpr TaggedPointer( std::nullptr_t np ) noexcept {}
 
         PBRT_CPU_GPU
-            TaggedPointer( const TaggedPointer& t ) { bits = t.bits; }
+            constexpr TaggedPointer( const TaggedPointer& t ) noexcept = default; 
         PBRT_CPU_GPU
-            TaggedPointer& operator=( const TaggedPointer& t )
-        {
-            bits = t.bits;
-            return *this;
-        }
+            constexpr TaggedPointer& operator=( const TaggedPointer& t ) noexcept = default;
+        
 
         template <typename T>
-        PBRT_CPU_GPU static constexpr unsigned int TypeIndex( )
+        PBRT_CPU_GPU static constexpr unsigned int TypeIndex( ) noexcept
         {
             using Tp = typename std::remove_cv_t<T>;
             if constexpr ( std::is_same_v<Tp, std::nullptr_t> )
@@ -862,53 +869,52 @@ namespace pbrto
         }
 
         PBRT_CPU_GPU
-            unsigned int Tag( ) const { return ( ( bits & tagMask ) >> tagShift ); }
+            constexpr unsigned int Tag( ) const noexcept { return ( ( bits & tagMask ) >> tagShift ); }
 
         template <typename T>
-        PBRT_CPU_GPU bool Is( ) const
+        PBRT_CPU_GPU constexpr bool Is( ) const noexcept
         {
             return Tag( ) == TypeIndex<T>( );
         }
 
         PBRT_CPU_GPU
-            static constexpr unsigned int MaxTag( ) { return sizeof...( Ts ); }
+            static constexpr unsigned int MaxTag( ) noexcept { return sizeof...( Ts ); }
         PBRT_CPU_GPU
-            static constexpr unsigned int NumTags( ) { return MaxTag( ) + 1; }
+            static constexpr unsigned int NumTags( ) noexcept { return MaxTag( ) + 1; }
 
         PBRT_CPU_GPU
-            explicit operator bool( ) const { return ( bits & ptrMask ) != 0; }
+            explicit constexpr operator bool( ) const noexcept { return ( bits & ptrMask ) != 0; }
 
-        PBRT_CPU_GPU
-            bool operator<( const TaggedPointer& tp ) const { return bits < tp.bits; }
+        
 
         template <typename T>
-        PBRT_CPU_GPU T* Cast( )
+        PBRT_CPU_GPU constexpr T* Cast( ) noexcept
         {
             NDCHECK( Is<T>( ) );
-            return reinterpret_cast< T* >( ptr( ) );
+            return std::bit_cast< T* >( ptr( ) );
         }
 
         template <typename T>
-        PBRT_CPU_GPU const T* Cast( ) const
+        PBRT_CPU_GPU constexpr const T* Cast( ) const noexcept
         {
             NDCHECK( Is<T>( ) );
-            return reinterpret_cast< const T* >( ptr( ) );
+            return std::bit_cast< const T* >( ptr( ) );
         }
 
         template <typename T>
-        PBRT_CPU_GPU T* CastOrNullptr( )
+        PBRT_CPU_GPU constexpr T* CastOrNullptr( ) noexcept
         {
             if ( Is<T>( ) )
-                return reinterpret_cast< T* >( ptr( ) );
+                return std::bit_cast< T* >( ptr( ) );
             else
                 return nullptr;
         }
 
         template <typename T>
-        PBRT_CPU_GPU const T* CastOrNullptr( ) const
+        PBRT_CPU_GPU constexpr const T* CastOrNullptr( ) const noexcept
         {
             if ( Is<T>( ) )
-                return reinterpret_cast< const T* >( ptr( ) );
+                return std::bit_cast< const T* >( ptr( ) );
             else
                 return nullptr;
         }
@@ -919,15 +925,18 @@ namespace pbrto
         }
 
         PBRT_CPU_GPU
-            bool operator==( const TaggedPointer& tp ) const { return bits == tp.bits; }
+            constexpr bool operator==( const TaggedPointer& tp ) const noexcept { return bits == tp.bits; }
         PBRT_CPU_GPU
-            bool operator!=( const TaggedPointer& tp ) const { return bits != tp.bits; }
+            constexpr bool operator!=( const TaggedPointer& tp ) const noexcept { return bits != tp.bits; }
+        PBRT_CPU_GPU
+            constexpr bool operator<( const TaggedPointer& tp ) const noexcept { return bits < tp.bits; }
+
 
         PBRT_CPU_GPU
-            void* ptr( ) { return reinterpret_cast< void* >( bits & ptrMask ); }
+            constexpr void* ptr( ) noexcept { return std::bit_cast< void* >( bits & ptrMask ); }
 
         PBRT_CPU_GPU
-            const void* ptr( ) const { return reinterpret_cast< const void* >( bits & ptrMask ); }
+            constexpr const void* ptr( ) const noexcept { return std::bit_cast< const void* >( bits & ptrMask ); }
 
         template <typename F>
         PBRT_CPU_GPU decltype( auto ) Dispatch( F&& func )
@@ -941,7 +950,7 @@ namespace pbrto
         PBRT_CPU_GPU decltype( auto ) Dispatch( F&& func ) const
         {
             NDCHECK( ptr( ) );
-            using R = typename detail::ReturnType<F, Ts...>::type;
+            using R = typename detail::ReturnTypeConst<F, Ts...>::type;
             return detail::Dispatch<F, R, Ts...>( func, ptr( ), Tag( ) - 1 );
         }
 
@@ -961,15 +970,7 @@ namespace pbrto
             return detail::DispatchCPU<F, R, Ts...>( func, ptr( ), Tag( ) - 1 );
         }
 
-    private:
-        static_assert( sizeof( uintptr_t ) <= sizeof( uint64_t ),
-            "Expected pointer size to be <= 64 bits" );
-        // TaggedPointer Private Members
-        static constexpr int tagShift = 57;
-        static constexpr int tagBits = 64 - tagShift;
-        static constexpr uint64_t tagMask = ( ( 1ull << tagBits ) - 1 ) << tagShift;
-        static constexpr uint64_t ptrMask = ~tagMask;
-        uint64_t bits = 0;
+    
     };
 
 }

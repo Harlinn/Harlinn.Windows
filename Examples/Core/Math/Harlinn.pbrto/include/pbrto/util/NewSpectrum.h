@@ -820,9 +820,9 @@ namespace pbrto
     {
         if ( T <= 0 )
             return 0;
-        const Float c = 299792458.f;
-        const Float h = 6.62606957e-34f;
-        const Float kb = 1.3806488e-23f;
+        constexpr Float c = 299792458.f;
+        constexpr Float h = 6.62606957e-34f;
+        constexpr Float kb = 1.3806488e-23f;
         // Return emitted radiance for blackbody at wavelength _lambda_
         Float l = lambda * 1e-9f;
         Float Le = ( 2 * h * c * c ) / ( FastPow<5>( l ) * ( FastExp( ( h * c ) / ( l * kb * T ) ) - 1 ) );
