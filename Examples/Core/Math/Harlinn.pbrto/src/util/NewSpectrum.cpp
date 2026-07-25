@@ -73,11 +73,19 @@ namespace pbrto
 
     std::string Spectrum::ToString( ) const
     {
+#ifdef USE_TAGGED_PTR
+        if ( !*this )
+            return "(nullptr)";
+        std::string result;
+        Dispatch( [ & ]( auto* ptr ) { result = ptr->ToString( ); } );
+        return result;
+#else
         if ( !ptr( ) )
             return "(nullptr)";
 
         auto tostr = [ & ]( auto ptr ) { return ptr->ToString( ); };
         return DispatchCPU( tostr );
+#endif
     }
 
     // Spectrum Method Definitions

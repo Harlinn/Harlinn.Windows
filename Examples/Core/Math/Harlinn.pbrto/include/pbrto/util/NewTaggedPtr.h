@@ -31,9 +31,58 @@
 #include <string>
 #include <type_traits>
 
+#include <HCCTaggedPtr.h>
+
+
+//#define USE_NEW_TAGGED_POINTER 1
+
 namespace pbrto
 {
+#ifdef USE_NEW_TAGGED_POINTER
+    // TaggedPointer Definition
+    template <typename... Ts>
+    class TaggedPointer : public TaggedPtr<Ts...>
+    {
+    public:
+        using Base = TaggedPtr<Ts...>;
+        // TaggedPointer Public Types
+        using Types = TypePack<Ts...>;
 
+        using TaggedPtr<Ts...>::TaggedPtr;
+
+        template <typename F>
+        auto DispatchCPU( F&& func )
+        {
+            return Base::Dispatch( std::forward<F>( func ) );
+        }
+
+        template <typename F>
+        auto DispatchCPU( F&& func ) const
+        {
+            return Base::Dispatch( std::forward<F>( func ) );
+        }
+
+        /*
+        constexpr void* ptr( ) noexcept 
+        { 
+            return std::bit_cast< void* >( bits & ptrMask ); 
+        }
+
+        constexpr const void* ptr( ) const noexcept 
+        { 
+            return std::bit_cast< const void* >( bits & ptrMask ); 
+        }
+        */
+
+        std::string ToString( ) const
+        {
+            return StringPrintf( "[ TaggedPointer ptr: 0x%p tag: %d ]", Base::ptr( ), Base::TagIndex( ) );
+        }
+        
+    };
+
+
+#else
     namespace detail
     {
 
@@ -972,7 +1021,7 @@ namespace pbrto
 
     
     };
-
+#endif
 }
 
 #endif
