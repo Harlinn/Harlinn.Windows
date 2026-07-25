@@ -153,9 +153,6 @@ namespace Harlinn::Common::Core
             return encoded_ < other.encoded_;
         };
 
-
-
-
         
         /// <summary>
         /// Equality comparison operator for nullptr
@@ -186,11 +183,8 @@ namespace Harlinn::Common::Core
             {
                 return ( encoded_ & PtrMask ) == 0;
             }
-            constexpr std::uint16_t tagId =
-                Internal::TypeIndex<std::remove_cv_t<U>, AllowedTypes...>::value;
-            const std::uintptr_t expected =
-                ( static_cast< std::uintptr_t >( tagId ) << TagShift )
-                | ( std::bit_cast< std::uintptr_t >( other ) & PtrMask );
+            constexpr std::uint16_t tagId = Internal::TypeIndex<std::remove_cv_t<U>, AllowedTypes...>::value;
+            const std::uintptr_t expected = ( static_cast< std::uintptr_t >( tagId ) << TagShift ) | ( std::bit_cast< std::uintptr_t >( other ) & PtrMask );
             return encoded_ == expected;
         }
 
@@ -202,11 +196,8 @@ namespace Harlinn::Common::Core
             {
                 return ( encoded_ & PtrMask ) != 0;
             }
-            constexpr std::uint16_t tagId =
-                Internal::TypeIndex<std::remove_cv_t<U>, AllowedTypes...>::value;
-            const std::uintptr_t expected =
-                ( static_cast< std::uintptr_t >( tagId ) << TagShift )
-                | ( std::bit_cast< std::uintptr_t >( other ) & PtrMask );
+            constexpr std::uint16_t tagId = Internal::TypeIndex<std::remove_cv_t<U>, AllowedTypes...>::value;
+            const std::uintptr_t expected = ( static_cast< std::uintptr_t >( tagId ) << TagShift ) | ( std::bit_cast< std::uintptr_t >( other ) & PtrMask );
             return encoded_ != expected;
         }
         
@@ -215,7 +206,7 @@ namespace Harlinn::Common::Core
         /// Gets the index of the currently active tag.
         /// </summary>
         /// <returns>The index of the active tag.</returns>
-        constexpr [[nodiscard]] std::uint16_t TagIndex( ) const noexcept
+        [[nodiscard]] constexpr std::uint16_t TagIndex( ) const noexcept
         {
             return static_cast< std::uint16_t >( encoded_ >> TagShift );
         }
@@ -223,7 +214,7 @@ namespace Harlinn::Common::Core
         /// <summary>
         /// Checks if the tagged pointer is not null.
         /// </summary>
-        explicit constexpr operator bool( ) const noexcept 
+        [[nodiscard]] explicit constexpr operator bool( ) const noexcept
         { 
             return ( encoded_ & PtrMask ) != 0; 
         }
@@ -232,7 +223,7 @@ namespace Harlinn::Common::Core
         /// Checks if the tagged pointer is null.
         /// </summary>
         /// <returns>True if the tagged pointer is null, false otherwise.</returns>
-        [[nodiscard]] bool empty( ) const noexcept
+        [[nodiscard]] constexpr bool empty( ) const noexcept
         {
             return ( encoded_ & PtrMask ) == 0;
         }
@@ -241,7 +232,7 @@ namespace Harlinn::Common::Core
         /// Checks if the tagged pointer is assigned (not null).
         /// </summary>
         /// <returns>True if the tagged pointer is assigned, false otherwise.</returns>
-        [[nodiscard]] bool IsAssigned( ) const noexcept
+        [[nodiscard]] constexpr bool IsAssigned( ) const noexcept
         {
             return ( encoded_ & PtrMask ) != 0;
         }
@@ -250,21 +241,21 @@ namespace Harlinn::Common::Core
         /// Checks if the tagged pointer is of the specified type.
         /// </summary>
         template <typename T>
-        constexpr [[nodiscard]] bool Is( ) const noexcept
+        [[nodiscard]] constexpr bool Is( ) const noexcept
         {
             static_assert( ( std::is_same_v<std::remove_cv_t<T>, AllowedTypes> || ... ), "Requested type is not in the allowed list." );
-            if ( !*this )
+            if ( IsAssigned( ) )
             {
-                return false;
+                return TagIndex( ) == Internal::TypeIndex<std::remove_cv_t<T>, AllowedTypes...>::value;
             }
-            return TagIndex( ) == Internal::TypeIndex<std::remove_cv_t<T>, AllowedTypes...>::value;
+            return false;
         }
 
         /// <summary>
         /// Checks if the tagged pointer is of the specified type.
         /// </summary>
         template <typename T>
-        constexpr [[nodiscard]] bool is( ) const noexcept
+        [[nodiscard]] constexpr bool is( ) const noexcept
         {
             return Is<T>( );
         }
@@ -289,7 +280,7 @@ namespace Harlinn::Common::Core
         /// with an assertion in debug builds via Is&lt;T&gt;().
         /// </remarks>
         template <typename T, typename Self>
-        constexpr [[nodiscard]] auto Cast( this Self&& self ) noexcept
+        [[nodiscard]] constexpr auto Cast( this Self&& self ) noexcept
         {
             // Preserve const-qualification of *this in the returned pointer type.
             using Result = std::conditional_t<std::is_const_v<std::remove_reference_t<Self>>, const T*, T*>;
@@ -314,7 +305,7 @@ namespace Harlinn::Common::Core
         /// tagged pointer is const. Returns nullptr if the active tag does not match <typeparamref name="T"/>.
         /// </returns>
         template <typename T, typename Self>
-        constexpr [[nodiscard]] auto CastOrNullptr( this Self&& self ) noexcept
+        [[nodiscard]] constexpr auto CastOrNullptr( this Self&& self ) noexcept
         {
             using Result = std::conditional_t<std::is_const_v<std::remove_reference_t<Self>>, const T*, T*>;
             if ( self.template Is<T>( ) )
@@ -335,161 +326,32 @@ namespace Harlinn::Common::Core
         /// <typeparam name="T">The target type. Must be one of the AllowedTypes.</typeparam>
         /// <returns>A pointer to <typeparamref name="T"/> if the active tag matches; otherwise, nullptr.</returns>
         template <typename T, typename Self>
-        constexpr [[nodiscard]] auto get( this Self&& self ) noexcept
+        [[nodiscard]] constexpr auto get( this Self&& self ) noexcept
         {
             using Result = std::conditional_t<std::is_const_v<std::remove_reference_t<Self>>, const T*, T*>;
             return self.template Is<T>( ) ? std::bit_cast< Result >( self.template UncheckedGet<T>( ) ) : static_cast< Result >( nullptr );
         }
 
         template <typename Self>
-        constexpr [[nodiscard]] auto ptr( this Self&& self ) noexcept
+        [[nodiscard]] constexpr auto ptr( this Self&& self ) noexcept
         {
             using Result = std::conditional_t<std::is_const_v<std::remove_reference_t<Self>>, const void*, void*>;
-            return std::bit_cast< Result >( encoded_ & PtrMask );
+
+            return std::bit_cast< Result >( self.encoded_ & PtrMask );
         }
 
         /// <summary>
         /// Dispatches the invokable to the appropriate type based on the active tag.
         /// </summary>
-        /// <typeparam name="Invokable">The type of the invokable object.</typeparam>
-        /// <param name="invokable">The invokable object to be dispatched.</param>
-        /// <returns>The result of invoking the invokable on the active type.</returns>
-        /*
-        template <typename Invokable>
-        auto Dispatch( Invokable&& invokable ) const
-        {
-            assert( *this && "Attempted to visit a null pointer!" );
-
-            using R = std::common_type_t<std::invoke_result_t<Invokable, const AllowedTypes*>...>;
-
-            // Build a compile-time dispatch table. Each entry directly forwards to
-            // the invokable and returns its result, so the return value is produced by
-            // a single return expression per branch. This enables copy elision (RVO).
-            return[ & ]<std::size_t... I>( std::index_sequence<I...> ) -> R
-            {
-                using Handler = R( * )( const TaggedPtr&, Invokable&& );
-                static constexpr Handler table[ ] =
-                {
-                    []( const TaggedPtr& self, Invokable&& v ) -> R
-                    {
-                        using Tp = std::tuple_element_t<I, std::tuple<AllowedTypes...>>;
-                        return std::forward<Invokable>( v )( static_cast< const Tp* >( self.UncheckedGet<Tp>( ) ) );
-                    }...
-                };
-                const std::uint16_t tagIndex = TagIndex( );
-                assert( tagIndex < sizeof...( AllowedTypes ) && "No branch matched the active tag!" );
-                return table[ tagIndex ]( *this, std::forward<Invokable>( invokable ) );
-            }( std::make_index_sequence<sizeof...( AllowedTypes )>{} );
-        }
-
-        template <typename Invokable>
-        auto Dispatch( Invokable&& invokable )
-        {
-            assert( *this && "Attempted to visit a null pointer!" );
-
-            using R = std::common_type_t<std::invoke_result_t<Invokable, AllowedTypes*>...>;
-
-            // Build a compile-time dispatch table. Each entry directly forwards to
-            // the invokable and returns its result, so the return value is produced by
-            // a single return expression per branch. This enables copy elision (RVO).
-            return[ & ]<std::size_t... I>( std::index_sequence<I...> ) -> R
-            {
-                using Handler = R( * )( TaggedPtr&, Invokable&& );
-
-                // One trampoline per allowed type; the concrete type is resolved at
-                // compile time from the index.
-                static constexpr Handler table[ ] =
-                {
-                    []( TaggedPtr& self, Invokable&& v ) -> R
-                    {
-                        using Tp = std::tuple_element_t<I, std::tuple<AllowedTypes...>>;
-                        return std::forward<Invokable>( v )( self.UncheckedGet<Tp>( ) );
-                    }...
-                };
-
-                const std::uint16_t tagIndex = TagIndex( );
-                assert( tagIndex < sizeof...( AllowedTypes ) && "No branch matched the active tag!" );
-                return table[ tagIndex ]( *this, std::forward<Invokable>( invokable ) );
-            }( std::make_index_sequence<sizeof...( AllowedTypes )>{} );
-        }
-        */
-        /*
-        template <typename Invokable>
-        auto Dispatch( Invokable&& invokable )
-        {
-            assert( *this && "Attempted to visit a null pointer!" );
-            using R = std::common_type_t<std::invoke_result_t<Invokable, AllowedTypes*>...>;
-            const std::uint16_t tagIndex = TagIndex( );
-
-            return[ & ]<std::size_t... I>( std::index_sequence<I...> ) -> R
-            {
-                if constexpr ( std::is_void_v<R> )
-                {
-                    // void case - no result variable needed
-                    ( ( tagIndex == I
-                        ? ( void )( std::forward<Invokable>( invokable )(
-                            UncheckedGet<std::tuple_element_t<I, std::tuple<AllowedTypes...>>>( ) ) )
-                        : ( void )0 ), ... );
-                }
-                else
-                {
-                    R result{};
-                    // Direct, inlinable dispatch; no indirect call through a table.
-                    ( ( tagIndex == I
-                        ? ( void )( result = std::forward<Invokable>( invokable )(
-                            UncheckedGet<std::tuple_element_t<I, std::tuple<AllowedTypes...>>>( ) ) )
-                        : ( void )0 ), ... );
-                    return result;
-                }
-            }( std::make_index_sequence<sizeof...( AllowedTypes )>{} );
-        }
-
-        template <typename Invokable>
-        auto Dispatch( Invokable&& invokable ) const
-        {
-            assert( *this && "Attempted to visit a null pointer!" );
-            using R = std::common_type_t<std::invoke_result_t<Invokable, const AllowedTypes*>...>;
-            const std::uint16_t tagIndex = TagIndex( );
-
-            return[ & ]<std::size_t... I>( std::index_sequence<I...> ) -> R
-            {
-                if constexpr ( std::is_void_v<R> )
-                {
-                    // void case - no result variable needed
-                    ( ( tagIndex == I
-                        ? ( void )( std::forward<Invokable>( invokable )(
-                            UncheckedGet<std::tuple_element_t<I, std::tuple<AllowedTypes...>>>( ) ) )
-                        : ( void )0 ), ... );
-                }
-                else
-                {
-                    R result{};
-                    // Direct, inlinable dispatch; no indirect call through a table.
-                    ( ( tagIndex == I
-                        ? ( void )( result = std::forward<Invokable>( invokable )(
-                            UncheckedGet<std::tuple_element_t<I, std::tuple<AllowedTypes...>>>( ) ) )
-                        : ( void )0 ), ... );
-                    return result;
-                }
-            }( std::make_index_sequence<sizeof...( AllowedTypes )>{} );
-        }
-        */
-
-        /// <summary>
-        /// Dispatches the invokable to the appropriate type based on the active tag.
-        /// </summary>
-        /// <typeparam name="Invokable">The type of the invokable object.</typeparam>
-        /// <typeparam name="Self">
-        /// Deduced explicit object parameter type; propagates const-qualification of the
-        /// tagged pointer to the pointer passed to <paramref name="invokable"/>.
-        /// </typeparam>
+        /// <typeparam name="Invokable">The callable to invoke with the active pointer.</typeparam>
+        /// <typeparam name="Self">Deduced explicit object parameter; propagates const to the pointee.</typeparam>
         /// <param name="self">The explicit object parameter (deducing this).</param>
-        /// <param name="invokable">The invokable object to be dispatched.</param>
-        /// <returns>The result of invoking the invokable on the active type.</returns>
+        /// <param name="invokable">The callable dispatched on the active alternative.</param>
+        /// <returns>The (common) result of invoking <paramref name="invokable"/>.</returns>
         /// <remarks>
-        /// The tagged pointer MUST be non-null; this precondition is checked with an
-        /// assertion in debug builds. When the tagged pointer is const, the invokable is
-        /// called with a pointer to a const-qualified pointee.
+        /// The tagged pointer MUST be non-null; checked via assert in debug builds. Implemented as a
+        /// switch over the tag index so the compiler may emit a jump table. Does not require the
+        /// result type to be default-constructible.
         /// </remarks>
         template <typename Invokable, typename Self>
         constexpr auto Dispatch( this Self&& self, Invokable&& invokable )
@@ -502,34 +364,34 @@ namespace Harlinn::Common::Core
                 std::invoke_result_t<Invokable,
                 std::conditional_t<isConst, const AllowedTypes*, AllowedTypes*>>...>;
 
-            const std::uint16_t tagIndex = self.TagIndex( );
-
-            // Const-propagating accessor: returns const T* when *this is const, else T*.
-            auto getAs = [ & ]<typename T>( ) noexcept
+            auto callAs = [ & ]<std::size_t Index>( ) -> R
             {
+                using T = std::tuple_element_t<Index, std::tuple<AllowedTypes...>>;
                 using PtrT = std::conditional_t<isConst, const T*, T*>;
-                return static_cast< PtrT >( self.template UncheckedGet<T>( ) );
+                return std::forward<Invokable>( invokable )(
+                    static_cast< PtrT >( self.template UncheckedGet<T>( ) ) );
             };
 
-            return[ & ]<std::size_t... I>( std::index_sequence<I...> ) -> R
+            const std::uint16_t tagIndex = self.TagIndex( );
+
+            return[ & ]<std::size_t I>( this auto&& recurse, std::integral_constant<std::size_t, I> ) -> R
             {
-                if constexpr ( std::is_void_v<R> )
+                if constexpr ( I < sizeof...( AllowedTypes ) )
                 {
-                    ( ( tagIndex == I
-                        ? ( void )( std::forward<Invokable>( invokable )(
-                            getAs.template operator() < std::tuple_element_t<I, std::tuple<AllowedTypes...>> > ( ) ) )
-                        : ( void )0 ), ... );
+                    switch ( tagIndex )
+                    {
+                        case I:
+                            return callAs.template operator() < I > ( );
+                        default:
+                            return recurse( std::integral_constant<std::size_t, I + 1>{} );
+                    }
                 }
                 else
                 {
-                    R result{};
-                    ( ( tagIndex == I
-                        ? ( void )( result = std::forward<Invokable>( invokable )(
-                            getAs.template operator() < std::tuple_element_t<I, std::tuple<AllowedTypes...>> > ( ) ) )
-                        : ( void )0 ), ... );
-                    return result;
+                    // tagIndex is always valid for a non-null TaggedPtr
+                    std::unreachable( );
                 }
-            }( std::make_index_sequence<sizeof...( AllowedTypes )>{} );
+            }( std::integral_constant<std::size_t, 0>{} );
         }
 
     };
