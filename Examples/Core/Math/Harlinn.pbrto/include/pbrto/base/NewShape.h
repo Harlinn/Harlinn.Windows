@@ -47,11 +47,11 @@ namespace pbrto
 
     // Shape Definition
     class Shape
-        : public TaggedPointer<Sphere, Cylinder, Disk, Triangle, BilinearPatch, Curve>
+        : public TaggedPtr<Sphere, Cylinder, Disk, Triangle, BilinearPatch, Curve>
     {
     public:
         // Shape Interface
-        using TaggedPointer::TaggedPointer;
+        using TaggedPtr::TaggedPtr;
 
         static pstdo::vector<Shape> Create(
             const std::string& name, const Transform* renderFromObject,

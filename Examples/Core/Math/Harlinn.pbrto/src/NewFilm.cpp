@@ -62,13 +62,13 @@ namespace pbrto
     void Film::WriteImage( ImageMetadata metadata, Float splatScale )
     {
         auto write = [ & ]( auto ptr ) { return ptr->WriteImage( metadata, splatScale ); };
-        return DispatchCPU( write );
+        return Dispatch( write );
     }
 
     Image Film::GetImage( ImageMetadata* metadata, Float splatScale )
     {
         auto get = [ & ]( auto ptr ) { return ptr->GetImage( metadata, splatScale ); };
-        return DispatchCPU( get );
+        return Dispatch( get );
     }
 
     std::string Film::ToString( ) const
@@ -77,13 +77,13 @@ namespace pbrto
             return "(nullptr)";
 
         auto ts = [ & ]( auto ptr ) { return ptr->ToString( ); };
-        return DispatchCPU( ts );
+        return Dispatch( ts );
     }
 
     std::string Film::GetFilename( ) const
     {
         auto get = [ & ]( auto ptr ) { return ptr->GetFilename( ); };
-        return DispatchCPU( get );
+        return Dispatch( get );
     }
 
     // FilmBaseParameters Method Definitions

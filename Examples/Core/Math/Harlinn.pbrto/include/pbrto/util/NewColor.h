@@ -179,10 +179,10 @@ namespace pbrto
     class GammaColorEncoding;
 
     class ColorEncoding
-        : public TaggedPointer<LinearColorEncoding, sRGBColorEncoding, GammaColorEncoding>
+        : public TaggedPtr<LinearColorEncoding, sRGBColorEncoding, GammaColorEncoding>
     {
     public:
-        using TaggedPointer::TaggedPointer;
+        using TaggedPtr::TaggedPtr;
         // ColorEncoding Interface
         inline void ToLinear( pstdo::span<const uint8_t> vin, pstdo::span<Float> vout ) const;
         inline void FromLinear( pstdo::span<const Float> vin, pstdo::span<uint8_t> vout ) const;

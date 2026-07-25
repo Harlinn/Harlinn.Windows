@@ -52,7 +52,7 @@ namespace pbrto
 
     // Material Definition
     class Material
-        : public TaggedPointer<  // Material Types
+        : public TaggedPtr<  // Material Types
         CoatedDiffuseMaterial, CoatedConductorMaterial, ConductorMaterial,
         DielectricMaterial, DiffuseMaterial, DiffuseTransmissionMaterial, HairMaterial,
         MeasuredMaterial, SubsurfaceMaterial, ThinDielectricMaterial, MixMaterial
@@ -60,8 +60,12 @@ namespace pbrto
         >
     {
     public:
+        using Types = TypePack<    // Material Types
+            CoatedDiffuseMaterial, CoatedConductorMaterial, ConductorMaterial,
+            DielectricMaterial, DiffuseMaterial, DiffuseTransmissionMaterial, HairMaterial,
+            MeasuredMaterial, SubsurfaceMaterial, ThinDielectricMaterial, MixMaterial>;
         // Material Interface
-        using TaggedPointer::TaggedPointer;
+        using TaggedPtr::TaggedPtr;
 
         static Material Create( const std::string& name,
             const TextureParameterDictionary& parameters, Image* normalMap,

@@ -1014,7 +1014,7 @@ namespace pbrto
                 }
             };
 
-        return DispatchCPU( getBSDF );
+        return Dispatch( getBSDF );
     }
 
     template <typename TextureEvaluator>
@@ -1039,7 +1039,7 @@ namespace pbrto
                 return BSSRDF( bssrdf );
             }
             };
-        return DispatchCPU( get );
+        return Dispatch( get );
     }
 
     inline bool Material::HasSubsurfaceScattering( ) const

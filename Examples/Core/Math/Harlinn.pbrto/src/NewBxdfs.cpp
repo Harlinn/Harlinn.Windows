@@ -1289,7 +1289,7 @@ namespace pbrto
     std::string BxDF::ToString( ) const
     {
         auto toStr = []( auto ptr ) { return ptr->ToString( ); };
-        return DispatchCPU( toStr );
+        return Dispatch( toStr );
     }
 
     template class LayeredBxDF<DielectricBxDF, DiffuseBxDF, true>;

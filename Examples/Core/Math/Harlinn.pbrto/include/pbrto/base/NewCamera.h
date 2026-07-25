@@ -48,12 +48,13 @@ namespace pbrto
     class RealisticCamera;
 
     // Camera Definition
-    class Camera : public TaggedPointer<PerspectiveCamera, OrthographicCamera,
+    class Camera : public TaggedPtr<PerspectiveCamera, OrthographicCamera,
         SphericalCamera, RealisticCamera>
     {
     public:
+        using Types = TypePack<PerspectiveCamera, OrthographicCamera, SphericalCamera, RealisticCamera>;
         // Camera Interface
-        using TaggedPointer::TaggedPointer;
+        using TaggedPtr::TaggedPtr;
 
         static Camera Create( const std::string& name, const ParameterDictionary& parameters,
             Medium medium, const CameraTransform& cameraTransform, Film film,

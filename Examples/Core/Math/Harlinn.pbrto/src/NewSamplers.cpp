@@ -38,7 +38,7 @@ namespace pbrto
     Sampler Sampler::Clone( Allocator alloc )
     {
         auto clone = [ & ]( auto ptr ) { return ptr->Clone( alloc ); };
-        return DispatchCPU( clone );
+        return Dispatch( clone );
     }
 
     std::string Sampler::ToString( ) const
@@ -47,7 +47,7 @@ namespace pbrto
             return "(nullptr)";
 
         auto ts = [ & ]( auto ptr ) { return ptr->ToString( ); };
-        return DispatchCPU( ts );
+        return Dispatch( ts );
     }
 
     // HaltonSampler Method Definitions

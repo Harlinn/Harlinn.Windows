@@ -40,12 +40,12 @@ namespace pbrto
     class TriangleFilter;
 
     // Filter Definition
-    class Filter : public TaggedPointer<BoxFilter, GaussianFilter, MitchellFilter,
+    class Filter : public TaggedPtr<BoxFilter, GaussianFilter, MitchellFilter,
         LanczosSincFilter, TriangleFilter>
     {
     public:
         // Filter Interface
-        using TaggedPointer::TaggedPointer;
+        using TaggedPtr::TaggedPtr;
 
         static Filter Create( const std::string& name, const ParameterDictionary& parameters,
             const FileLoc* loc, Allocator alloc );

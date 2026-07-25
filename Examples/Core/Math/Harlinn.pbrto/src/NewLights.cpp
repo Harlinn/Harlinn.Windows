@@ -1557,13 +1557,13 @@ namespace pbrto
     SampledSpectrum Light::Phi( const SampledWavelengths& lambda ) const
     {
         auto phi = [ & ]( auto ptr ) { return ptr->Phi( lambda ); };
-        return DispatchCPU( phi );
+        return Dispatch( phi );
     }
 
     void Light::Preprocess( const Bounds3f& sceneBounds )
     {
         auto preprocess = [ & ]( auto ptr ) { return ptr->Preprocess( sceneBounds ); };
-        return DispatchCPU( preprocess );
+        return Dispatch( preprocess );
     }
 
     PBRT_CPU_GPU pstdo::optional<LightLeSample> Light::SampleLe( const Point2f& u1, const Point2f& u2,
@@ -1583,7 +1583,7 @@ namespace pbrto
     pstdo::optional<LightBounds> Light::Bounds( ) const
     {
         auto bounds = []( auto ptr ) { return ptr->Bounds( ); };
-        return DispatchCPU( bounds );
+        return Dispatch( bounds );
     }
 
     std::string Light::ToString( ) const
@@ -1592,7 +1592,7 @@ namespace pbrto
             return "(nullptr)";
 
         auto str = []( auto ptr ) { return ptr->ToString( ); };
-        return DispatchCPU( str );
+        return Dispatch( str );
     }
 
     void Light::PDF_Le( const Interaction& intr, const Vector3f::Simd& w, Float* pdfPos, Float* pdfDir ) const

@@ -695,7 +695,7 @@ namespace pbrto
             return "(nullptr)";
 
         auto toStr = []( auto ptr ) { return ptr->ToString( ); };
-        return DispatchCPU( toStr );
+        return Dispatch( toStr );
     }
 
     NSTAT_COUNTER( "Scene/Materials", nMaterialsCreated );

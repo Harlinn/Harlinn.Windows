@@ -59,7 +59,7 @@ namespace pbrto
             return "(nullptr)";
 
         auto ts = [ & ]( auto ptr ) { return ptr->ToString( ); };
-        return DispatchCPU( ts );
+        return Dispatch( ts );
     }
 
     std::string RayMajorantSegment::ToString( ) const
@@ -71,7 +71,7 @@ namespace pbrto
     std::string RayMajorantIterator::ToString( ) const
     {
         auto tostr = []( auto ptr ) { return ptr->ToString( ); };
-        return DispatchCPU( tostr );
+        return Dispatch( tostr );
     }
 
     std::string HomogeneousMajorantIterator::ToString( ) const
@@ -184,7 +184,7 @@ namespace pbrto
     bool Medium::IsEmissive( ) const
     {
         auto is = [ & ]( auto ptr ) { return ptr->IsEmissive( ); };
-        return DispatchCPU( is );
+        return Dispatch( is );
     }
 
     std::string Medium::ToString( ) const
@@ -193,7 +193,7 @@ namespace pbrto
             return "(nullptr)";
 
         auto ts = [ & ]( auto ptr ) { return ptr->ToString( ); };
-        return DispatchCPU( ts );
+        return Dispatch( ts );
     }
 
     // HomogeneousMedium Method Definitions

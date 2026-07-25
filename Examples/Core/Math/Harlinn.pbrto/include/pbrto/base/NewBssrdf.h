@@ -40,11 +40,11 @@ namespace pbrto
     // BSSRDF Definition
     class TabulatedBSSRDF;
 
-    class BSSRDF : public TaggedPointer<TabulatedBSSRDF>
+    class BSSRDF : public TaggedPtr<TabulatedBSSRDF>
     {
     public:
         // BSSRDF Interface
-        using TaggedPointer::TaggedPointer;
+        using TaggedPtr::TaggedPtr;
 
         inline pstdo::optional<BSSRDFProbeSegment> SampleSp( Float u1, const Point2f& u2 ) const;
 

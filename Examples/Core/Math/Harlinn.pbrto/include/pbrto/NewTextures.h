@@ -243,19 +243,25 @@ namespace pbrto
     };
 
     // TextureMapping2D Definition
-    class TextureMapping2D : public TaggedPointer<UVMapping, SphericalMapping, CylindricalMapping, PlanarMapping>
+    class TextureMapping2D : public TaggedPtr<UVMapping, SphericalMapping, CylindricalMapping, PlanarMapping>
     {
     public:
         // TextureMapping2D Interface
-        using TaggedPointer::TaggedPointer;
-        TextureMapping2D( TaggedPointer<UVMapping, SphericalMapping, CylindricalMapping, PlanarMapping> tp )
-            : TaggedPointer( tp )
+        using TaggedPtr::TaggedPtr;
+        TextureMapping2D( TaggedPtr<UVMapping, SphericalMapping, CylindricalMapping, PlanarMapping> tp )
+            : TaggedPtr( tp )
         {
         }
 
         static TextureMapping2D Create( const ParameterDictionary& parameters, const Transform& renderFromTexture, const FileLoc* loc, Allocator alloc );
 
         inline TexCoord2D Map( const TextureEvalContext& ctx ) const;
+
+        std::string ToString( ) const
+        {
+            return StringPrintf( "[ TaggedPointer ptr: 0x%p tag: %d ]", TaggedPtr::ptr( ), TaggedPtr::TagIndex( ) );
+        }
+
     };
 
     // TextureMapping2D Inline Functions
@@ -288,18 +294,25 @@ namespace pbrto
     };
 
     // TextureMapping3D Definition
-    class TextureMapping3D : public TaggedPointer<PointTransformMapping>
+    class TextureMapping3D : public TaggedPtr<PointTransformMapping>
     {
     public:
         // TextureMapping3D Interface
-        using TaggedPointer::TaggedPointer;
-        TextureMapping3D( TaggedPointer<PointTransformMapping> tp ) 
-            :  TaggedPointer( tp ) 
+        using TaggedPtr::TaggedPtr;
+        TextureMapping3D( TaggedPtr<PointTransformMapping> tp ) 
+            :  TaggedPtr( tp ) 
         { }
 
         static TextureMapping3D Create( const ParameterDictionary& parameters, const Transform& renderFromTexture, const FileLoc* loc, Allocator alloc );
 
         TexCoord3D Map( const TextureEvalContext& ctx ) const;
+
+        std::string ToString( ) const
+        {
+            return StringPrintf( "[ TaggedPointer ptr: 0x%p tag: %d ]", TaggedPtr::ptr( ), TaggedPtr::TagIndex( ) );
+        }
+
+
     };
 
     inline TexCoord3D TextureMapping3D::Map( const TextureEvalContext& ctx ) const

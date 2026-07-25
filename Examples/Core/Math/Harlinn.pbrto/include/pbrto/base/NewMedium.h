@@ -54,11 +54,12 @@ namespace pbrto
     // PhaseFunction Definition
     class HGPhaseFunction;
 
-    class PhaseFunction : public TaggedPointer<HGPhaseFunction>
+    class PhaseFunction : public TaggedPtr<HGPhaseFunction>
     {
     public:
+        using Types = TypePack<HGPhaseFunction>;
         // PhaseFunction Interface
-        using TaggedPointer::TaggedPointer;
+        using TaggedPtr::TaggedPtr;
 
         std::string ToString( ) const;
 
@@ -98,10 +99,10 @@ namespace pbrto
     class DDAMajorantIterator;
 
     class RayMajorantIterator
-        : public TaggedPointer<HomogeneousMajorantIterator, DDAMajorantIterator>
+        : public TaggedPtr<HomogeneousMajorantIterator, DDAMajorantIterator>
     {
     public:
-        using TaggedPointer::TaggedPointer;
+        using TaggedPtr::TaggedPtr;
 
         pstdo::optional<RayMajorantSegment> Next( );
 
@@ -110,14 +111,14 @@ namespace pbrto
 
     // Medium Definition
     class Medium
-        : public TaggedPointer<  // Medium Types
+        : public TaggedPtr<  // Medium Types
         HomogeneousMedium, GridMedium, RGBGridMedium, CloudMedium, NanoVDBMedium
 
         >
     {
     public:
         // Medium Interface
-        using TaggedPointer::TaggedPointer;
+        using TaggedPtr::TaggedPtr;
 
         static Medium Create( const std::string& name, const ParameterDictionary& parameters, const Transform& renderFromMedium, const FileLoc* loc, Allocator alloc );
 

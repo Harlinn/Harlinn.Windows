@@ -51,7 +51,7 @@ namespace pbrto
 
     // FloatTexture Definition
     class FloatTexture
-        : public TaggedPointer<  // FloatTextures
+        : public TaggedPtr<  // FloatTextures
         FloatImageTexture, GPUFloatImageTexture, FloatMixTexture,
         FloatDirectionMixTexture, FloatScaledTexture, FloatConstantTexture,
         FloatBilerpTexture, FloatCheckerboardTexture, FloatDotsTexture, FBmTexture,
@@ -61,7 +61,7 @@ namespace pbrto
     {
     public:
         // FloatTexture Interface
-        using TaggedPointer::TaggedPointer;
+        using TaggedPtr::TaggedPtr;
 
         static FloatTexture Create( const std::string& name,
             const Transform& renderFromTexture,

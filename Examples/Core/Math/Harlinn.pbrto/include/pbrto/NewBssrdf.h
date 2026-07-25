@@ -342,7 +342,7 @@ namespace pbrto
             BxDF* bxdf = ( BxDF* )scratchBuffer.Alloc( sizeof( BxDF ), alignof( BxDF ) );
             return ptr->ProbeIntersectionToSample( si, bxdf );
             };
-        return DispatchCPU( pits );
+        return Dispatch( pits );
     }
 
 }

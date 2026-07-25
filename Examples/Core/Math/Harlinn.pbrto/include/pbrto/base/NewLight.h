@@ -56,7 +56,7 @@ namespace pbrto
     struct LightLeSample;
 
     // Light Definition
-    class Light : public TaggedPointer<  // Light Source Types
+    class Light : public TaggedPtr<  // Light Source Types
         PointLight, DistantLight, ProjectionLight, GoniometricLight, SpotLight,
         DiffuseAreaLight, UniformInfiniteLight, ImageInfiniteLight,
         PortalImageInfiniteLight
@@ -65,7 +65,7 @@ namespace pbrto
     {
     public:
         // Light Interface
-        using TaggedPointer::TaggedPointer;
+        using TaggedPtr::TaggedPtr;
 
         static Light Create( const std::string& name, const ParameterDictionary& parameters,
             const Transform& renderFromLight,

@@ -49,18 +49,24 @@ namespace pbrto
 
     // Primitive Definition
     class Primitive
-        : public TaggedPointer<SimplePrimitive, GeometricPrimitive, TransformedPrimitive,
+        : public TaggedPtr<SimplePrimitive, GeometricPrimitive, TransformedPrimitive,
         AnimatedPrimitive, BVHAggregate, KdTreeAggregate>
     {
     public:
         // Primitive Interface
-        using TaggedPointer::TaggedPointer;
+        using TaggedPtr::TaggedPtr;
 
         Bounds3f Bounds( ) const;
 
         pstdo::optional<ShapeIntersection> Intersect( const Ray& r,
             Float tMax = Infinity ) const;
         bool IntersectP( const Ray& r, Float tMax = Infinity ) const;
+
+        std::string ToString( ) const
+        {
+            return StringPrintf( "[ TaggedPointer ptr: 0x%p tag: %d ]", TaggedPtr::ptr( ), TaggedPtr::TagIndex( ) );
+        }
+
     };
 
     // GeometricPrimitive Definition

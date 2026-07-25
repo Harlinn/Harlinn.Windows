@@ -26,13 +26,7 @@ namespace Harlinn::Common::Core
     namespace Internal
     {
         template <typename... Ts>
-        struct TypePack
-        {
-            static constexpr size_t count = sizeof...( Ts );
-        };
-
-        template <typename... Ts>
-            struct unique_type_count;
+        struct unique_type_count;
 
         template <>
         struct unique_type_count<>
@@ -76,6 +70,10 @@ namespace Harlinn::Common::Core
     /// A type-safe tagged pointer that can hold a pointer to one of the specified types.
     /// </summary>
     /// <typeparam name="...AllowedTypes">The types that the tagged pointer can hold.</typeparam>
+    /// <remarks>
+    /// See the <a href="https://en.wikipedia.org/wiki/Tagged_pointer">Wikipedia 
+    /// article on tagged pointers</a> for more information.
+    /// </remarks>
     template <typename... AllowedTypes>
     class TaggedPtr
     {
@@ -96,7 +94,6 @@ namespace Harlinn::Common::Core
         static_assert( sizeof...( AllowedTypes ) == Internal::unique_type_count_v<AllowedTypes...>, "AllowedTypes must be unique" );
         static_assert( sizeof...( AllowedTypes ) <= ( ( 1u << ( 64 - TagShift ) ) ), "Too many AllowedTypes for the available tag bits." );
     public:
-        using Types = Internal::TypePack<AllowedTypes...>;
 
         /// <summary>
         /// Default constructor

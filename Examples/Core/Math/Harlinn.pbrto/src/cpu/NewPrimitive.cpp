@@ -39,19 +39,19 @@ namespace pbrto
     Bounds3f Primitive::Bounds( ) const
     {
         auto bounds = [ & ]( auto ptr ) { return ptr->Bounds( ); };
-        return DispatchCPU( bounds );
+        return Dispatch( bounds );
     }
 
     pstdo::optional<ShapeIntersection> Primitive::Intersect( const Ray& r, Float tMax ) const
     {
         auto isect = [ & ]( auto ptr ) { return ptr->Intersect( r, tMax ); };
-        return DispatchCPU( isect );
+        return Dispatch( isect );
     }
 
     bool Primitive::IntersectP( const Ray& r, Float tMax ) const
     {
         auto isectp = [ & ]( auto ptr ) { return ptr->IntersectP( r, tMax ); };
-        return DispatchCPU( isectp );
+        return Dispatch( isectp );
     }
 
     // GeometricPrimitive Method Definitions

@@ -108,7 +108,7 @@ namespace pbrto
             return "(nullptr)";
 
         auto toStr = []( auto ptr ) { return ptr->ToString( ); };
-        return DispatchCPU( toStr );
+        return Dispatch( toStr );
     }
 
     std::string SpectrumTexture::ToString( ) const
@@ -117,7 +117,7 @@ namespace pbrto
             return "(nullptr)";
 
         auto toStr = []( auto ptr ) { return ptr->ToString( ); };
-        return DispatchCPU( toStr );
+        return Dispatch( toStr );
     }
 
     std::string UVMapping::ToString( ) const

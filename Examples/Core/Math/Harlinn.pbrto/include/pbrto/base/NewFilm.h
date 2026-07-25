@@ -41,9 +41,11 @@ namespace pbrto
     class PixelSensor;
 
     // Film Definition
-    class Film : public TaggedPointer<RGBFilm, GBufferFilm, SpectralFilm>
+    class Film : public TaggedPtr<RGBFilm, GBufferFilm, SpectralFilm>
     {
     public:
+        using TaggedPtr::TaggedPtr;
+
         // Film Interface
         PBRT_CPU_GPU inline void AddSample( Point2i pFilm, const SampledSpectrum& L,
             const SampledWavelengths& lambda,
@@ -78,7 +80,7 @@ namespace pbrto
         PBRT_CPU_GPU inline const PixelSensor* GetPixelSensor( ) const;
         std::string GetFilename( ) const;
 
-        using TaggedPointer::TaggedPointer;
+        
 
         static Film Create( const std::string& name, const ParameterDictionary& parameters,
             Float exposureTime, const CameraTransform& cameraTransform,

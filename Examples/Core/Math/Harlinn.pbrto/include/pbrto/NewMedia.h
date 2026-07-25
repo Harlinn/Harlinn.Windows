@@ -802,7 +802,7 @@ namespace pbrto
                 *iter = medium->SampleRay( ray, tMax, lambda );
                 return RayMajorantIterator( iter );
             };
-        return DispatchCPU( sample );
+        return Dispatch( sample );
     }
 
     template <typename F>

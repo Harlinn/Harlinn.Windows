@@ -1666,7 +1666,7 @@ namespace pbrto
             return "(nullptr)";
 
         auto tostr = [ & ]( auto ptr ) { return ptr->ToString( ); };
-        return DispatchCPU( tostr );
+        return Dispatch( tostr );
     }
 
     // Shape Method Definitions

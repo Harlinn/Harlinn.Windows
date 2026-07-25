@@ -46,12 +46,12 @@ namespace pbrto
     class ExhaustiveLightSampler;
 
     // LightSampler Definition
-    class LightSampler : public TaggedPointer<UniformLightSampler, PowerLightSampler,
+    class LightSampler : public TaggedPtr<UniformLightSampler, PowerLightSampler,
         ExhaustiveLightSampler, BVHLightSampler>
     {
     public:
         // LightSampler Interface
-        using TaggedPointer::TaggedPointer;
+        using TaggedPtr::TaggedPtr;
 
         static LightSampler Create( const std::string& name, pstdo::span<const Light> lights,
             Allocator alloc );

@@ -91,7 +91,7 @@ namespace pbrto
             return "(nullptr)";
 
         auto ts = [ & ]( auto ptr ) { return ptr->ToString( ); };
-        return DispatchCPU( ts );
+        return Dispatch( ts );
     }
 
     ///////////////////////////////////////////////////////////////////////////

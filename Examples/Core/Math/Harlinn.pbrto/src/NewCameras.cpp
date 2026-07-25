@@ -116,7 +116,7 @@ namespace pbrto
     void Camera::InitMetadata( ImageMetadata* metadata ) const
     {
         auto init = [ & ]( auto ptr ) { return ptr->InitMetadata( metadata ); };
-        return DispatchCPU( init );
+        return Dispatch( init );
     }
 
     std::string Camera::ToString( ) const
@@ -125,7 +125,7 @@ namespace pbrto
             return "(nullptr)";
 
         auto ts = [ & ]( auto ptr ) { return ptr->ToString( ); };
-        return DispatchCPU( ts );
+        return Dispatch( ts );
     }
 
     // CameraBase Method Definitions

@@ -56,7 +56,7 @@ namespace pbrto
 
     // Sampler Definition
     class Sampler
-        : public TaggedPointer<  // Sampler Types
+        : public TaggedPtr<  // Sampler Types
         PMJ02BNSampler, IndependentSampler, StratifiedSampler, HaltonSampler,
         PaddedSobolSampler, SobolSampler, ZSobolSampler, MLTSampler, DebugMLTSampler
 
@@ -64,7 +64,7 @@ namespace pbrto
     {
     public:
         // Sampler Interface
-        using TaggedPointer::TaggedPointer;
+        using TaggedPtr::TaggedPtr;
 
         static Sampler Create( const std::string& name, const ParameterDictionary& parameters,
             Point2i fullResolution, const FileLoc* loc, Allocator alloc );
