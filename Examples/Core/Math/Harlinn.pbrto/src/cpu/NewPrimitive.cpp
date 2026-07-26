@@ -30,7 +30,6 @@
 #include <pbrto/NewTextures.h>
 #include <pbrto/util/NewCheck.h>
 #include <pbrto/util/NewLog.h>
-#include <pbrto/util/NewTaggedPtr.h>
 #include <pbrto/util/NewVecMath.h>
 
 namespace pbrto

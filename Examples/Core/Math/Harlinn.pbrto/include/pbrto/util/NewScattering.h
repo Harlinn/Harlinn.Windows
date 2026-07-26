@@ -27,7 +27,6 @@
 
 #include <pbrto/util/NewMath.h>
 #include <pbrto/util/NewSpectrum.h>
-#include <pbrto/util/NewTaggedPtr.h>
 #include <pbrto/util/NewVecMath.h>
 
 namespace pbrto

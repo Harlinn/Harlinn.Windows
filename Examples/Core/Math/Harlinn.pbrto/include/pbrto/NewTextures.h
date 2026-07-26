@@ -34,9 +34,10 @@
 #include <pbrto/util/NewMipmap.h>
 #include <pbrto/util/NewNoise.h>
 #include <pbrto/util/NewSpectrum.h>
-#include <pbrto/util/NewTaggedPtr.h>
 #include <pbrto/util/NewTransform.h>
 #include <pbrto/util/NewVecMath.h>
+
+#include <HCCTaggedPtr.h>
 
 #include <initializer_list>
 #include <map>

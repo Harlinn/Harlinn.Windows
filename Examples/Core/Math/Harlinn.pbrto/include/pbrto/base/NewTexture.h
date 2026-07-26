@@ -23,11 +23,12 @@
 // SPDX: Apache-2.0
 
 #include <pbrto/NewPbrt.h>
-#include <pbrto/util/NewTaggedPtr.h>
 #include <pbrto/util/NewSpectrum.h>
 
 
 #include <string>
+
+#include <HCCTaggedPtr.h>
 
 namespace pbrto
 {
@@ -90,7 +91,7 @@ namespace pbrto
 
     // SpectrumTexture Definition
     class SpectrumTexture
-        : public TaggedPointer<  // SpectrumTextures
+        : public TaggedPtr<  // SpectrumTextures
         SpectrumImageTexture, GPUSpectrumImageTexture, SpectrumMixTexture,
         SpectrumDirectionMixTexture, SpectrumScaledTexture, SpectrumConstantTexture,
         SpectrumBilerpTexture, SpectrumCheckerboardTexture, MarbleTexture,
@@ -100,7 +101,7 @@ namespace pbrto
     {
     public:
         // SpectrumTexture Interface
-        using TaggedPointer::TaggedPointer;
+        using TaggedPtr::TaggedPtr;
 
         static SpectrumTexture Create( const std::string& name,
             const Transform& renderFromTexture,

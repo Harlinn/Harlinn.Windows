@@ -28,9 +28,9 @@
 #include <pbrto/util/NewCheck.h>
 #include <pbrto/util/NewMath.h>
 #include <pbrto/util/NewPStd.h>
-#include <pbrto/util/NewTaggedPtr.h>
 #include <pbrto/util/NewVecMath.h>
 
+#include <HCCTaggedPtr.h>
 
 // A special present from windgi.h on Windows...
 #ifdef RGB

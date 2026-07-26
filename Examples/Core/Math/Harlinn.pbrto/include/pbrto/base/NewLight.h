@@ -29,9 +29,10 @@
 #include <pbrto/base/NewShape.h>
 #include <pbrto/base/NewTexture.h>
 #include <pbrto/util/NewPStd.h>
-#include <pbrto/util/NewTaggedPtr.h>
 
 #include <string>
+
+#include <HCCTaggedPtr.h>
 
 namespace pbrto
 {

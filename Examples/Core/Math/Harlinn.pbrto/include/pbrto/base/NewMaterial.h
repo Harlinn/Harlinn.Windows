@@ -27,10 +27,11 @@
 
 #include <pbrto/base/NewBssrdf.h>
 #include <pbrto/base/NewTexture.h>
-#include <pbrto/util/NewTaggedPtr.h>
 
 #include <map>
 #include <string>
+
+#include <HCCTaggedPtr.h>
 
 namespace pbrto
 {

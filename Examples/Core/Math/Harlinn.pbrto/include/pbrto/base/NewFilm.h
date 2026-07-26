@@ -27,9 +27,10 @@
 
 #include <pbrto/base/NewFilter.h>
 #include <pbrto/util/NewPStd.h>
-#include <pbrto/util/NewTaggedPtr.h>
 
 #include <string>
+
+#include <HCCTaggedPtr.h>
 
 namespace pbrto
 {

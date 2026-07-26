@@ -32,7 +32,6 @@
 #include <pbrto/util/NewPStd.h>
 #include <pbrto/util/NewScattering.h>
 #include <pbrto/util/NewSpectrum.h>
-#include <pbrto/util/NewTaggedptr.h>
 #include <pbrto/util/NewVecMath.h>
 
 #include <string>

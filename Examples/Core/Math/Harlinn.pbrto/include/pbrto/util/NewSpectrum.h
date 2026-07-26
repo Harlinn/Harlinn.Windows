@@ -36,7 +36,6 @@
 #include <pbrto/util/NewVecMath.h>
 #include <pbrto/util/NewPStd.h>
 #include <pbrto/util/NewSampling.h>
-#include <pbrto/util/NewTaggedPtr.h>
 
 #include <HCCTaggedPtr.h>
 
@@ -47,8 +46,6 @@
 #include <numeric>
 #include <string>
 #include <vector>
-
-#define USE_TAGGED_PTR 1
 
 namespace pbrto
 {
@@ -802,7 +799,6 @@ namespace pbrto
     class RGBUnboundedSpectrum;
     class RGBIlluminantSpectrum;
 
-#ifdef USE_TAGGED_PTR
     class Spectrum : public TaggedPtr<ConstantSpectrum, DenselySampledSpectrum,
         PiecewiseLinearSpectrum, RGBAlbedoSpectrum,
         RGBUnboundedSpectrum, RGBIlluminantSpectrum,
@@ -819,24 +815,6 @@ namespace pbrto
 
         SampledSpectrum Sample( const SampledWavelengths& lambda ) const;
     };
-#else
-    class Spectrum : public TaggedPointer<ConstantSpectrum, DenselySampledSpectrum,
-        PiecewiseLinearSpectrum, RGBAlbedoSpectrum,
-        RGBUnboundedSpectrum, RGBIlluminantSpectrum,
-        BlackbodySpectrum>
-    {
-    public:
-        // Spectrum Interface
-        using TaggedPointer::TaggedPointer;
-        std::string ToString( ) const;
-
-        Float operator()( Float lambda ) const;
-
-        Float MaxValue( ) const;
-
-        SampledSpectrum Sample( const SampledWavelengths& lambda ) const;
-    };
-#endif
     // Spectrum Function Declarations
     PBRT_CPU_GPU inline Float Blackbody( Float lambda, Float T )
     {
@@ -1350,60 +1328,21 @@ namespace pbrto
         return integral;
     }
 
-#ifdef USE_TAGGED_PTR
     // Spectrum Inline Method Definitions
     PBRT_CPU_GPU inline Float Spectrum::operator()( Float lambda ) const
     {
         return Dispatch( [ & ]( auto* ptr ) { return ( *ptr )( lambda ); } );
-        /*
-        Float result = 0;
-        visit([&](auto* ptr) { result = (*ptr)(lambda); });
-        return result;
-        */
     }
 
     PBRT_CPU_GPU inline SampledSpectrum Spectrum::Sample( const SampledWavelengths& lambda ) const
     {
         return Dispatch( [ & ]( auto* ptr ) { return ptr->Sample( lambda ); } );
-        /*
-        SampledSpectrum result;
-        visit([&](auto* ptr) { result = ptr->Sample(lambda); });
-        return result;
-        */
     }
 
     PBRT_CPU_GPU inline Float Spectrum::MaxValue( ) const
     {
         return Dispatch( [ & ]( auto* ptr ) { return ptr->MaxValue(); } );
-        /*
-        Float result = 0;
-        visit([&](auto* ptr) { result = ptr->MaxValue(); });
-        return result;
-        */
     }
-#else
-    // Spectrum Inline Method Definitions
-    PBRT_CPU_GPU inline Float Spectrum::operator()( Float lambda ) const
-    {
-        auto op = [ & ]( auto ptr ) { return ( *ptr )( lambda ); };
-        return Dispatch( op );
-    }
-
-    PBRT_CPU_GPU inline SampledSpectrum Spectrum::Sample( const SampledWavelengths& lambda ) const
-    {
-        auto samp = [ & ]( auto ptr ) 
-            { 
-                return ptr->Sample( lambda ); 
-            };
-        return Dispatch( samp );
-    }
-
-    PBRT_CPU_GPU inline Float Spectrum::MaxValue( ) const
-    {
-        auto max = [ & ]( auto ptr ) { return ptr->MaxValue( ); };
-        return Dispatch( max );
-    }
-#endif
 } 
 
 namespace std

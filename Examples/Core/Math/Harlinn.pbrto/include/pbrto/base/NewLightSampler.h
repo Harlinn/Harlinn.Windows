@@ -25,9 +25,10 @@
 
 
 #include <pbrto/NewPbrt.h>
-#include <pbrto/util/NewTaggedPtr.h>
 
 #include <string>
+
+#include <HCCTaggedPtr.h>
 
 namespace pbrto
 {

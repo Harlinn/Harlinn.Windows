@@ -312,7 +312,6 @@
     <ClInclude Include="include\pbrto\util\NewSplines.h" />
     <ClInclude Include="include\pbrto\util\NewStats.h" />
     <ClInclude Include="include\pbrto\util\NewString.h" />
-    <ClInclude Include="include\pbrto\util\NewTaggedPtr.h" />
     <ClInclude Include="include\pbrto\util\NewTransform.h" />
     <ClInclude Include="include\pbrto\util\NewVecMath.h" />
     <ClInclude Include="include\pbrto\util\noise.h" />

@@ -24,11 +24,12 @@
 // SPDX: Apache-2.0
 
 #include <pbrto/NewPbrt.h>
-#include <pbrto/util/NewTaggedPtr.h>
 #include <pbrto/util/NewVecMath.h>
 
 #include <string>
 #include <vector>
+
+#include <HCCTaggedPtr.h>
 
 namespace pbrto
 {

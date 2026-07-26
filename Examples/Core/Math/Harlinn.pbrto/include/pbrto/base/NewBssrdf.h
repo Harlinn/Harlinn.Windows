@@ -25,7 +25,7 @@
 
 #include <pbrto/NewPbrt.h>
 #include <pbrto/util/NewPStd.h>
-#include <pbrto/util/NewTaggedPtr.h>
+#include <HCCTaggedPtr.h>
 
 #include <string>
 

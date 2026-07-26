@@ -33,7 +33,6 @@
 #include <pbrto/base/NewSampler.h>
 #include <pbrto/NewRay.h>
 #include <pbrto/util/NewSpectrum.h>
-#include <pbrto/util/NewTaggedPtr.h>
 #include <pbrto/util/NewVecMath.h>
 
 #include <limits>

@@ -34,7 +34,6 @@
 #include <pbrto/NewTextures.h>
 #include <pbrto/util/NewCheck.h>
 #include <pbrto/util/NewSpectrum.h>
-#include <pbrto/util/NewTaggedptr.h>
 #include <pbrto/util/NewTransform.h>
 
 #include <memory>

@@ -519,9 +519,6 @@
     <ClInclude Include="include\pbrto\base\NewMedium.h">
       <Filter>include\pbrto\base</Filter>
     </ClInclude>
-    <ClInclude Include="include\pbrto\util\NewTaggedPtr.h">
-      <Filter>include\pbrto\util</Filter>
-    </ClInclude>
     <ClInclude Include="include\pbrto\NewBsdf.h">
       <Filter>include\pbrto</Filter>
     </ClInclude>

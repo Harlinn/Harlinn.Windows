@@ -29,10 +29,11 @@
 #include <pbrto/util/NewPStd.h>
 #include <pbrto/util/NewRng.h>
 #include <pbrto/util/NewSpectrum.h>
-#include <pbrto/util/NewTaggedPtr.h>
 
 #include <string>
 #include <vector>
+
+#include <HCCTaggedPtr.h>
 
 namespace pbrto
 {
