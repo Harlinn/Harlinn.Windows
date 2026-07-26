@@ -525,6 +525,320 @@ namespace Harlinn::Windows::Graphics::DirectWrite
     };
 
 
+    /// <summary>
+    /// Direction for how reading progresses.
+    /// </summary>
+    enum class ReadingDirection
+    {
+        /// <summary>
+        /// Reading progresses from left to right.
+        /// </summary>
+        LeftToRight = DWRITE_READING_DIRECTION_LEFT_TO_RIGHT,
+
+        /// <summary>
+        /// Reading progresses from right to left.
+        /// </summary>
+        RightToLeft = DWRITE_READING_DIRECTION_RIGHT_TO_LEFT,
+
+        /// <summary>
+        /// Reading progresses from top to bottom.
+        /// </summary>
+        TopToBottom = DWRITE_READING_DIRECTION_TOP_TO_BOTTOM,
+
+        /// <summary>
+        /// Reading progresses from bottom to top.
+        /// </summary>
+        BottomToTop = DWRITE_READING_DIRECTION_BOTTOM_TO_TOP,
+    };
+
+    /// <summary>
+    /// Direction for how lines of text are placed relative to one another.
+    /// </summary>
+    enum class FlowDirection
+    {
+        /// <summary>
+        /// Text lines are placed from top to bottom.
+        /// </summary>
+        TopToBottom = DWRITE_FLOW_DIRECTION_TOP_TO_BOTTOM,
+
+        /// <summary>
+        /// Text lines are placed from bottom to top.
+        /// </summary>
+        BottomToTop = DWRITE_FLOW_DIRECTION_BOTTOM_TO_TOP,
+
+        /// <summary>
+        /// Text lines are placed from left to right.
+        /// </summary>
+        LeftToRight = DWRITE_FLOW_DIRECTION_LEFT_TO_RIGHT,
+
+        /// <summary>
+        /// Text lines are placed from right to left.
+        /// </summary>
+        RightToLeft = DWRITE_FLOW_DIRECTION_RIGHT_TO_LEFT,
+    };
+
+    /// <summary>
+    /// Alignment of paragraph text along the reading direction axis relative to 
+    /// the leading and trailing edge of the layout box.
+    /// </summary>
+    enum class TextAlignment
+    {
+        /// <summary>
+        /// The leading edge of the paragraph text is aligned to the layout box's leading edge.
+        /// </summary>
+        Leading = DWRITE_TEXT_ALIGNMENT_LEADING,
+
+        /// <summary>
+        /// The trailing edge of the paragraph text is aligned to the layout box's trailing edge.
+        /// </summary>
+        Trailing = DWRITE_TEXT_ALIGNMENT_TRAILING,
+
+        /// <summary>
+        /// The center of the paragraph text is aligned to the center of the layout box.
+        /// </summary>
+        Center = DWRITE_TEXT_ALIGNMENT_CENTER,
+
+        /// <summary>
+        /// Align text to the leading side, and also justify text to fill the lines.
+        /// </summary>
+        Justified = DWRITE_TEXT_ALIGNMENT_JUSTIFIED
+    };
+
+    /// <summary>
+    /// Alignment of paragraph text along the flow direction axis relative to the
+    /// flow's beginning and ending edge of the layout box.
+    /// </summary>
+    enum class ParagraphAlignment
+    {
+        /// <summary>
+        /// The first line of paragraph is aligned to the flow's beginning edge of the layout box.
+        /// </summary>
+        Near = DWRITE_PARAGRAPH_ALIGNMENT_NEAR,
+
+        /// <summary>
+        /// The last line of paragraph is aligned to the flow's ending edge of the layout box.
+        /// </summary>
+        Far = DWRITE_PARAGRAPH_ALIGNMENT_FAR,
+
+        /// <summary>
+        /// The center of the paragraph is aligned to the center of the flow of the layout box.
+        /// </summary>
+        Center = DWRITE_PARAGRAPH_ALIGNMENT_CENTER
+    };
+
+    /// <summary>
+    /// Word wrapping in multiline paragraph.
+    /// </summary>
+    enum class WordWrapping
+    {
+        /// <summary>
+        /// Words are broken across lines to avoid text overflowing the layout box.
+        /// </summary>
+        Wrap = DWRITE_WORD_WRAPPING_WRAP,
+
+        /// <summary>
+        /// Words are kept within the same line even when it overflows the layout box.
+        /// This option is often used with scrolling to reveal overflow text. 
+        /// </summary>
+        NoWrap = DWRITE_WORD_WRAPPING_NO_WRAP,
+
+        /// <summary>
+        /// Words are broken across lines to avoid text overflowing the layout box.
+        /// Emergency wrapping occurs if the word is larger than the maximum width.
+        /// </summary>
+        EmergencyBreak = DWRITE_WORD_WRAPPING_EMERGENCY_BREAK,
+
+        /// <summary>
+        /// Only wrap whole words, never breaking words (emergency wrapping) when the
+        /// layout width is too small for even a single word.
+        /// </summary>
+        WholeWord = DWRITE_WORD_WRAPPING_WHOLE_WORD,
+
+        /// <summary>
+        /// Wrap between any valid characters clusters.
+        /// </summary>
+        Character = DWRITE_WORD_WRAPPING_CHARACTER,
+    };
+
+    /// <summary>
+    /// The method used for line spacing in layout.
+    /// </summary>
+    enum class LineSpacingMethod
+    {
+        /// <summary>
+        /// Line spacing depends solely on the content, growing to accommodate the size of fonts and inline objects.
+        /// </summary>
+        Default = DWRITE_LINE_SPACING_METHOD_DEFAULT,
+
+        /// <summary>
+        /// Lines are explicitly set to uniform spacing, regardless of contained font sizes.
+        /// This can be useful to avoid the uneven appearance that can occur from font fallback.
+        /// </summary>
+        Uniform = DWRITE_LINE_SPACING_METHOD_UNIFORM,
+
+        /// <summary>
+        /// Line spacing and baseline distances are proportional to the computed values based on the content, the size of the fonts and inline objects.
+        /// </summary>
+        Proportional = DWRITE_LINE_SPACING_METHOD_PROPORTIONAL
+    };
+
+    /// <summary>
+    /// Text granularity used to trim text overflowing the layout box.
+    /// </summary>
+    enum class TrimmingGranularity
+    {
+        /// <summary>
+        /// No trimming occurs. Text flows beyond the layout width.
+        /// </summary>
+        None = DWRITE_TRIMMING_GRANULARITY_NONE,
+
+        /// <summary>
+        /// Trimming occurs at character cluster boundary.
+        /// </summary>
+        Character = DWRITE_TRIMMING_GRANULARITY_CHARACTER,
+
+        /// <summary>
+        /// Trimming occurs at word boundary.
+        /// </summary>
+        Word = DWRITE_TRIMMING_GRANULARITY_WORD
+    };
+
+    /// <summary>
+    /// Typographic feature of text supplied by the font.
+    /// </summary>
+    /// <remarks>
+    /// Use DWRITE_MAKE_FONT_FEATURE_TAG() to create a custom one.
+    /// <remarks>
+    enum class FontFeatureTag
+    {
+        AlternativeFractions = DWRITE_FONT_FEATURE_TAG_ALTERNATIVE_FRACTIONS,
+        PetiteCapitalsFromCapitals = DWRITE_FONT_FEATURE_TAG_PETITE_CAPITALS_FROM_CAPITALS,
+        SmallCapitalsFromCapitals = DWRITE_FONT_FEATURE_TAG_SMALL_CAPITALS_FROM_CAPITALS,
+        ContextualAlternates = DWRITE_FONT_FEATURE_TAG_CONTEXTUAL_ALTERNATES,
+        CaseSensitiveForms = DWRITE_FONT_FEATURE_TAG_CASE_SENSITIVE_FORMS,
+        GlyphCompositionDecomposition = DWRITE_FONT_FEATURE_TAG_GLYPH_COMPOSITION_DECOMPOSITION,
+        ContextualLigatures = DWRITE_FONT_FEATURE_TAG_CONTEXTUAL_LIGATURES,
+        CapitalSpacing = DWRITE_FONT_FEATURE_TAG_CAPITAL_SPACING,
+        ContextualSwash = DWRITE_FONT_FEATURE_TAG_CONTEXTUAL_SWASH,
+        CursivePositioning = DWRITE_FONT_FEATURE_TAG_CURSIVE_POSITIONING,
+        Default = DWRITE_FONT_FEATURE_TAG_DEFAULT,
+        DiscretionaryLigatures = DWRITE_FONT_FEATURE_TAG_DISCRETIONARY_LIGATURES,
+        ExpertForms = DWRITE_FONT_FEATURE_TAG_EXPERT_FORMS,
+        Fractions = DWRITE_FONT_FEATURE_TAG_FRACTIONS,
+        FullWidth = DWRITE_FONT_FEATURE_TAG_FULL_WIDTH,
+        HalfForms = DWRITE_FONT_FEATURE_TAG_HALF_FORMS,
+        HalantForms = DWRITE_FONT_FEATURE_TAG_HALANT_FORMS,
+        AlternateHalfWidth = DWRITE_FONT_FEATURE_TAG_ALTERNATE_HALF_WIDTH,
+        HistoricalForms = DWRITE_FONT_FEATURE_TAG_HISTORICAL_FORMS,
+        HorizontalKanaAlternates = DWRITE_FONT_FEATURE_TAG_HORIZONTAL_KANA_ALTERNATES,
+        HistoricalLigatures = DWRITE_FONT_FEATURE_TAG_HISTORICAL_LIGATURES,
+        HalfWidth = DWRITE_FONT_FEATURE_TAG_HALF_WIDTH,
+        HojoKanjiForms = DWRITE_FONT_FEATURE_TAG_HOJO_KANJI_FORMS,
+        JIS04Forms = DWRITE_FONT_FEATURE_TAG_JIS04_FORMS,
+        JIS78Forms = DWRITE_FONT_FEATURE_TAG_JIS78_FORMS,
+        JIS83Forms = DWRITE_FONT_FEATURE_TAG_JIS83_FORMS,
+        JIS90Forms = DWRITE_FONT_FEATURE_TAG_JIS90_FORMS,
+        Kerning = DWRITE_FONT_FEATURE_TAG_KERNING,
+        StandardLigatures = DWRITE_FONT_FEATURE_TAG_STANDARD_LIGATURES,
+        LiningFigures = DWRITE_FONT_FEATURE_TAG_LINING_FIGURES,
+        LocalizedForms = DWRITE_FONT_FEATURE_TAG_LOCALIZED_FORMS,
+        MarkPositioning = DWRITE_FONT_FEATURE_TAG_MARK_POSITIONING,
+        MathematicalGreek = DWRITE_FONT_FEATURE_TAG_MATHEMATICAL_GREEK,
+        MarkToMarkPositioning = DWRITE_FONT_FEATURE_TAG_MARK_TO_MARK_POSITIONING,
+        AlternateAnnotationForms = DWRITE_FONT_FEATURE_TAG_ALTERNATE_ANNOTATION_FORMS,
+        NLCKanjiForms = DWRITE_FONT_FEATURE_TAG_NLC_KANJI_FORMS,
+        OldStyleFigures = DWRITE_FONT_FEATURE_TAG_OLD_STYLE_FIGURES,
+        Ordinals = DWRITE_FONT_FEATURE_TAG_ORDINALS,
+        ProportionalAlternateWidth = DWRITE_FONT_FEATURE_TAG_PROPORTIONAL_ALTERNATE_WIDTH,
+        PetiteCapitals = DWRITE_FONT_FEATURE_TAG_PETITE_CAPITALS,
+        ProportionalFigures = DWRITE_FONT_FEATURE_TAG_PROPORTIONAL_FIGURES,
+        ProportionalWidths = DWRITE_FONT_FEATURE_TAG_PROPORTIONAL_WIDTHS,
+        QuarterWidths = DWRITE_FONT_FEATURE_TAG_QUARTER_WIDTHS,
+        RequiredLigatures = DWRITE_FONT_FEATURE_TAG_REQUIRED_LIGATURES,
+        RubyNotationForms = DWRITE_FONT_FEATURE_TAG_RUBY_NOTATION_FORMS,
+        StylisticAlternates = DWRITE_FONT_FEATURE_TAG_STYLISTIC_ALTERNATES,
+        ScientificInferiors = DWRITE_FONT_FEATURE_TAG_SCIENTIFIC_INFERIORS,
+        SmallCapitals = DWRITE_FONT_FEATURE_TAG_SMALL_CAPITALS,
+        SimplifiedForms = DWRITE_FONT_FEATURE_TAG_SIMPLIFIED_FORMS,
+        StylisticSet1 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_1,
+        StylisticSet2 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_2,
+        StylisticSet3 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_3,
+        StylisticSet4 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_4,
+        StylisticSet5 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_5,
+        StylisticSet6 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_6,
+        StylisticSet7 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_7,
+        StylisticSet8 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_8,
+        StylisticSet9 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_9,
+        StylisticSet10 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_10,
+        StylisticSet11 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_11,
+        StylisticSet12 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_12,
+        StylisticSet13 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_13,
+        StylisticSet14 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_14,
+        StylisticSet15 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_15,
+        StylisticSet16 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_16,
+        StylisticSet17 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_17,
+        StylisticSet18 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_18,
+        StylisticSet19 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_19,
+        StylisticSet20 = DWRITE_FONT_FEATURE_TAG_STYLISTIC_SET_20,
+        Subscript = DWRITE_FONT_FEATURE_TAG_SUBSCRIPT,
+        Superscript = DWRITE_FONT_FEATURE_TAG_SUPERSCRIPT,
+        Swash = DWRITE_FONT_FEATURE_TAG_SWASH,
+        Titling = DWRITE_FONT_FEATURE_TAG_TITLING,
+        TraditionalNameForms = DWRITE_FONT_FEATURE_TAG_TRADITIONAL_NAME_FORMS,
+        TabularFigures = DWRITE_FONT_FEATURE_TAG_TABULAR_FIGURES,
+        TraditionalForms = DWRITE_FONT_FEATURE_TAG_TRADITIONAL_FORMS,
+        ThirdWidths = DWRITE_FONT_FEATURE_TAG_THIRD_WIDTHS,
+        Unicase = DWRITE_FONT_FEATURE_TAG_UNICASE,
+        VerticalWriting = DWRITE_FONT_FEATURE_TAG_VERTICAL_WRITING,
+        VerticalAlternatesAndRotation = DWRITE_FONT_FEATURE_TAG_VERTICAL_ALTERNATES_AND_ROTATION,
+        SlashedZero = DWRITE_FONT_FEATURE_TAG_SLASHED_ZERO,
+    };
+
+    /// <summary>
+    /// The TextRange structure specifies a range of text positions where format is applied.
+    /// </summary>
+    struct TextRange : public DWRITE_TEXT_RANGE
+    {
+        using Base = DWRITE_TEXT_RANGE;
+        TextRange( ) : Base{}
+        {}
+    };
+
+    /// <summary>
+    /// The DWRITE_FONT_FEATURE structure specifies properties used to identify and execute typographic feature in the font.
+    /// </summary>
+    struct FontFeature : public DWRITE_FONT_FEATURE
+    {
+        using Base = DWRITE_FONT_FEATURE;
+        FontFeature( ) : Base{}
+        {}
+    };
+
+    /// <summary>
+    /// Defines a set of typographic features to be applied during shaping.
+    /// Notice the character range which this feature list spans is specified
+    /// as a separate parameter to GetGlyphs.
+    /// </summary>
+    struct TypographicFeatures : public DWRITE_TYPOGRAPHIC_FEATURES
+    {
+        using Base = DWRITE_TYPOGRAPHIC_FEATURES;
+        TypographicFeatures( ) : Base{}
+        {}
+    };
+
+    /// <summary>
+    /// The Trimming structure specifies the trimming option for text overflowing the layout box.
+    /// </summary>
+    struct Trimming : public DWRITE_TRIMMING
+    {
+        using Base = DWRITE_TRIMMING;
+        Trimming( ) : Base{}
+        {}
+    };
+
+
+
+
     class FontFileStream;
     
     /// <summary>
@@ -2903,14 +3217,124 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFamily, FontList, IDWriteFontFamily, IDWriteFontList )
 
-        HW_EXPORT void GetFamilyNames( IDWriteLocalizedStrings** names ) const;
-        HW_EXPORT LocalizedStrings GetFamilyNames( ) const;
+        /// <summary>
+        /// Creates a localized strings object that contains the family names for the font family, indexed by locale name.
+        /// </summary>
+        /// <param name="names">
+        /// Receives a pointer to the newly created localized strings object.
+        /// </param>
+        void GetFamilyNames( IDWriteLocalizedStrings** names ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFamilyNames( names );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetFirstMatchingFont( DWRITE_FONT_WEIGHT  weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style, IDWriteFont** matchingFont ) const;
-        HW_EXPORT Font GetFirstMatchingFont( DWRITE_FONT_WEIGHT  weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style ) const;
+        /// <summary>
+        /// Creates a localized strings object that contains the family names for the font family, indexed by locale name.
+        /// </summary>
+        /// <returns>
+        /// A LocalizedStrings object that represents the family names.
+        /// </returns>
+        LocalizedStrings GetFamilyNames( ) const
+        {
+            IDWriteLocalizedStrings* names = nullptr;
+            GetFamilyNames( &names );
+            LocalizedStrings result( names );
+            return result;
+        }
 
-        HW_EXPORT void GetMatchingFonts( DWRITE_FONT_WEIGHT weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style, IDWriteFontList** matchingFonts ) const;
-        HW_EXPORT FontList GetMatchingFonts( DWRITE_FONT_WEIGHT weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style ) const;
+        /// <summary>
+        /// Gets the font that best matches the specified properties.
+        /// </summary>
+        /// <param name="weight">The requested weight of the font.</param>
+        /// <param name="stretch">The requested stretch of the font.</param>
+        /// <param name="style">The requested style of the font.</param>
+        /// <param name="matchingFont">Receives a pointer to the matching font.</param>
+        void GetFirstMatchingFont( DWRITE_FONT_WEIGHT  weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style, IDWriteFont** matchingFont ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFirstMatchingFont( weight, stretch, style, matchingFont );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Gets the font that best matches the specified properties.
+        /// </summary>
+        /// <param name="weight">The requested weight of the font.</param>
+        /// <param name="stretch">The requested stretch of the font.</param>
+        /// <param name="style">The requested style of the font.</param>
+        /// <param name="matchingFont">Receives a pointer to the matching font.</param>
+        void GetFirstMatchingFont( FontWeight weight, FontStretch stretch, FontStyle style, IDWriteFont** matchingFont ) const
+        {
+            GetFirstMatchingFont( static_cast< DWRITE_FONT_WEIGHT >( weight ), static_cast< DWRITE_FONT_STRETCH >( stretch ), static_cast< DWRITE_FONT_STYLE >( style ), matchingFont );
+        }
+
+        /// <summary>
+        /// Gets the font that best matches the specified properties.
+        /// </summary>
+        /// <param name="weight">The requested weight of the font.</param>
+        /// <param name="stretch">The requested stretch of the font.</param>
+        /// <param name="style">The requested style of the font.</param>
+        /// <returns>
+        /// A Font object that represents the matching font.
+        /// </returns>
+        inline Font GetFirstMatchingFont( DWRITE_FONT_WEIGHT  weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style ) const;
+        
+        /// <summary>
+        /// Gets the font that best matches the specified properties.
+        /// </summary>
+        /// <param name="weight">The requested weight of the font.</param>
+        /// <param name="stretch">The requested stretch of the font.</param>
+        /// <param name="style">The requested style of the font.</param>
+        /// <returns>
+        /// A Font object that represents the matching font.
+        /// </returns>
+        inline Font GetFirstMatchingFont( FontWeight weight, FontStretch stretch, FontStyle style ) const;
+
+        /// <summary>
+        /// Gets a list of fonts in the font family ranked in order of how well they match the specified properties.
+        /// </summary>
+        /// <param name="weight">The requested font weight.</param>
+        /// <param name="stretch">The requested font stretch.</param>
+        /// <param name="style">The requested font style.</param>
+        /// <param name="matchingFonts">Receives a pointer to the list of matching fonts.</param>
+        void GetMatchingFonts( DWRITE_FONT_WEIGHT weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style, IDWriteFontList** matchingFonts ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetMatchingFonts( weight, stretch, style, matchingFonts );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Gets a list of fonts in the font family ranked in order of how well they match the specified properties.
+        /// </summary>
+        /// <param name="weight">The requested font weight.</param>
+        /// <param name="stretch">The requested font stretch.</param>
+        /// <param name="style">The requested font style.</param>
+        /// <param name="matchingFonts">Receives a pointer to the list of matching fonts.</param>
+        void GetMatchingFonts( FontWeight weight, FontStretch stretch, FontStyle style, IDWriteFontList** matchingFonts ) const
+        {
+            GetMatchingFonts( static_cast< DWRITE_FONT_WEIGHT >( weight ), static_cast< DWRITE_FONT_STRETCH >( stretch ), static_cast< DWRITE_FONT_STYLE >( style ), matchingFonts );
+        }
+
+        /// <summary>
+        /// Gets a list of fonts in the font family ranked in order of how well they match the specified properties.
+        /// </summary>
+        /// <param name="weight">The requested font weight.</param>
+        /// <param name="stretch">The requested font stretch.</param>
+        /// <param name="style">The requested font style.</param>
+        /// <returns>A FontList object that represents the matching fonts.</returns>
+        inline FontList GetMatchingFonts( DWRITE_FONT_WEIGHT weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style ) const;
+
+        /// <summary>
+        /// Gets a list of fonts in the font family ranked in order of how well they match the specified properties.
+        /// </summary>
+        /// <param name="weight">The requested font weight.</param>
+        /// <param name="stretch">The requested font stretch.</param>
+        /// <param name="style">The requested font style.</param>
+        /// <returns>A FontList object that represents the matching fonts.</returns>
+        inline FontList GetMatchingFonts( FontWeight weight, FontStretch stretch, FontStyle style ) const;
     };
 
     namespace Internal
@@ -3001,21 +3425,269 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( Font, Unknown, IDWriteFont, IUnknown )
 
-        HW_EXPORT void GetFontFamily( IDWriteFontFamily** fontFamily ) const;
-        HW_EXPORT FontFamily GetFontFamily( ) const;
-        HW_EXPORT DWRITE_FONT_WEIGHT GetWeight( ) const;
-        HW_EXPORT DWRITE_FONT_STRETCH GetStretch( ) const;
-        HW_EXPORT DWRITE_FONT_STYLE GetStyle( ) const;
-        HW_EXPORT bool IsSymbolFont( ) const;
-        HW_EXPORT void GetFaceNames( IDWriteLocalizedStrings** names ) const;
-        HW_EXPORT LocalizedStrings GetFaceNames( ) const;
-        HW_EXPORT void GetInformationalStrings( DWRITE_INFORMATIONAL_STRING_ID informationalStringID, IDWriteLocalizedStrings** informationalStrings, BOOL* exists ) const;
-        HW_EXPORT DWRITE_FONT_SIMULATIONS GetSimulations( ) const;
-        HW_EXPORT void GetMetrics( DWRITE_FONT_METRICS* fontMetrics ) const;
-        HW_EXPORT void HasCharacter( UINT32 unicodeValue, BOOL* exists ) const;
-        HW_EXPORT bool HasCharacter( UINT32 unicodeValue ) const;
-        HW_EXPORT void CreateFontFace( IDWriteFontFace** fontFace ) const;
-        HW_EXPORT FontFace CreateFontFace( ) const;
+        /// <summary>
+        /// Gets the font family to which the specified font belongs.
+        /// </summary>
+        /// <param name="fontFamily">Receives a pointer to the font family object.</param>
+        void GetFontFamily( IDWriteFontFamily** fontFamily ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFontFamily( fontFamily );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Gets the font family to which the specified font belongs.
+        /// </summary>
+        /// <returns>A FontFamily object that represents the font family.</returns>
+        FontFamily GetFontFamily( ) const
+        {
+            IDWriteFontFamily* fontFamily = nullptr;
+            GetFontFamily( &fontFamily );
+            FontFamily result( fontFamily );
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the weight of the specified font.
+        /// </summary>
+        /// <returns>The weight of the font.</returns>
+        DWRITE_FONT_WEIGHT GetWeight( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetWeight( );
+        }
+
+        /// <summary>
+        /// Gets the weight of the specified font.
+        /// </summary>
+        /// <returns>The weight of the font.</returns>
+        FontWeight Weight( ) const
+        {
+            return static_cast< FontWeight >( GetWeight( ) );
+        }
+
+        /// <summary>
+        /// Gets the stretch (aka. width) of the specified font.
+        /// </summary>
+        /// <returns>The stretch of the font.</returns>
+        DWRITE_FONT_STRETCH GetStretch( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetStretch( );
+        }
+
+        /// <summary>
+        /// Gets the stretch (aka. width) of the specified font.
+        /// </summary>
+        /// <returns>The stretch of the font.</returns>
+        FontStretch Stretch( ) const
+        {
+            return static_cast< FontStretch >( GetStretch( ) );
+        }
+
+        /// <summary>
+        /// Gets the style (aka. slope) of the specified font.
+        /// </summary>
+        /// <returns>The style of the font.</returns>
+        DWRITE_FONT_STYLE GetStyle( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetStyle( );
+        }
+
+        /// <summary>
+        /// Gets the style (aka. slope) of the specified font.
+        /// </summary>
+        /// <returns>The style of the font.</returns>
+        FontStyle Style( ) const
+        {
+            return static_cast< FontStyle >( GetStyle( ) );
+        }
+
+        /// <summary>
+        /// Determines whether the specified font is a symbol font.
+        /// </summary>
+        /// <returns>true if the font is a symbol font; otherwise, false.</returns>
+        bool IsSymbolFont( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->IsSymbolFont( ) != FALSE;
+        }
+
+        /// <summary>
+        /// Gets a localized strings collection containing the face names 
+        /// for the font (e.g., Regular or Bold), indexed by locale name.
+        /// </summary>
+        /// <param name="names">Receives a pointer to the newly created localized strings object.</param>
+        void GetFaceNames( IDWriteLocalizedStrings** names ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFaceNames( names );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Gets a localized strings collection containing the face names 
+        /// for the font (e.g., Regular or Bold), indexed by locale name.
+        /// </summary>
+        /// <returns>A localized strings object containing the face names for the font.</returns>
+        LocalizedStrings GetFaceNames( ) const
+        {
+            IDWriteLocalizedStrings* names = nullptr;
+            GetFaceNames( &names );
+            LocalizedStrings result( names );
+            return result;
+        }
+
+        /// <summary>
+        /// Gets a localized strings collection containing the specified informational strings, indexed by locale name.
+        /// </summary>
+        /// <param name="informationalStringID">The ID of the informational string to retrieve.</param>
+        /// <param name="informationalStrings">Receives a pointer to the newly created localized strings object.</param>
+        /// <param name="exists">Receives a boolean value indicating whether the informational string exists.</param>
+        void GetInformationalStrings( DWRITE_INFORMATIONAL_STRING_ID informationalStringID, IDWriteLocalizedStrings** informationalStrings, BOOL* exists ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetInformationalStrings( informationalStringID, informationalStrings, exists );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Gets a localized strings collection containing the specified informational strings, indexed by locale name.
+        /// </summary>
+        /// <param name="informationalStringID">The ID of the informational string to retrieve.</param>
+        /// <param name="informationalStrings">Receives a pointer to the newly created localized strings object.</param>
+        /// <param name="exists">Receives a boolean value indicating whether the informational string exists.</param>
+        void GetInformationalStrings( InformationalStringId informationalStringID, IDWriteLocalizedStrings** informationalStrings, BOOL* exists ) const
+        {
+            GetInformationalStrings( static_cast< DWRITE_INFORMATIONAL_STRING_ID >( informationalStringID ), informationalStrings, exists );
+        }
+
+        /// <summary>
+        /// Gets a localized strings collection containing the specified informational strings, indexed by locale name.
+        /// </summary>
+        /// <param name="informationalStringID">The ID of the informational string to retrieve.</param>
+        /// <returns>A localized strings object containing the specified informational strings, or std::nullopt if the informational string does not exist.</returns>
+        std::optional<LocalizedStrings> GetInformationalStrings( DWRITE_INFORMATIONAL_STRING_ID informationalStringID ) const
+        {
+            IDWriteLocalizedStrings* informationalStrings = nullptr;
+            BOOL exists = FALSE;
+            GetInformationalStrings( informationalStringID, &informationalStrings, &exists );
+            if ( exists )
+            {
+                LocalizedStrings result( informationalStrings );
+                return result;
+            }
+            else
+            {
+                return std::nullopt;
+            }
+        }
+
+        /// <summary>
+        /// Gets a localized strings collection containing the specified informational strings, indexed by locale name.
+        /// </summary>
+        /// <param name="informationalStringID">The ID of the informational string to retrieve.</param>
+        /// <returns>A localized strings object containing the specified informational strings, or std::nullopt if the informational string does not exist.</returns>
+        std::optional<LocalizedStrings> GetInformationalStrings( InformationalStringId informationalStringID ) const
+        {
+            return GetInformationalStrings( static_cast< DWRITE_INFORMATIONAL_STRING_ID >( informationalStringID ) );
+        }
+
+        /// <summary>
+        /// Gets a value that indicates what simulation are applied to the specified font.
+        /// </summary>
+        /// <returns>
+        /// A value that indicates what simulation are applied to the specified font.
+        /// </returns>
+        DWRITE_FONT_SIMULATIONS GetSimulations( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetSimulations( );
+        }
+
+        /// <summary>
+        /// Gets a value that indicates what simulation are applied to the specified font.
+        /// </summary>
+        /// <returns>
+        /// A value that indicates what simulation are applied to the specified font.
+        /// </returns>
+        FontSimulation Simulations( ) const
+        {
+            return static_cast< FontSimulation >( GetSimulations( ) );
+        }
+
+
+        /// <summary>
+        /// Gets the metrics for the font.
+        /// </summary>
+        /// <param name="fontMetrics">A pointer to a DWRITE_FONT_METRICS structure that receives the font metrics.</param>
+        void GetMetrics( DWRITE_FONT_METRICS* fontMetrics ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->GetMetrics( fontMetrics );
+        }
+
+        /// <summary>
+        /// Gets the metrics for the font.
+        /// </summary>
+        /// <returns>A FontMetrics object containing the metrics for the font.</returns>
+        FontMetrics GetMetrics( ) const
+        {
+            FontMetrics metrics;
+            GetMetrics( &metrics );
+            return metrics;
+        }
+
+
+        /// <summary>
+        /// Determines whether the font supports the specified character.
+        /// </summary>
+        /// <param name="unicodeValue">The Unicode (UCS-4) value of the character to check.</param>
+        /// <param name="exists">A pointer to a BOOL that receives TRUE if the font supports the character, or FALSE otherwise.</param>
+        void HasCharacter( UINT32 unicodeValue, BOOL* exists ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->HasCharacter( unicodeValue, exists );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Determines whether the font supports the specified character.
+        /// </summary>
+        /// <param name="unicodeValue">The Unicode (UCS-4) value of the character to check.</param>
+        /// <returns>True if the font supports the character, false otherwise.</returns>
+        bool HasCharacter( UINT32 unicodeValue ) const
+        {
+            BOOL exists = FALSE;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->HasCharacter( unicodeValue, &exists );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            return exists != FALSE;
+        }
+
+        /// <summary>
+        /// Creates a font face object for the font.
+        /// </summary>
+        /// <param name="fontFace">A pointer to an IDWriteFontFace interface that receives the font face object.</param>
+        void CreateFontFace( IDWriteFontFace** fontFace ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateFontFace( fontFace );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        /// <summary>
+        /// Creates a font face object for the font.
+        /// </summary>
+        /// <returns>A FontFace object representing the font face.</returns>
+        FontFace CreateFontFace( ) const
+        {
+            IDWriteFontFace* fontFace = nullptr;
+            CreateFontFace( &fontFace );
+            FontFace result( fontFace );
+            return result;
+        }
     };
 
     inline Font FontCollection::GetFontFromFontFace( IDWriteFontFace* fontFace ) const
@@ -3045,6 +3717,31 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         }
         return result;
     }
+
+    inline Font FontFamily::GetFirstMatchingFont( DWRITE_FONT_WEIGHT  weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style ) const
+    {
+        IDWriteFont* matchingFont = nullptr;
+        GetFirstMatchingFont( weight, stretch, style, &matchingFont );
+        Font result( matchingFont );
+        return result;
+    }
+    inline Font FontFamily::GetFirstMatchingFont( FontWeight weight, FontStretch stretch, FontStyle style ) const
+    {
+        return GetFirstMatchingFont( static_cast< DWRITE_FONT_WEIGHT >( weight ), static_cast< DWRITE_FONT_STRETCH >( stretch ), static_cast< DWRITE_FONT_STYLE >( style ) );
+    }
+
+    inline FontList FontFamily::GetMatchingFonts( DWRITE_FONT_WEIGHT weight, DWRITE_FONT_STRETCH stretch, DWRITE_FONT_STYLE style ) const
+    {
+        IDWriteFontList* matchingFonts = nullptr;
+        GetMatchingFonts( weight, stretch, style, &matchingFonts );
+        FontList result( matchingFonts );
+        return result;
+    }
+    inline FontList FontFamily::GetMatchingFonts( FontWeight weight, FontStretch stretch, FontStyle style ) const
+    {
+        return GetMatchingFonts( static_cast< DWRITE_FONT_WEIGHT >( weight ), static_cast< DWRITE_FONT_STRETCH >( stretch ), static_cast< DWRITE_FONT_STYLE >( style ) );
+    }
+
 
     namespace Internal
     {
@@ -3076,252 +3773,6 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             using Base::Base; 
         };
 
-        /*
-        /// <summary>
-        /// A random access iterator for iterating over fonts in the font list.
-        /// </summary>
-        class FontListIterator
-        {
-        private:
-            const FontList* fontList_;
-            UINT32 index_;
-            mutable Font font_;
-        public:
-            /// <summary>
-            /// Iterator category tag (for std::iterator_traits).
-            /// </summary>
-            using iterator_category = std::random_access_iterator_tag;
-            using value_type = Font;
-            using difference_type = std::ptrdiff_t;
-            using pointer = Font*;
-            using reference = Font&;
-
-            /// <summary>
-            /// Constructs an end iterator.
-            /// </summary>
-            FontListIterator( ) noexcept
-                : fontList_( nullptr ), index_( 0 ), font_( )
-            {}
-
-            /// <summary>
-            /// Constructs an iterator at the specified index.
-            /// </summary>
-            /// <param name="fontList">Pointer to the FontList being iterated.</param>
-            /// <param name="index">The index in the font list.</param>
-            FontListIterator( const FontList* fontList, UINT32 index ) noexcept
-                : fontList_( fontList ), index_( index )
-            {
-                if ( fontList_ && index_ < fontList_->GetFontCount( ) )
-                {
-                    font_ = fontList_->GetFont( index_ );
-                }
-            }
-
-            /// <summary>
-            /// Dereferences the iterator to get the current font.
-            /// </summary>
-            /// <returns>A reference to the Font object.</returns>
-            Font& operator*( ) noexcept
-            {
-                return font_;
-            }
-
-            /// <summary>
-            /// Accesses members of the current font.
-            /// </summary>
-            /// <returns>A pointer to the Font object.</returns>
-            Font* operator->( ) noexcept
-            {
-                return &font_;
-            }
-
-            /// <summary>
-            /// Pre-increment operator.
-            /// </summary>
-            /// <returns>Reference to this iterator after incrementing.</returns>
-            FontListIterator& operator++( ) noexcept
-            {
-                if ( fontList_ && index_ < fontList_->GetFontCount( ) )
-                {
-                    ++index_;
-                    if ( index_ < fontList_->GetFontCount( ) )
-                    {
-                        font_ = fontList_->GetFont( index_ );
-                    }
-                    else
-                    {
-                        font_ = Font( );
-                    }
-                }
-                return *this;
-            }
-
-            /// <summary>
-            /// Post-increment operator.
-            /// </summary>
-            /// <returns>A copy of this iterator before incrementing.</returns>
-            FontListIterator operator++( int ) noexcept
-            {
-                FontListIterator temp = *this;
-                ++( *this );
-                return temp;
-            }
-
-            /// <summary>
-            /// Pre-decrement operator.
-            /// </summary>
-            /// <returns>Reference to this iterator after decrementing.</returns>
-            FontListIterator& operator--( ) noexcept
-            {
-                if ( fontList_ && index_ > 0 )
-                {
-                    --index_;
-                    font_ = fontList_->GetFont( index_ );
-                }
-                return *this;
-            }
-
-            /// <summary>
-            /// Post-decrement operator.
-            /// </summary>
-            /// <returns>A copy of this iterator before decrementing.</returns>
-            FontListIterator operator--( int ) noexcept
-            {
-                FontListIterator temp = *this;
-                --( *this );
-                return temp;
-            }
-
-            /// <summary>
-            /// Addition operator.
-            /// </summary>
-            /// <param name="offset">The offset to add.</param>
-            /// <returns>A new iterator at the offset position.</returns>
-            FontListIterator operator+( difference_type offset ) const noexcept
-            {
-                FontListIterator result( *this );
-                result.index_ = static_cast< UINT32 >( static_cast< std::ptrdiff_t >( result.index_ ) + offset );
-                if ( result.fontList_ && result.index_ < result.fontList_->GetFontCount( ) )
-                {
-                    result.font_ = result.fontList_->GetFont( result.index_ );
-                }
-                return result;
-            }
-
-            /// <summary>
-            /// Subtraction operator.
-            /// </summary>
-            /// <param name="offset">The offset to subtract.</param>
-            /// <returns>A new iterator at the offset position.</returns>
-            FontListIterator operator-( difference_type offset ) const noexcept
-            {
-                return operator+( -offset );
-            }
-
-            /// <summary>
-            /// Addition assignment operator.
-            /// </summary>
-            /// <param name="offset">The offset to add.</param>
-            /// <returns>Reference to this iterator after adding.</returns>
-            FontListIterator& operator+=( difference_type offset ) noexcept
-            {
-                *this = operator+( offset );
-                return *this;
-            }
-
-            /// <summary>
-            /// Subtraction assignment operator.
-            /// </summary>
-            /// <param name="offset">The offset to subtract.</param>
-            /// <returns>Reference to this iterator after subtracting.</returns>
-            FontListIterator& operator-=( difference_type offset ) noexcept
-            {
-                return operator+=( -offset );
-            }
-
-            /// <summary>
-            /// Subscript operator for random access.
-            /// </summary>
-            /// <param name="offset">The index offset.</param>
-            /// <returns>The font at the offset.</returns>
-            Font operator[]( difference_type offset ) const noexcept
-            {
-                return *( operator+( offset ) );
-            }
-
-            /// <summary>
-            /// Equality operator.
-            /// </summary>
-            /// <param name="other">The iterator to compare with.</param>
-            /// <returns>True if both iterators point to the same position; otherwise, false.</returns>
-            bool operator==( const FontListIterator& other ) const noexcept
-            {
-                return fontList_ == other.fontList_ && index_ == other.index_;
-            }
-
-            /// <summary>
-            /// Inequality operator.
-            /// </summary>
-            /// <param name="other">The iterator to compare with.</param>
-            /// <returns>True if the iterators point to different positions; otherwise, false.</returns>
-            bool operator!=( const FontListIterator& other ) const noexcept
-            {
-                return !operator==( other );
-            }
-
-            /// <summary>
-            /// Less-than operator.
-            /// </summary>
-            /// <param name="other">The iterator to compare with.</param>
-            /// <returns>True if this iterator points to an earlier position; otherwise, false.</returns>
-            bool operator<( const FontListIterator& other ) const noexcept
-            {
-                return fontList_ == other.fontList_ && index_ < other.index_;
-            }
-
-            /// <summary>
-            /// Less-than-or-equal operator.
-            /// </summary>
-            /// <param name="other">The iterator to compare with.</param>
-            /// <returns>True if this iterator points to an earlier or equal position; otherwise, false.</returns>
-            bool operator<=( const FontListIterator& other ) const noexcept
-            {
-                return fontList_ == other.fontList_ && index_ <= other.index_;
-            }
-
-            /// <summary>
-            /// Greater-than operator.
-            /// </summary>
-            /// <param name="other">The iterator to compare with.</param>
-            /// <returns>True if this iterator points to a later position; otherwise, false.</returns>
-            bool operator>( const FontListIterator& other ) const noexcept
-            {
-                return fontList_ == other.fontList_ && index_ > other.index_;
-            }
-
-            /// <summary>
-            /// Greater-than-or-equal operator.
-            /// </summary>
-            /// <param name="other">The iterator to compare with.</param>
-            /// <returns>True if this iterator points to a later or equal position; otherwise, false.</returns>
-            bool operator>=( const FontListIterator& other ) const noexcept
-            {
-                return fontList_ == other.fontList_ && index_ >= other.index_;
-            }
-
-            /// <summary>
-            /// Difference operator.
-            /// </summary>
-            /// <param name="other">The iterator to subtract from this one.</param>
-            /// <returns>The difference between the iterators.</returns>
-            difference_type operator-( const FontListIterator& other ) const noexcept
-            {
-                return static_cast< difference_type >( index_ ) - static_cast< difference_type >( other.index_ );
-            }
-
-
-        };
-        */
     }
 
     inline FontList::Iterator FontList::begin( ) const noexcept
@@ -3358,35 +3809,232 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextFormat, Unknown, IDWriteTextFormat, IUnknown )
 
-        HW_EXPORT void SetTextAlignment( DWRITE_TEXT_ALIGNMENT textAlignment ) const;
-        HW_EXPORT void SetParagraphAlignment( DWRITE_PARAGRAPH_ALIGNMENT paragraphAlignment ) const;
-        HW_EXPORT void SetWordWrapping( DWRITE_WORD_WRAPPING wordWrapping ) const;
-        HW_EXPORT void SetReadingDirection( DWRITE_READING_DIRECTION readingDirection ) const;
-        HW_EXPORT void SetFlowDirection( DWRITE_FLOW_DIRECTION flowDirection ) const;
-        HW_EXPORT void SetIncrementalTabStop( FLOAT incrementalTabStop ) const;
-        HW_EXPORT void SetTrimming( DWRITE_TRIMMING const* trimmingOptions, IDWriteInlineObject* trimmingSign ) const;
-        HW_EXPORT void SetLineSpacing( DWRITE_LINE_SPACING_METHOD lineSpacingMethod, FLOAT lineSpacing, FLOAT baseline ) const;
-        HW_EXPORT DWRITE_TEXT_ALIGNMENT GetTextAlignment( ) const;
-        HW_EXPORT DWRITE_PARAGRAPH_ALIGNMENT GetParagraphAlignment( ) const;
-        HW_EXPORT DWRITE_WORD_WRAPPING GetWordWrapping( ) const;
-        HW_EXPORT DWRITE_READING_DIRECTION GetReadingDirection( ) const;
-        HW_EXPORT DWRITE_FLOW_DIRECTION GetFlowDirection( ) const;
-        HW_EXPORT FLOAT GetIncrementalTabStop( ) const;
-        HW_EXPORT void GetTrimming( DWRITE_TRIMMING* trimmingOptions, IDWriteInlineObject** trimmingSign ) const;
-        HW_EXPORT InlineObject GetTrimming( DWRITE_TRIMMING& trimmingOptions ) const;
-        HW_EXPORT void GetLineSpacing( DWRITE_LINE_SPACING_METHOD* lineSpacingMethod, FLOAT* lineSpacing, FLOAT* baseline ) const;
-        HW_EXPORT void GetFontCollection( IDWriteFontCollection** fontCollection ) const;
-        HW_EXPORT FontCollection GetFontCollection( ) const;
-        HW_EXPORT UINT32 GetFontFamilyNameLength( ) const;
-        HW_EXPORT void GetFontFamilyName( WCHAR* fontFamilyName, UINT32 nameSize ) const;
-        HW_EXPORT WideString GetFontFamilyName( ) const;
-        HW_EXPORT DWRITE_FONT_WEIGHT GetFontWeight( ) const;
-        HW_EXPORT DWRITE_FONT_STYLE GetFontStyle( ) const;
-        HW_EXPORT DWRITE_FONT_STRETCH GetFontStretch( ) const;
-        HW_EXPORT FLOAT GetFontSize( ) const;
-        HW_EXPORT UINT32 GetLocaleNameLength( ) const;
-        HW_EXPORT void GetLocaleName( WCHAR* localeName, UINT32 nameSize ) const;
-        HW_EXPORT WideString GetLocaleName( ) const;
+        void SetTextAlignment( DWRITE_TEXT_ALIGNMENT textAlignment ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetTextAlignment( textAlignment );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void SetTextAlignment( TextAlignment textAlignment ) const
+        {
+            SetTextAlignment( static_cast< DWRITE_TEXT_ALIGNMENT >( textAlignment ) );
+        }
+        void SetParagraphAlignment( DWRITE_PARAGRAPH_ALIGNMENT paragraphAlignment ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetParagraphAlignment( paragraphAlignment );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void SetParagraphAlignment( ParagraphAlignment paragraphAlignment ) const
+        {
+            SetParagraphAlignment( static_cast< DWRITE_PARAGRAPH_ALIGNMENT >( paragraphAlignment ) );
+        }
+        void SetWordWrapping( DWRITE_WORD_WRAPPING wordWrapping ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetWordWrapping( wordWrapping );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void SetWordWrapping( WordWrapping wordWrapping ) const
+        {
+            SetWordWrapping( static_cast< DWRITE_WORD_WRAPPING >( wordWrapping ) );
+        }
+        void SetReadingDirection( DWRITE_READING_DIRECTION readingDirection ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetReadingDirection( readingDirection );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void SetReadingDirection( ReadingDirection readingDirection ) const
+        {
+            SetReadingDirection( static_cast< DWRITE_READING_DIRECTION >( readingDirection ) );
+        }
+        void SetFlowDirection( DWRITE_FLOW_DIRECTION flowDirection ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetFlowDirection( flowDirection );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void SetFlowDirection( FlowDirection flowDirection ) const
+        {
+            SetFlowDirection( static_cast< DWRITE_FLOW_DIRECTION >( flowDirection ) );
+        }
+        void SetIncrementalTabStop( FLOAT incrementalTabStop ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetIncrementalTabStop( incrementalTabStop );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void SetTrimming( DWRITE_TRIMMING const* trimmingOptions, IDWriteInlineObject* trimmingSign ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetTrimming( trimmingOptions, trimmingSign );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void SetTrimming( const Trimming& trimmingOptions, const InlineObject& trimmingSign ) const;
+
+        void SetLineSpacing( DWRITE_LINE_SPACING_METHOD lineSpacingMethod, FLOAT lineSpacing, FLOAT baseline ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetLineSpacing( lineSpacingMethod, lineSpacing, baseline );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void SetLineSpacing( LineSpacingMethod lineSpacingMethod, FLOAT lineSpacing, FLOAT baseline ) const
+        {
+            SetLineSpacing( static_cast< DWRITE_LINE_SPACING_METHOD >( lineSpacingMethod ), lineSpacing, baseline );
+        }
+
+        DWRITE_TEXT_ALIGNMENT GetTextAlignment( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetTextAlignment( );
+        }
+        DirectWrite::TextAlignment TextAlignment( ) const
+        {
+            return static_cast< DirectWrite::TextAlignment >( GetTextAlignment( ) );
+        }
+
+        DWRITE_PARAGRAPH_ALIGNMENT GetParagraphAlignment( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetParagraphAlignment( );
+        }
+        DirectWrite::ParagraphAlignment ParagraphAlignment( ) const
+        {
+            return static_cast< DirectWrite::ParagraphAlignment >( GetParagraphAlignment( ) );
+        }
+        DWRITE_WORD_WRAPPING GetWordWrapping( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetWordWrapping( );
+        }
+        DirectWrite::WordWrapping WordWrapping( ) const
+        {
+            return static_cast< DirectWrite::WordWrapping >( GetWordWrapping( ) );
+        }
+        DWRITE_READING_DIRECTION GetReadingDirection( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetReadingDirection( );
+        }
+        DirectWrite::ReadingDirection ReadingDirection( ) const
+        {
+            return static_cast< DirectWrite::ReadingDirection >( GetReadingDirection( ) );
+        }
+        DWRITE_FLOW_DIRECTION GetFlowDirection( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetFlowDirection( );
+        }
+        DirectWrite::FlowDirection FlowDirection( ) const
+        {
+            return static_cast< DirectWrite::FlowDirection >( GetFlowDirection( ) );
+        }
+        FLOAT GetIncrementalTabStop( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetIncrementalTabStop( );
+        }
+        void GetTrimming( DWRITE_TRIMMING* trimmingOptions, IDWriteInlineObject** trimmingSign ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetTrimming( trimmingOptions, trimmingSign );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        inline InlineObject GetTrimming( DWRITE_TRIMMING& trimmingOptions ) const;
+
+        void GetLineSpacing( DWRITE_LINE_SPACING_METHOD* lineSpacingMethod, FLOAT* lineSpacing, FLOAT* baseline ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetLineSpacing( lineSpacingMethod, lineSpacing, baseline );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void GetFontCollection( IDWriteFontCollection** fontCollection ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFontCollection( fontCollection );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        FontCollection GetFontCollection( ) const
+        {
+            IDWriteFontCollection* fontCollection = nullptr;
+            GetFontCollection( &fontCollection );
+            FontCollection result( fontCollection );
+            return result;
+        }
+        UINT32 GetFontFamilyNameLength( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetFontFamilyNameLength( );
+        }
+        void GetFontFamilyName( WCHAR* fontFamilyName, UINT32 nameSize ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFontFamilyName( fontFamilyName, nameSize );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        template<WideStringLike StringType = WideString>
+        StringType GetFontFamilyName( ) const
+        {
+            UINT32 nameLength = GetFontFamilyNameLength( );
+            StringType result;
+            result.resize( nameLength );
+            GetFontFamilyName( result.data( ), nameLength + 1 );
+            return result;
+        }
+        DWRITE_FONT_WEIGHT GetFontWeight( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetFontWeight( );
+        }
+        DirectWrite::FontWeight FontWeight( ) const
+        {
+            return static_cast< DirectWrite::FontWeight >( GetFontWeight( ) );
+        }
+        DWRITE_FONT_STYLE GetFontStyle( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetFontStyle( );
+        }
+        DirectWrite::FontStyle FontStyle( ) const
+        {
+            return static_cast< DirectWrite::FontStyle >( GetFontStyle( ) );
+        }
+        DWRITE_FONT_STRETCH GetFontStretch( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetFontStretch( );
+        }
+        DirectWrite::FontStretch FontStretch( ) const
+        {
+            return static_cast< DirectWrite::FontStretch >( GetFontStretch( ) );
+        }
+        FLOAT GetFontSize( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetFontSize( );
+        }
+        UINT32 GetLocaleNameLength( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetLocaleNameLength( );
+        }
+        void GetLocaleName( WCHAR* localeName, UINT32 nameSize ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetLocaleName( localeName, nameSize );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        template<WideStringLike StringType = WideString>
+        StringType GetLocaleName( ) const
+        {
+            UINT32 nameLength = GetLocaleNameLength( );
+            StringType result;
+            result.resize( nameLength );
+            GetLocaleName( result.data( ), nameLength + 1 );
+            return result;
+        }
     };
 
 
@@ -3566,6 +4214,21 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         HW_EXPORT void GetBreakConditions( DWRITE_BREAK_CONDITION* breakConditionBefore, DWRITE_BREAK_CONDITION* breakConditionAfter ) const;
     };
+
+    inline void TextFormat::SetTrimming( const Trimming& trimmingOptions, const InlineObject& trimmingSign ) const
+    {
+        SetTrimming( &trimmingOptions, trimmingSign.GetInterfacePointer< IDWriteInlineObject >( ) );
+    }
+
+    inline InlineObject TextFormat::GetTrimming( DWRITE_TRIMMING& trimmingOptions ) const
+    {
+        IDWriteInlineObject* trimmingSign = nullptr;
+        GetTrimming( &trimmingOptions, &trimmingSign );
+        InlineObject result( trimmingSign );
+        return result;
+    }
+
+
 
     /// <summary>
     /// Defines the pixel snapping properties such as pixels per 
