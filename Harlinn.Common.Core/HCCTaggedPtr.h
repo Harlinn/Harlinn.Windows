@@ -26,33 +26,28 @@ namespace Harlinn::Common::Core
     namespace Internal
     {
         template <typename... Ts>
-        struct unique_type_count;
+        struct UniqueTypeCount;
 
         template <>
-        struct unique_type_count<>
+        struct UniqueTypeCount<>
         {
             static constexpr std::size_t value = 0;
         };
 
         template <typename T, typename... Rest>
-        struct unique_type_count<T, Rest...>
+        struct UniqueTypeCount<T, Rest...>
         {
-            // If T is in Rest, add 0; otherwise, add 1
             static constexpr bool is_new = ( !std::is_same_v<T, Rest> && ... );
-            static constexpr std::size_t value =
-                ( is_new ? 1 : 0 ) + unique_type_count<Rest...>::value;
+            static constexpr std::size_t value = ( is_new ? 1 : 0 ) + UniqueTypeCount<Rest...>::value;
         };
 
-        // Helper variable template
         template <typename... Ts>
-        inline constexpr std::size_t unique_type_count_v = unique_type_count<Ts...>::value;
+        inline constexpr std::size_t UniqueTypeCount_v = UniqueTypeCount<Ts...>::value;
 
 
-        // Utility template to find the index of a type within a type pack (the Tag ID)
         template <typename T, typename... Types>
         struct TypeIndex;
 
-        // Base case: Type not found (should trigger static_assert or compilation error)
         template <typename T>
         struct TypeIndex<T> : std::integral_constant<std::uint16_t, 0>
         {
@@ -83,15 +78,57 @@ namespace Harlinn::Common::Core
 
         std::uintptr_t encoded_{ 0 };
 
-        // Safely strip the tag and cast back to the target type
+        /// <summary>
+        /// Checks if the specified type is allowed.
+        /// </summary>
+        /// <typeparam name="T">The type to check.</typeparam>
+        template<typename T>
+        constexpr static bool IsAllowedType = ( std::is_same_v<std::remove_cv_t<T>, AllowedTypes> || ... );
+
+
+        /// <summary>
+        /// Extracts the pointer to the specified type without checking the type.
+        /// </summary>
+        /// <typeparam name="T">The type of the pointer to get.</typeparam>
+        /// <returns>The pointer to the specified type.</returns>
         template <typename T>
-        constexpr [[nodiscard]] T* UncheckedGet( ) const noexcept
+        [[nodiscard]] constexpr T* UncheckedGet( ) const noexcept
         {
             return std::bit_cast<T*>( encoded_ & PtrMask );
         }
 
+
+
+
+        /// <summary>
+        /// Gets the tag index of the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type to get the tag index for.</typeparam>
+        /// <returns>The tag index of the specified type.</returns>
+        template <typename T>
+        [[nodiscard]] constexpr static UInt16 TagIndexOf( ) noexcept
+        {
+            static_assert( IsAllowedType<T>, "Type is not in the allowed list." );
+            return Internal::TypeIndex<std::remove_cv_t<T>, AllowedTypes...>::value;
+        }
+
+        /// <summary>
+        /// Encodes a pointer to the specified type into the tagged pointer format.
+        /// </summary>
+        /// <typeparam name="U">The type of the pointer to encode.</typeparam>
+        /// <param name="ptr">The pointer to encode.</param>
+        /// <returns>The encoded pointer.</returns>
+        template<typename U>
+        [[nodiscard]] constexpr static std::uintptr_t Encode( const U* ptr ) noexcept
+        {
+            constexpr std::uint16_t tagId = TagIndexOf<U>( );
+            return ( static_cast< std::uintptr_t >( tagId ) << TagShift ) | ( std::bit_cast< std::uintptr_t >( ptr ) & PtrMask );
+        }
+
         
-        static_assert( sizeof...( AllowedTypes ) == Internal::unique_type_count_v<AllowedTypes...>, "AllowedTypes must be unique" );
+
+        
+        static_assert( sizeof...( AllowedTypes ) == Internal::UniqueTypeCount_v<AllowedTypes...>, "AllowedTypes must be unique" );
         static_assert( sizeof...( AllowedTypes ) <= ( ( 1u << ( 64 - TagShift ) ) ), "Too many AllowedTypes for the available tag bits." );
     public:
 
@@ -106,19 +143,20 @@ namespace Harlinn::Common::Core
         /// <typeparam name="T">
         /// The type of the pointer being wrapped. Must be one of the AllowedTypes.
         /// </typeparam>
-        /// <param name="ptr">The pointer to wrap.</param>
+        /// <param name="ptr">
+        /// The pointer to wrap.
+        /// </param>
         template <typename T >
-            requires ( ( std::is_same_v<std::remove_cv_t<T>, AllowedTypes> || ... ) )
+            requires IsAllowedType<T>
         constexpr TaggedPtr( T* ptr ) noexcept
         {
             if ( ptr )
             {
+#ifdef _DEBUG
                 std::uintptr_t rawPtr = std::bit_cast< std::uintptr_t >( ptr );
                 assert( ( rawPtr & ~PtrMask ) == 0 && "Pointer overflows 57-bit address space!" );
-
-                // Auto-resolve the exact tag ID at compile-time based on the class type
-                constexpr std::uint16_t tag_id = Internal::TypeIndex<std::remove_cv_t<T>, AllowedTypes...>::value;
-                encoded_ = ( static_cast< std::uintptr_t >( tag_id ) << TagShift ) | ( rawPtr & PtrMask );
+#endif
+                encoded_ = Encode(ptr);
             }
         }
 
@@ -130,22 +168,22 @@ namespace Harlinn::Common::Core
         { };
 
 
-        constexpr [[nodiscard]] bool operator==( const TaggedPtr& other ) const noexcept
+        [[nodiscard]] constexpr bool operator==( const TaggedPtr& other ) const noexcept
         {
             return encoded_ == other.encoded_;
         };
 
-        constexpr [[nodiscard]] bool operator!=( const TaggedPtr& other ) const noexcept
+        [[nodiscard]] constexpr bool operator!=( const TaggedPtr& other ) const noexcept
         {
             return encoded_ != other.encoded_;
         };
 
-        constexpr [[nodiscard]] bool operator > ( const TaggedPtr& other ) const noexcept
+        [[nodiscard]] constexpr bool operator > ( const TaggedPtr& other ) const noexcept
         {
             return encoded_ > other.encoded_;
         };
 
-        constexpr [[nodiscard]] bool operator < ( const TaggedPtr& other ) const noexcept
+        [[nodiscard]] constexpr bool operator < ( const TaggedPtr& other ) const noexcept
         {
             return encoded_ < other.encoded_;
         };
@@ -156,7 +194,7 @@ namespace Harlinn::Common::Core
         /// </summary>
         /// <param name="np">A nullptr value</param>
         /// <returns>True if the tagged pointer is null, false otherwise.</returns>
-        constexpr [[nodiscard]] bool operator==( std::nullptr_t ) const noexcept
+        [[nodiscard]] constexpr bool operator==( std::nullptr_t ) const noexcept
         {
             return ( encoded_ & PtrMask ) == 0;
         }
@@ -166,35 +204,33 @@ namespace Harlinn::Common::Core
         /// </summary>
         /// <param name="np">A nullptr value</param>
         /// <returns>True if the tagged pointer is not null, false otherwise.</returns>
-        constexpr [[nodiscard]] bool operator!=( std::nullptr_t ) const noexcept
+        [[nodiscard]] constexpr bool operator!=( std::nullptr_t ) const noexcept
         {
             return ( encoded_ & PtrMask ) != 0;
         }
 
 
         template <typename U>
-            requires ( ( std::is_same_v<std::remove_cv_t<U>, AllowedTypes> || ... ) )
-        constexpr [[nodiscard]] bool operator==( const U* other ) const noexcept
+            requires IsAllowedType<U>
+        [[nodiscard]] constexpr bool operator==( const U* other ) const noexcept
         {
             if ( other == nullptr )
             {
                 return ( encoded_ & PtrMask ) == 0;
             }
-            constexpr std::uint16_t tagId = Internal::TypeIndex<std::remove_cv_t<U>, AllowedTypes...>::value;
-            const std::uintptr_t expected = ( static_cast< std::uintptr_t >( tagId ) << TagShift ) | ( std::bit_cast< std::uintptr_t >( other ) & PtrMask );
+            const std::uintptr_t expected = Encode(other);
             return encoded_ == expected;
         }
 
         template <typename U>
-            requires ( ( std::is_same_v<std::remove_cv_t<U>, AllowedTypes> || ... ) )
-        constexpr [[nodiscard]] bool operator!=( const U* other ) const noexcept
+            requires IsAllowedType<U>
+        [[nodiscard]] constexpr bool operator!=( const U* other ) const noexcept
         {
             if ( other == nullptr )
             {
                 return ( encoded_ & PtrMask ) != 0;
             }
-            constexpr std::uint16_t tagId = Internal::TypeIndex<std::remove_cv_t<U>, AllowedTypes...>::value;
-            const std::uintptr_t expected = ( static_cast< std::uintptr_t >( tagId ) << TagShift ) | ( std::bit_cast< std::uintptr_t >( other ) & PtrMask );
+            const std::uintptr_t expected = Encode( other );
             return encoded_ != expected;
         }
         
@@ -240,10 +276,10 @@ namespace Harlinn::Common::Core
         template <typename T>
         [[nodiscard]] constexpr bool Is( ) const noexcept
         {
-            static_assert( ( std::is_same_v<std::remove_cv_t<T>, AllowedTypes> || ... ), "Requested type is not in the allowed list." );
+            static_assert( IsAllowedType<T>, "Requested type is not in the allowed list." );
             if ( IsAssigned( ) )
             {
-                return TagIndex( ) == Internal::TypeIndex<std::remove_cv_t<T>, AllowedTypes...>::value;
+                return TagIndex( ) == TagIndexOf<T>( );
             }
             return false;
         }
