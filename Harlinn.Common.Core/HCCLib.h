@@ -591,13 +591,13 @@ namespace Harlinn::Common::Core
             requires std::is_same_v<T, Int64> || std::is_same_v<T, UInt64> 
         inline T Increment( volatile T* value )
         {
-            return std::bit_cast< T >( _InterlockedIncrement64( reinterpret_cast< volatile short* >( value ) ) );
+            return std::bit_cast< T >( _InterlockedIncrement64( reinterpret_cast< volatile __int64* >( value ) ) );
         }
         template<typename T>
             requires std::is_same_v<T, Int64> || std::is_same_v<T, UInt64>
         inline T Decrement( volatile T* value )
         {
-            return std::bit_cast< T >( _InterlockedDecrement64( reinterpret_cast< volatile short* >( value ) ) );
+            return std::bit_cast< T >( _InterlockedDecrement64( reinterpret_cast< volatile __int64* >( value ) ) );
         }
 
         template<typename T>

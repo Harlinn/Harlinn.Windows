@@ -6887,6 +6887,1010 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             return result;
         }
     };
+
+
+    /// <summary>
+    /// The interface that represents an absolute reference to a font face.
+    /// It contains font face type, appropriate file references and face identification data.
+    /// Various font data such as metrics, names and glyph outlines is obtained from IDWriteFontFace.
+    /// </summary>
+    class FontFace1 : public FontFace
+    {
+    public:
+        typedef FontFace Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFace1, FontFace, IDWriteFontFace1, IDWriteFontFace )
+
+        /// <summary>
+        /// Gets common metrics for the font in design units.
+        /// These metrics are applicable to all the glyphs within a font,
+        /// and are used by applications for layout calculations.
+        /// </summary>
+        /// <param name="fontMetrics">Metrics structure to fill in.</param>
+        void GetMetrics( _Out_ DWRITE_FONT_METRICS1* fontMetrics ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->GetMetrics( fontMetrics );
+        }
+
+        /// <summary>
+        /// Gets common metrics for the font in design units.
+        /// These metrics are applicable to all the glyphs within a font,
+        /// and are used by applications for layout calculations.
+        /// </summary>
+        /// <returns>Font metrics structure.</returns>
+        FontMetrics1 GetMetrics( ) const
+        {
+            FontMetrics1 fontMetrics;
+            GetMetrics( &fontMetrics );
+            return fontMetrics;
+        }
+
+
+        /// <summary>
+        /// Gets common metrics for the font in design units.
+        /// These metrics are applicable to all the glyphs within a font,
+        /// and are used by applications for layout calculations.
+        /// </summary>
+        /// <param name="emSize">
+        /// Logical size of the font in DIP units. A DIP ("device-independent pixel") 
+        /// equals 1/96 inch.
+        /// </param>
+        /// <param name="pixelsPerDip">
+        /// Number of physical pixels per DIP. For example, if the DPI of the rendering 
+        /// surface is 96 this value is 1.0f. If the DPI is 120, this value is 120.0f/96.
+        /// </param>
+        /// <param name="transform">
+        /// Optional transform applied to the glyphs and their positions. This transform 
+        /// is applied after the scaling specified by the font size and pixelsPerDip.
+        /// </param>
+        /// <param name="fontMetrics">
+        /// Font metrics structure to fill in.
+        /// </param>
+        void GetGdiCompatibleMetrics( FLOAT emSize, FLOAT pixelsPerDip, _In_opt_ DWRITE_MATRIX const* transform, _Out_ DWRITE_FONT_METRICS1* fontMetrics ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetGdiCompatibleMetrics( emSize, pixelsPerDip, transform, fontMetrics );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Gets GDI-compatible metrics for the font in design units.
+        /// These metrics are applicable to all the glyphs within a font,
+        /// and are used by applications for layout calculations.
+        /// </summary>
+        /// <param name="emSize">
+        /// Logical size of the font in DIP units. A DIP ("device-independent pixel") 
+        /// equals 1/96 inch.
+        /// </param>
+        /// <param name="pixelsPerDip">
+        /// Number of physical pixels per DIP. For example, if the DPI of the rendering 
+        /// surface is 96 this value is 1.0f. If the DPI is 120, this value is 120.0f/96.
+        /// </param>
+        /// <param name="transform">
+        /// Optional transform applied to the glyphs and their positions. This transform 
+        /// is applied after the scaling specified by the font size and pixelsPerDip.
+        /// </param>
+        /// <returns>
+        /// Font metrics structure.
+        /// </returns>
+        FontMetrics1 GetGdiCompatibleMetrics( FLOAT emSize, FLOAT pixelsPerDip, _In_opt_ DWRITE_MATRIX const* transform = nullptr ) const
+        {
+            FontMetrics1 fontMetrics;
+            GetGdiCompatibleMetrics( emSize, pixelsPerDip, transform, &fontMetrics );
+            return fontMetrics;
+        }
+
+
+        /// <summary>
+        /// Gets GDI-compatible metrics for the font in design units.
+        /// These metrics are applicable to all the glyphs within a font,
+        /// and are used by applications for layout calculations.
+        /// </summary>
+        /// <param name="emSize">
+        /// Logical size of the font in DIP units. A DIP ("device-independent pixel") 
+        /// equals 1/96 inch.
+        /// </param>
+        /// <param name="pixelsPerDip">
+        /// Number of physical pixels per DIP. For example, if the DPI of the rendering 
+        /// surface is 96 this value is 1.0f. If the DPI is 120, this value is 120.0f/96.
+        /// </param>
+        /// <param name="transform">
+        /// Transform applied to the glyphs and their positions. This transform 
+        /// is applied after the scaling specified by the font size and pixelsPerDip.
+        /// </param>
+        /// <returns>
+        /// Font metrics structure.
+        /// </returns>
+        FontMetrics1 GetGdiCompatibleMetrics( FLOAT emSize, FLOAT pixelsPerDip, const DWRITE_MATRIX& transform ) const
+        {
+            FontMetrics1 fontMetrics;
+            GetGdiCompatibleMetrics( emSize, pixelsPerDip, &transform, &fontMetrics );
+            return fontMetrics;
+        }
+
+
+
+        /// <summary>
+        /// Gets caret metrics for the font in design units. These are used by
+        /// text editors for drawing the correct caret placement/slant.
+        /// </summary>
+        /// <param name="caretMetrics">Metrics structure to fill in.</param>
+        void GetCaretMetrics( _Out_ DWRITE_CARET_METRICS* caretMetrics ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->GetCaretMetrics( caretMetrics );
+        }
+
+        /// <summary>
+        /// Gets caret metrics for the font in design units. These are used by
+        /// text editors for drawing the correct caret placement/slant.
+        /// </summary>
+        /// <returns>Metrics structure.</returns>
+        CaretMetrics GetCaretMetrics( ) const
+        {
+            CaretMetrics caretMetrics;
+            GetCaretMetrics( &caretMetrics );
+            return caretMetrics;
+        }
+
+
+        /// <summary>
+        /// Returns the list of character ranges supported by the font, which is
+        /// useful for scenarios like character picking, glyph display, and
+        /// efficient font selection lookup. This is similar to GDI's
+        /// GetFontUnicodeRanges, except that it returns the full Unicode range,
+        /// not just 16-bit UCS-2.
+        /// </summary>
+        /// <param name="maxRangeCount">
+        /// Maximum number of character ranges passed in from the client.
+        /// </param>
+        /// <param name="unicodeRanges">
+        /// Array of character ranges.
+        /// </param>
+        /// <param name="actualRangeCount">
+        /// Actual number of character ranges, regardless of the maximum count.
+        /// </param>
+        /// <remarks>
+        /// These ranges are from the cmap, not the OS/2::ulCodePageRange1.
+        /// </remarks>
+        void GetUnicodeRanges( UINT32 maxRangeCount, _Out_writes_to_opt_( maxRangeCount, *actualRangeCount ) DWRITE_UNICODE_RANGE* unicodeRanges, _Out_ UINT32* actualRangeCount ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr =  pInterface->GetUnicodeRanges( maxRangeCount, unicodeRanges, actualRangeCount );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+
+        /// <summary>
+        /// Returns the list of character ranges supported by the font, which is
+        /// useful for scenarios like character picking, glyph display, and
+        /// efficient font selection lookup. This is similar to GDI's
+        /// GetFontUnicodeRanges, except that it returns the full Unicode range,
+        /// not just 16-bit UCS-2.
+        /// </summary>
+        /// <returns>
+        /// Vector of Unicode ranges.
+        /// </returns>
+        std::vector<UnicodeRange> GetUnicodeRanges( ) const
+        {
+            UINT32 actualRangeCount = 0;
+            GetUnicodeRanges( 0, nullptr, &actualRangeCount );
+            std::vector<UnicodeRange> result( actualRangeCount );
+            GetUnicodeRanges( actualRangeCount, result.data( ), &actualRangeCount );
+            return result;
+        }
+
+
+
+        /// <summary>
+        /// Returns true if the font is monospaced, meaning its characters are the
+        /// same fixed-pitch width (non-proportional).
+        /// </summary>
+        bool IsMonospacedFont( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->IsMonospacedFont( ) != FALSE;
+        }
+
+        /// <summary>
+        /// Returns the advances in design units for a sequences of glyphs.
+        /// </summary>
+        /// <param name="glyphCount">
+        /// Number of glyphs to retrieve advances for.
+        /// </param>
+        /// <param name="glyphIndices">
+        /// Array of glyph id's to retrieve advances for.
+        /// </param>
+        /// <param name="glyphAdvances">
+        /// Returned advances in font design units for each glyph.
+        /// </param>
+        /// <param name="isSideways">
+        /// Retrieve the glyph's vertical advance height rather than horizontal advance widths.
+        /// </param>
+        /// <remarks>
+        /// This is equivalent to calling GetGlyphMetrics and using only the
+        /// advance width/height.
+        /// </remarks>
+        void GetDesignGlyphAdvances( UINT32 glyphCount, _In_reads_( glyphCount ) UINT16 const* glyphIndices, _Out_writes_( glyphCount ) INT32* glyphAdvances, BOOL isSideways = FALSE ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetDesignGlyphAdvances( glyphCount, glyphIndices, glyphAdvances, isSideways );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Returns the advances in design units for a sequences of glyphs.
+        /// </summary>
+        /// <param name="glyphCount">
+        /// Number of glyphs to retrieve advances for.
+        /// </param>
+        /// <param name="glyphIndices">
+        /// Array of glyph id's to retrieve advances for.
+        /// </param>
+        /// <param name="isSideways">
+        /// Retrieve the glyph's vertical advance height rather than horizontal advance widths.
+        /// </param>
+        /// <returns>
+        /// Vector of advances in font design units for each glyph.
+        /// </returns>
+        std::vector<INT32> GetDesignGlyphAdvances( UINT32 glyphCount, _In_reads_( glyphCount ) UINT16 const* glyphIndices, BOOL isSideways = FALSE ) const
+        {
+            std::vector<INT32> result( glyphCount );
+            GetDesignGlyphAdvances( glyphCount, glyphIndices, result.data( ), isSideways );
+            return result;
+        }
+
+
+        /// <summary>
+        /// Returns the pixel-aligned advances for a sequences of glyphs, the same
+        /// as GetGdiCompatibleGlyphMetrics would return.
+        /// </summary>
+        /// <param name="emSize">
+        /// Logical size of the font in DIP units. A DIP ("device-independent pixel") equals 1/96 inch.
+        /// </param>
+        /// <param name="pixelsPerDip">
+        /// Number of physical pixels per DIP. For example, if the DPI 
+        /// of the rendering surface is 96 this value is 1.0f. If the 
+        /// DPI is 120, this value is 120.0f/96.
+        /// </param>
+        /// <param name="transform">
+        /// Optional transform applied to the glyphs and their positions. 
+        /// This transform is applied after the scaling specified by the 
+        /// font size and pixelsPerDip.
+        /// </param>
+        /// <param name="useGdiNatural">
+        /// When FALSE, the metrics are the same as GDI aliased text 
+        /// (DWRITE_MEASURING_MODE_GDI_CLASSIC). 
+        /// When TRUE, the metrics are the same as those measured by GDI 
+        /// using a font using CLEARTYPE_NATURAL_QUALITY (DWRITE_MEASURING_MODE_GDI_NATURAL).
+        /// </param>
+        /// <param name="isSideways">
+        /// Retrieve the glyph's vertical advances rather than horizontal advances.
+        /// </param>
+        /// <param name="glyphCount">
+        /// Total glyphs to retrieve adjustments for.
+        /// </param>
+        /// <param name="glyphIndices">
+        /// Array of glyph id's to retrieve advances.
+        /// </param>
+        /// <param name="glyphAdvances">
+        /// Returned advances in font design units for each glyph.
+        /// </param>
+        /// <remarks>
+        /// This is equivalent to calling GetGdiCompatibleGlyphMetrics and using only
+        /// the advance width/height. Like GetGdiCompatibleGlyphMetrics, these are in
+        /// design units, meaning they must be scaled down by
+        /// DWRITE_FONT_METRICS::designUnitsPerEm.
+        /// </remarks>
+        void GetGdiCompatibleGlyphAdvances( FLOAT emSize, FLOAT pixelsPerDip,
+                                            _In_opt_ DWRITE_MATRIX const* transform,
+                                            BOOL useGdiNatural, BOOL isSideways,
+                                            UINT32 glyphCount, _In_reads_( glyphCount ) UINT16 const* glyphIndices,
+                                            _Out_writes_( glyphCount ) INT32* glyphAdvances ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetGdiCompatibleGlyphAdvances( emSize, pixelsPerDip, transform, useGdiNatural, isSideways, glyphCount, glyphIndices, glyphAdvances );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Returns the pixel-aligned advances for a sequences of glyphs, the same
+        /// as GetGdiCompatibleGlyphMetrics would return.
+        /// </summary>
+        /// <param name="emSize">
+        /// Logical size of the font in DIP units. A DIP ("device-independent pixel") equals 1/96 inch.
+        /// </param>
+        /// <param name="pixelsPerDip">
+        /// Number of physical pixels per DIP. For example, if the DPI 
+        /// of the rendering surface is 96 this value is 1.0f. If the 
+        /// DPI is 120, this value is 120.0f/96.
+        /// </param>
+        /// <param name="transform">
+        /// Optional transform applied to the glyphs and their positions. 
+        /// This transform is applied after the scaling specified by the 
+        /// font size and pixelsPerDip.
+        /// </param>
+        /// <param name="useGdiNatural">
+        /// When FALSE, the metrics are the same as GDI aliased text 
+        /// (DWRITE_MEASURING_MODE_GDI_CLASSIC). 
+        /// When TRUE, the metrics are the same as those measured by GDI 
+        /// using a font using CLEARTYPE_NATURAL_QUALITY (DWRITE_MEASURING_MODE_GDI_NATURAL).
+        /// </param>
+        /// <param name="isSideways">
+        /// Retrieve the glyph's vertical advances rather than horizontal advances.
+        /// </param>
+        /// <param name="glyphCount">
+        /// Total glyphs to retrieve adjustments for.
+        /// </param>
+        /// <param name="glyphIndices">
+        /// Array of glyph id's to retrieve advances.
+        /// </param>
+        /// <remarks>
+        /// This is equivalent to calling GetGdiCompatibleGlyphMetrics and using only
+        /// the advance width/height. Like GetGdiCompatibleGlyphMetrics, these are in
+        /// design units, meaning they must be scaled down by
+        /// FontMetrics::designUnitsPerEm.
+        /// </remarks>
+        /// <returns>
+        /// A vector of INT32 containing the pixel-aligned advances for each glyph.
+        /// </returns>
+        std::vector<INT32> GetGdiCompatibleGlyphAdvances( FLOAT emSize, FLOAT pixelsPerDip,
+                                            _In_opt_ DWRITE_MATRIX const* transform, BOOL useGdiNatural, BOOL isSideways,
+                                            UINT32 glyphCount, _In_reads_( glyphCount ) UINT16 const* glyphIndices ) const
+        {
+            std::vector<INT32> result( glyphCount );
+            GetGdiCompatibleGlyphAdvances( emSize, pixelsPerDip, transform, useGdiNatural, isSideways, glyphCount, glyphIndices, result.data( ) );
+            return result;
+        }
+
+
+
+        /// <summary>
+        /// Retrieves the kerning pair adjustments from the font's kern table.
+        /// </summary>
+        /// <param name="glyphCount">
+        /// Number of glyphs to retrieve adjustments for.
+        /// </param>
+        /// <param name="glyphIndices">
+        /// Array of glyph id's to retrieve adjustments for.
+        /// </param>
+        /// <param name="glyphAdvanceAdjustments">
+        /// Returned advances in font design units for each glyph. The last 
+        /// glyph adjustment is zero.
+        /// </param>
+        /// <remarks>
+        /// This is not a direct replacement for GDI's character based
+        /// GetKerningPairs, but it serves the same role, without the client
+        /// needing to cache them locally. It also uses glyph id's directly
+        /// rather than UCS-2 characters (how the kern table actually stores
+        /// them) which avoids glyph collapse and ambiguity, such as the dash
+        /// and hyphen, or space and non-breaking space.
+        /// </remarks>
+        /// <remarks>
+        /// Newer fonts may have only GPOS kerning instead of the legacy pair
+        /// table kerning. Such fonts, like Gabriola, will only return 0's for
+        /// adjustments. This function does not virtualize and flatten these
+        /// GPOS entries into kerning pairs.
+        /// </remarks>
+        void GetKerningPairAdjustments( UINT32 glyphCount, _In_reads_( glyphCount ) UINT16 const* glyphIndices, _Out_writes_( glyphCount ) INT32* glyphAdvanceAdjustments ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetKerningPairAdjustments( glyphCount, glyphIndices, glyphAdvanceAdjustments );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Retrieves the kerning pair adjustments from the font's kern table.
+        /// </summary>
+        /// <param name="glyphIndices">
+        /// A std::span&lt;UInt16&gt; of glyph id's to retrieve adjustments for.
+        /// </param>
+        /// <param name="glyphAdvanceAdjustments">
+        /// Returned advances in font design units for each glyph. The last 
+        /// glyph adjustment is zero.
+        /// </param>
+        void GetKerningPairAdjustments( const std::span<UInt16>& glyphIndices, INT32* glyphAdvanceAdjustments ) const
+        {
+            assert( glyphIndices.size( ) <= static_cast< size_t >( MaxUInt32 ) );
+            GetKerningPairAdjustments( static_cast<UInt32>( glyphIndices.size() ), glyphIndices.data( ), glyphAdvanceAdjustments );
+        }
+
+
+        /// <summary>
+        /// Retrieves the kerning pair adjustments from the font's kern table.
+        /// </summary>
+        /// <param name="glyphCount">
+        /// Number of glyphs to retrieve adjustments for.
+        /// </param>
+        /// <param name="glyphIndices">
+        /// Array of glyph id's to retrieve adjustments for.
+        /// </param>
+        /// <returns>
+        /// std::vector&lt;Int32&gt; of advances in font design units for each 
+        /// glyph. The last glyph adjustment is zero.
+        /// </returns>
+        std::vector<Int32> GetKerningPairAdjustments( UINT32 glyphCount, _In_reads_( glyphCount ) UINT16 const* glyphIndices ) const
+        {
+            std::vector<Int32> result( glyphCount );
+            GetKerningPairAdjustments( glyphCount, glyphIndices, result.data( ) );
+            return result;
+        }
+
+        /// <summary>
+        /// Retrieves the kerning pair adjustments from the font's kern table.
+        /// </summary>
+        /// <param name="glyphIndices">
+        /// A std::span&lt;UInt16&gt; of glyph id's to retrieve adjustments for.
+        /// </param>
+        /// <returns>
+        /// std::vector&lt;Int32&gt; of advances in font design units for each 
+        /// glyph. The last glyph adjustment is zero.
+        /// </returns>
+        std::vector<Int32> GetKerningPairAdjustments( const std::span<UInt16>& glyphIndices ) const
+        {
+            assert( glyphIndices.size( ) <= static_cast< size_t >( MaxUInt32 ) );
+            std::vector<INT32> result( glyphIndices.size( ) );
+            GetKerningPairAdjustments( static_cast< UInt32 >( glyphIndices.size( ) ), glyphIndices.data( ), result.data( ) );
+            return result;
+        }
+
+
+
+        /// <summary>
+        /// Returns whether or not the font supports pair-kerning.
+        /// </summary>
+        /// <remarks>
+        /// If the font does not support pair table kerning, there is no need to
+        /// call GetKerningPairAdjustments (it would be all zeroes).
+        /// </remarks>
+        /// <returns>
+        /// Whether the font supports kerning pairs.
+        /// </returns>
+        bool HasKerningPairs( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->HasKerningPairs( ) != FALSE;
+        }
+
+        /// <summary>
+        /// Determines the recommended text rendering mode to be used based on the
+        /// font, size, world transform, and measuring mode.
+        /// </summary>
+        /// <param name="fontEmSize">
+        /// Logical font size in DIPs.
+        /// </param>
+        /// <param name="dpiX">
+        /// Number of pixels per logical inch in the horizontal direction.
+        /// </param>
+        /// <param name="dpiY">
+        /// Number of pixels per logical inch in the vertical direction.
+        /// </param>
+        /// <param name="transform">
+        /// Specifies the world transform.
+        /// </param>
+        /// <param name="outlineThreshold">
+        /// Specifies the quality of the graphics system's outline rendering,
+        /// affects the size threshold above which outline rendering is used.
+        /// </param>
+        /// <param name="measuringMode">
+        /// Specifies the method used to measure during text layout. For proper 
+        /// glyph spacing, the function returns a rendering mode that is compatible 
+        /// with the specified measuring mode.
+        /// </param>
+        /// <param name="renderingMode">
+        /// Receives the recommended rendering mode.
+        /// </param>
+        /// <remarks>
+        /// This method should be used to determine the actual rendering mode in cases where the rendering 
+        /// mode of the rendering params object is DWRITE_RENDERING_MODE_DEFAULT.
+        /// </remarks>
+        void GetRecommendedRenderingMode( FLOAT fontEmSize, FLOAT dpiX, FLOAT dpiY, _In_opt_ DWRITE_MATRIX const* transform, BOOL isSideways, DWRITE_OUTLINE_THRESHOLD outlineThreshold, DWRITE_MEASURING_MODE measuringMode, _Out_ DWRITE_RENDERING_MODE* renderingMode ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetRecommendedRenderingMode( fontEmSize, dpiX, dpiY, transform, isSideways, outlineThreshold, measuringMode, renderingMode );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Determines the recommended text rendering mode to be used based on the
+        /// font, size, world transform, and measuring mode.
+        /// </summary>
+        /// <param name="fontEmSize">
+        /// Logical font size in DIPs.
+        /// </param>
+        /// <param name="dpiX">
+        /// Number of pixels per logical inch in the horizontal direction.
+        /// </param>
+        /// <param name="dpiY">
+        /// Number of pixels per logical inch in the vertical direction.
+        /// </param>
+        /// <param name="transform">
+        /// Specifies the world transform.
+        /// </param>
+        /// <param name="outlineThreshold">
+        /// Specifies the quality of the graphics system's outline rendering,
+        /// affects the size threshold above which outline rendering is used.
+        /// </param>
+        /// <param name="measuringMode">
+        /// Specifies the method used to measure during text layout. For proper 
+        /// glyph spacing, the function returns a rendering mode that is compatible 
+        /// with the specified measuring mode.
+        /// </param>
+        /// <returns>
+        /// The recommended rendering mode.
+        /// </returns>
+        /// <remarks>
+        /// This method should be used to determine the actual rendering mode in cases where the rendering 
+        /// mode of the rendering params object is DWRITE_RENDERING_MODE_DEFAULT.
+        /// </remarks>
+        RenderingMode GetRecommendedRenderingMode( FLOAT fontEmSize, FLOAT dpiX, FLOAT dpiY, _In_opt_ DWRITE_MATRIX const* transform, BOOL isSideways, DWRITE_OUTLINE_THRESHOLD outlineThreshold, DWRITE_MEASURING_MODE measuringMode ) const
+        {
+            DWRITE_RENDERING_MODE result{};
+            GetRecommendedRenderingMode( fontEmSize, dpiX, dpiY, transform, isSideways, outlineThreshold, measuringMode, &result );
+            return static_cast< RenderingMode >( result );
+        }
+
+
+        /// <summary>
+        /// Retrieves the vertical forms of the nominal glyphs retrieved from
+        /// GetGlyphIndices, using the font's 'vert' table. This is used in
+        /// CJK vertical layout so the correct characters are shown.
+        /// </summary>
+        /// <param name="glyphCount">
+        /// Number of glyphs to retrieve.
+        /// </param>
+        /// <param name="nominalGlyphIndices">
+        /// Original glyph indices from cmap.
+        /// </param>
+        /// <param name="verticalGlyphIndices">
+        /// The vertical form of glyph indices.
+        /// </param>
+        /// <remarks>
+        /// Call GetGlyphIndices to get the nominal glyph indices, followed by
+        /// calling this to remap the to the substituted forms, when the run
+        /// is sideways, and the font has vertical glyph variants.
+        /// </remarks>
+        void GetVerticalGlyphVariants( UINT32 glyphCount, _In_reads_( glyphCount ) UINT16 const* nominalGlyphIndices, _Out_writes_( glyphCount ) UINT16* verticalGlyphIndices ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetVerticalGlyphVariants( glyphCount, nominalGlyphIndices, verticalGlyphIndices );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Retrieves the vertical forms of the nominal glyphs retrieved from
+        /// GetGlyphIndices, using the font's 'vert' table. This is used in
+        /// CJK vertical layout so the correct characters are shown.
+        /// </summary>
+        /// <param name="nominalGlyphIndices">
+        /// A std::span&lt;UInt16&gt; of original glyph indices from cmap.
+        /// </param>
+        /// <param name="verticalGlyphIndices">
+        /// The returned vertical form of glyph indices.
+        /// </param>
+        void GetVerticalGlyphVariants( const std::span<UInt16>& nominalGlyphIndices, UINT16* verticalGlyphIndices ) const
+        {
+            assert( nominalGlyphIndices.size( ) <= static_cast< size_t >( MaxUInt32 ) );
+            GetVerticalGlyphVariants( static_cast< UInt32 >( nominalGlyphIndices.size( ) ), nominalGlyphIndices.data( ), verticalGlyphIndices );
+        }
+
+        /// <summary>
+        /// Retrieves the vertical forms of the nominal glyphs retrieved from
+        /// GetGlyphIndices, using the font's 'vert' table. This is used in
+        /// CJK vertical layout so the correct characters are shown.
+        /// </summary>
+        /// <param name="glyphCount">
+        /// Number of glyphs to retrieve.
+        /// </param>
+        /// <param name="nominalGlyphIndices">
+        /// Original glyph indices from cmap.
+        /// </param>
+        /// <returns>
+        /// The vertical form of glyph indices.
+        /// </returns>
+        std::vector<UInt16> GetVerticalGlyphVariants( UINT32 glyphCount, _In_reads_( glyphCount ) UINT16 const* nominalGlyphIndices ) const
+        {
+            std::vector<UINT16> result( glyphCount );
+            GetVerticalGlyphVariants( glyphCount, nominalGlyphIndices, result.data( ) );
+            return result;
+        }
+
+        /// <summary>
+        /// Retrieves the vertical forms of the nominal glyphs retrieved from
+        /// GetGlyphIndices, using the font's 'vert' table. This is used in
+        /// CJK vertical layout so the correct characters are shown.
+        /// </summary>
+        /// <param name="nominalGlyphIndices">
+        /// A std::span&lt;UInt16&gt; of original glyph indices from cmap.
+        /// </param>
+        /// <returns>
+        /// The vertical form of glyph indices.
+        /// </returns>
+        std::vector<UInt16> GetVerticalGlyphVariants( const std::span<UInt16>& nominalGlyphIndices) const
+        {
+            assert( nominalGlyphIndices.size( ) <= static_cast< size_t >( MaxUInt32 ) );
+            std::vector<UINT16> result( nominalGlyphIndices.size( ) );
+            GetVerticalGlyphVariants( static_cast< UInt32 >( nominalGlyphIndices.size( ) ), nominalGlyphIndices.data( ), result.data( ) );
+            return result;
+        }
+
+
+        /// <summary>
+        /// Returns whether or not the font has any vertical glyph variants.
+        /// </summary>
+        /// <remarks>
+        /// For OpenType fonts, this will return true if the font contains a 'vert'
+        /// feature.
+        /// </remarks>
+        /// <returns>
+        /// True if the font contains vertical glyph variants.
+        /// </returns>
+        bool HasVerticalGlyphVariants( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->HasVerticalGlyphVariants( ) != FALSE;
+        }
+
+        using Base::GetMetrics;
+        using Base::GetGdiCompatibleMetrics;
+        using Base::GetRecommendedRenderingMode;
+
+    };
+
+
+    /// <summary>
+    /// The Font1, a wrapper around the IDWriteFont1 interface, represents 
+    /// a physical font in a font collection.
+    /// </summary>
+    class Font1 : public Font
+    {
+    public:
+        typedef Font Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( Font1, Font, IDWriteFont1, IDWriteFont )
+
+        /// <summary>
+        /// Gets common metrics for the font in design units.
+        /// These metrics are applicable to all the glyphs within a font,
+        /// and are used by applications for layout calculations.
+        /// </summary>
+        /// <param name="fontMetrics">
+        /// Metrics structure to fill in.
+        /// </param>
+        void GetMetrics( _Out_ DWRITE_FONT_METRICS1* fontMetrics ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->GetMetrics( fontMetrics );
+        }
+
+        /// <summary>
+        /// Gets common metrics for the font in design units.
+        /// These metrics are applicable to all the glyphs within a font,
+        /// and are used by applications for layout calculations.
+        /// </summary>
+        /// <returns>
+        /// A FontMetrics1 structure containing the font metrics.
+        /// </returns>
+        FontMetrics1 GetMetrics( ) const
+        {
+            FontMetrics1 fontMetrics;
+            GetMetrics( &fontMetrics );
+            return fontMetrics;
+        }
+
+        using Base::GetMetrics;
+
+
+
+
+        /// <summary>
+        /// Gets the PANOSE values from the font, used for font selection and
+        /// matching.
+        /// </summary>
+        /// <param name="panose">
+        /// PANOSE structure to fill in.
+        /// </param>
+        /// <remarks>
+        /// The function does not simulate these, such as substituting a weight or
+        /// proportion inferred on other values. If the font does not specify them,
+        /// they are all set to 'any' (0).
+        /// </remarks>
+        void GetPanose( _Out_ DWRITE_PANOSE* panose ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            pInterface->GetPanose( panose );
+        }
+
+        /// <summary>
+        /// Gets the PANOSE values from the font, used for font selection and
+        /// matching.
+        /// </summary>
+        /// <param name="panose">
+        /// Panose structure to fill in.
+        /// </param>
+        /// <remarks>
+        /// The function does not simulate these, such as substituting a weight or
+        /// proportion inferred on other values. If the font does not specify them,
+        /// they are all set to 'any' (0).
+        /// </remarks>
+        void GetPanose( _Out_ Panose* panose ) const
+        {
+            if(panose)
+            {
+                GetPanose( &panose->Data );
+            }
+            else
+            {
+                InterfaceType* pInterface = GetInterface( );
+                HCC_COM_CHECK_HRESULT2( E_POINTER, pInterface );
+            }
+        }
+
+        /// <summary>
+        /// Gets the PANOSE values from the font, used for font selection and
+        /// matching.
+        /// </summary>
+        /// <returns>
+        /// A Panose structure containing the PANOSE values.
+        /// </returns>
+        /// <remarks>
+        /// The function does not simulate these, such as substituting a weight or
+        /// proportion inferred on other values. If the font does not specify them,
+        /// they are all set to 'any' (0).
+        /// </remarks>
+        Panose GetPanose( ) const
+        {
+            Panose panose;
+            GetPanose( &panose.Data );
+            return panose;
+        }
+
+
+
+        /// <summary>
+        /// Returns the list of character ranges supported by the font, which is
+        /// useful for scenarios like character picking, glyph display, and
+        /// efficient font selection lookup. This is similar to GDI's
+        /// GetFontUnicodeRanges, except that it returns the full Unicode range,
+        /// not just 16-bit UCS-2.
+        /// </summary>
+        /// <param name="maxRangeCount">
+        /// Maximum number of character ranges passed in from the client.
+        /// </param>
+        /// <param name="unicodeRanges">
+        /// Array of character ranges.
+        /// </param>
+        /// <param name="actualRangeCount">
+        /// Actual number of character ranges, regardless of the maximum count.
+        /// </param>
+        /// <remarks>
+        /// These ranges are from the cmap, not the OS/2::ulCodePageRange1.
+        /// </remarks>
+        void GetUnicodeRanges(UINT32 maxRangeCount, _Out_writes_to_opt_( maxRangeCount, *actualRangeCount ) DWRITE_UNICODE_RANGE* unicodeRanges, _Out_ UINT32* actualRangeCount ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetUnicodeRanges( maxRangeCount, unicodeRanges, actualRangeCount );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Returns a vector of character ranges supported by the font, which is
+        /// useful for scenarios like character picking, glyph display, and
+        /// efficient font selection lookup. This is similar to GDI's
+        /// GetFontUnicodeRanges, except that it returns the full Unicode range,
+        /// not just 16-bit UCS-2.
+        /// </summary>
+        /// <returns>
+        /// A vector of UnicodeRange structures.
+        /// </returns>
+        std::vector<UnicodeRange> GetUnicodeRanges( ) const
+        {
+            UINT32 actualRangeCount = 0;
+            GetUnicodeRanges( 0, nullptr, &actualRangeCount );
+            std::vector<UnicodeRange> result( actualRangeCount );
+            GetUnicodeRanges( actualRangeCount, result.data( ), &actualRangeCount );
+            return result;
+        }
+
+
+        /// <summary>
+        /// Returns true if the font is monospaced, meaning its characters are the
+        /// same fixed-pitch width (non-proportional).
+        /// </summary>
+        bool IsMonospacedFont( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->IsMonospacedFont( ) != FALSE;
+        }
+
+    };
+
+    /// <summary>
+    /// The interface that represents text rendering settings for glyph rasterization and filtering.
+    /// </summary>
+    class RenderingParams1 : public RenderingParams
+    {
+    public:
+        typedef RenderingParams Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( RenderingParams1, RenderingParams, IDWriteRenderingParams1, IDWriteRenderingParams )
+
+
+        /// <summary>
+        /// Gets the amount of contrast enhancement to use for grayscale antialiasing.
+        /// Valid values are greater than or equal to zero.
+        /// </summary>
+        FLOAT GetGrayscaleEnhancedContrast( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetGrayscaleEnhancedContrast( );
+        }
+
+    };
+
+    /// <summary>
+    /// Analyzes various text properties for complex script processing.
+    /// </summary>
+    class TextAnalyzer1 : public TextAnalyzer
+    {
+    public:
+        typedef TextAnalyzer Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextAnalyzer1, TextAnalyzer, IDWriteTextAnalyzer1, IDWriteTextAnalyzer )
+
+
+
+    };
+
+
+    class TextLayout1 : public TextLayout
+    {
+    public:
+        typedef TextLayout Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextLayout1, TextLayout, IDWriteTextLayout1, IDWriteTextLayout )
+
+    };
+
+    /// <summary>
+    /// Represents the type of antialiasing to use for text when the rendering mode calls for
+    /// antialiasing.
+    /// </summary>
+    enum class TextAntialiasMode
+    {
+        /// <summary>
+        /// ClearType antialiasing computes coverage independently for the red, green, and blue
+        /// color elements of each pixel. This allows for more detail than conventional antialiasing.
+        /// However, because there is no one alpha value for each pixel, ClearType is not suitable
+        /// rendering text onto a transparent intermediate bitmap.
+        /// </summary>
+        ClearType = DWRITE_TEXT_ANTIALIAS_MODE_CLEARTYPE,
+
+        /// <summary>
+        /// Grayscale antialiasing computes one coverage value for each pixel. Because the alpha
+        /// value of each pixel is well-defined, text can be rendered onto a transparent bitmap, 
+        /// which can then be composited with other content. Note that grayscale rendering with
+        /// IDWriteBitmapRenderTarget1 uses premultiplied alpha.
+        /// </summary>
+        Grayscale = DWRITE_TEXT_ANTIALIAS_MODE_GRAYSCALE
+    };
+
+
+    class BitmapRenderTarget1 : public BitmapRenderTarget
+    {
+    public:
+        typedef BitmapRenderTarget Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( BitmapRenderTarget1, BitmapRenderTarget, IDWriteBitmapRenderTarget1, IDWriteBitmapRenderTarget )
+
+    };
+
+
+    /// <summary>
+    /// The root factory interface for all DWrite objects.
+    /// </summary>
+    class Factory1 : public Factory
+    {
+    public:
+        typedef Factory Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( Factory1, Factory, IDWriteFactory1, IDWriteFactory )
+
+        /// <summary>
+        /// Gets a font collection representing the set of end-user defined
+        /// custom fonts.
+        /// </summary>
+        /// <param name="fontCollection">
+        /// Receives a pointer to the EUDC font collection object, or NULL 
+        /// in case of failure.
+        /// </param>
+        /// <param name="checkForUpdates">
+        /// If this parameter is nonzero, the function performs an immediate 
+        /// check for changes to the set of EUDC fonts. If this parameter is 
+        /// FALSE, the function will still detect changes, but there may be 
+        /// some latency. For example, an application might specify TRUE if 
+        /// it has itself just modified a font and wants to be sure the font 
+        /// collection contains that font.
+        /// </param>
+        /// <remarks>
+        /// Querying via IDWriteFontCollection::FindFamilyName for a specific
+        /// family (like MS Gothic) will return the matching family-specific EUDC
+        /// font if one exists. Querying for "" will return the global EUDC font.
+        /// For example, if you were matching an EUDC character within a run of
+        /// the base font PMingLiu, you would retrieve the corresponding EUDC font
+        /// face using GetEudcFontCollection, then FindFamilyName with "PMingLiu",
+        /// followed by GetFontFamily and CreateFontFace.
+        ///
+        /// Be aware that eudcedit.exe can create placeholder empty glyphs that
+        /// have zero advance width and no glyph outline. Although they are present
+        /// in the font (HasCharacter returns true), you are best to ignore
+        /// these and continue on with font fallback in your layout if the metrics
+        /// for the glyph are zero.
+        /// </remarks>
+        void GetEudcFontCollection(_COM_Outptr_ IDWriteFontCollection** fontCollection, BOOL checkForUpdates = FALSE ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetEudcFontCollection( fontCollection, checkForUpdates );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Gets a font collection representing the set of end-user defined
+        /// custom fonts.
+        /// </summary>
+        /// <param name="checkForUpdates">
+        /// If this parameter is nonzero, the function performs an immediate 
+        /// check for changes to the set of EUDC fonts. If this parameter is 
+        /// FALSE, the function will still detect changes, but there may be 
+        /// some latency. For example, an application might specify TRUE if 
+        /// it has itself just modified a font and wants to be sure the font 
+        /// collection contains that font.
+        /// </param>
+        /// <returns>
+        /// A FontCollection object representing the set of end-user defined
+        /// custom fonts.
+        /// </returns>
+        FontCollection GetEudcFontCollection( bool checkForUpdates = false ) const
+        {
+            IDWriteFontCollection* fontCollection = nullptr;
+            GetEudcFontCollection( &fontCollection, checkForUpdates? TRUE : FALSE );
+            FontCollection result( fontCollection );
+            return result;
+        }
+
+
+
+        /// <summary>
+        /// Creates a rendering parameters object with the specified properties.
+        /// </summary>
+        /// <param name="gamma">The gamma value used for gamma correction, which must be greater than zero and cannot exceed 256.</param>
+        /// <param name="enhancedContrast">The amount of contrast enhancement, zero or greater.</param>
+        /// <param name="enhancedContrastGrayscale">The amount of contrast enhancement to use for grayscale antialiasing, zero or greater.</param>
+        /// <param name="clearTypeLevel">The degree of ClearType level, from 0.0f (no ClearType) to 1.0f (full ClearType).</param>
+        /// <param name="pixelGeometry">The geometry of a device pixel.</param>
+        /// <param name="renderingMode">Method of rendering glyphs. In most cases, this should be DWRITE_RENDERING_MODE_DEFAULT to automatically use an appropriate mode.</param>
+        /// <param name="renderingParams">Holds the newly created rendering parameters object, or NULL in case of failure.</param>
+        void CreateCustomRenderingParams(
+                    FLOAT gamma,
+                    FLOAT enhancedContrast,
+                    FLOAT enhancedContrastGrayscale,
+                    FLOAT clearTypeLevel,
+                    DWRITE_PIXEL_GEOMETRY pixelGeometry,
+                    DWRITE_RENDERING_MODE renderingMode,
+                    _COM_Outptr_ IDWriteRenderingParams1** renderingParams) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateCustomRenderingParams( gamma, enhancedContrast, enhancedContrastGrayscale, clearTypeLevel, pixelGeometry, renderingMode, renderingParams );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        using Base::CreateCustomRenderingParams;
+
+    };
+
+
+
 }
 
 namespace Harlinn::Windows::Graphics::D2D
