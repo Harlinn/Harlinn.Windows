@@ -682,7 +682,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         Proportional = DWRITE_LINE_SPACING_METHOD_PROPORTIONAL
     };
 
-    struct LineSpacing
+    struct LineSpacingData
     {
         LineSpacingMethod lineSpacingMethod = LineSpacingMethod::Default;
         FLOAT lineSpacing = 0.0f;
@@ -844,6 +844,1420 @@ namespace Harlinn::Windows::Graphics::DirectWrite
     };
 
 
+    /// <summary>
+    /// The overall kind of family.
+    /// </summary>
+    enum class PanoseFamily
+    {
+        Any = DWRITE_PANOSE_FAMILY_ANY,
+        NoFit = DWRITE_PANOSE_FAMILY_NO_FIT,
+        TextDisplay = DWRITE_PANOSE_FAMILY_TEXT_DISPLAY,
+        Script = DWRITE_PANOSE_FAMILY_SCRIPT, // or hand written
+        Decorative = DWRITE_PANOSE_FAMILY_DECORATIVE,
+        Symbol = DWRITE_PANOSE_FAMILY_SYMBOL, // or symbol
+        Pictorial = DWRITE_PANOSE_FAMILY_PICTORIAL
+    };
+
+    /// <summary>
+    /// Appearance of the serifs.
+    /// Present for families: 2-text
+    /// </summary>
+    enum class PanoseSerifStyle
+    {
+        Any = DWRITE_PANOSE_SERIF_STYLE_ANY,
+        NoFit = DWRITE_PANOSE_SERIF_STYLE_NO_FIT,
+        Cove = DWRITE_PANOSE_SERIF_STYLE_COVE,
+        ObtuseCove = DWRITE_PANOSE_SERIF_STYLE_OBTUSE_COVE,
+        SquareCove = DWRITE_PANOSE_SERIF_STYLE_SQUARE_COVE,
+        ObtuseSquareCove = DWRITE_PANOSE_SERIF_STYLE_OBTUSE_SQUARE_COVE,
+        Square = DWRITE_PANOSE_SERIF_STYLE_SQUARE,
+        Thin = DWRITE_PANOSE_SERIF_STYLE_THIN,
+        Oval = DWRITE_PANOSE_SERIF_STYLE_OVAL,
+        Exaggerated = DWRITE_PANOSE_SERIF_STYLE_EXAGGERATED,
+        Triangle = DWRITE_PANOSE_SERIF_STYLE_TRIANGLE,
+        NormalSans = DWRITE_PANOSE_SERIF_STYLE_NORMAL_SANS,
+        ObtuseSans = DWRITE_PANOSE_SERIF_STYLE_OBTUSE_SANS,
+        PerpendicularSans = DWRITE_PANOSE_SERIF_STYLE_PERPENDICULAR_SANS,
+        Flared = DWRITE_PANOSE_SERIF_STYLE_FLARED,
+        Rounded = DWRITE_PANOSE_SERIF_STYLE_ROUNDED,
+        Script = DWRITE_PANOSE_SERIF_STYLE_SCRIPT,
+        PerpSans = DWRITE_PANOSE_SERIF_STYLE_PERP_SANS,
+        Bone = DWRITE_PANOSE_SERIF_STYLE_BONE
+    };
+
+    /// <summary>
+    /// PANOSE font weights. These roughly correspond to the DWRITE_FONT_WEIGHT's
+    /// using (panose_weight - 2) * 100.
+    /// Present for families: 2-text, 3-script, 4-decorative, 5-symbol
+    /// </summary>
+    enum class PanoseWeight
+    {
+        Any = DWRITE_PANOSE_WEIGHT_ANY,
+        NoFit = DWRITE_PANOSE_WEIGHT_NO_FIT,
+        VeryLight = DWRITE_PANOSE_WEIGHT_VERY_LIGHT,
+        Light = DWRITE_PANOSE_WEIGHT_LIGHT,
+        Thin = DWRITE_PANOSE_WEIGHT_THIN,
+        Book = DWRITE_PANOSE_WEIGHT_BOOK,
+        Medium = DWRITE_PANOSE_WEIGHT_MEDIUM,
+        Demi = DWRITE_PANOSE_WEIGHT_DEMI,
+        Bold = DWRITE_PANOSE_WEIGHT_BOLD,
+        Heavy = DWRITE_PANOSE_WEIGHT_HEAVY,
+        Black = DWRITE_PANOSE_WEIGHT_BLACK,
+        ExtraBlack = DWRITE_PANOSE_WEIGHT_EXTRA_BLACK,
+        Nord = DWRITE_PANOSE_WEIGHT_NORD
+    };
+
+    /// <summary>
+    /// Proportion of the glyph shape considering additional detail to standard
+    /// characters.
+    /// Present for families: 2-text
+    /// </summary>
+    enum class PanoseProportion
+    {
+        Any = DWRITE_PANOSE_PROPORTION_ANY,
+        NoFit = DWRITE_PANOSE_PROPORTION_NO_FIT,
+        OldStyle = DWRITE_PANOSE_PROPORTION_OLD_STYLE,
+        Modern = DWRITE_PANOSE_PROPORTION_MODERN,
+        EvenWidth = DWRITE_PANOSE_PROPORTION_EVEN_WIDTH,
+        Expanded = DWRITE_PANOSE_PROPORTION_EXPANDED,
+        Condensed = DWRITE_PANOSE_PROPORTION_CONDENSED,
+        VeryExpanded = DWRITE_PANOSE_PROPORTION_VERY_EXPANDED,
+        VeryCondensed = DWRITE_PANOSE_PROPORTION_VERY_CONDENSED,
+        Monospaced = DWRITE_PANOSE_PROPORTION_MONOSPACED
+    };
+
+    /// <summary>
+    /// Ratio between thickest and thinnest point of the stroke for a letter such
+    /// as uppercase 'O'.
+    /// Present for families: 2-text, 3-script, 4-decorative
+    /// </summary>
+    enum class PanoseContrast
+    {
+        Any = DWRITE_PANOSE_CONTRAST_ANY,
+        NoFit = DWRITE_PANOSE_CONTRAST_NO_FIT,
+        None = DWRITE_PANOSE_CONTRAST_NONE,
+        VeryLow = DWRITE_PANOSE_CONTRAST_VERY_LOW,
+        Low = DWRITE_PANOSE_CONTRAST_LOW,
+        MediumLow = DWRITE_PANOSE_CONTRAST_MEDIUM_LOW,
+        Medium = DWRITE_PANOSE_CONTRAST_MEDIUM,
+        MediumHigh = DWRITE_PANOSE_CONTRAST_MEDIUM_HIGH,
+        High = DWRITE_PANOSE_CONTRAST_HIGH,
+        VeryHigh = DWRITE_PANOSE_CONTRAST_VERY_HIGH,
+        HorizontalLow = DWRITE_PANOSE_CONTRAST_HORIZONTAL_LOW,
+        HorizontalMedium = DWRITE_PANOSE_CONTRAST_HORIZONTAL_MEDIUM,
+        HorizontalHigh = DWRITE_PANOSE_CONTRAST_HORIZONTAL_HIGH,
+        Broken = DWRITE_PANOSE_CONTRAST_BROKEN
+    };
+
+    /// <summary>
+    /// Relationship between thin and thick stems.
+    /// Present for families: 2-text
+    /// </summary>
+    enum class PanoseStrokeVariation
+    {
+        Any = DWRITE_PANOSE_STROKE_VARIATION_ANY,
+        NoFit = DWRITE_PANOSE_STROKE_VARIATION_NO_FIT,
+        NoVariation = DWRITE_PANOSE_STROKE_VARIATION_NO_VARIATION,
+        GradualDiagonal = DWRITE_PANOSE_STROKE_VARIATION_GRADUAL_DIAGONAL,
+        GradualTransitional = DWRITE_PANOSE_STROKE_VARIATION_GRADUAL_TRANSITIONAL,
+        GradualVertical = DWRITE_PANOSE_STROKE_VARIATION_GRADUAL_VERTICAL,
+        GradualHorizontal = DWRITE_PANOSE_STROKE_VARIATION_GRADUAL_HORIZONTAL,
+        RapidVertical = DWRITE_PANOSE_STROKE_VARIATION_RAPID_VERTICAL,
+        RapidHorizontal = DWRITE_PANOSE_STROKE_VARIATION_RAPID_HORIZONTAL,
+        InstantVertical = DWRITE_PANOSE_STROKE_VARIATION_INSTANT_VERTICAL,
+        InstantHorizontal = DWRITE_PANOSE_STROKE_VARIATION_INSTANT_HORIZONTAL
+    };
+
+    /// <summary>
+    /// Style of termination of stems and rounded letterforms.
+    /// Present for families: 2-text
+    /// </summary>
+    enum class PanoseArmStyle
+    {
+        Any = DWRITE_PANOSE_ARM_STYLE_ANY,
+        NoFit = DWRITE_PANOSE_ARM_STYLE_NO_FIT,
+        StraightArmsHorizontal = DWRITE_PANOSE_ARM_STYLE_STRAIGHT_ARMS_HORIZONTAL,
+        StraightArmsWedge = DWRITE_PANOSE_ARM_STYLE_STRAIGHT_ARMS_WEDGE,
+        StraightArmsVertical = DWRITE_PANOSE_ARM_STYLE_STRAIGHT_ARMS_VERTICAL,
+        StraightArmsSingleSerif = DWRITE_PANOSE_ARM_STYLE_STRAIGHT_ARMS_SINGLE_SERIF,
+        StraightArmsDoubleSerif = DWRITE_PANOSE_ARM_STYLE_STRAIGHT_ARMS_DOUBLE_SERIF,
+        NonstraightArmsHorizontal = DWRITE_PANOSE_ARM_STYLE_NONSTRAIGHT_ARMS_HORIZONTAL,
+        NonstraightArmsWedge = DWRITE_PANOSE_ARM_STYLE_NONSTRAIGHT_ARMS_WEDGE,
+        NonstraightArmsVertical = DWRITE_PANOSE_ARM_STYLE_NONSTRAIGHT_ARMS_VERTICAL,
+        NonstraightArmsSingleSerif = DWRITE_PANOSE_ARM_STYLE_NONSTRAIGHT_ARMS_SINGLE_SERIF,
+        NonstraightArmsDoubleSerif = DWRITE_PANOSE_ARM_STYLE_NONSTRAIGHT_ARMS_DOUBLE_SERIF
+    };
+
+    /// <summary>
+    /// Roundness of letterform.
+    /// Present for families: 2-text
+    /// </summary>
+    enum class PanoseLetterform
+    {
+        Any = DWRITE_PANOSE_LETTERFORM_ANY,
+        NoFit = DWRITE_PANOSE_LETTERFORM_NO_FIT,
+        NormalContact = DWRITE_PANOSE_LETTERFORM_NORMAL_CONTACT,
+        NormalWeighted = DWRITE_PANOSE_LETTERFORM_NORMAL_WEIGHTED,
+        NormalBoxed = DWRITE_PANOSE_LETTERFORM_NORMAL_BOXED,
+        NormalFlattened = DWRITE_PANOSE_LETTERFORM_NORMAL_FLATTENED,
+        NormalRounded = DWRITE_PANOSE_LETTERFORM_NORMAL_ROUNDED,
+        NormalOffCenter = DWRITE_PANOSE_LETTERFORM_NORMAL_OFF_CENTER,
+        NormalSquare = DWRITE_PANOSE_LETTERFORM_NORMAL_SQUARE,
+        ObliqueContact = DWRITE_PANOSE_LETTERFORM_OBLIQUE_CONTACT,
+        ObliqueWeighted = DWRITE_PANOSE_LETTERFORM_OBLIQUE_WEIGHTED,
+        ObliqueBoxed = DWRITE_PANOSE_LETTERFORM_OBLIQUE_BOXED,
+        ObliqueFlattened = DWRITE_PANOSE_LETTERFORM_OBLIQUE_FLATTENED,
+        ObliqueRounded = DWRITE_PANOSE_LETTERFORM_OBLIQUE_ROUNDED,
+        ObliqueOffCenter = DWRITE_PANOSE_LETTERFORM_OBLIQUE_OFF_CENTER,
+        ObliqueSquare = DWRITE_PANOSE_LETTERFORM_OBLIQUE_SQUARE
+    };
+
+    /// <summary>
+    /// Placement of midline across uppercase characters and treatment of diagonal
+    /// stem apexes.
+    /// Present for families: 2-text
+    /// </summary>
+    enum class PanoseMidline
+    {
+        Any = DWRITE_PANOSE_MIDLINE_ANY,
+        NoFit = DWRITE_PANOSE_MIDLINE_NO_FIT,
+        StandardTrimmed = DWRITE_PANOSE_MIDLINE_STANDARD_TRIMMED,
+        StandardPointed = DWRITE_PANOSE_MIDLINE_STANDARD_POINTED,
+        StandardSerifed = DWRITE_PANOSE_MIDLINE_STANDARD_SERIFED,
+        HighTrimmed = DWRITE_PANOSE_MIDLINE_HIGH_TRIMMED,
+        HighPointed = DWRITE_PANOSE_MIDLINE_HIGH_POINTED,
+        HighSerifed = DWRITE_PANOSE_MIDLINE_HIGH_SERIFED,
+        ConstantTrimmed = DWRITE_PANOSE_MIDLINE_CONSTANT_TRIMMED,
+        ConstantPointed = DWRITE_PANOSE_MIDLINE_CONSTANT_POINTED,
+        ConstantSerifed = DWRITE_PANOSE_MIDLINE_CONSTANT_SERIFED,
+        LowTrimmed = DWRITE_PANOSE_MIDLINE_LOW_TRIMMED,
+        LowPointed = DWRITE_PANOSE_MIDLINE_LOW_POINTED,
+        LowSerifed = DWRITE_PANOSE_MIDLINE_LOW_SERIFED
+    };
+
+    /// <summary>
+    /// Relative size of lowercase letters and treament of diacritic marks
+    /// and uppercase glyphs.
+    /// Present for families: 2-text
+    /// </summary>
+    enum class PanoseXHeight
+    {
+        Any = DWRITE_PANOSE_XHEIGHT_ANY,
+        NoFit = DWRITE_PANOSE_XHEIGHT_NO_FIT,
+        ConstantSmall = DWRITE_PANOSE_XHEIGHT_CONSTANT_SMALL,
+        ConstantStandard = DWRITE_PANOSE_XHEIGHT_CONSTANT_STANDARD,
+        ConstantLarge = DWRITE_PANOSE_XHEIGHT_CONSTANT_LARGE,
+        DuckingSmall = DWRITE_PANOSE_XHEIGHT_DUCKING_SMALL,
+        DuckingStandard = DWRITE_PANOSE_XHEIGHT_DUCKING_STANDARD,
+        DuckingLarge = DWRITE_PANOSE_XHEIGHT_DUCKING_LARGE,
+        ConstantStd = DWRITE_PANOSE_XHEIGHT_CONSTANT_STD,
+        DuckingStd = DWRITE_PANOSE_XHEIGHT_DUCKING_STD
+    };
+
+    /// <summary>
+    /// Kind of tool used to create character forms.
+    /// Present for families: 3-script
+    /// </summary>
+    enum class PanoseToolKind
+    {
+        Any = DWRITE_PANOSE_TOOL_KIND_ANY,
+        NoFit = DWRITE_PANOSE_TOOL_KIND_NO_FIT,
+        FlatNib = DWRITE_PANOSE_TOOL_KIND_FLAT_NIB,
+        PressurePoint = DWRITE_PANOSE_TOOL_KIND_PRESSURE_POINT,
+        Engraved = DWRITE_PANOSE_TOOL_KIND_ENGRAVED,
+        Ball = DWRITE_PANOSE_TOOL_KIND_BALL,
+        Brush = DWRITE_PANOSE_TOOL_KIND_BRUSH,
+        Rough = DWRITE_PANOSE_TOOL_KIND_ROUGH,
+        FeltPenBrushTip = DWRITE_PANOSE_TOOL_KIND_FELT_PEN_BRUSH_TIP,
+        WildBrush = DWRITE_PANOSE_TOOL_KIND_WILD_BRUSH
+    };
+
+    /// <summary>
+    /// Monospace vs proportional.
+    /// Present for families: 3-script, 5-symbol
+    /// </summary>
+    enum class PanoseSpacing
+    {
+        Any = DWRITE_PANOSE_SPACING_ANY,
+        NoFit = DWRITE_PANOSE_SPACING_NO_FIT,
+        ProportionalSpaced = DWRITE_PANOSE_SPACING_PROPORTIONAL_SPACED,
+        Monospaced = DWRITE_PANOSE_SPACING_MONOSPACED
+    };
+
+    /// <summary>
+    /// Ratio between width and height of the face.
+    /// Present for families: 3-script
+    /// </summary>
+    enum class PanoseAspectRatio
+    {
+        Any = DWRITE_PANOSE_ASPECT_RATIO_ANY,
+        NoFit = DWRITE_PANOSE_ASPECT_RATIO_NO_FIT,
+        VeryCondensed = DWRITE_PANOSE_ASPECT_RATIO_VERY_CONDENSED,
+        Condensed = DWRITE_PANOSE_ASPECT_RATIO_CONDENSED,
+        Normal = DWRITE_PANOSE_ASPECT_RATIO_NORMAL,
+        Expanded = DWRITE_PANOSE_ASPECT_RATIO_EXPANDED,
+        VeryExpanded = DWRITE_PANOSE_ASPECT_RATIO_VERY_EXPANDED
+    };
+
+    /// <summary>
+    /// Topology of letterforms.
+    /// Present for families: 3-script
+    /// </summary>
+    enum class PanoseScriptTopology
+    {
+        Any = DWRITE_PANOSE_SCRIPT_TOPOLOGY_ANY,
+        NoFit = DWRITE_PANOSE_SCRIPT_TOPOLOGY_NO_FIT,
+        RomanDisconnected = DWRITE_PANOSE_SCRIPT_TOPOLOGY_ROMAN_DISCONNECTED,
+        RomanTrailing = DWRITE_PANOSE_SCRIPT_TOPOLOGY_ROMAN_TRAILING,
+        RomanConnected = DWRITE_PANOSE_SCRIPT_TOPOLOGY_ROMAN_CONNECTED,
+        CursiveDisconnected = DWRITE_PANOSE_SCRIPT_TOPOLOGY_CURSIVE_DISCONNECTED,
+        CursiveTrailing = DWRITE_PANOSE_SCRIPT_TOPOLOGY_CURSIVE_TRAILING,
+        CursiveConnected = DWRITE_PANOSE_SCRIPT_TOPOLOGY_CURSIVE_CONNECTED,
+        BlackletterDisconnected = DWRITE_PANOSE_SCRIPT_TOPOLOGY_BLACKLETTER_DISCONNECTED,
+        BlackletterTrailing = DWRITE_PANOSE_SCRIPT_TOPOLOGY_BLACKLETTER_TRAILING,
+        BlackletterConnected = DWRITE_PANOSE_SCRIPT_TOPOLOGY_BLACKLETTER_CONNECTED
+    };
+
+    /// <summary>
+    /// General look of the face, considering slope and tails.
+    /// Present for families: 3-script
+    /// </summary>
+    enum class PanoseScriptForm
+    {
+        Any = DWRITE_PANOSE_SCRIPT_FORM_ANY,
+        NoFit = DWRITE_PANOSE_SCRIPT_FORM_NO_FIT,
+        UprightNoWrapping = DWRITE_PANOSE_SCRIPT_FORM_UPRIGHT_NO_WRAPPING,
+        UprightSomeWrapping = DWRITE_PANOSE_SCRIPT_FORM_UPRIGHT_SOME_WRAPPING,
+        UprightMoreWrapping = DWRITE_PANOSE_SCRIPT_FORM_UPRIGHT_MORE_WRAPPING,
+        UprightExtremeWrapping = DWRITE_PANOSE_SCRIPT_FORM_UPRIGHT_EXTREME_WRAPPING,
+        ObliqueNoWrapping = DWRITE_PANOSE_SCRIPT_FORM_OBLIQUE_NO_WRAPPING,
+        ObliqueSomeWrapping = DWRITE_PANOSE_SCRIPT_FORM_OBLIQUE_SOME_WRAPPING,
+        ObliqueMoreWrapping = DWRITE_PANOSE_SCRIPT_FORM_OBLIQUE_MORE_WRAPPING,
+        ObliqueExtremeWrapping = DWRITE_PANOSE_SCRIPT_FORM_OBLIQUE_EXTREME_WRAPPING,
+        ExaggeratedNoWrapping = DWRITE_PANOSE_SCRIPT_FORM_EXAGGERATED_NO_WRAPPING,
+        ExaggeratedSomeWrapping = DWRITE_PANOSE_SCRIPT_FORM_EXAGGERATED_SOME_WRAPPING,
+        ExaggeratedMoreWrapping = DWRITE_PANOSE_SCRIPT_FORM_EXAGGERATED_MORE_WRAPPING,
+        ExaggeratedExtremeWrapping = DWRITE_PANOSE_SCRIPT_FORM_EXAGGERATED_EXTREME_WRAPPING
+    };
+
+    /// <summary>
+    /// How character ends and miniscule ascenders are treated.
+    /// Present for families: 3-script
+    /// </summary>
+    enum class PanoseFinials
+    {
+        Any = DWRITE_PANOSE_FINIALS_ANY,
+        NoFit = DWRITE_PANOSE_FINIALS_NO_FIT,
+        NoneNoLoops = DWRITE_PANOSE_FINIALS_NONE_NO_LOOPS,
+        NoneClosedLoops = DWRITE_PANOSE_FINIALS_NONE_CLOSED_LOOPS,
+        NoneOpenLoops = DWRITE_PANOSE_FINIALS_NONE_OPEN_LOOPS,
+        SharpNoLoops = DWRITE_PANOSE_FINIALS_SHARP_NO_LOOPS,
+        SharpClosedLoops = DWRITE_PANOSE_FINIALS_SHARP_CLOSED_LOOPS,
+        SharpOpenLoops = DWRITE_PANOSE_FINIALS_SHARP_OPEN_LOOPS,
+        TaperedNoLoops = DWRITE_PANOSE_FINIALS_TAPERED_NO_LOOPS,
+        TaperedClosedLoops = DWRITE_PANOSE_FINIALS_TAPERED_CLOSED_LOOPS,
+        TaperedOpenLoops = DWRITE_PANOSE_FINIALS_TAPERED_OPEN_LOOPS,
+        RoundNoLoops = DWRITE_PANOSE_FINIALS_ROUND_NO_LOOPS,
+        RoundClosedLoops = DWRITE_PANOSE_FINIALS_ROUND_CLOSED_LOOPS,
+        RoundOpenLoops = DWRITE_PANOSE_FINIALS_ROUND_OPEN_LOOPS
+    };
+
+    /// <summary>
+    /// Relative size of the lowercase letters.
+    /// Present for families: 3-script
+    /// </summary>
+    enum class PanoseXAscent
+    {
+        Any = DWRITE_PANOSE_XASCENT_ANY,
+        NoFit = DWRITE_PANOSE_XASCENT_NO_FIT,
+        VeryLow = DWRITE_PANOSE_XASCENT_VERY_LOW,
+        Low = DWRITE_PANOSE_XASCENT_LOW,
+        Medium = DWRITE_PANOSE_XASCENT_MEDIUM,
+        High = DWRITE_PANOSE_XASCENT_HIGH,
+        VeryHigh = DWRITE_PANOSE_XASCENT_VERY_HIGH
+    };
+
+    /// <summary>
+    /// General look of the face.
+    /// Present for families: 4-decorative
+    /// </summary>
+    enum class PanoseDecorativeClass
+    {
+        Any = DWRITE_PANOSE_DECORATIVE_CLASS_ANY,
+        NoFit = DWRITE_PANOSE_DECORATIVE_CLASS_NO_FIT,
+        Derivative = DWRITE_PANOSE_DECORATIVE_CLASS_DERIVATIVE,
+        NonstandardTopology = DWRITE_PANOSE_DECORATIVE_CLASS_NONSTANDARD_TOPOLOGY,
+        NonstandardElements = DWRITE_PANOSE_DECORATIVE_CLASS_NONSTANDARD_ELEMENTS,
+        NonstandardAspect = DWRITE_PANOSE_DECORATIVE_CLASS_NONSTANDARD_ASPECT,
+        Initials = DWRITE_PANOSE_DECORATIVE_CLASS_INITIALS,
+        Cartoon = DWRITE_PANOSE_DECORATIVE_CLASS_CARTOON,
+        PictureStems = DWRITE_PANOSE_DECORATIVE_CLASS_PICTURE_STEMS,
+        Ornamented = DWRITE_PANOSE_DECORATIVE_CLASS_ORNAMENTED,
+        TextAndBackground = DWRITE_PANOSE_DECORATIVE_CLASS_TEXT_AND_BACKGROUND,
+        Collage = DWRITE_PANOSE_DECORATIVE_CLASS_COLLAGE,
+        Montage = DWRITE_PANOSE_DECORATIVE_CLASS_MONTAGE
+    };
+
+    /// <summary>
+    /// Ratio between the width and height of the face.
+    /// Present for families: 4-decorative
+    /// </summary>
+    enum class PanoseAspect
+    {
+        Any = DWRITE_PANOSE_ASPECT_ANY,
+        NoFit = DWRITE_PANOSE_ASPECT_NO_FIT,
+        SuperCondensed = DWRITE_PANOSE_ASPECT_SUPER_CONDENSED,
+        VeryCondensed = DWRITE_PANOSE_ASPECT_VERY_CONDENSED,
+        Condensed = DWRITE_PANOSE_ASPECT_CONDENSED,
+        Normal = DWRITE_PANOSE_ASPECT_NORMAL,
+        Extended = DWRITE_PANOSE_ASPECT_EXTENDED,
+        VeryExtended = DWRITE_PANOSE_ASPECT_VERY_EXTENDED,
+        SuperExtended = DWRITE_PANOSE_ASPECT_SUPER_EXTENDED,
+        Monospaced = DWRITE_PANOSE_ASPECT_MONOSPACED
+    };
+
+    /// <summary>
+    /// Type of fill/line (treatment).
+    /// Present for families: 4-decorative
+    /// </summary>
+    enum class PanoseFill
+    {
+        Any = DWRITE_PANOSE_FILL_ANY,
+        NoFit = DWRITE_PANOSE_FILL_NO_FIT,
+        StandardSolidFill = DWRITE_PANOSE_FILL_STANDARD_SOLID_FILL,
+        NoFill = DWRITE_PANOSE_FILL_NO_FILL,
+        PatternedFill = DWRITE_PANOSE_FILL_PATTERNED_FILL,
+        ComplexFill = DWRITE_PANOSE_FILL_COMPLEX_FILL,
+        ShapedFill = DWRITE_PANOSE_FILL_SHAPED_FILL,
+        DrawnDistressed = DWRITE_PANOSE_FILL_DRAWN_DISTRESSED,
+    };
+
+    /// <summary>
+    /// Outline handling.
+    /// Present for families: 4-decorative
+    /// </summary>
+    enum class PanoseLining
+    {
+        Any = DWRITE_PANOSE_LINING_ANY,
+        NoFit = DWRITE_PANOSE_LINING_NO_FIT,
+        None = DWRITE_PANOSE_LINING_NONE,
+        Inline = DWRITE_PANOSE_LINING_INLINE,
+        Outline = DWRITE_PANOSE_LINING_OUTLINE,
+        Engraved = DWRITE_PANOSE_LINING_ENGRAVED,
+        Shadow = DWRITE_PANOSE_LINING_SHADOW,
+        Relief = DWRITE_PANOSE_LINING_RELIEF,
+        Backdrop = DWRITE_PANOSE_LINING_BACKDROP
+    };
+
+    /// <summary>
+    /// Overall shape characteristics of the font.
+    /// Present for families: 4-decorative
+    /// </summary>
+    enum class PanoseDecorativeTopology
+    {
+        Any = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_ANY,
+        NoFit = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_NO_FIT,
+        Standard = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_STANDARD,
+        Square = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_SQUARE,
+        MultipleSegment = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_MULTIPLE_SEGMENT,
+        ArtDeco = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_ART_DECO,
+        UnevenWeighting = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_UNEVEN_WEIGHTING,
+        DiverseArms = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_DIVERSE_ARMS,
+        DiverseForms = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_DIVERSE_FORMS,
+        LombardicForms = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_LOMBARDIC_FORMS,
+        UpperCaseInLowerCase = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_UPPER_CASE_IN_LOWER_CASE,
+        ImpliedTopology = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_IMPLIED_TOPOLOGY,
+        HorseshoeEAndA = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_HORSESHOE_E_AND_A,
+        Cursive = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_CURSIVE,
+        Blackletter = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_BLACKLETTER,
+        SwashVariance = DWRITE_PANOSE_DECORATIVE_TOPOLOGY_SWASH_VARIANCE
+    };
+
+    /// <summary>
+    /// Type of characters available in the font.
+    /// Present for families: 4-decorative
+    /// </summary>
+    enum class PanoseCharacterRanges
+    {
+        Any = DWRITE_PANOSE_CHARACTER_RANGES_ANY,
+        NoFit = DWRITE_PANOSE_CHARACTER_RANGES_NO_FIT,
+        ExtendedCollection = DWRITE_PANOSE_CHARACTER_RANGES_EXTENDED_COLLECTION,
+        Literals = DWRITE_PANOSE_CHARACTER_RANGES_LITERALS,
+        NoLowerCase = DWRITE_PANOSE_CHARACTER_RANGES_NO_LOWER_CASE,
+        SmallCaps = DWRITE_PANOSE_CHARACTER_RANGES_SMALL_CAPS
+    };
+
+    /// <summary>
+    /// Kind of symbol set.
+    /// Present for families: 5-symbol
+    /// </summary>
+    enum class PanoseSymbolKind
+    {
+        Any = DWRITE_PANOSE_SYMBOL_KIND_ANY,
+        NoFit = DWRITE_PANOSE_SYMBOL_KIND_NO_FIT,
+        Montages = DWRITE_PANOSE_SYMBOL_KIND_MONTAGES,
+        Pictures = DWRITE_PANOSE_SYMBOL_KIND_PICTURES,
+        Shapes = DWRITE_PANOSE_SYMBOL_KIND_SHAPES,
+        Scientific = DWRITE_PANOSE_SYMBOL_KIND_SCIENTIFIC,
+        Music = DWRITE_PANOSE_SYMBOL_KIND_MUSIC,
+        Expert = DWRITE_PANOSE_SYMBOL_KIND_EXPERT,
+        Patterns = DWRITE_PANOSE_SYMBOL_KIND_PATTERNS,
+        Boarders = DWRITE_PANOSE_SYMBOL_KIND_BOARDERS,
+        Icons = DWRITE_PANOSE_SYMBOL_KIND_ICONS,
+        Logos = DWRITE_PANOSE_SYMBOL_KIND_LOGOS,
+        IndustrySpecific = DWRITE_PANOSE_SYMBOL_KIND_INDUSTRY_SPECIFIC
+    };
+
+    /// <summary>
+    /// Aspect ratio of symbolic characters.
+    /// Present for families: 5-symbol
+    /// </summary>
+    enum class PanoseSymbolAspectRatio
+    {
+        Any = DWRITE_PANOSE_SYMBOL_ASPECT_RATIO_ANY,
+        NoFit = DWRITE_PANOSE_SYMBOL_ASPECT_RATIO_NO_FIT,
+        NoWidth = DWRITE_PANOSE_SYMBOL_ASPECT_RATIO_NO_WIDTH,
+        ExceptionallyWide = DWRITE_PANOSE_SYMBOL_ASPECT_RATIO_EXCEPTIONALLY_WIDE,
+        SuperWide = DWRITE_PANOSE_SYMBOL_ASPECT_RATIO_SUPER_WIDE,
+        VeryWide = DWRITE_PANOSE_SYMBOL_ASPECT_RATIO_VERY_WIDE,
+        Wide = DWRITE_PANOSE_SYMBOL_ASPECT_RATIO_WIDE,
+        Normal = DWRITE_PANOSE_SYMBOL_ASPECT_RATIO_NORMAL,
+        Narrow = DWRITE_PANOSE_SYMBOL_ASPECT_RATIO_NARROW,
+        VeryNarrow = DWRITE_PANOSE_SYMBOL_ASPECT_RATIO_VERY_NARROW
+    };
+
+    /// <summary>
+    /// Specifies the policy used by GetRecommendedRenderingMode to determine whether to 
+    /// render glyphs in outline mode. Glyphs are rendered in outline mode by default at
+    /// large sizes for performance reasons, but how large (i.e., the outline threshold)
+    /// depends on the quality of outline rendering. If the graphics system renders anti-
+    /// aliased outlines then a relatively low threshold is used, but if the graphics
+    /// system renders aliased outlines then a much higher threshold is used.
+    /// </summary>
+    enum class OutlineThreshold
+    {
+        Antialiased = DWRITE_OUTLINE_THRESHOLD_ANTIALIASED,
+        Aliased = DWRITE_OUTLINE_THRESHOLD_ALIASED
+    };
+
+    /// <summary>
+    /// Baseline for text alignment.
+    /// </summary>
+    enum class Baseline
+    {
+        /// <summary>
+        /// The Roman baseline for horizontal, Central baseline for vertical.
+        /// </summary>
+        Default = DWRITE_BASELINE_DEFAULT,
+
+        /// <summary>
+        /// The baseline used by alphabetic scripts such as Latin, Greek, Cyrillic.
+        /// </summary>
+        Roman = DWRITE_BASELINE_ROMAN,
+
+        /// <summary>
+        /// Central baseline, generally used for vertical text.
+        /// </summary>
+        Central = DWRITE_BASELINE_CENTRAL,
+
+        /// <summary>
+        /// Mathematical baseline which math characters are centered on.
+        /// </summary>
+        Math = DWRITE_BASELINE_MATH,
+
+        /// <summary>
+        /// Hanging baseline, used in scripts like Devanagari.
+        /// </summary>
+        Hanging = DWRITE_BASELINE_HANGING,
+
+        /// <summary>
+        /// Ideographic bottom baseline for CJK, left in vertical.
+        /// </summary>
+        IdeographicBottom = DWRITE_BASELINE_IDEOGRAPHIC_BOTTOM,
+
+        /// <summary>
+        /// Ideographic top baseline for CJK, right in vertical.
+        /// </summary>
+        IdeographicTop = DWRITE_BASELINE_IDEOGRAPHIC_TOP,
+
+        /// <summary>
+        /// The bottom-most extent in horizontal, left-most in vertical.
+        /// </summary>
+        Minimum = DWRITE_BASELINE_MINIMUM,
+
+        /// <summary>
+        /// The top-most extent in horizontal, right-most in vertical.
+        /// </summary>
+        Maximum = DWRITE_BASELINE_MAXIMUM,
+    };
+
+    /// <summary>
+    /// The desired kind of glyph orientation for the text. The client specifies
+    /// this to the analyzer as the desired orientation, but note this is the
+    /// client preference, and the constraints of the script will determine the
+    /// final presentation.
+    /// </summary>
+    enum class VerticalGlyphOrientation
+    {
+        /// <summary>
+        /// In vertical layout, naturally horizontal scripts (Latin, Thai, Arabic,
+        /// Devanagari) rotate 90 degrees clockwise, while ideographic scripts
+        /// (Chinese, Japanese, Korean) remain upright, 0 degrees.
+        /// </summary>
+        Default = DWRITE_VERTICAL_GLYPH_ORIENTATION_DEFAULT,
+
+        /// <summary>
+        /// Ideographic scripts and scripts that permit stacking
+        /// (Latin, Hebrew) are stacked in vertical reading layout.
+        /// Connected scripts (Arabic, Syriac, 'Phags-pa, Ogham),
+        /// which would otherwise look broken if glyphs were kept
+        /// at 0 degrees, remain connected and rotate.
+        /// </summary>
+        Stacked = DWRITE_VERTICAL_GLYPH_ORIENTATION_STACKED,
+    };
+
+    /// <summary>
+    /// How the glyph is oriented to the x-axis. This is an output from the text
+    /// analyzer, dependent on the desired orientation, bidi level, and character
+    /// properties.
+    /// </summary>
+    enum class GlyphOrientationAngle
+    {
+        /// <summary>
+        /// Glyph orientation is upright.
+        /// </summary>
+        Angle0Degrees = DWRITE_GLYPH_ORIENTATION_ANGLE_0_DEGREES,
+
+        /// <summary>
+        /// Glyph orientation is rotated 90 clockwise.
+        /// </summary>
+        Angle90Degrees = DWRITE_GLYPH_ORIENTATION_ANGLE_90_DEGREES,
+
+        /// <summary>
+        /// Glyph orientation is upside-down.
+        /// </summary>
+        Angle180Degrees = DWRITE_GLYPH_ORIENTATION_ANGLE_180_DEGREES,
+
+        /// <summary>
+        /// Glyph orientation is rotated 270 clockwise.
+        /// </summary>
+        Angle270Degrees = DWRITE_GLYPH_ORIENTATION_ANGLE_270_DEGREES,
+    };
+
+
+    struct FontMetrics1 : public DWRITE_FONT_METRICS1
+    {
+        using Base = DWRITE_FONT_METRICS1;
+        FontMetrics1( ) 
+            : Base{} 
+        {}
+    };
+
+
+    /// <summary>
+    /// Metrics for caret placement in a font.
+    /// </summary>
+    struct CaretMetrics : public DWRITE_CARET_METRICS
+    {
+        using Base = DWRITE_CARET_METRICS;
+        CaretMetrics( )
+            : Base{}
+        {}
+    };
+
+
+    /// <summary>
+    /// Typeface classification values, used for font selection and matching.
+    /// </summary>
+    /// <remarks>
+    /// Note the family type (index 0) is the only stable entry in the 10-byte
+    /// array, as all the following entries can change dynamically depending on
+    /// context of the first field.
+    /// </remarks>
+    struct Panose 
+    {
+        DWRITE_PANOSE Data;
+        
+        Panose( )
+            : Data{}
+        {}
+    };
+
+
+
+
+    /// <summary>
+    /// Range of Unicode codepoints.
+    /// </summary>
+    struct UnicodeRange : public DWRITE_UNICODE_RANGE
+    {
+        using Base = DWRITE_UNICODE_RANGE;
+        
+        UnicodeRange()
+            : Base{}
+        {}
+    };
+
+
+    /// <summary>
+    /// Script-specific properties for caret navigation and justification.
+    /// </summary>
+    struct ScriptProperties : public DWRITE_SCRIPT_PROPERTIES
+    {
+        using Base = DWRITE_SCRIPT_PROPERTIES;
+        ScriptProperties()
+            : Base{}
+        {}
+    };
+
+
+    /// <summary>
+    /// Justification information per glyph.
+    /// </summary>
+    struct JustificationOpportunity : public DWRITE_JUSTIFICATION_OPPORTUNITY
+    {
+        using Base = DWRITE_JUSTIFICATION_OPPORTUNITY;
+        JustificationOpportunity()
+            : Base{}
+        {}
+    };
+
+
+    /// <summary>
+    /// How to align glyphs to the margin.
+    /// </summary>
+    enum class OpticalAlignment
+    {
+        /// <summary>
+        /// Align to the default metrics of the glyph.
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// Align glyphs to the margins. Without this, some small whitespace
+        /// may be present between the text and the margin from the glyph's side
+        /// bearing values. Note that glyphs may still overhang outside the
+        /// margin, such as flourishes or italic slants.
+        /// </summary>
+        NoSideBearings,
+    };
+
+
+    /// <summary>
+    /// Whether to enable grid-fitting of glyph outlines (a.k.a. hinting).
+    /// </summary>
+    enum class GridFitMode
+    {
+        /// <summary>
+        /// Choose grid fitting base on the font's gasp table information.
+        /// </summary>
+        DWRITE_GRID_FIT_MODE_DEFAULT,
+
+        /// <summary>
+        /// Always disable grid fitting, using the ideal glyph outlines.
+        /// </summary>
+        DWRITE_GRID_FIT_MODE_DISABLED,
+
+        /// <summary>
+        /// Enable grid fitting, adjusting glyph outlines for device pixel display.
+        /// </summary>
+        DWRITE_GRID_FIT_MODE_ENABLED
+    };
+
+
+    /// <summary>
+    /// Overall metrics associated with text after layout.
+    /// All coordinates are in device independent pixels (DIPs).
+    /// </summary>
+    struct TextMetrics1 : public DWRITE_TEXT_METRICS1
+    {
+        using Base = DWRITE_TEXT_METRICS1;
+        TextMetrics1()
+            : Base{}
+        {}
+    };
+
+
+    /// <summary>
+    /// The font property enumeration identifies a string in a font.
+    /// </summary>
+    enum class FontPropertyId
+    {
+        /// <summary>
+        /// Unspecified font property identifier.
+        /// </summary>
+        None = DWRITE_FONT_PROPERTY_ID_NONE,
+
+        /// <summary>
+        /// Family name for the weight-stretch-style model.
+        /// </summary>
+        WeightStretchStyleFamilyName = DWRITE_FONT_PROPERTY_ID_WEIGHT_STRETCH_STYLE_FAMILY_NAME,
+
+        /// <summary>
+        /// Family name preferred by the designer. This enables font designers to group more than four fonts in a single family without losing compatibility with
+        /// GDI. This name is typically only present if it differs from the GDI-compatible family name.
+        /// </summary>
+        TypographicFamilyName = DWRITE_FONT_PROPERTY_ID_TYPOGRAPHIC_FAMILY_NAME,
+
+        /// <summary>
+        /// Face name of the for the weight-stretch-style (e.g., Regular or Bold).
+        /// </summary>
+        WeightStretchStyleFaceName = DWRITE_FONT_PROPERTY_ID_WEIGHT_STRETCH_STYLE_FACE_NAME,
+
+        /// <summary>
+        /// The full name of the font, e.g. "Arial Bold", from name id 4 in the name table.
+        /// </summary>
+        FullName = DWRITE_FONT_PROPERTY_ID_FULL_NAME,
+
+        /// <summary>
+        /// GDI-compatible family name. Because GDI allows a maximum of four fonts per family, fonts in the same family may have different GDI-compatible family names
+        /// (e.g., "Arial", "Arial Narrow", "Arial Black").
+        /// </summary>
+        Win32FamilyName = DWRITE_FONT_PROPERTY_ID_WIN32_FAMILY_NAME,
+
+        /// <summary>
+        /// The postscript name of the font, e.g. "GillSans-Bold" from name id 6 in the name table.
+        /// </summary>
+        PostscriptName = DWRITE_FONT_PROPERTY_ID_POSTSCRIPT_NAME,
+
+        /// <summary>
+        /// Script/language tag to identify the scripts or languages that the font was
+        /// primarily designed to support.
+        /// </summary>
+        /// <remarks>
+        /// The design script/language tag is meant to be understood from the perspective of
+        /// users. For example, a font is considered designed for English if it is considered
+        /// useful for English users. Note that this is different from what a font might be
+        /// capable of supporting. For example, the Meiryo font was primarily designed for
+        /// Japanese users. While it is capable of displaying English well, it was not
+        /// meant to be offered for the benefit of non-Japanese-speaking English users.
+        ///
+        /// As another example, a font designed for Chinese may be capable of displaying
+        /// Japanese text, but would likely look incorrect to Japanese users.
+        /// 
+        /// The valid values for this property are "ScriptLangTag" values. These are adapted
+        /// from the IETF BCP 47 specification, "Tags for Identifying Languages" (see
+        /// http://tools.ietf.org/html/bcp47). In a BCP 47 language tag, a language subtag
+        /// element is mandatory and other subtags are optional. In a ScriptLangTag, a
+        /// script subtag is mandatory and other subtags are option. The following
+        /// augmented BNF syntax, adapted from BCP 47, is used:
+        /// 
+        ///     ScriptLangTag = [language "-"]
+        ///                     script
+        ///                     ["-" region]
+        ///                     *("-" variant)
+        ///                     *("-" extension)
+        ///                     ["-" privateuse]
+        /// 
+        /// The expansion of the elements and the intended semantics associated with each
+        /// are as defined in BCP 47. Script subtags are taken from ISO 15924. At present,
+        /// no extensions are defined, and any extension should be ignored. Private use
+        /// subtags are defined by private agreement between the source and recipient and
+        /// may be ignored.
+        /// 
+        /// Subtags must be valid for use in BCP 47 and contained in the Language Subtag
+        /// Registry maintained by IANA. (See
+        /// http://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
+        /// and section 3 of BCP 47 for details.
+        /// 
+        /// Any ScriptLangTag value not conforming to these specifications is ignored.
+        /// 
+        /// Examples:
+        ///   "Latn" denotes Latin script (and any language or writing system using Latin)
+        ///   "Cyrl" denotes Cyrillic script
+        ///   "sr-Cyrl" denotes Cyrillic script as used for writing the Serbian language;
+        ///       a font that has this property value may not be suitable for displaying
+        ///       text in Russian or other languages written using Cyrillic script
+        ///   "Jpan" denotes Japanese writing (Han + Hiragana + Katakana)
+        ///
+        /// When passing this property to GetPropertyValues, use the overload which does
+        /// not take a language parameter, since this property has no specific language.
+        /// </remarks>
+         DesignScriptLanguageTag = DWRITE_FONT_PROPERTY_ID_DESIGN_SCRIPT_LANGUAGE_TAG,
+
+        /// <summary>
+        /// Script/language tag to identify the scripts or languages that the font declares
+        /// it is able to support.
+        /// </summary>
+         SupportedScriptLanguageTag = DWRITE_FONT_PROPERTY_ID_SUPPORTED_SCRIPT_LANGUAGE_TAG,
+
+        /// <summary>
+        /// Semantic tag to describe the font (e.g. Fancy, Decorative, Handmade, Sans-serif, Swiss, Pixel, Futuristic).
+        /// </summary>
+        SemanticTag = DWRITE_FONT_PROPERTY_ID_SEMANTIC_TAG,
+
+        /// <summary>
+        /// Weight of the font represented as a decimal string in the range 1-999.
+        /// </summary>
+        /// <remark>
+        /// This enum is discouraged for use with IDWriteFontSetBuilder2 in favor of the more generic font axis
+        /// DWRITE_FONT_AXIS_TAG_WEIGHT which supports higher precision and range.
+        /// </remark>
+        Weight = DWRITE_FONT_PROPERTY_ID_WEIGHT,
+
+        /// <summary>
+        /// Stretch of the font represented as a decimal string in the range 1-9.
+        /// </summary>
+        /// <remark>
+        /// This enum is discouraged for use with IDWriteFontSetBuilder2 in favor of the more generic font axis
+        /// DWRITE_FONT_AXIS_TAG_WIDTH which supports higher precision and range.
+        /// </remark>
+        Stretch = DWRITE_FONT_PROPERTY_ID_STRETCH,
+
+        /// <summary>
+        /// Style of the font represented as a decimal string in the range 0-2.
+        /// </summary>
+        /// <remark>
+        /// This enum is discouraged for use with IDWriteFontSetBuilder2 in favor of the more generic font axes
+        /// DWRITE_FONT_AXIS_TAG_SLANT and DWRITE_FONT_AXIS_TAG_ITAL.
+        /// </remark>
+        Style = DWRITE_FONT_PROPERTY_ID_STYLE,
+
+        /// <summary>
+        /// Face name preferred by the designer. This enables font designers to group more than four fonts in a single
+        /// family without losing compatibility with GDI.
+        /// </summary>
+        TypographicFaceName = DWRITE_FONT_PROPERTY_ID_TYPOGRAPHIC_FACE_NAME,
+
+        /// <summary>
+        /// Total number of properties for NTDDI_WIN10 (IDWriteFontSet).
+        /// </summary>
+        /// <remarks>
+        /// DWRITE_FONT_PROPERTY_ID_TOTAL cannot be used as a property ID.
+        /// </remarks>
+        Total = DWRITE_FONT_PROPERTY_ID_STYLE + 1,
+
+        /// <summary>
+        /// Total number of properties for NTDDI_WIN10_RS3 (IDWriteFontSet1).
+        /// </summary>
+        TotalRs3 = DWRITE_FONT_PROPERTY_ID_TYPOGRAPHIC_FACE_NAME + 1,
+
+        // Obsolete aliases kept to avoid breaking existing code.
+        PreferredFamilyName = DWRITE_FONT_PROPERTY_ID_TYPOGRAPHIC_FAMILY_NAME,
+        FamilyName = DWRITE_FONT_PROPERTY_ID_WEIGHT_STRETCH_STYLE_FAMILY_NAME,
+        FaceName = DWRITE_FONT_PROPERTY_ID_WEIGHT_STRETCH_STYLE_FACE_NAME,
+    };
+
+
+    /// <summary>
+    /// Font property used for filtering font sets and
+    /// building a font set with explicit properties.
+    /// </summary>
+    struct FontProperty : public DWRITE_FONT_PROPERTY
+    {
+        using Base = DWRITE_FONT_PROPERTY;
+        FontProperty( )
+            : Base{}
+        {}
+    };
+
+
+    /// <summary>
+    /// Specifies the locality of a resource.
+    /// </summary>
+    enum class Locality
+    {
+        /// <summary>
+        /// The resource is remote, and information is unknown yet, including the file size and date.
+        /// Attempting to create a font or file stream will fail until locality becomes at least partial.
+        /// </summary>
+        Remote = DWRITE_LOCALITY_REMOTE,
+
+        /// <summary>
+        /// The resource is partially local, meaning you can query the size and date of the file
+        /// stream, and you may be able to create a font face and retrieve the particular glyphs
+        /// for metrics and drawing, but not all the glyphs will be present.
+        /// </summary>
+        Partial = DWRITE_LOCALITY_PARTIAL,
+
+        /// <summary>
+        /// The resource is completely local, and all font functions can be called
+        /// without concern of missing data or errors related to network connectivity.
+        /// </summary>
+        Local = DWRITE_LOCALITY_LOCAL,
+    };
+
+
+    /// <summary>
+    /// Represents a method of rendering glyphs.
+    /// </summary>
+    enum class RenderingMode1
+    {
+        /// <summary>
+        /// Specifies that the rendering mode is determined automatically based on the font and size.
+        /// </summary>
+        Default = DWRITE_RENDERING_MODE1_DEFAULT,
+
+        /// <summary>
+        /// Specifies that no antialiasing is performed. Each pixel is either set to the foreground 
+        /// color of the text or retains the color of the background.
+        /// </summary>
+        Aliased = DWRITE_RENDERING_MODE1_ALIASED,
+
+        /// <summary>
+        /// Specifies that antialiasing is performed in the horizontal direction and the appearance
+        /// of glyphs is layout-compatible with GDI using CLEARTYPE_QUALITY. Use DWRITE_MEASURING_MODE_GDI_CLASSIC 
+        /// to get glyph advances. The antialiasing may be either ClearType or grayscale depending on
+        /// the text antialiasing mode.
+        /// </summary>
+        GdiClassic = DWRITE_RENDERING_MODE1_GDI_CLASSIC,
+
+        /// <summary>
+        /// Specifies that antialiasing is performed in the horizontal direction and the appearance
+        /// of glyphs is layout-compatible with GDI using CLEARTYPE_NATURAL_QUALITY. Glyph advances
+        /// are close to the font design advances, but are still rounded to whole pixels. Use
+        /// DWRITE_MEASURING_MODE_GDI_NATURAL to get glyph advances. The antialiasing may be either
+        /// ClearType or grayscale depending on the text antialiasing mode.
+        /// </summary>
+        GdiNatural = DWRITE_RENDERING_MODE1_GDI_NATURAL,
+
+        /// <summary>
+        /// Specifies that antialiasing is performed in the horizontal direction. This rendering
+        /// mode allows glyphs to be positioned with subpixel precision and is therefore suitable
+        /// for natural (i.e., resolution-independent) layout. The antialiasing may be either
+        /// ClearType or grayscale depending on the text antialiasing mode.
+        /// </summary>
+        Natural = DWRITE_RENDERING_MODE1_NATURAL,
+
+        /// <summary>
+        /// Similar to natural mode except that antialiasing is performed in both the horizontal
+        /// and vertical directions. This is typically used at larger sizes to make curves and
+        /// diagonal lines look smoother. The antialiasing may be either ClearType or grayscale
+        /// depending on the text antialiasing mode.
+        /// </summary>
+        NaturalSymmetric = DWRITE_RENDERING_MODE1_NATURAL_SYMMETRIC,
+
+        /// <summary>
+        /// Specifies that rendering should bypass the rasterizer and use the outlines directly. 
+        /// This is typically used at very large sizes.
+        /// </summary>
+        Outline = DWRITE_RENDERING_MODE1_OUTLINE,
+
+        /// <summary>
+        /// Similar to natural symmetric mode except that when possible, text should be rasterized
+        /// in a downsampled form.
+        /// </summary>
+        NaturalSymmetricDownsampled = DWRITE_RENDERING_MODE1_NATURAL_SYMMETRIC_DOWNSAMPLED,
+    };
+
+
+    /// <summary>
+    /// Information about a formatted line of text.
+    /// </summary>
+    struct LineMetrics1 : public DWRITE_LINE_METRICS1
+    {
+        using Base = DWRITE_LINE_METRICS1;
+
+        LineMetrics1()
+            : Base{}
+        {}
+    };
+
+    /// <summary>
+    /// Specify whether DWRITE_FONT_METRICS::lineGap value should be part of the line metrics. 
+    /// </summary>
+    enum class FontLineGapUsage
+    {
+        /// <summary>
+        /// The usage of the font line gap depends on the method used for text layout.
+        /// </summary>
+         Default = DWRITE_FONT_LINE_GAP_USAGE_DEFAULT,
+
+        /// <summary>
+        /// The font line gap is excluded from line spacing
+        /// </summary>
+        Disabled = DWRITE_FONT_LINE_GAP_USAGE_DISABLED,
+
+        /// <summary>
+        /// The font line gap is included in line spacing
+        /// </summary>
+        Enabled = DWRITE_FONT_LINE_GAP_USAGE_ENABLED
+    };
+
+    /// <summary>
+    /// The DWRITE_LINE_SPACING structure specifies the parameters used to specify how to manage space between lines.
+    /// </summary>
+    struct LineSpacing : public DWRITE_LINE_SPACING
+    {
+        using Base = DWRITE_LINE_SPACING;
+
+        LineSpacing()
+            : Base{}
+        {}
+    };
+
+
+    /// <summary>
+    /// Represents a color glyph run. The IDWriteFactory4::TranslateColorGlyphRun
+    /// method returns an ordered collection of color glyph runs of varying types
+    /// depending on what the font supports.
+    /// </summary>
+    /// <summary>
+    /// For runs without any specific color, such as PNG data, the runColor field will be zero.
+    /// </summary>
+    struct ColorGlyphRun1 : public DWRITE_COLOR_GLYPH_RUN1
+    {
+        using Base = DWRITE_COLOR_GLYPH_RUN1;
+        ColorGlyphRun1( )
+            : Base{}
+        {}
+    };
+
+
+    /// <summary>
+    /// Data for a single glyph from GetGlyphImageData.
+    /// </summary>
+    struct GlyphImageData : public DWRITE_GLYPH_IMAGE_DATA
+    {
+        using Base = DWRITE_GLYPH_IMAGE_DATA;
+        GlyphImageData()
+            : Base{}
+        {}
+    };
+
+
+    /// <summary>
+    /// DWRITE_FILE_FRAGMENT represents a range of bytes in a font file.
+    /// </summary>
+    struct FileFragment : public DWRITE_FILE_FRAGMENT
+    {
+        using Base = DWRITE_FILE_FRAGMENT;
+        FileFragment()
+            : Base{}
+        {}
+    };
+
+
+    /// <summary>
+    /// Specifies the container format of a font resource. A container format is distinct from
+    /// a font file format (DWRITE_FONT_FILE_TYPE) because the container describes the container
+    /// in which the underlying font file is packaged.
+    /// </summary>
+    enum class ContainerType
+    {
+        Unknown = DWRITE_CONTAINER_TYPE_UNKNOWN,
+        Woff = DWRITE_CONTAINER_TYPE_WOFF,
+        Woff2 = DWRITE_CONTAINER_TYPE_WOFF2
+    };
+
+    /// <summary>
+/// Four character identifier for a font axis.
+/// </summary>
+/// <remarks>
+/// Use DWRITE_MAKE_FONT_AXIS_TAG() to create a custom one.
+/// <remarks>
+    enum class FontAxisTag : UINT32
+    {
+        Weight = DWRITE_FONT_AXIS_TAG_WEIGHT,
+        Width = DWRITE_FONT_AXIS_TAG_WIDTH,
+        Slant = DWRITE_FONT_AXIS_TAG_SLANT,
+        OpticalSize = DWRITE_FONT_AXIS_TAG_OPTICAL_SIZE,
+        Italic = DWRITE_FONT_AXIS_TAG_ITALIC,
+    };
+
+#define DWRITE_STANDARD_FONT_AXIS_COUNT 5
+
+    /// <summary>
+    /// Value for a font axis, used when querying and creating font instances.
+    /// </summary>
+    struct FontAxisValue : public DWRITE_FONT_AXIS_VALUE
+    {
+        using Base = DWRITE_FONT_AXIS_VALUE;
+        FontAxisValue()
+            : Base{}
+        {}
+    };
+
+
+    /// <summary>
+    /// Minimum and maximum range of a font axis.
+    /// </summary>
+    struct FontAxisRange : public DWRITE_FONT_AXIS_RANGE
+    {
+        using Base = DWRITE_FONT_AXIS_RANGE;
+        FontAxisRange()
+            : Base{}
+        {}
+    };
+
+
+    /// <summary>
+    /// How font families are grouped together, used by IDWriteFontCollection.
+    /// </summary>
+    enum class FontFamilyModel
+    {
+        /// <summary>
+        /// Families are grouped by the typographic family name preferred by the font author. The family can contain as
+        /// many face as the font author wants.
+        /// This corresponds to the DWRITE_FONT_PROPERTY_ID_TYPOGRAPHIC_FAMILY_NAME.
+        /// </summary>
+        Typographic = DWRITE_FONT_FAMILY_MODEL_TYPOGRAPHIC,
+
+        /// <summary>
+        /// Families are grouped by the weight-stretch-style family name, where all faces that differ only by those three
+        /// axes are grouped into the same family, but any other axes go into a distinct family. For example, the Sitka
+        /// family with six different optical sizes yields six separate families (Sitka Caption, Display, Text, Subheading,
+        /// Heading, Banner...). This corresponds to the DWRITE_FONT_PROPERTY_ID_WEIGHT_STRETCH_STYLE_FAMILY_NAME.
+        /// </summary>
+        WeightStretchStyle = DWRITE_FONT_FAMILY_MODEL_WEIGHT_STRETCH_STYLE,
+    };
+
+
+    /// <summary>
+    /// Apply certain axes automatically in layout during font selection.
+    /// </summary>
+    enum class AutomaticFontAxes
+    {
+        /// <summary>
+        /// No axes are automatically applied.
+        /// </summary>
+        None = DWRITE_AUTOMATIC_FONT_AXES_NONE,
+
+        /// <summary>
+        /// Automatically pick an appropriate optical value based on the font size (via SetFontSize) when no value is
+        /// specified via DWRITE_FONT_AXIS_TAG_OPTICAL_SIZE. Callers can still explicitly apply the 'opsz' value over
+        /// text ranges via SetFontAxisValues, which take priority.
+        /// </summary>
+        OpticalSize = DWRITE_AUTOMATIC_FONT_AXES_OPTICAL_SIZE,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( AutomaticFontAxes, Int32 );
+
+
+    /// <summary>
+    /// Attributes for a font axis.
+    /// </summary>
+    enum class FontAxisAttributes
+    {
+        /// <summary>
+        /// No attributes.
+        /// </summary>
+        None = DWRITE_FONT_AXIS_ATTRIBUTES_NONE,
+
+        /// <summary>
+        /// This axis is implemented as a variation axis in a variable font, with a continuous range of
+        /// values, such as a range of weights from 100..900. Otherwise it is either a static axis that
+        /// holds a single point, or it has a range but doesn't vary, such as optical size in the Skia
+        /// Heading font which covers a range of points but doesn't interpolate any new glyph outlines.
+        /// </summary>
+        Variable = DWRITE_FONT_AXIS_ATTRIBUTES_VARIABLE,
+
+        /// <summary>
+        /// This axis is recommended to be remain hidden in user interfaces. The font developer may
+        /// recommend this if an axis is intended to be accessed only programmatically, or is meant for
+        /// font-internal or font-developer use only. The axis may be exposed in lower-level font
+        /// inspection utilities, but should not be exposed in common or even advanced-mode user
+        /// interfaces in content-authoring apps.
+        /// </summary>
+        Hidden = DWRITE_FONT_AXIS_ATTRIBUTES_HIDDEN,
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( FontAxisAttributes, Int32 );
+
+    /// <summary>
+    /// The font source type identifies the mechanism by which a font came to be included in a font set.
+    /// </summary>
+    enum class FontSourceType
+    {
+        /// <summary>
+        /// The font source is unknown or is not any of the other defined font source types.
+        /// </summary>
+        Unknown = DWRITE_FONT_SOURCE_TYPE_UNKNOWN,
+
+        /// <summary>
+        /// The font source is a font file, which is installed for all users on the device.
+        /// </summary>
+        PerMachine = DWRITE_FONT_SOURCE_TYPE_PER_MACHINE,
+
+        /// <summary>
+        /// The font source is a font file, which is installed for the current user.
+        /// </summary>
+        PerUser = DWRITE_FONT_SOURCE_TYPE_PER_USER,
+
+        /// <summary>
+        /// The font source is an APPX package, which includes one or more font files.
+        /// The font source name is the full name of the package.
+        /// </summary>
+        AppxPackage = DWRITE_FONT_SOURCE_TYPE_APPX_PACKAGE,
+
+        /// <summary>
+        /// The font source is a font provider for downloadable fonts.
+        /// </summary>
+        RemoteFontProvider = DWRITE_FONT_SOURCE_TYPE_REMOTE_FONT_PROVIDER
+    };
+
+    /// <summary>
+    /// Contains information about a bitmap associated with an IDWriteBitmapRenderTarget.
+    /// The bitmap is top-down with 32-bits per pixel and no padding between scan lines.
+    /// </summary>
+    struct BitmapDataBGRA32 : public DWRITE_BITMAP_DATA_BGRA32
+    {
+        using Base = DWRITE_BITMAP_DATA_BGRA32;
+        BitmapDataBGRA32()
+            : Base{}
+        {}
+    };
+
+    /// <summary>
+    /// Defines known feature level for use with the IDWritePaintReader interface and 
+    /// related APIs. A feature level represents a level of functionality. For example, it
+    /// determines what DWRITE_PAINT_TYPE values might be returned.
+    /// </summary>
+    /// <remarks>
+    /// See the DWRITE_PAINT_TYPE enumeration for which paint types are required for each
+    /// feature level.
+    /// </remarks>
+    enum class PaintFeatureLevel : INT32
+    {
+        /// <summary>
+        /// No paint API support.
+        /// </summary>
+        None = DWRITE_PAINT_FEATURE_LEVEL_NONE,
+
+        /// <summary>
+        /// Specifies a level of functionality corresponding to OpenType COLR version 0.
+        /// </summary>
+        ColrV0 = DWRITE_PAINT_FEATURE_LEVEL_COLR_V0,
+
+        /// <summary>
+        /// Specifies a level of functionality corresponding to OpenType COLR version 1.
+        /// </summary>
+        ColrV1 = DWRITE_PAINT_FEATURE_LEVEL_COLR_V1
+    };
+
+    /// <summary>
+    /// Combination of flags specifying attributes of a color glyph or of specific color values in
+    /// a color glyph.
+    /// </summary>
+    enum class PaintAttributes : Int32
+    {
+        None = DWRITE_PAINT_ATTRIBUTES_NONE,
+
+        /// <summary>
+        /// Specifies that the color value (or any color value in the glyph) comes from the font's
+        /// color palette. This means the appearance may depend on the current palette index, which
+        /// may be important to clients that cache color glyphs.
+        /// </summary>
+        UsesPalette = DWRITE_PAINT_ATTRIBUTES_USES_PALETTE,
+
+        /// <summary>
+        /// Specifies that the color value (or any color value in the glyph) comes from the client-specified
+        /// text color. This means the appearance may depend on the text color, which may be important to
+        /// clients that cache color glyphs.
+        /// </summary>
+        UsesTextColor = DWRITE_PAINT_ATTRIBUTES_USES_TEXT_COLOR
+    };
+
+    HCC_DEFINE_ENUM_FLAG_OPERATORS( PaintAttributes, Int32 );
+
+
+    /// <summary>
+    /// Represents a color in a color glyph.
+    /// </summary>
+    struct PaintColor : public DWRITE_PAINT_COLOR
+    {
+        using Base = DWRITE_PAINT_COLOR;
+        PaintColor()
+            : Base{}
+        {}
+    };
+
+    /// <summary>
+    /// Specifies a composite mode for combining source and destination paint elements in a
+    /// color glyph. These are taken from the W3C Compositing and Blending Level 1 specification.
+    /// </summary>
+    enum class ColorCompositeMode : Int32
+    {
+        // Porter-Duff modes.
+        Clear = DWRITE_COLOR_COMPOSITE_CLEAR,
+        Src = DWRITE_COLOR_COMPOSITE_SRC,
+        Dest = DWRITE_COLOR_COMPOSITE_DEST,
+        SrcOver = DWRITE_COLOR_COMPOSITE_SRC_OVER,
+        DestOver = DWRITE_COLOR_COMPOSITE_DEST_OVER,
+        SrcIn = DWRITE_COLOR_COMPOSITE_SRC_IN,
+        DestIn = DWRITE_COLOR_COMPOSITE_DEST_IN,
+        SrcOut = DWRITE_COLOR_COMPOSITE_SRC_OUT,
+        DestOut = DWRITE_COLOR_COMPOSITE_DEST_OUT,
+        SrcAtop = DWRITE_COLOR_COMPOSITE_SRC_ATOP,
+        DestAtop = DWRITE_COLOR_COMPOSITE_DEST_ATOP,
+        Xor = DWRITE_COLOR_COMPOSITE_XOR,
+        Plus = DWRITE_COLOR_COMPOSITE_PLUS,
+
+        // Separable color blend modes.
+        Screen = DWRITE_COLOR_COMPOSITE_SCREEN,
+        Overlay = DWRITE_COLOR_COMPOSITE_OVERLAY,
+        Darken = DWRITE_COLOR_COMPOSITE_DARKEN,
+        Lighten = DWRITE_COLOR_COMPOSITE_LIGHTEN,
+        ColorDodge = DWRITE_COLOR_COMPOSITE_COLOR_DODGE,
+        ColorBurn = DWRITE_COLOR_COMPOSITE_COLOR_BURN,
+        HardLight = DWRITE_COLOR_COMPOSITE_HARD_LIGHT,
+        SoftLight = DWRITE_COLOR_COMPOSITE_SOFT_LIGHT,
+        Difference = DWRITE_COLOR_COMPOSITE_DIFFERENCE,
+        Exclusion = DWRITE_COLOR_COMPOSITE_EXCLUSION,
+        Multiply = DWRITE_COLOR_COMPOSITE_MULTIPLY,
+
+        // Non-separable color blend modes.
+        HslHue = DWRITE_COLOR_COMPOSITE_HSL_HUE,
+        HslSaturation = DWRITE_COLOR_COMPOSITE_HSL_SATURATION,
+        HslColor = DWRITE_COLOR_COMPOSITE_HSL_COLOR,
+        HslLuminosity = DWRITE_COLOR_COMPOSITE_HSL_LUMINOSITY
+    };
+
+    /// <summary>
+    /// Identifies a type of paint element in a color glyph. A color glyph's visual representation
+    /// is defined by a tree of paint elements. A paint element's properties are specified by a
+    /// DWRITE_PAINT_ELEMENT structure, which combines a paint type an a union.
+    /// </summary>
+    /// <remarks>
+    /// For more information about each paint type, see DWRITE_PAINT_ELEMENT. 
+    /// </remarks>
+    enum class PaintType : Int32
+    {
+        // The following paint types may be returned for color feature levels greater than
+        // or equal to DWRITE_PAINT_FEATURE_LEVEL_COLR_V0.
+        None = DWRITE_PAINT_TYPE_NONE,
+        Layers = DWRITE_PAINT_TYPE_LAYERS,
+        SolidGlyph = DWRITE_PAINT_TYPE_SOLID_GLYPH,
+
+        // The following paint types may be returned for color feature levels greater than
+        // or equal to DWRITE_PAINT_FEATURE_LEVEL_COLR_V1.
+        Solid = DWRITE_PAINT_TYPE_SOLID,
+        LinearGradient = DWRITE_PAINT_TYPE_LINEAR_GRADIENT,
+        RadialGradient = DWRITE_PAINT_TYPE_RADIAL_GRADIENT,
+        SweepGradient = DWRITE_PAINT_TYPE_SWEEP_GRADIENT,
+        Glyph = DWRITE_PAINT_TYPE_GLYPH,
+        ColorGlyph = DWRITE_PAINT_TYPE_COLOR_GLYPH,
+        Transform = DWRITE_PAINT_TYPE_TRANSFORM,
+        Composite = DWRITE_PAINT_TYPE_COMPOSITE
+    };
+
+    /// <summary>
+    /// Specifies properties of a paint element, which is one node in a visual tree associated
+    /// with a color glyph. This is passed as an output parameter to various IDWritePaintReader
+    /// methods.
+    /// </summary>
+    /// <remarks>
+    /// For a detailed description of how paint elements should be rendered, see the OpenType COLR
+    /// table specification. Comments below reference the COLR paint record formats associated with
+    /// each paint type.
+    ///
+    /// Note that this structure (and its size) may differ for different versions of the API, as
+    /// newer versions may have additional union members for new paint types. For this reason,
+    /// IDWritePaintReader methods that take a DWRITE_PAINT_ELEMENT output parameter also take a
+    /// structSize parameter, for which the caller should specify actual size of the structure
+    /// allocated by the caller, i.e., sizeof(DWRITE_PAINT_ELEMENT). Clients should use caution
+    /// when passing DWRITE_PAINT_ELEMENT objects between components that may have been compiled
+    /// against different versions of this header file.
+    /// </remarks>
+    struct PaintElement : public DWRITE_PAINT_ELEMENT
+    {
+        using Base = DWRITE_PAINT_ELEMENT;
+
+        PaintElement( )
+            : Base{}
+        {}
+
+    };
 
 
     class FontFileStream;
@@ -4033,7 +5447,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         /// Set line spacing.
         /// </summary>
         /// <param name="lineSpacing">The line spacing options.</param>
-        void SetLineSpacing( const LineSpacing& lineSpacing ) const
+        void SetLineSpacing( const LineSpacingData& lineSpacing ) const
         {
             SetLineSpacing( lineSpacing.lineSpacingMethod, lineSpacing.lineSpacing, lineSpacing.baseline );
         }
@@ -4192,13 +5606,13 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         /// Get line spacing.
         /// </summary>
         /// <returns>The line spacing options.</returns>
-        LineSpacing GetLineSpacing( ) const
+        LineSpacingData GetLineSpacing( ) const
         {
             DWRITE_LINE_SPACING_METHOD method;
             FLOAT lineSpacing;
             FLOAT baseline;
             GetLineSpacing( &method, &lineSpacing, &baseline );
-            return LineSpacing( static_cast< LineSpacingMethod >( method ), lineSpacing, baseline );
+            return LineSpacingData( static_cast< LineSpacingMethod >( method ), lineSpacing, baseline );
         }
 
         /// <summary>
