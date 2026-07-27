@@ -682,6 +682,13 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         Proportional = DWRITE_LINE_SPACING_METHOD_PROPORTIONAL
     };
 
+    struct LineSpacing
+    {
+        LineSpacingMethod lineSpacingMethod = LineSpacingMethod::Default;
+        FLOAT lineSpacing = 0.0f;
+        FLOAT baseline = 0.0f;
+    };
+
     /// <summary>
     /// Text granularity used to trim text overflowing the layout box.
     /// </summary>
@@ -3805,156 +3812,410 @@ namespace Harlinn::Windows::Graphics::DirectWrite
     class TextFormat : public Unknown
     {
     public:
-        typedef Unknown Base;
+        using Base = Unknown;
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextFormat, Unknown, IDWriteTextFormat, IUnknown )
 
+        /// <summary>
+        /// Set alignment option of text relative to layout box's leading and trailing edge.
+        /// </summary>
+        /// <param name="textAlignment">
+        /// The text alignment option.
+        /// </param>
         void SetTextAlignment( DWRITE_TEXT_ALIGNMENT textAlignment ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->SetTextAlignment( textAlignment );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+        /// <summary>
+        /// Set alignment option of text relative to layout box's leading and trailing edge.
+        /// </summary>
+        /// <param name="textAlignment">
+        /// The text alignment option.
+        /// </param>
         void SetTextAlignment( TextAlignment textAlignment ) const
         {
             SetTextAlignment( static_cast< DWRITE_TEXT_ALIGNMENT >( textAlignment ) );
         }
+        /// <summary>
+        /// Set alignment option of paragraph relative to layout box's top and bottom edge.
+        /// </summary>
+        /// <param name="paragraphAlignment">
+        /// The paragraph alignment option.
+        /// </param>
         void SetParagraphAlignment( DWRITE_PARAGRAPH_ALIGNMENT paragraphAlignment ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->SetParagraphAlignment( paragraphAlignment );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+        /// <summary>
+        /// Set alignment option of paragraph relative to layout box's top and bottom edge.
+        /// </summary>
+        /// <param name="paragraphAlignment">
+        /// The paragraph alignment option.
+        /// </param>
         void SetParagraphAlignment( ParagraphAlignment paragraphAlignment ) const
         {
             SetParagraphAlignment( static_cast< DWRITE_PARAGRAPH_ALIGNMENT >( paragraphAlignment ) );
         }
+
+        /// <summary>
+        /// Set word wrapping option.
+        /// </summary>
+        /// <param name="wordWrapping">
+        /// The word wrapping option.
+        /// </param>
         void SetWordWrapping( DWRITE_WORD_WRAPPING wordWrapping ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->SetWordWrapping( wordWrapping );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+        /// <summary>
+        /// Set word wrapping option.
+        /// </summary>
+        /// <param name="wordWrapping">
+        /// The word wrapping option.
+        /// </param>
         void SetWordWrapping( WordWrapping wordWrapping ) const
         {
             SetWordWrapping( static_cast< DWRITE_WORD_WRAPPING >( wordWrapping ) );
         }
+
+        /// <summary>
+        /// Set paragraph reading direction.
+        /// </summary>
+        /// <param name="readingDirection">
+        /// The paragraph reading direction option.
+        /// </param>
+        /// <remarks>
+        /// The flow direction must be perpendicular to the reading direction.
+        /// Setting both to a vertical direction or both to horizontal yields
+        /// DWRITE_E_FLOWDIRECTIONCONFLICTS when calling GetMetrics or Draw.
+        /// </remarks>
         void SetReadingDirection( DWRITE_READING_DIRECTION readingDirection ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->SetReadingDirection( readingDirection );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+        /// <summary>
+        /// Set paragraph reading direction.
+        /// </summary>
+        /// <param name="readingDirection">
+        /// The paragraph reading direction option.
+        /// </param>
+        /// <remarks>
+        /// The flow direction must be perpendicular to the reading direction.
+        /// Setting both to a vertical direction or both to horizontal yields
+        /// DWRITE_E_FLOWDIRECTIONCONFLICTS when calling GetMetrics or Draw.
+        /// </remarks>
         void SetReadingDirection( ReadingDirection readingDirection ) const
         {
             SetReadingDirection( static_cast< DWRITE_READING_DIRECTION >( readingDirection ) );
         }
+        /// <summary>
+        /// Set paragraph flow direction.
+        /// </summary>
+        /// <param name="flowDirection">
+        /// The paragraph flow direction option.
+        /// </param>
+        /// <remarks>
+        /// The flow direction must be perpendicular to the reading direction.
+        /// Setting both to a vertical direction or both to horizontal yields
+        /// DWRITE_E_FLOWDIRECTIONCONFLICTS when calling GetMetrics or Draw.
+        /// </remarks>
         void SetFlowDirection( DWRITE_FLOW_DIRECTION flowDirection ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->SetFlowDirection( flowDirection );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+        /// <summary>
+        /// Set paragraph flow direction.
+        /// </summary>
+        /// <param name="flowDirection">
+        /// The paragraph flow direction option.
+        /// </param>
+        /// <remarks>
+        /// The flow direction must be perpendicular to the reading direction.
+        /// Setting both to a vertical direction or both to horizontal yields
+        /// DWRITE_E_FLOWDIRECTIONCONFLICTS when calling GetMetrics or Draw.
+        /// </remarks>
         void SetFlowDirection( FlowDirection flowDirection ) const
         {
             SetFlowDirection( static_cast< DWRITE_FLOW_DIRECTION >( flowDirection ) );
         }
+
+        /// <summary>
+        /// Set incremental tab stop position.
+        /// </summary>
+        /// <param name="incrementalTabStop">
+        /// The position of the incremental tab stop.
+        /// </param>
         void SetIncrementalTabStop( FLOAT incrementalTabStop ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->SetIncrementalTabStop( incrementalTabStop );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        /// <summary>
+        /// Set trimming options for any trailing text exceeding the layout width
+        /// or for any far text exceeding the layout height.
+        /// </summary>
+        /// <param name="trimmingOptions">
+        /// Text trimming options.
+        /// </param>
+        /// <param name="trimmingSign">
+        /// Application-defined omission sign. This parameter may be NULL if no trimming sign is desired.
+        /// </param>
+        /// <remarks>
+        /// Any inline object can be used for the trimming sign, but CreateEllipsisTrimmingSign
+        /// provides a typical ellipsis symbol. Trimming is also useful vertically for hiding
+        /// partial lines.
+        /// </remarks>
         void SetTrimming( DWRITE_TRIMMING const* trimmingOptions, IDWriteInlineObject* trimmingSign ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->SetTrimming( trimmingOptions, trimmingSign );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+        /// <summary>
+        /// Set trimming options for any trailing text exceeding the layout width
+        /// or for any far text exceeding the layout height.
+        /// </summary>
+        /// <param name="trimmingOptions">
+        /// Text trimming options.
+        /// </param>
+        /// <param name="trimmingSign">
+        /// Application-defined omission sign. Use the default InlineObject if no 
+        /// trimming sign is desired.
+        /// </param>
         void SetTrimming( const Trimming& trimmingOptions, const InlineObject& trimmingSign ) const;
+        void SetTrimming( const Trimming& trimmingOptions ) const;
 
+        /// <summary>
+        /// Set line spacing.
+        /// </summary>
+        /// <param name="lineSpacingMethod">How to determine line height.</param>
+        /// <param name="lineSpacing">The line height, or rather distance between one baseline to another.</param>
+        /// <param name="baseline">Distance from top of line to baseline. A reasonable ratio to lineSpacing is 80%.</param>
+        /// <remarks>
+        /// For the default method, spacing depends solely on the content.
+        /// For uniform spacing, the given line height will override the content.
+        /// </remarks>
         void SetLineSpacing( DWRITE_LINE_SPACING_METHOD lineSpacingMethod, FLOAT lineSpacing, FLOAT baseline ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->SetLineSpacing( lineSpacingMethod, lineSpacing, baseline );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        /// <summary>
+        /// Set line spacing.
+        /// </summary>
+        /// <param name="lineSpacingMethod">How to determine line height.</param>
+        /// <param name="lineSpacing">The line height, or rather distance between one baseline to another.</param>
+        /// <param name="baseline">Distance from top of line to baseline. A reasonable ratio to lineSpacing is 80%.</param>
+        /// <remarks>
+        /// For the default method, spacing depends solely on the content.
+        /// For uniform spacing, the given line height will override the content.
+        /// </remarks>
         void SetLineSpacing( LineSpacingMethod lineSpacingMethod, FLOAT lineSpacing, FLOAT baseline ) const
         {
             SetLineSpacing( static_cast< DWRITE_LINE_SPACING_METHOD >( lineSpacingMethod ), lineSpacing, baseline );
         }
 
+        /// <summary>
+        /// Set line spacing.
+        /// </summary>
+        /// <param name="lineSpacing">The line spacing options.</param>
+        void SetLineSpacing( const LineSpacing& lineSpacing ) const
+        {
+            SetLineSpacing( lineSpacing.lineSpacingMethod, lineSpacing.lineSpacing, lineSpacing.baseline );
+        }
+
+        /// <summary>
+        /// Get alignment option of text relative to layout box's leading and trailing edge.
+        /// </summary>
+        /// <returns>The text alignment.</returns>
         DWRITE_TEXT_ALIGNMENT GetTextAlignment( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetTextAlignment( );
         }
+        /// <summary>
+        /// Get alignment option of text relative to layout box's leading and trailing edge.
+        /// </summary>
+        /// <returns>The text alignment.</returns>
         DirectWrite::TextAlignment TextAlignment( ) const
         {
             return static_cast< DirectWrite::TextAlignment >( GetTextAlignment( ) );
         }
 
+        /// <summary>
+        /// Get alignment option of paragraph relative to layout box's top and bottom edge.
+        /// </summary>
+        /// <returns>The paragraph alignment.</returns>
         DWRITE_PARAGRAPH_ALIGNMENT GetParagraphAlignment( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetParagraphAlignment( );
         }
+
+        /// <summary>
+        /// Get alignment option of paragraph relative to layout box's top and bottom edge.
+        /// </summary>
+        /// <returns>The paragraph alignment.</returns>
         DirectWrite::ParagraphAlignment ParagraphAlignment( ) const
         {
             return static_cast< DirectWrite::ParagraphAlignment >( GetParagraphAlignment( ) );
         }
+
+        /// <summary>
+        /// Get word wrapping option.
+        /// </summary>
+        /// <returns>The word wrapping option.</returns>
         DWRITE_WORD_WRAPPING GetWordWrapping( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetWordWrapping( );
         }
+
+        /// <summary>
+        /// Get word wrapping option.
+        /// </summary>
+        /// <returns>The word wrapping option.</returns>
         DirectWrite::WordWrapping WordWrapping( ) const
         {
             return static_cast< DirectWrite::WordWrapping >( GetWordWrapping( ) );
         }
+        
+        /// <summary>
+        /// Get paragraph reading direction.
+        /// </summary>
+        /// <returns>The paragraph reading direction.</returns>
         DWRITE_READING_DIRECTION GetReadingDirection( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetReadingDirection( );
         }
+
+        /// <summary>
+        /// Get paragraph reading direction.
+        /// </summary>
+        /// <returns>The paragraph reading direction.</returns>
         DirectWrite::ReadingDirection ReadingDirection( ) const
         {
             return static_cast< DirectWrite::ReadingDirection >( GetReadingDirection( ) );
         }
+
+        /// <summary>
+        /// Get paragraph flow direction.
+        /// </summary>
+        /// <returns>The paragraph flow direction.</returns>
         DWRITE_FLOW_DIRECTION GetFlowDirection( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetFlowDirection( );
         }
+
+        /// <summary>
+        /// Get paragraph flow direction.
+        /// </summary>
+        /// <returns>The paragraph flow direction.</returns>
         DirectWrite::FlowDirection FlowDirection( ) const
         {
             return static_cast< DirectWrite::FlowDirection >( GetFlowDirection( ) );
         }
+
+        /// <summary>
+        /// Get incremental tab stop position.
+        /// </summary>
+        /// <returns>The incremental tab stop position.</returns>
         FLOAT GetIncrementalTabStop( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetIncrementalTabStop( );
         }
+
+        /// <summary>
+        /// Get trimming options for text overflowing the layout width.
+        /// </summary>
+        /// <param name="trimmingOptions">Text trimming options.</param>
+        /// <param name="trimmingSign">Trimming omission sign. This parameter may be NULL.</param>
         void GetTrimming( DWRITE_TRIMMING* trimmingOptions, IDWriteInlineObject** trimmingSign ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->GetTrimming( trimmingOptions, trimmingSign );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        /// <summary>
+        /// Get trimming options for text overflowing the layout width.
+        /// </summary>
+        /// <param name="trimmingOptions">Text trimming options.</param>
+        /// <returns>The trimming omission sign.</returns>
         inline InlineObject GetTrimming( DWRITE_TRIMMING& trimmingOptions ) const;
 
+
+        /// <summary>
+        /// Get line spacing.
+        /// </summary>
+        /// <param name="lineSpacingMethod">How line height is determined.</param>
+        /// <param name="lineSpacing">The line height, or rather distance between one baseline to another.</param>
+        /// <param name="baseline">Distance from top of line to baseline.</param>
         void GetLineSpacing( DWRITE_LINE_SPACING_METHOD* lineSpacingMethod, FLOAT* lineSpacing, FLOAT* baseline ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->GetLineSpacing( lineSpacingMethod, lineSpacing, baseline );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        /// <summary>
+        /// Get line spacing.
+        /// </summary>
+        /// <param name="lineSpacingMethod">How line height is determined.</param>
+        /// <param name="lineSpacing">The line height, or rather distance between one baseline to another.</param>
+        /// <param name="baseline">Distance from top of line to baseline.</param>
+        void GetLineSpacing( LineSpacingMethod* lineSpacingMethod, FLOAT* lineSpacing, FLOAT* baseline ) const
+        {
+            DWRITE_LINE_SPACING_METHOD method;
+            GetLineSpacing( &method, lineSpacing, baseline );
+            *lineSpacingMethod = static_cast< LineSpacingMethod >( method );
+        }
+
+        /// <summary>
+        /// Get line spacing.
+        /// </summary>
+        /// <returns>The line spacing options.</returns>
+        LineSpacing GetLineSpacing( ) const
+        {
+            DWRITE_LINE_SPACING_METHOD method;
+            FLOAT lineSpacing;
+            FLOAT baseline;
+            GetLineSpacing( &method, &lineSpacing, &baseline );
+            return LineSpacing( static_cast< LineSpacingMethod >( method ), lineSpacing, baseline );
+        }
+
+        /// <summary>
+        /// Get the font collection.
+        /// </summary>
+        /// <param name="fontCollection">The font collection.</param>
         void GetFontCollection( IDWriteFontCollection** fontCollection ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->GetFontCollection( fontCollection );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        /// <summary>
+        /// Get the font collection.
+        /// </summary>
+        /// <returns>The font collection.</returns>
         FontCollection GetFontCollection( ) const
         {
             IDWriteFontCollection* fontCollection = nullptr;
@@ -3962,17 +4223,34 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             FontCollection result( fontCollection );
             return result;
         }
+
+        /// <summary>
+        /// Get the length of the font family name, in characters, not including the terminating NULL character.
+        /// </summary>
+        /// <returns>The length of the font family name.</returns>
         UINT32 GetFontFamilyNameLength( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetFontFamilyNameLength( );
         }
+
+        /// <summary>
+        /// Get a copy of the font family name.
+        /// </summary>
+        /// <param name="fontFamilyName">Character array that receives the current font family name</param>
+        /// <param name="nameSize">Size of the character array in character count including the terminated NULL character.</param>
         void GetFontFamilyName( WCHAR* fontFamilyName, UINT32 nameSize ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->GetFontFamilyName( fontFamilyName, nameSize );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
+
+        /// <summary>
+        /// Get a copy of the font family name.
+        /// </summary>
+        /// <typeparam name="StringType">The type of string to return.</typeparam>
+        /// <returns>A copy of the font family name.</returns>
         template<WideStringLike StringType = WideString>
         StringType GetFontFamilyName( ) const
         {
@@ -3982,43 +4260,89 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             GetFontFamilyName( result.data( ), nameLength + 1 );
             return result;
         }
+
+        /// <summary>
+        /// Get the font weight.
+        /// </summary>
+        /// <returns>The font weight.</returns>
         DWRITE_FONT_WEIGHT GetFontWeight( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetFontWeight( );
         }
+        /// <summary>
+        /// Get the font weight.
+        /// </summary>
+        /// <returns>The font weight.</returns>
         DirectWrite::FontWeight FontWeight( ) const
         {
             return static_cast< DirectWrite::FontWeight >( GetFontWeight( ) );
         }
+
+        /// <summary>
+        /// Get the font style.
+        /// </summary>
+        /// <returns>The font style.</returns>
         DWRITE_FONT_STYLE GetFontStyle( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetFontStyle( );
         }
+
+        /// <summary>
+        /// Get the font style.
+        /// </summary>
+        /// <returns>The font style.</returns>
         DirectWrite::FontStyle FontStyle( ) const
         {
             return static_cast< DirectWrite::FontStyle >( GetFontStyle( ) );
         }
+        /// <summary>
+        /// Get the font stretch.
+        /// </summary>
+        /// <returns>The font stretch.</returns>
         DWRITE_FONT_STRETCH GetFontStretch( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetFontStretch( );
         }
+        /// <summary>
+        /// Get the font stretch.
+        /// </summary>
+        /// <returns>The font stretch.</returns>
         DirectWrite::FontStretch FontStretch( ) const
         {
             return static_cast< DirectWrite::FontStretch >( GetFontStretch( ) );
         }
+        /// <summary>
+        /// Get the font size.
+        /// </summary>
+        /// <returns>The font size.</returns>
         FLOAT GetFontSize( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetFontSize( );
         }
+        
+        /// <summary>
+        /// Get the length of the locale name, in characters, not including the terminating NULL character.
+        /// </summary>
+        /// <returns>The length of the locale name.</returns>
         UINT32 GetLocaleNameLength( ) const
         {
             InterfaceType* pInterface = GetInterface( );
             return pInterface->GetLocaleNameLength( );
         }
+
+        /// <summary>
+        /// Get a copy of the locale name.
+        /// </summary>
+        /// <param name="localeName">
+        /// Character array that receives the current locale name
+        /// </param>
+        /// <param name="nameSize">
+        /// Size of the character array in character count including the terminated NULL character.
+        /// </param>
         void GetLocaleName( WCHAR* localeName, UINT32 nameSize ) const
         {
             InterfaceType* pInterface = GetInterface( );
@@ -4026,6 +4350,11 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
 
+        /// <summary>
+        /// Get a copy of the locale name.
+        /// </summary>
+        /// <typeparam name="StringType">The type of string to return.</typeparam>
+        /// <returns>The locale name as a string of the specified type.</returns>
         template<WideStringLike StringType = WideString>
         StringType GetLocaleName( ) const
         {
@@ -4050,14 +4379,50 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( Typography, Unknown, IDWriteTypography, IUnknown )
 
-        HW_EXPORT void AddFontFeature( DWRITE_FONT_FEATURE fontFeature ) const;
-        HW_EXPORT void AddFontFeatures( std::shared_ptr< std::vector<DWRITE_FONT_FEATURE> > fontFeatures ) const;
-        HW_EXPORT UINT32 GetFontFeatureCount( ) const;
-        HW_EXPORT void GetFontFeature( UINT32 fontFeatureIndex, DWRITE_FONT_FEATURE* fontFeature ) const;
-        HW_EXPORT DWRITE_FONT_FEATURE GetFontFeature( UINT32 fontFeatureIndex ) const;
-        HW_EXPORT std::vector<DWRITE_FONT_FEATURE> GetFontFeatures( ) const;
+        void AddFontFeature( const DWRITE_FONT_FEATURE& fontFeature ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->AddFontFeature( fontFeature );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void AddFontFeatures( const std::vector<DWRITE_FONT_FEATURE>& fontFeatures ) const
+        {
+            for ( const auto& fontFeature : fontFeatures )
+            {
+                AddFontFeature( fontFeature );
+            }
+        }
+        UINT32 GetFontFeatureCount( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetFontFeatureCount( );
+        }
+        void GetFontFeature( UINT32 fontFeatureIndex, DWRITE_FONT_FEATURE* fontFeature ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFontFeature( fontFeatureIndex, fontFeature );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        DWRITE_FONT_FEATURE GetFontFeature( UINT32 fontFeatureIndex ) const
+        {
+            DWRITE_FONT_FEATURE fontFeature;
+            GetFontFeature( fontFeatureIndex, &fontFeature );
+            return fontFeature;
+        }
+        std::vector<DWRITE_FONT_FEATURE> GetFontFeatures( ) const
+        {
+            std::vector<DWRITE_FONT_FEATURE>::size_type fontFeatureCount = GetFontFeatureCount( );
+            std::vector<DWRITE_FONT_FEATURE> result( fontFeatureCount );
+            for ( UINT32 i = 0; i < fontFeatureCount; i++ )
+            {
+                DWRITE_FONT_FEATURE fontFeature = GetFontFeature( i );
+                result.push_back( fontFeature );
+            }
+            return result;
+        }
     };
 
+    /*
     /// <summary>
     /// Implemented by the text analyzer's client to provide text to the analyzer. 
     /// It allows the separation between the logical view of text as a continuous 
@@ -4095,6 +4460,7 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         HW_EXPORT void SetBidiLevel( UINT32 textPosition, UINT32 textLength, UINT8 explicitLevel, UINT8 resolvedLevel ) const;
         HW_EXPORT void SetNumberSubstitution( UINT32 textPosition, UINT32 textLength, IDWriteNumberSubstitution* numberSubstitution ) const;
     };
+    */
 
     /// <summary>
     /// Analyzes various text properties for complex script processing such as 
@@ -4108,38 +4474,58 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextAnalyzer, Unknown, IDWriteTextAnalyzer, IUnknown )
 
-        HW_EXPORT void AnalyzeScript(
+        void AnalyzeScript(
+                IDWriteTextAnalysisSource* analysisSource,
+                UINT32 textPosition,
+                UINT32 textLength,
+                IDWriteTextAnalysisSink* analysisSink ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->AnalyzeScript( analysisSource, textPosition, textLength, analysisSink );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        void AnalyzeBidi(
             IDWriteTextAnalysisSource* analysisSource,
             UINT32 textPosition,
             UINT32 textLength,
-            IDWriteTextAnalysisSink* analysisSink ) const;
+            IDWriteTextAnalysisSink* analysisSink ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->AnalyzeBidi( analysisSource, textPosition, textLength, analysisSink );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void AnalyzeBidi(
+        void AnalyzeNumberSubstitution(
             IDWriteTextAnalysisSource* analysisSource,
             UINT32 textPosition,
             UINT32 textLength,
-            IDWriteTextAnalysisSink* analysisSink ) const;
+            IDWriteTextAnalysisSink* analysisSink ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->AnalyzeNumberSubstitution( analysisSource, textPosition, textLength, analysisSink );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void AnalyzeNumberSubstitution(
+        void AnalyzeLineBreakpoints(
             IDWriteTextAnalysisSource* analysisSource,
             UINT32 textPosition,
             UINT32 textLength,
-            IDWriteTextAnalysisSink* analysisSink ) const;
+            IDWriteTextAnalysisSink* analysisSink ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->AnalyzeLineBreakpoints( analysisSource, textPosition, textLength, analysisSink );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void AnalyzeLineBreakpoints(
-            IDWriteTextAnalysisSource* analysisSource,
-            UINT32 textPosition,
-            UINT32 textLength,
-            IDWriteTextAnalysisSink* analysisSink ) const;
-
-        HW_EXPORT void GetGlyphs(
+        void GetGlyphs(
             WCHAR const* textString,
             UINT32 textLength,
             IDWriteFontFace* fontFace,
             BOOL isSideways,
             BOOL isRightToLeft,
             DWRITE_SCRIPT_ANALYSIS const* scriptAnalysis,
-            WCHAR const* localeName,
+            _In_opt_z_ WCHAR const* localeName,
             IDWriteNumberSubstitution* numberSubstitution,
             DWRITE_TYPOGRAPHIC_FEATURES const** features,
             UINT32 const* featureRangeLengths,
@@ -4149,9 +4535,14 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             DWRITE_SHAPING_TEXT_PROPERTIES* textProps,
             UINT16* glyphIndices,
             DWRITE_SHAPING_GLYPH_PROPERTIES* glyphProps,
-            UINT32* actualGlyphCount ) const;
+            UINT32* actualGlyphCount ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetGlyphs( textString, textLength, fontFace, isSideways, isRightToLeft, scriptAnalysis, localeName, numberSubstitution, features, featureRangeLengths, featureRanges, maxGlyphCount, clusterMap, textProps, glyphIndices, glyphProps, actualGlyphCount );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetGlyphPlacements(
+        void GetGlyphPlacements(
             WCHAR const* textString,
             UINT16 const* clusterMap,
             DWRITE_SHAPING_TEXT_PROPERTIES* textProps,
@@ -4164,14 +4555,19 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             BOOL isSideways,
             BOOL isRightToLeft,
             DWRITE_SCRIPT_ANALYSIS const* scriptAnalysis,
-            WCHAR const* localeName,
+            _In_opt_z_ WCHAR const* localeName,
             DWRITE_TYPOGRAPHIC_FEATURES const** features,
             UINT32 const* featureRangeLengths,
             UINT32 featureRanges,
             FLOAT* glyphAdvances,
-            DWRITE_GLYPH_OFFSET* glyphOffsets ) const;
+            DWRITE_GLYPH_OFFSET* glyphOffsets ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetGlyphPlacements( textString, clusterMap, textProps, textLength, glyphIndices, glyphProps, glyphCount, fontFace, fontEmSize, isSideways, isRightToLeft, scriptAnalysis, localeName, features, featureRangeLengths, featureRanges, glyphAdvances, glyphOffsets );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetGdiCompatibleGlyphPlacements(
+        void GetGdiCompatibleGlyphPlacements(
             WCHAR const* textString,
             UINT16 const* clusterMap,
             DWRITE_SHAPING_TEXT_PROPERTIES* textProps,
@@ -4187,12 +4583,17 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             BOOL isSideways,
             BOOL isRightToLeft,
             DWRITE_SCRIPT_ANALYSIS const* scriptAnalysis,
-            WCHAR const* localeName,
+            _In_opt_z_ WCHAR const* localeName,
             DWRITE_TYPOGRAPHIC_FEATURES const** features,
             UINT32 const* featureRangeLengths,
             UINT32 featureRanges,
             FLOAT* glyphAdvances,
-            DWRITE_GLYPH_OFFSET* glyphOffsets ) const;
+            DWRITE_GLYPH_OFFSET* glyphOffsets ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetGdiCompatibleGlyphPlacements( textString, clusterMap, textProps, textLength, glyphIndices, glyphProps, glyphCount, fontFace, fontEmSize, pixelsPerDip, transform, useGdiNatural, isSideways, isRightToLeft, scriptAnalysis, localeName, features, featureRangeLengths, featureRanges, glyphAdvances, glyphOffsets );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
     };
 
     /// <summary>
@@ -4206,18 +4607,41 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( InlineObject, Unknown, IDWriteInlineObject, IUnknown )
 
-        HW_EXPORT void Draw( void* clientDrawingContext, IDWriteTextRenderer* renderer, FLOAT originX, FLOAT originY, BOOL isSideways, BOOL isRightToLeft, IUnknown* clientDrawingEffect ) const;
+        void Draw( void* clientDrawingContext, IDWriteTextRenderer* renderer, FLOAT originX, FLOAT originY, BOOL isSideways, BOOL isRightToLeft, IUnknown* clientDrawingEffect ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->Draw( clientDrawingContext, renderer, originX, originY, isSideways, isRightToLeft, clientDrawingEffect );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void GetMetrics( DWRITE_INLINE_OBJECT_METRICS* metrics ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetMetrics( metrics );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetMetrics( DWRITE_INLINE_OBJECT_METRICS* metrics ) const;
-
-        HW_EXPORT void GetOverhangMetrics( DWRITE_OVERHANG_METRICS* overhangs ) const;
-
-        HW_EXPORT void GetBreakConditions( DWRITE_BREAK_CONDITION* breakConditionBefore, DWRITE_BREAK_CONDITION* breakConditionAfter ) const;
+        void GetOverhangMetrics( DWRITE_OVERHANG_METRICS* overhangs ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetOverhangMetrics( overhangs );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void GetBreakConditions( DWRITE_BREAK_CONDITION* breakConditionBefore, DWRITE_BREAK_CONDITION* breakConditionAfter ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetBreakConditions( breakConditionBefore, breakConditionAfter );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
     };
 
     inline void TextFormat::SetTrimming( const Trimming& trimmingOptions, const InlineObject& trimmingSign ) const
     {
         SetTrimming( &trimmingOptions, trimmingSign.GetInterfacePointer< IDWriteInlineObject >( ) );
+    }
+
+    void TextFormat::SetTrimming( const Trimming& trimmingOptions ) const
+    {
+        SetTrimming( &trimmingOptions, nullptr );
     }
 
     inline InlineObject TextFormat::GetTrimming( DWRITE_TRIMMING& trimmingOptions ) const
@@ -4242,11 +4666,24 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( PixelSnapping, Unknown, IDWritePixelSnapping, IUnknown )
 
-        HW_EXPORT void IsPixelSnappingDisabled( void* clientDrawingContext, BOOL* isDisabled ) const;
-
-        HW_EXPORT void GetCurrentTransform( void* clientDrawingContext, DWRITE_MATRIX* transform ) const;
-
-        HW_EXPORT void GetPixelsPerDip( void* clientDrawingContext, FLOAT* pixelsPerDip ) const;
+        void IsPixelSnappingDisabled( void* clientDrawingContext, BOOL* isDisabled ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->IsPixelSnappingDisabled( clientDrawingContext, isDisabled );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void GetCurrentTransform( void* clientDrawingContext, DWRITE_MATRIX* transform ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetCurrentTransform( clientDrawingContext, transform );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void GetPixelsPerDip( void* clientDrawingContext, FLOAT* pixelsPerDip ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetPixelsPerDip( clientDrawingContext, pixelsPerDip );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
     };
 
     /// <summary>
@@ -4259,13 +4696,30 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextRenderer, PixelSnapping, IDWriteTextRenderer, IDWritePixelSnapping )
 
-        HW_EXPORT void DrawGlyphRun( void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_MEASURING_MODE measuringMode, DWRITE_GLYPH_RUN const* glyphRun, DWRITE_GLYPH_RUN_DESCRIPTION const* glyphRunDescription, IUnknown* clientDrawingEffect ) const;
-
-        HW_EXPORT void DrawUnderline( void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_UNDERLINE const* underline, IUnknown* clientDrawingEffect ) const;
-
-        HW_EXPORT void DrawStrikethrough( void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_STRIKETHROUGH const* strikethrough, IUnknown* clientDrawingEffect ) const;
-
-        HW_EXPORT void DrawInlineObject( void* clientDrawingContext, FLOAT originX, FLOAT originY, IDWriteInlineObject* inlineObject, BOOL isSideways, BOOL isRightToLeft, IUnknown* clientDrawingEffect ) const;
+        void DrawGlyphRun( void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_MEASURING_MODE measuringMode, DWRITE_GLYPH_RUN const* glyphRun, DWRITE_GLYPH_RUN_DESCRIPTION const* glyphRunDescription, IUnknown* clientDrawingEffect ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->DrawGlyphRun( clientDrawingContext, baselineOriginX, baselineOriginY, measuringMode, glyphRun, glyphRunDescription, clientDrawingEffect );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void DrawUnderline( void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_UNDERLINE const* underline, IUnknown* clientDrawingEffect ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->DrawUnderline( clientDrawingContext, baselineOriginX, baselineOriginY, underline, clientDrawingEffect );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void DrawStrikethrough( void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_STRIKETHROUGH const* strikethrough, IUnknown* clientDrawingEffect ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->DrawStrikethrough( clientDrawingContext, baselineOriginX, baselineOriginY, strikethrough, clientDrawingEffect );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void DrawInlineObject( void* clientDrawingContext, FLOAT originX, FLOAT originY, IDWriteInlineObject* inlineObject, BOOL isSideways, BOOL isRightToLeft, IUnknown* clientDrawingEffect ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->DrawInlineObject( clientDrawingContext, originX, originY, inlineObject, isSideways, isRightToLeft, clientDrawingEffect );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
     };
 
     /// <summary>
@@ -4276,82 +4730,269 @@ namespace Harlinn::Windows::Graphics::DirectWrite
     public:
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextLayout, TextFormat, IDWriteTextLayout, IDWriteTextFormat )
 
-        HW_EXPORT void SetMaxWidth( FLOAT maxWidth ) const;
-        HW_EXPORT void SetMaxHeight( FLOAT maxHeight ) const;
+        void SetMaxWidth( FLOAT maxWidth ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetMaxWidth( maxWidth );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void SetMaxHeight( FLOAT maxHeight ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetMaxHeight( maxHeight );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void SetFontCollection( IDWriteFontCollection* fontCollection, DWRITE_TEXT_RANGE textRange ) const;
+        void SetFontCollection( IDWriteFontCollection* fontCollection, DWRITE_TEXT_RANGE textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetFontCollection( fontCollection, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void SetFontFamilyName( WCHAR const* fontFamilyName, DWRITE_TEXT_RANGE textRange ) const;
+        void SetFontFamilyName( WCHAR const* fontFamilyName, DWRITE_TEXT_RANGE textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetFontFamilyName( fontFamilyName, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void SetFontWeight( DWRITE_FONT_WEIGHT fontWeight, DWRITE_TEXT_RANGE textRange ) const;
+        void SetFontWeight( DWRITE_FONT_WEIGHT fontWeight, DWRITE_TEXT_RANGE textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetFontWeight( fontWeight, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void SetFontStyle( DWRITE_FONT_STYLE fontStyle, DWRITE_TEXT_RANGE textRange ) const;
+        void SetFontStyle( DWRITE_FONT_STYLE fontStyle, DWRITE_TEXT_RANGE textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetFontStyle( fontStyle, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void SetFontStretch( DWRITE_FONT_STRETCH fontStretch, DWRITE_TEXT_RANGE textRange ) const;
+        void SetFontStretch( DWRITE_FONT_STRETCH fontStretch, DWRITE_TEXT_RANGE textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetFontStretch( fontStretch, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void SetFontSize( FLOAT fontSize, DWRITE_TEXT_RANGE textRange ) const;
+        void SetFontSize( FLOAT fontSize, DWRITE_TEXT_RANGE textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetFontSize( fontSize, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void SetUnderline( BOOL hasUnderline, DWRITE_TEXT_RANGE textRange ) const;
+        void SetUnderline( BOOL hasUnderline, DWRITE_TEXT_RANGE textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetUnderline( hasUnderline, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void SetStrikethrough( BOOL hasStrikethrough, DWRITE_TEXT_RANGE textRange ) const;
+        void SetStrikethrough( BOOL hasStrikethrough, DWRITE_TEXT_RANGE textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetStrikethrough( hasStrikethrough, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void SetDrawingEffect( IUnknown* drawingEffect, DWRITE_TEXT_RANGE textRange ) const;
+        void SetDrawingEffect( IUnknown* drawingEffect, DWRITE_TEXT_RANGE textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetDrawingEffect( drawingEffect, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void SetInlineObject( IDWriteInlineObject* inlineObject, DWRITE_TEXT_RANGE textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetInlineObject( inlineObject, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void SetInlineObject( IDWriteInlineObject* inlineObject, DWRITE_TEXT_RANGE textRange ) const;
+        void SetTypography( IDWriteTypography* typography, DWRITE_TEXT_RANGE textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetTypography( typography, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void SetTypography( IDWriteTypography* typography, DWRITE_TEXT_RANGE textRange ) const;
+        void SetLocaleName( WCHAR const* localeName, DWRITE_TEXT_RANGE textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetLocaleName( localeName, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void SetLocaleName( WCHAR const* localeName, DWRITE_TEXT_RANGE textRange ) const;
+        FLOAT GetMaxWidth( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetMaxWidth( );
+        }
 
-        HW_EXPORT FLOAT GetMaxWidth( ) const;
+        FLOAT GetMaxHeight( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetMaxHeight( );
+        }
 
-        HW_EXPORT FLOAT GetMaxHeight( ) const;
+        void GetFontCollection( UINT32 currentPosition, IDWriteFontCollection** fontCollection, _Out_opt_ DWRITE_TEXT_RANGE* textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFontCollection( currentPosition, fontCollection, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetFontCollection( UINT32 currentPosition, IDWriteFontCollection** fontCollection, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
+        void GetFontFamilyNameLength( UINT32 currentPosition, UINT32* nameLength, _Out_opt_ DWRITE_TEXT_RANGE* textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFontFamilyNameLength( currentPosition, nameLength, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetFontFamilyNameLength( UINT32 currentPosition, UINT32* nameLength, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
+        void GetFontFamilyName( UINT32 currentPosition, _Out_writes_z_( nameSize ) WCHAR* fontFamilyName, UINT32 nameSize, _Out_opt_ DWRITE_TEXT_RANGE* textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFontFamilyName( currentPosition, fontFamilyName, nameSize, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void GetFontWeight( UINT32 currentPosition, DWRITE_FONT_WEIGHT* fontWeight, _Out_opt_ DWRITE_TEXT_RANGE* textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFontWeight( currentPosition, fontWeight, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void GetFontStyle( UINT32 currentPosition, DWRITE_FONT_STYLE* fontStyle, _Out_opt_ DWRITE_TEXT_RANGE* textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFontStyle( currentPosition, fontStyle, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetFontFamilyName( UINT32 currentPosition, _Out_writes_z_( nameSize ) WCHAR* fontFamilyName, UINT32 nameSize, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
+        void GetFontStretch( UINT32 currentPosition, DWRITE_FONT_STRETCH* fontStretch, _Out_opt_ DWRITE_TEXT_RANGE* textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFontStretch( currentPosition, fontStretch, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetFontWeight( UINT32 currentPosition, DWRITE_FONT_WEIGHT* fontWeight, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
+        void GetFontSize( UINT32 currentPosition, FLOAT* fontSize, _Out_opt_ DWRITE_TEXT_RANGE* textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetFontSize( currentPosition, fontSize, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetFontStyle( UINT32 currentPosition, DWRITE_FONT_STYLE* fontStyle, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
+        void GetUnderline( UINT32 currentPosition, BOOL* hasUnderline, _Out_opt_ DWRITE_TEXT_RANGE* textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetUnderline( currentPosition, hasUnderline, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetFontStretch( UINT32 currentPosition, DWRITE_FONT_STRETCH* fontStretch, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
+        void GetStrikethrough( UINT32 currentPosition, BOOL* hasStrikethrough, _Out_opt_ DWRITE_TEXT_RANGE* textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetStrikethrough( currentPosition, hasStrikethrough, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetFontSize( UINT32 currentPosition, FLOAT* fontSize, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
+        void GetDrawingEffect( UINT32 currentPosition, IUnknown** drawingEffect, _Out_opt_ DWRITE_TEXT_RANGE* textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetDrawingEffect( currentPosition, drawingEffect, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void GetInlineObject( UINT32 currentPosition, IDWriteInlineObject** inlineObject, _Out_opt_ DWRITE_TEXT_RANGE* textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetInlineObject( currentPosition, inlineObject, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void GetTypography( UINT32 currentPosition, IDWriteTypography** typography, _Out_opt_ DWRITE_TEXT_RANGE* textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetTypography( currentPosition, typography, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetUnderline( UINT32 currentPosition, BOOL* hasUnderline, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
+        void GetLocaleNameLength( UINT32 currentPosition, UINT32* nameLength, _Out_opt_ DWRITE_TEXT_RANGE* textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetLocaleNameLength( currentPosition, nameLength, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetStrikethrough( UINT32 currentPosition, BOOL* hasStrikethrough, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
+        void GetLocaleName( UINT32 currentPosition, _Out_writes_z_( nameSize ) WCHAR* localeName, UINT32 nameSize, _Out_opt_ DWRITE_TEXT_RANGE* textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetLocaleName( currentPosition, localeName, nameSize, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetDrawingEffect( UINT32 currentPosition, IUnknown** drawingEffect, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
+        void Draw( void* clientDrawingContext, IDWriteTextRenderer* renderer, FLOAT originX, FLOAT originY ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->Draw( clientDrawingContext, renderer, originX, originY );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetInlineObject( UINT32 currentPosition, IDWriteInlineObject** inlineObject, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
+        void GetLineMetrics( DWRITE_LINE_METRICS* lineMetrics, UINT32 maxLineCount, UINT32* actualLineCount ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetLineMetrics( lineMetrics, maxLineCount, actualLineCount );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetTypography( UINT32 currentPosition, IDWriteTypography** typography, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
+        void GetMetrics( DWRITE_TEXT_METRICS* textMetrics ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetMetrics( textMetrics );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetLocaleNameLength( UINT32 currentPosition, UINT32* nameLength, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
+        void GetOverhangMetrics( DWRITE_OVERHANG_METRICS* overhangs ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetOverhangMetrics( overhangs );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetLocaleName( UINT32 currentPosition, _Out_writes_z_( nameSize ) WCHAR* localeName, UINT32 nameSize, DWRITE_TEXT_RANGE* textRange = nullptr ) const;
+        void GetClusterMetrics( DWRITE_CLUSTER_METRICS* clusterMetrics, UINT32 maxClusterCount, UINT32* actualClusterCount ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetClusterMetrics( clusterMetrics, maxClusterCount, actualClusterCount );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void Draw( void* clientDrawingContext, IDWriteTextRenderer* renderer, FLOAT originX, FLOAT originY ) const;
+        void DetermineMinWidth( FLOAT* minWidth ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->DetermineMinWidth( minWidth );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetLineMetrics( DWRITE_LINE_METRICS* lineMetrics, UINT32 maxLineCount, UINT32* actualLineCount ) const;
+        void HitTestPoint( FLOAT pointX, FLOAT pointY, BOOL* isTrailingHit, BOOL* isInside, DWRITE_HIT_TEST_METRICS* hitTestMetrics ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->HitTestPoint( pointX, pointY, isTrailingHit, isInside, hitTestMetrics );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetMetrics( DWRITE_TEXT_METRICS* textMetrics ) const;
-
-        HW_EXPORT void GetOverhangMetrics( DWRITE_OVERHANG_METRICS* overhangs ) const;
-
-        HW_EXPORT void GetClusterMetrics( _Out_writes_opt_( maxClusterCount ) DWRITE_CLUSTER_METRICS* clusterMetrics, UINT32 maxClusterCount, UINT32* actualClusterCount ) const;
-
-        HW_EXPORT void DetermineMinWidth( FLOAT* minWidth ) const;
-
-        HW_EXPORT void HitTestPoint( FLOAT pointX, FLOAT pointY, BOOL* isTrailingHit, BOOL* isInside, DWRITE_HIT_TEST_METRICS* hitTestMetrics ) const;
-
-        HW_EXPORT void HitTestTextPosition( UINT32 textPosition, BOOL isTrailingHit, FLOAT* pointX, FLOAT* pointY, DWRITE_HIT_TEST_METRICS* hitTestMetrics ) const;
-
-        HW_EXPORT void HitTestTextRange( UINT32 textPosition, UINT32 textLength, FLOAT originX, FLOAT originY, DWRITE_HIT_TEST_METRICS* hitTestMetrics, UINT32 maxHitTestMetricsCount, UINT32* actualHitTestMetricsCount ) const;
+        void HitTestTextPosition( UINT32 textPosition, BOOL isTrailingHit, FLOAT* pointX, FLOAT* pointY, DWRITE_HIT_TEST_METRICS* hitTestMetrics ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->HitTestTextPosition( textPosition, isTrailingHit, pointX, pointY, hitTestMetrics );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void HitTestTextRange( UINT32 textPosition, UINT32 textLength, FLOAT originX, FLOAT originY, DWRITE_HIT_TEST_METRICS* hitTestMetrics, UINT32 maxHitTestMetricsCount, UINT32* actualHitTestMetricsCount ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->HitTestTextRange( textPosition, textLength, originX, originY, hitTestMetrics, maxHitTestMetricsCount, actualHitTestMetricsCount );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
     };
 
     
@@ -4367,21 +5008,57 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( BitmapRenderTarget, Unknown, IDWriteBitmapRenderTarget, IUnknown )
 
-        HW_EXPORT void DrawGlyphRun( FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_MEASURING_MODE measuringMode, DWRITE_GLYPH_RUN const* glyphRun, IDWriteRenderingParams* renderingParams, COLORREF textColor, RECT* blackBoxRect = nullptr ) const;
+        void DrawGlyphRun( FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_MEASURING_MODE measuringMode, DWRITE_GLYPH_RUN const* glyphRun, IDWriteRenderingParams* renderingParams, COLORREF textColor, _Out_opt_ RECT* blackBoxRect ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->DrawGlyphRun( baselineOriginX, baselineOriginY, measuringMode, glyphRun, renderingParams, textColor, blackBoxRect );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT HDC GetMemoryDC( ) const;
+        HDC GetMemoryDC( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetMemoryDC( );
+        }
 
-        HW_EXPORT FLOAT GetPixelsPerDip( ) const;
+        FLOAT GetPixelsPerDip( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetPixelsPerDip( );
+        }
+        void SetPixelsPerDip( FLOAT pixelsPerDip ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetPixelsPerDip( pixelsPerDip );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void SetPixelsPerDip( FLOAT pixelsPerDip ) const;
+        void GetCurrentTransform( DWRITE_MATRIX* transform ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetCurrentTransform( transform );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void SetCurrentTransform( DWRITE_MATRIX const* transform ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetCurrentTransform( transform );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void GetCurrentTransform( DWRITE_MATRIX* transform ) const;
+        void GetSize( SIZE* size ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetSize( size );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void SetCurrentTransform( DWRITE_MATRIX const* transform ) const;
-
-        HW_EXPORT void GetSize( SIZE* size ) const;
-
-        HW_EXPORT void Resize( UINT32 width, UINT32 height ) const;
+        void Resize( UINT32 width, UINT32 height ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->Resize( width, height );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
     };
 
 
@@ -4397,15 +5074,40 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( GdiInterop, Unknown, IDWriteGdiInterop, IUnknown )
 
-        HW_EXPORT void CreateFontFromLOGFONT( LOGFONTW const* logFont, IDWriteFont** font ) const;
+        void CreateFontFromLOGFONT( LOGFONTW const* logFont, IDWriteFont** font ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateFontFromLOGFONT( logFont, font );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void ConvertFontToLOGFONT( IDWriteFont* font, LOGFONTW* logFont, BOOL* isSystemFont ) const;
+        void ConvertFontToLOGFONT( IDWriteFont* font, LOGFONTW* logFont, BOOL* isSystemFont ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->ConvertFontToLOGFONT( font, logFont, isSystemFont );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void ConvertFontFaceToLOGFONT( IDWriteFontFace* font, LOGFONTW* logFont ) const;
+        void ConvertFontFaceToLOGFONT( IDWriteFontFace* font, LOGFONTW* logFont ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->ConvertFontFaceToLOGFONT( font, logFont );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void CreateFontFaceFromHdc( HDC hdc, IDWriteFontFace** fontFace ) const;
+        void CreateFontFaceFromHdc( HDC hdc, IDWriteFontFace** fontFace ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateFontFaceFromHdc( hdc, fontFace );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void CreateBitmapRenderTarget( HDC hdc, UINT32 width, UINT32 height, IDWriteBitmapRenderTarget** renderTarget ) const;
+        void CreateBitmapRenderTarget( HDC hdc, UINT32 width, UINT32 height, IDWriteBitmapRenderTarget** renderTarget ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateBitmapRenderTarget( hdc, width, height, renderTarget );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
     };
 
     /// <summary>
@@ -4418,11 +5120,25 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( GlyphRunAnalysis, Unknown, IDWriteGlyphRunAnalysis, IUnknown )
 
-        HW_EXPORT void GetAlphaTextureBounds( DWRITE_TEXTURE_TYPE textureType, RECT* textureBounds ) const;
+        void GetAlphaTextureBounds( DWRITE_TEXTURE_TYPE textureType, RECT* textureBounds ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetAlphaTextureBounds( textureType, textureBounds );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void CreateAlphaTexture( DWRITE_TEXTURE_TYPE textureType, RECT const* textureBounds, BYTE* alphaValues, UINT32 bufferSize ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateAlphaTexture( textureType, textureBounds, alphaValues, bufferSize );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void CreateAlphaTexture( DWRITE_TEXTURE_TYPE textureType, RECT const* textureBounds, BYTE* alphaValues, UINT32 bufferSize ) const;
-
-        HW_EXPORT void GetAlphaBlendParams( IDWriteRenderingParams* renderingParams, FLOAT* blendGamma, FLOAT* blendEnhancedContrast, FLOAT* blendClearTypeLevel ) const;
+        void GetAlphaBlendParams( IDWriteRenderingParams* renderingParams, FLOAT* blendGamma, FLOAT* blendEnhancedContrast, FLOAT* blendClearTypeLevel ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetAlphaBlendParams( renderingParams, blendGamma, blendEnhancedContrast, blendClearTypeLevel );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
     };
 
     /// <summary>
@@ -4435,69 +5151,327 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( Factory, Unknown, IDWriteFactory, IUnknown )
 
-        HW_EXPORT Factory( DWRITE_FACTORY_TYPE factoryType );
+        Factory( DWRITE_FACTORY_TYPE factoryType )
+        {
+            IUnknown* factory = nullptr;
+            HRESULT hr = DWriteCreateFactory( factoryType, __uuidof( IDWriteFactory ), &factory );
+            CheckHRESULT( hr );
+            unknown_ = factory;
+        }
 
         Factory(FactoryType factoryType)
             : Factory( static_cast< DWRITE_FACTORY_TYPE >( factoryType ) )
         {}
 
+        void GetSystemFontCollection( IDWriteFontCollection** fontCollection, BOOL checkForUpdates ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetSystemFontCollection( fontCollection, checkForUpdates );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        FontCollection GetSystemFontCollection( bool checkForUpdates ) const
+        {
+            IDWriteFontCollection* fontCollection = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetSystemFontCollection( &fontCollection, checkForUpdates );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            FontCollection result( fontCollection );
+            return result;
+        }
 
-        HW_EXPORT void GetSystemFontCollection( IDWriteFontCollection** fontCollection, BOOL checkForUpdates = FALSE ) const;
-        HW_EXPORT FontCollection GetSystemFontCollection( bool checkForUpdates = false ) const;
+        void CreateCustomFontCollection( IDWriteFontCollectionLoader* collectionLoader, void const* collectionKey, UINT32 collectionKeySize, IDWriteFontCollection** fontCollection ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateCustomFontCollection( collectionLoader, collectionKey, collectionKeySize, fontCollection );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        FontCollection CreateCustomFontCollection( IDWriteFontCollectionLoader* collectionLoader, void const* collectionKey, UINT32 collectionKeySize ) const
+        {
+            IDWriteFontCollection* fontCollection = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateCustomFontCollection( collectionLoader, collectionKey, collectionKeySize, &fontCollection );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            FontCollection result( fontCollection );
+            return result;
+        }
 
-        HW_EXPORT void CreateCustomFontCollection( IDWriteFontCollectionLoader* collectionLoader, void const* collectionKey, UINT32 collectionKeySize, IDWriteFontCollection** fontCollection ) const;
-        HW_EXPORT FontCollection CreateCustomFontCollection( IDWriteFontCollectionLoader* collectionLoader, void const* collectionKey, UINT32 collectionKeySize ) const;
+        void RegisterFontCollectionLoader( IDWriteFontCollectionLoader* fontCollectionLoader ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->RegisterFontCollectionLoader( fontCollectionLoader );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void UnregisterFontCollectionLoader( IDWriteFontCollectionLoader* fontCollectionLoader ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->UnregisterFontCollectionLoader( fontCollectionLoader );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        void CreateFontFileReference( WCHAR const* filePath, FILETIME const* lastWriteTime, IDWriteFontFile** fontFile ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateFontFileReference( filePath, lastWriteTime, fontFile );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        FontFile CreateFontFileReference( WCHAR const* filePath, FILETIME const* lastWriteTime ) const
+        {
+            IDWriteFontFile* fontFile = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateFontFileReference( filePath, lastWriteTime, &fontFile );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            FontFile result( fontFile );
+            return result;
+        }
+        void CreateCustomFontFileReference( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, IDWriteFontFileLoader* fontFileLoader, IDWriteFontFile** fontFile ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateCustomFontFileReference( fontFileReferenceKey, fontFileReferenceKeySize, fontFileLoader, fontFile );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        FontFile CreateCustomFontFileReference( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, IDWriteFontFileLoader* fontFileLoader ) const
+        {
+            IDWriteFontFile* fontFile = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateCustomFontFileReference( fontFileReferenceKey, fontFileReferenceKeySize, fontFileLoader, &fontFile );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            FontFile result( fontFile );
+            return result;
+        }
 
-        HW_EXPORT void RegisterFontCollectionLoader( IDWriteFontCollectionLoader* fontCollectionLoader ) const;
-        HW_EXPORT void UnregisterFontCollectionLoader( IDWriteFontCollectionLoader* fontCollectionLoader ) const;
+        void CreateFontFace( DWRITE_FONT_FACE_TYPE fontFaceType, UINT32 numberOfFiles, IDWriteFontFile* const* fontFiles, UINT32 faceIndex, DWRITE_FONT_SIMULATIONS fontFaceSimulationFlags, IDWriteFontFace** fontFace ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateFontFace( fontFaceType, numberOfFiles, fontFiles, faceIndex, fontFaceSimulationFlags, fontFace );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        FontFace CreateFontFace( DWRITE_FONT_FACE_TYPE fontFaceType, UINT32 numberOfFiles, IDWriteFontFile* const* fontFiles, UINT32 faceIndex, DWRITE_FONT_SIMULATIONS fontFaceSimulationFlags ) const
+        {
+            IDWriteFontFace* fontFace = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateFontFace( fontFaceType, numberOfFiles, fontFiles, faceIndex, fontFaceSimulationFlags, &fontFace );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            FontFace result( fontFace );
+            return result;
+        }
 
-        HW_EXPORT void CreateFontFileReference( WCHAR const* filePath, FILETIME const* lastWriteTime, IDWriteFontFile** fontFile ) const;
-        HW_EXPORT FontFile CreateFontFileReference( WCHAR const* filePath, FILETIME const* lastWriteTime = nullptr ) const;
+        void CreateRenderingParams( IDWriteRenderingParams** renderingParams ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateRenderingParams( renderingParams );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        RenderingParams CreateRenderingParams( ) const
+        {
+            IDWriteRenderingParams* renderingParams = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateRenderingParams( &renderingParams );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            RenderingParams result( renderingParams );
+            return result;
+        }
 
-        HW_EXPORT void CreateCustomFontFileReference( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, IDWriteFontFileLoader* fontFileLoader, IDWriteFontFile** fontFile ) const;
-        HW_EXPORT FontFile CreateCustomFontFileReference( void const* fontFileReferenceKey, UINT32 fontFileReferenceKeySize, IDWriteFontFileLoader* fontFileLoader ) const;
+        void CreateMonitorRenderingParams( HMONITOR monitor, IDWriteRenderingParams** renderingParams ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateMonitorRenderingParams( monitor, renderingParams );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        RenderingParams CreateMonitorRenderingParams( HMONITOR monitor ) const
+        {
+            IDWriteRenderingParams* renderingParams = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateMonitorRenderingParams( monitor, &renderingParams );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            RenderingParams result( renderingParams );
+            return result;
+        }
 
-        HW_EXPORT void CreateFontFace( DWRITE_FONT_FACE_TYPE fontFaceType, UINT32 numberOfFiles, IDWriteFontFile* const* fontFiles, UINT32 faceIndex, DWRITE_FONT_SIMULATIONS fontFaceSimulationFlags, IDWriteFontFace** fontFace ) const;
-        HW_EXPORT FontFace CreateFontFace( DWRITE_FONT_FACE_TYPE fontFaceType, UINT32 numberOfFiles, IDWriteFontFile* const* fontFiles, UINT32 faceIndex, DWRITE_FONT_SIMULATIONS fontFaceSimulationFlags ) const;
+        void CreateCustomRenderingParams( FLOAT gamma, FLOAT enhancedContrast, FLOAT clearTypeLevel, DWRITE_PIXEL_GEOMETRY pixelGeometry, DWRITE_RENDERING_MODE renderingMode, IDWriteRenderingParams** renderingParams ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateCustomRenderingParams( gamma, enhancedContrast, clearTypeLevel, pixelGeometry, renderingMode, renderingParams );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        RenderingParams CreateCustomRenderingParams( FLOAT gamma, FLOAT enhancedContrast, FLOAT clearTypeLevel, DWRITE_PIXEL_GEOMETRY pixelGeometry, DWRITE_RENDERING_MODE renderingMode ) const
+        {
+            IDWriteRenderingParams* renderingParams = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateCustomRenderingParams( gamma, enhancedContrast, clearTypeLevel, pixelGeometry, renderingMode, &renderingParams );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            RenderingParams result( renderingParams );
+            return result;
+        }
 
-        HW_EXPORT void CreateRenderingParams( IDWriteRenderingParams** renderingParams ) const;
-        HW_EXPORT RenderingParams CreateRenderingParams( ) const;
+        void RegisterFontFileLoader( IDWriteFontFileLoader* fontFileLoader ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->RegisterFontFileLoader( fontFileLoader );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void CreateMonitorRenderingParams( HMONITOR monitor, IDWriteRenderingParams** renderingParams ) const;
-        HW_EXPORT RenderingParams CreateMonitorRenderingParams( HMONITOR monitor ) const;
+        void UnregisterFontFileLoader( IDWriteFontFileLoader* fontFileLoader ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->UnregisterFontFileLoader( fontFileLoader );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void CreateCustomRenderingParams( FLOAT gamma, FLOAT enhancedContrast, FLOAT clearTypeLevel, DWRITE_PIXEL_GEOMETRY pixelGeometry, DWRITE_RENDERING_MODE renderingMode, IDWriteRenderingParams** renderingParams ) const;
-        HW_EXPORT RenderingParams CreateCustomRenderingParams( FLOAT gamma, FLOAT enhancedContrast, FLOAT clearTypeLevel, DWRITE_PIXEL_GEOMETRY pixelGeometry, DWRITE_RENDERING_MODE renderingMode ) const;
+        void CreateTextFormat( WCHAR const* fontFamilyName, IDWriteFontCollection* fontCollection, DWRITE_FONT_WEIGHT fontWeight, DWRITE_FONT_STYLE fontStyle, DWRITE_FONT_STRETCH fontStretch, FLOAT fontSize, WCHAR const* localeName, IDWriteTextFormat** textFormat ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateTextFormat( fontFamilyName, fontCollection, fontWeight, fontStyle, fontStretch, fontSize, localeName, textFormat );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        TextFormat CreateTextFormat( WCHAR const* fontFamilyName, IDWriteFontCollection* fontCollection, DWRITE_FONT_WEIGHT fontWeight, DWRITE_FONT_STYLE fontStyle, DWRITE_FONT_STRETCH fontStretch, FLOAT fontSize, WCHAR const* localeName ) const
+        {
+            IDWriteTextFormat* textFormat = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateTextFormat( fontFamilyName, fontCollection, fontWeight, fontStyle, fontStretch, fontSize, localeName, &textFormat );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            TextFormat result( textFormat );
+            return result;
+        }
 
-        HW_EXPORT void RegisterFontFileLoader( IDWriteFontFileLoader* fontFileLoader ) const;
-        HW_EXPORT void UnregisterFontFileLoader( IDWriteFontFileLoader* fontFileLoader ) const;
+        TextFormat CreateTextFormat( WCHAR const* fontFamilyName, FLOAT fontSize ) const
+        {
+            wchar_t localeName[ LOCALE_NAME_MAX_LENGTH + 1 ] = { 0, };
+            LCIDToLocaleName( LOCALE_USER_DEFAULT, localeName, LOCALE_NAME_MAX_LENGTH, 0 );
 
-        HW_EXPORT void CreateTextFormat( WCHAR const* fontFamilyName, IDWriteFontCollection* fontCollection, DWRITE_FONT_WEIGHT fontWeight, DWRITE_FONT_STYLE fontStyle, DWRITE_FONT_STRETCH fontStretch, FLOAT fontSize, WCHAR const* localeName, IDWriteTextFormat** textFormat ) const;
-        HW_EXPORT TextFormat CreateTextFormat( WCHAR const* fontFamilyName, IDWriteFontCollection* fontCollection, DWRITE_FONT_WEIGHT fontWeight, DWRITE_FONT_STYLE fontStyle, DWRITE_FONT_STRETCH fontStretch, FLOAT fontSize, WCHAR const* localeName ) const;
-        HW_EXPORT TextFormat CreateTextFormat( WCHAR const* fontFamilyName, FLOAT fontSize ) const;
+            IDWriteTextFormat* textFormat = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateTextFormat( fontFamilyName, nullptr,
+                DWRITE_FONT_WEIGHT_REGULAR,
+                DWRITE_FONT_STYLE_NORMAL,
+                DWRITE_FONT_STRETCH_NORMAL,
+                fontSize,
+                localeName,
+                &textFormat );
+            CheckHRESULT( hr );
+            TextFormat result( textFormat );
+            return result;
+        }
 
-        HW_EXPORT void CreateTypography( IDWriteTypography** typography ) const;
-        HW_EXPORT Typography CreateTypography( ) const;
 
-        HW_EXPORT void GetGdiInterop( IDWriteGdiInterop** gdiInterop ) const;
-        HW_EXPORT GdiInterop GetGdiInterop( ) const;
+        void CreateTypography( IDWriteTypography** typography ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateTypography( typography );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void CreateTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT maxWidth, FLOAT maxHeight, IDWriteTextLayout** textLayout ) const;
-        HW_EXPORT TextLayout CreateTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT maxWidth, FLOAT maxHeight ) const;
+        Typography CreateTypography( ) const
+        {
+            IDWriteTypography* typography = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateTypography( &typography );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            Typography result( typography );
+            return result;
+        }
 
-        HW_EXPORT void CreateGdiCompatibleTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT layoutWidth, FLOAT layoutHeight, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, BOOL useGdiNatural, IDWriteTextLayout** textLayout ) const;
-        HW_EXPORT TextLayout CreateGdiCompatibleTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT layoutWidth, FLOAT layoutHeight, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, BOOL useGdiNatural ) const;
+        void GetGdiInterop( IDWriteGdiInterop** gdiInterop ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetGdiInterop( gdiInterop );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
 
-        HW_EXPORT void CreateEllipsisTrimmingSign( IDWriteTextFormat* textFormat, IDWriteInlineObject** trimmingSign ) const;
-        HW_EXPORT InlineObject CreateEllipsisTrimmingSign( IDWriteTextFormat* textFormat ) const;
+        GdiInterop GetGdiInterop( ) const
+        {
+            IDWriteGdiInterop* gdiInterop = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->GetGdiInterop( &gdiInterop );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            GdiInterop result( gdiInterop );
+            return result;
+        }
 
-        HW_EXPORT void CreateTextAnalyzer( IDWriteTextAnalyzer** textAnalyzer ) const;
-        HW_EXPORT TextAnalyzer CreateTextAnalyzer( ) const;
+        void CreateTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT maxWidth, FLOAT maxHeight, IDWriteTextLayout** textLayout ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateTextLayout( string, stringLength, textFormat, maxWidth, maxHeight, textLayout );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        TextLayout CreateTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT maxWidth, FLOAT maxHeight ) const
+        {
+            IDWriteTextLayout* textLayout = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateTextLayout( string, stringLength, textFormat, maxWidth, maxHeight, &textLayout );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            TextLayout result( textLayout );
+            return result;
+        }
 
-        HW_EXPORT void CreateNumberSubstitution( DWRITE_NUMBER_SUBSTITUTION_METHOD substitutionMethod, WCHAR const* localeName, BOOL ignoreUserOverride, IDWriteNumberSubstitution** numberSubstitution ) const;
+        void CreateGdiCompatibleTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT layoutWidth, FLOAT layoutHeight, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, BOOL useGdiNatural, IDWriteTextLayout** textLayout ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateGdiCompatibleTextLayout( string, stringLength, textFormat, layoutWidth, layoutHeight, pixelsPerDip, transform, useGdiNatural, textLayout );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        TextLayout CreateGdiCompatibleTextLayout( WCHAR const* string, UINT32 stringLength, IDWriteTextFormat* textFormat, FLOAT layoutWidth, FLOAT layoutHeight, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, BOOL useGdiNatural ) const
+        {
+            IDWriteTextLayout* textLayout = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateGdiCompatibleTextLayout( string, stringLength, textFormat, layoutWidth, layoutHeight, pixelsPerDip, transform, useGdiNatural, &textLayout );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            TextLayout result( textLayout );
+            return result;
+        }
 
-        HW_EXPORT void CreateGlyphRunAnalysis( DWRITE_GLYPH_RUN const* glyphRun, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, DWRITE_RENDERING_MODE renderingMode, DWRITE_MEASURING_MODE measuringMode, FLOAT baselineOriginX, FLOAT baselineOriginY, IDWriteGlyphRunAnalysis** glyphRunAnalysis ) const;
-        HW_EXPORT GlyphRunAnalysis CreateGlyphRunAnalysis( DWRITE_GLYPH_RUN const* glyphRun, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, DWRITE_RENDERING_MODE renderingMode, DWRITE_MEASURING_MODE measuringMode, FLOAT baselineOriginX, FLOAT baselineOriginY ) const;
+        void CreateEllipsisTrimmingSign( IDWriteTextFormat* textFormat, IDWriteInlineObject** trimmingSign ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateEllipsisTrimmingSign( textFormat, trimmingSign );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        InlineObject CreateEllipsisTrimmingSign( IDWriteTextFormat* textFormat ) const
+        {
+            IDWriteInlineObject* trimmingSign = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateEllipsisTrimmingSign( textFormat, &trimmingSign );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            InlineObject result( trimmingSign );
+            return result;
+        }
+        void CreateTextAnalyzer( IDWriteTextAnalyzer** textAnalyzer ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateTextAnalyzer( textAnalyzer );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+        TextAnalyzer CreateTextAnalyzer( ) const
+        {
+            IDWriteTextAnalyzer* textAnalyzer = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateTextAnalyzer( &textAnalyzer );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            TextAnalyzer result( textAnalyzer );
+            return result;
+        }
+
+        void CreateNumberSubstitution( DWRITE_NUMBER_SUBSTITUTION_METHOD substitutionMethod, WCHAR const* localeName, BOOL ignoreUserOverride, IDWriteNumberSubstitution** numberSubstitution ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateNumberSubstitution( substitutionMethod, localeName, ignoreUserOverride, numberSubstitution );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        void CreateGlyphRunAnalysis( DWRITE_GLYPH_RUN const* glyphRun, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, DWRITE_RENDERING_MODE renderingMode, DWRITE_MEASURING_MODE measuringMode, FLOAT baselineOriginX, FLOAT baselineOriginY, IDWriteGlyphRunAnalysis** glyphRunAnalysis ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateGlyphRunAnalysis( glyphRun, pixelsPerDip, transform, renderingMode, measuringMode, baselineOriginX, baselineOriginY, glyphRunAnalysis );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        GlyphRunAnalysis CreateGlyphRunAnalysis( DWRITE_GLYPH_RUN const* glyphRun, FLOAT pixelsPerDip, DWRITE_MATRIX const* transform, DWRITE_RENDERING_MODE renderingMode, DWRITE_MEASURING_MODE measuringMode, FLOAT baselineOriginX, FLOAT baselineOriginY ) const
+        {
+            IDWriteGlyphRunAnalysis* glyphRunAnalysis = nullptr;
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->CreateGlyphRunAnalysis( glyphRun, pixelsPerDip, transform, renderingMode, measuringMode, baselineOriginX, baselineOriginY, &glyphRunAnalysis );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+            GlyphRunAnalysis result( glyphRunAnalysis );
+            return result;
+        }
     };
 }
 
