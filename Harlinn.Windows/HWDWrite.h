@@ -7739,6 +7739,314 @@ namespace Harlinn::Windows::Graphics::DirectWrite
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextAnalyzer1, TextAnalyzer, IDWriteTextAnalyzer1, IDWriteTextAnalyzer )
 
+        /// <summary>
+        /// Applies spacing between characters, properly adjusting glyph clusters
+        /// and diacritics.
+        /// </summary>
+        /// <param name="leadingSpacing">The spacing before each character, in reading order.</param>
+        /// <param name="trailingSpacing">The spacing after each character, in reading order.</param>
+        /// <param name="minimumAdvanceWidth">The minimum advance of each character,
+        ///     to prevent characters from becoming too thin or zero-width. This
+        ///     must be zero or greater.</param>
+        /// <param name="textLength">The length of the clustermap and original text.</param>
+        /// <param name="glyphCount">The number of glyphs.</param>
+        /// <param name="clusterMap">Mapping from character ranges to glyph ranges.</param>
+        /// <param name="glyphAdvances">The advance width of each glyph.</param>
+        /// <param name="glyphOffsets">The offset of the origin of each glyph.</param>
+        /// <param name="glyphProperties">Properties of each glyph, from GetGlyphs.</param>
+        /// <param name="modifiedGlyphAdvances">The new advance width of each glyph.</param>
+        /// <param name="modifiedGlyphOffsets">The new offset of the origin of each glyph.</param>
+        /// <remarks>
+        /// The input and output advances/offsets are allowed to alias the same array.
+        /// </remarks>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        void ApplyCharacterSpacing(
+                FLOAT leadingSpacing,
+                FLOAT trailingSpacing,
+                FLOAT minimumAdvanceWidth,
+                UINT32 textLength,
+                UINT32 glyphCount,
+                _In_reads_( textLength ) UINT16 const* clusterMap,
+                _In_reads_( glyphCount ) FLOAT const* glyphAdvances,
+                _In_reads_( glyphCount ) DWRITE_GLYPH_OFFSET const* glyphOffsets,
+                _In_reads_( glyphCount ) DWRITE_SHAPING_GLYPH_PROPERTIES const* glyphProperties,
+                _Out_writes_( glyphCount ) FLOAT* modifiedGlyphAdvances,
+                _Out_writes_( glyphCount ) DWRITE_GLYPH_OFFSET* modifiedGlyphOffsets ) const
+        {
+            auto pInterface = GetInterface( );
+            auto hr = pInterface->ApplyCharacterSpacing( leadingSpacing, trailingSpacing, minimumAdvanceWidth, textLength, glyphCount, clusterMap, glyphAdvances, glyphOffsets, glyphProperties, modifiedGlyphAdvances, modifiedGlyphOffsets );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Retrieves the given baseline from the font.
+        /// </summary>
+        /// <param name="fontFace">The font face to read.</param>
+        /// <param name="baseline">The baseline of interest.</param>
+        /// <param name="isVertical">Whether the baseline is vertical or horizontal.</param>
+        /// <param name="isSimulationAllowed">Simulate the baseline if it is missing in the font.</param>
+        /// <param name="scriptAnalysis">Script analysis result from AnalyzeScript.</param>
+        /// <param name="localeName">The language of the run.</param>
+        /// <param name="baselineCoordinate">The baseline coordinate value in design units.</param>
+        /// <param name="exists">Whether the returned baseline exists in the font.</param>
+        /// <remarks>
+        /// If the baseline does not exist in the font, it is not considered an
+        /// error, but the function will return exists = false. You may then use
+        /// heuristics to calculate the missing base, or, if the flag
+        /// simulationAllowed is true, the function will compute a reasonable
+        /// approximation for you.
+        /// </remarks>
+        void GetBaseline( _In_ IDWriteFontFace* fontFace,
+            DWRITE_BASELINE baseline, BOOL isVertical, BOOL isSimulationAllowed,
+            DWRITE_SCRIPT_ANALYSIS scriptAnalysis, _In_opt_z_ WCHAR const* localeName,
+            _Out_ INT32* baselineCoordinate, _Out_ BOOL* exists ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetBaseline( fontFace, baseline, isVertical, isSimulationAllowed, scriptAnalysis, localeName, baselineCoordinate, exists );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Retrieves the given baseline from the font.
+        /// </summary>
+        /// <param name="fontFace">The font face to read.</param>
+        /// <param name="baseline">The baseline of interest.</param>
+        /// <param name="isVertical">Whether the baseline is vertical or horizontal.</param>
+        /// <param name="isSimulationAllowed">Simulate the baseline if it is missing in the font.</param>
+        /// <param name="scriptAnalysis">Script analysis result from AnalyzeScript.</param>
+        /// <param name="localeName">The language of the run.</param>
+        /// <param name="baselineCoordinate">The baseline coordinate value in design units.</param>
+        /// <param name="exists">Whether the returned baseline exists in the font.</param>
+        /// <remarks>
+        /// If the baseline does not exist in the font, it is not considered an
+        /// error, but the function will return exists = false. You may then use
+        /// heuristics to calculate the missing base, or, if the flag
+        /// simulationAllowed is true, the function will compute a reasonable
+        /// approximation for you.
+        /// </remarks>
+        void GetBaseline( const FontFace& fontFace,
+            DWRITE_BASELINE baseline, BOOL isVertical, BOOL isSimulationAllowed,
+            DWRITE_SCRIPT_ANALYSIS scriptAnalysis, _In_opt_z_ WCHAR const* localeName,
+            _Out_ INT32* baselineCoordinate, _Out_ BOOL* exists ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetBaseline( fontFace.GetInterfacePointer<IDWriteFontFace>( ), baseline, isVertical, isSimulationAllowed, scriptAnalysis, localeName, baselineCoordinate, exists );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+
+        /// <summary>
+        /// Analyzes a text range for script orientation, reading text and
+        /// attributes from the source and reporting results to the sink.
+        /// </summary>
+        /// <param name="analysisSource">Source object to analyze.</param>
+        /// <param name="textPosition">Starting position within the source object.</param>
+        /// <param name="textLength">Length to analyze.</param>
+        /// <param name="analysisSink">Callback object.</param>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        /// <remarks>
+        /// All bidi analysis should be resolved before calling this.
+        /// </remarks>
+        void AnalyzeVerticalGlyphOrientation( _In_ IDWriteTextAnalysisSource1* analysisSource, UINT32 textPosition, UINT32 textLength, _In_ IDWriteTextAnalysisSink1* analysisSink ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->AnalyzeVerticalGlyphOrientation( analysisSource, textPosition, textLength, analysisSink );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Returns 2x3 transform matrix for the respective angle to draw the
+        /// glyph run.
+        /// </summary>
+        /// <param name="glyphOrientationAngle">The angle reported into
+        ///     SetGlyphOrientation.</param>
+        /// <param name="isSideways">Whether the run's glyphs are sideways or not.</param>
+        /// <param name="transform">Returned transform.</param>
+        /// </remarks>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        /// <remarks>
+        /// The returned displacement is zero.
+        /// </remarks>
+        void GetGlyphOrientationTransform( DWRITE_GLYPH_ORIENTATION_ANGLE glyphOrientationAngle, BOOL isSideways, _Out_ DWRITE_MATRIX* transform ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetGlyphOrientationTransform( glyphOrientationAngle, isSideways, transform );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Returns the properties for a given script.
+        /// </summary>
+        /// <param name="scriptAnalysis">The script for a run of text returned
+        ///     from IDWriteTextAnalyzer::AnalyzeScript.</param>
+        /// <param name="scriptProperties">Information for the script.</param>
+        /// <returns>
+        /// Returns properties for the given script. If the script is invalid,
+        /// it returns generic properties for the unknown script and E_INVALIDARG.
+        /// </returns>
+        void GetScriptProperties( DWRITE_SCRIPT_ANALYSIS scriptAnalysis, _Out_ DWRITE_SCRIPT_PROPERTIES* scriptProperties ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetScriptProperties( scriptAnalysis, scriptProperties );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Determines the complexity of text, and whether or not full script
+        /// shaping needs to be called (GetGlyphs).
+        /// </summary>
+        /// <param name="fontFace">The font face to read.</param>
+        /// <param name="textLength">Length of the text to check.</param>
+        /// <param name="textString">The text to check for complexity. This string
+        ///     may be UTF-16, but any supplementary characters will be considered
+        ///     complex.</param>
+        /// <param name="isTextSimple">If true, the text is simple, and the
+        ///     glyphIndices array will already have the nominal glyphs for you.
+        ///     Otherwise you need to call GetGlyphs to properly shape complex
+        ///     scripts and OpenType features.
+        ///     </param>
+        /// <param name="textLengthRead">The length read of the text run with the
+        ///     same complexity, simple or complex. You may call again from that
+        ///     point onward.</param>
+        /// <param name="glyphIndices">Optional glyph indices for the text. If the
+        ///     function returned that the text was simple, you already have the
+        ///     glyphs you need. Otherwise the glyph indices are not meaningful,
+        ///     and you should call shaping instead.</param>
+        /// <remarks>
+        /// Text is not simple if the characters are part of a script that has
+        /// complex shaping requirements, require bidi analysis, combine with
+        /// other characters, reside in the supplementary planes, or have glyphs
+        /// which participate in standard OpenType features. The length returned
+        /// will not split combining marks from their base characters.
+        /// </remarks>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        void GetTextComplexity( _In_reads_( textLength ) WCHAR const* textString, UINT32 textLength, _In_ IDWriteFontFace* fontFace, _Out_ BOOL* isTextSimple, _Out_range_( 0, textLength ) UINT32* textLengthRead, _Out_writes_to_opt_( textLength, *textLengthRead ) UINT16* glyphIndices ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetTextComplexity( textString, textLength, fontFace, isTextSimple, textLengthRead, glyphIndices );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Retrieves justification opportunity information for each of the glyphs
+        /// given the text and shaping glyph properties.
+        /// </summary>
+        /// <param name="fontFace">Font face that was used for shaping. This is
+        ///     mainly important for returning correct results of the kashida
+        ///     width.</param>
+        /// <param name="fontEmSize">Font em size used for the glyph run.</param>
+        /// <param name="scriptAnalysis">Script of the text from the itemizer.</param>
+        /// <param name="textLength">Length of the text.</param>
+        /// <param name="glyphCount">Number of glyphs.</param>
+        /// <param name="textString">Characters used to produce the glyphs.</param>
+        /// <param name="clusterMap">Clustermap produced from shaping.</param>
+        /// <param name="glyphProperties">Glyph properties produced from shaping.</param>
+        /// <param name="justificationOpportunities">Receives information for the
+        ///     allowed justification expansion/compression for each glyph.</param>
+        /// <remarks>
+        /// This function is called per-run, after shaping is done via GetGlyphs().
+        /// Note this function only supports natural metrics (DWRITE_MEASURING_MODE_NATURAL).
+        /// </remarks>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        void GetJustificationOpportunities( _In_opt_ IDWriteFontFace* fontFace, FLOAT fontEmSize, DWRITE_SCRIPT_ANALYSIS scriptAnalysis, UINT32 textLength, UINT32 glyphCount, _In_reads_( textLength ) WCHAR const* textString, _In_reads_( textLength ) UINT16 const* clusterMap, _In_reads_( glyphCount ) DWRITE_SHAPING_GLYPH_PROPERTIES const* glyphProperties, _Out_writes_( glyphCount ) DWRITE_JUSTIFICATION_OPPORTUNITY* justificationOpportunities ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetJustificationOpportunities( fontFace, fontEmSize, scriptAnalysis, textLength, glyphCount, textString, clusterMap, glyphProperties, justificationOpportunities );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        void GetJustificationOpportunities( const FontFace& fontFace, FLOAT fontEmSize, DWRITE_SCRIPT_ANALYSIS scriptAnalysis, UINT32 textLength, UINT32 glyphCount, _In_reads_( textLength ) WCHAR const* textString, _In_reads_( textLength ) UINT16 const* clusterMap, _In_reads_( glyphCount ) DWRITE_SHAPING_GLYPH_PROPERTIES const* glyphProperties, _Out_writes_( glyphCount ) DWRITE_JUSTIFICATION_OPPORTUNITY* justificationOpportunities ) const
+        {
+            GetJustificationOpportunities( fontFace.GetInterfacePointer<IDWriteFontFace>( ), fontEmSize, scriptAnalysis, textLength, glyphCount, textString, clusterMap, glyphProperties, justificationOpportunities );
+        }
+
+
+        /// <summary>
+        /// Justifies an array of glyph advances to fit the line width.
+        /// </summary>
+        /// <param name="lineWidth">Width of the line.</param>
+        /// <param name="glyphCount">Number of glyphs.</param>
+        /// <param name="justificationOpportunities">Opportunities per glyph. Call
+        ///     GetJustificationOpportunities() to get suitable opportunities
+        ///     according to script.</param>
+        /// <param name="glyphAdvances">Original glyph advances from shaping.</param>
+        /// <param name="glyphOffsets">Original glyph offsets from shaping.</param>
+        /// <param name="justifiedGlyphAdvances">Justified glyph advances.</param>
+        /// <param name="justifiedGlyphOffsets">Justified glyph offsets.</param>
+        /// <remarks>
+        /// This is called after all the opportunities have been collected, and it
+        /// spans across the entire line. The input and output arrays are allowed
+        /// to alias each other, permitting in-place update.
+        /// </remarks>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        void JustifyGlyphAdvances( FLOAT lineWidth, UINT32 glyphCount, _In_reads_( glyphCount ) DWRITE_JUSTIFICATION_OPPORTUNITY const* justificationOpportunities, _In_reads_( glyphCount ) FLOAT const* glyphAdvances, _In_reads_( glyphCount ) DWRITE_GLYPH_OFFSET const* glyphOffsets, _Out_writes_( glyphCount ) FLOAT* justifiedGlyphAdvances, _Out_writes_opt_( glyphCount ) DWRITE_GLYPH_OFFSET* justifiedGlyphOffsets ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->JustifyGlyphAdvances( lineWidth, glyphCount, justificationOpportunities, glyphAdvances, glyphOffsets, justifiedGlyphAdvances, justifiedGlyphOffsets );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Fills in new glyphs for complex scripts where justification increased
+        /// the advances of glyphs, such as Arabic with kashida.
+        /// </summary>
+        /// <param name="fontFace">Font face used for shaping.</param>
+        /// <param name="fontEmSize">Font em size used for the glyph run.</param>
+        /// <param name="scriptAnalysis">Script of the text from the itemizer.</param>
+        /// <param name="textLength">Length of the text.</param>
+        /// <param name="glyphCount">Number of glyphs.</param>
+        /// <param name="maxGlyphCount">Maximum number of output glyphs allocated
+        ///     by caller.</param>
+        /// <param name="clusterMap">Clustermap produced from shaping.</param>
+        /// <param name="glyphIndices">Original glyphs produced from shaping.</param>
+        /// <param name="glyphAdvances">Original glyph advances produced from shaping.</param>
+        /// <param name="justifiedGlyphAdvances">Justified glyph advances from
+        ///     JustifyGlyphAdvances().</param>
+        /// <param name="justifiedGlyphOffsets">Justified glyph offsets from
+        ///     JustifyGlyphAdvances().</param>
+        /// <param name="glyphProperties">Properties of each glyph, from GetGlyphs.</param>
+        /// <param name="actualGlyphCount">The new glyph count written to the
+        ///     modified arrays, or the needed glyph count if the size is not
+        ///     large enough.</param>
+        /// <param name="modifiedClusterMap">Updated clustermap.</param>
+        /// <param name="modifiedGlyphIndices">Updated glyphs with new glyphs
+        ///     inserted where needed.</param>
+        /// <param name="modifiedGlyphAdvances">Updated glyph advances.</param>
+        /// <param name="modifiedGlyphOffsets">Updated glyph offsets.</param>
+        /// <remarks>
+        /// This is called after the line has been justified, and it is per-run.
+        /// It only needs to be called if the script has a specific justification
+        /// character via GetScriptProperties, and it is mainly for cursive scripts
+        /// like Arabic. If maxGlyphCount is not large enough, the error
+        /// E_NOT_SUFFICIENT_BUFFER will be returned, with actualGlyphCount holding
+        /// the final/needed glyph count.
+        /// </remarks>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        void GetJustifiedGlyphs( _In_opt_ IDWriteFontFace* fontFace, FLOAT fontEmSize, DWRITE_SCRIPT_ANALYSIS scriptAnalysis, UINT32 textLength, UINT32 glyphCount, UINT32 maxGlyphCount, _In_reads_opt_( textLength ) UINT16 const* clusterMap, _In_reads_( glyphCount ) UINT16 const* glyphIndices, _In_reads_( glyphCount ) FLOAT const* glyphAdvances, _In_reads_( glyphCount ) FLOAT const* justifiedGlyphAdvances, _In_reads_( glyphCount ) DWRITE_GLYPH_OFFSET const* justifiedGlyphOffsets, _In_reads_( glyphCount ) DWRITE_SHAPING_GLYPH_PROPERTIES const* glyphProperties, _Out_range_( glyphCount, maxGlyphCount ) UINT32* actualGlyphCount, _Out_writes_opt_( textLength ) UINT16* modifiedClusterMap, _Out_writes_to_( maxGlyphCount, *actualGlyphCount ) UINT16* modifiedGlyphIndices, _Out_writes_to_( maxGlyphCount, *actualGlyphCount ) FLOAT* modifiedGlyphAdvances, _Out_writes_to_( maxGlyphCount, *actualGlyphCount ) DWRITE_GLYPH_OFFSET* modifiedGlyphOffsets ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetJustifiedGlyphs( fontFace, fontEmSize, scriptAnalysis, textLength, glyphCount, maxGlyphCount, clusterMap, glyphIndices, glyphAdvances, justifiedGlyphAdvances, justifiedGlyphOffsets, glyphProperties, actualGlyphCount, modifiedClusterMap, modifiedGlyphIndices, modifiedGlyphAdvances, modifiedGlyphOffsets );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        void GetJustifiedGlyphs( const FontFace& fontFace, FLOAT fontEmSize, DWRITE_SCRIPT_ANALYSIS scriptAnalysis, UINT32 textLength, UINT32 glyphCount, UINT32 maxGlyphCount, _In_reads_opt_( textLength ) UINT16 const* clusterMap, _In_reads_( glyphCount ) UINT16 const* glyphIndices, _In_reads_( glyphCount ) FLOAT const* glyphAdvances, _In_reads_( glyphCount ) FLOAT const* justifiedGlyphAdvances, _In_reads_( glyphCount ) DWRITE_GLYPH_OFFSET const* justifiedGlyphOffsets, _In_reads_( glyphCount ) DWRITE_SHAPING_GLYPH_PROPERTIES const* glyphProperties, _Out_range_( glyphCount, maxGlyphCount ) UINT32* actualGlyphCount, _Out_writes_opt_( textLength ) UINT16* modifiedClusterMap, _Out_writes_to_( maxGlyphCount, *actualGlyphCount ) UINT16* modifiedGlyphIndices, _Out_writes_to_( maxGlyphCount, *actualGlyphCount ) FLOAT* modifiedGlyphAdvances, _Out_writes_to_( maxGlyphCount, *actualGlyphCount ) DWRITE_GLYPH_OFFSET* modifiedGlyphOffsets ) const
+        {
+            GetJustifiedGlyphs( fontFace.GetInterfacePointer<IDWriteFontFace>( ), fontEmSize, scriptAnalysis, textLength, glyphCount, maxGlyphCount, clusterMap, glyphIndices, glyphAdvances, justifiedGlyphAdvances, justifiedGlyphOffsets, glyphProperties, actualGlyphCount, modifiedClusterMap, modifiedGlyphIndices, modifiedGlyphAdvances, modifiedGlyphOffsets );
+        }
 
 
     };
@@ -7750,6 +8058,74 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         typedef TextLayout Base;
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextLayout1, TextLayout, IDWriteTextLayout1, IDWriteTextLayout )
+
+        /// <summary>
+        /// Enables/disables pair-kerning on the given range.
+        /// </summary>
+        /// <param name="isPairKerningEnabled">The Boolean flag indicates whether text is pair-kerned.</param>
+        /// <param name="textRange">Text range to which this change applies.</param>
+        void SetPairKerning( BOOL isPairKerningEnabled, DWRITE_TEXT_RANGE textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->SetPairKerning( isPairKerningEnabled, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Get whether or not pair-kerning is enabled at given position.
+        /// </summary>
+        /// <param name="currentPosition">The current text position.</param>
+        /// <param name="isPairKerningEnabled">The Boolean flag indicates whether text is pair-kerned.</param>
+        /// <param name="textRange">The position range of the current format.</param>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        void GetPairKerning( UINT32 currentPosition, _Out_ BOOL* isPairKerningEnabled, _Out_opt_ DWRITE_TEXT_RANGE* textRange = NULL ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetPairKerning( currentPosition, isPairKerningEnabled, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Sets the spacing between characters.
+        /// </summary>
+        /// <param name="leadingSpacing">The spacing before each character, in reading order.</param>
+        /// <param name="trailingSpacing">The spacing after each character, in reading order.</param>
+        /// <param name="minimumAdvanceWidth">The minimum advance of each character,
+        ///     to prevent characters from becoming too thin or zero-width. This
+        ///     must be zero or greater.</param>
+        /// <param name="textRange">Text range to which this change applies.</param>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        void SetCharacterSpacing( FLOAT leadingSpacing, FLOAT trailingSpacing, FLOAT minimumAdvanceWidth, DWRITE_TEXT_RANGE textRange ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->SetCharacterSpacing( leadingSpacing, trailingSpacing, minimumAdvanceWidth, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Gets the spacing between characters.
+        /// </summary>
+        /// <param name="currentPosition">The current text position.</param>
+        /// <param name="leadingSpacing">The spacing before each character, in reading order.</param>
+        /// <param name="trailingSpacing">The spacing after each character, in reading order.</param>
+        /// <param name="minimumAdvanceWidth">The minimum advance of each character,
+        ///     to prevent characters from becoming too thin or zero-width. This
+        ///     must be zero or greater.</param>
+        /// <param name="textRange">The position range of the current format.</param>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        void GetCharacterSpacing( UINT32 currentPosition, _Out_ FLOAT* leadingSpacing, _Out_ FLOAT* trailingSpacing, _Out_ FLOAT* minimumAdvanceWidth, _Out_opt_ DWRITE_TEXT_RANGE* textRange = NULL ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetCharacterSpacing( currentPosition, leadingSpacing, trailingSpacing, minimumAdvanceWidth, textRange );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
 
     };
 
@@ -7776,13 +8152,68 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         Grayscale = DWRITE_TEXT_ANTIALIAS_MODE_GRAYSCALE
     };
 
-
+    /// <summary>
+    /// Encapsulates a 32-bit device independent bitmap and device context, which can be used for rendering glyphs.
+    /// </summary>
     class BitmapRenderTarget1 : public BitmapRenderTarget
     {
     public:
         typedef BitmapRenderTarget Base;
 
         COMMON_GRAPHICS_STANDARD_METHODS_IMPL( BitmapRenderTarget1, BitmapRenderTarget, IDWriteBitmapRenderTarget1, IDWriteBitmapRenderTarget )
+
+        /// <summary>
+        /// Gets the current text antialiasing mode of the bitmap render target.
+        /// </summary>
+        /// <returns>
+        /// Returns the antialiasing mode.
+        /// </returns>
+        DWRITE_TEXT_ANTIALIAS_MODE GetTextAntialiasMode( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetTextAntialiasMode( );
+        }
+
+        /// <summary>
+        /// Gets the current text antialiasing mode of the bitmap render target.
+        /// </summary>
+        /// <returns>
+        /// Returns the antialiasing mode.
+        /// </returns>
+        DirectWrite::TextAntialiasMode TextAntialiasMode( ) const
+        {
+            return static_cast< DirectWrite::TextAntialiasMode >( GetTextAntialiasMode( ) );
+        }
+
+        /// <summary>
+        /// Sets the current text antialiasing mode of the bitmap render target.
+        /// </summary>
+        /// <returns>
+        /// Returns S_OK if successful, or E_INVALIDARG if the argument is not valid.
+        /// </returns>
+        /// <remarks>
+        /// The antialiasing mode of a newly-created bitmap render target defaults to 
+        /// DWRITE_TEXT_ANTIALIAS_MODE_CLEARTYPE. An application can change the antialiasing
+        /// mode by calling SetTextAntialiasMode. For example, an application might specify
+        /// grayscale antialiasing when rendering text onto a transparent bitmap.
+        /// </remarks>
+        void SetTextAntialiasMode( DWRITE_TEXT_ANTIALIAS_MODE antialiasMode ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            HRESULT hr = pInterface->SetTextAntialiasMode( antialiasMode );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Sets the current text antialiasing mode of the bitmap render target.
+        /// </summary>
+        /// <param name="antialiasMode">
+        /// The antialiasing mode to set.
+        /// </param>
+        void SetTextAntialiasMode( DirectWrite::TextAntialiasMode antialiasMode ) const
+        {
+            SetTextAntialiasMode( static_cast< DWRITE_TEXT_ANTIALIAS_MODE >( antialiasMode ) );
+        }
 
     };
 
