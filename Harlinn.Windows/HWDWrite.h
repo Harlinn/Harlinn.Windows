@@ -458,6 +458,18 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         WwsFamilyName = DWRITE_INFORMATIONAL_STRING_WEIGHT_STRETCH_STYLE_FAMILY_NAME,
     };
 
+    /// <summary>
+    /// Represents a 2D transformation matrix.
+    /// </summary>
+    struct Matrix : public DWRITE_MATRIX
+    {
+        using Base = DWRITE_MATRIX;
+
+        Matrix( )
+            : Base{}
+        {}
+    };
+
 
     /// <summary>
     /// The FontMetrics structure specifies the metrics of a font face that
@@ -6577,13 +6589,13 @@ namespace Harlinn::Windows::Graphics::DirectWrite
             : Factory( static_cast< DWRITE_FACTORY_TYPE >( factoryType ) )
         {}
 
-        void GetSystemFontCollection( IDWriteFontCollection** fontCollection, BOOL checkForUpdates ) const
+        void GetSystemFontCollection( IDWriteFontCollection** fontCollection, BOOL checkForUpdates = FALSE ) const
         {
             InterfaceType* pInterface = GetInterface( );
             HRESULT hr = pInterface->GetSystemFontCollection( fontCollection, checkForUpdates );
             HCC_COM_CHECK_HRESULT2( hr, pInterface );
         }
-        FontCollection GetSystemFontCollection( bool checkForUpdates ) const
+        FontCollection GetSystemFontCollection( bool checkForUpdates = false ) const
         {
             IDWriteFontCollection* fontCollection = nullptr;
             InterfaceType* pInterface = GetInterface( );
@@ -8319,6 +8331,1128 @@ namespace Harlinn::Windows::Graphics::DirectWrite
         using Base::CreateCustomRenderingParams;
 
     };
+
+
+    /// <summary>
+    /// The text renderer interface represents a set of application-defined
+    /// callbacks that perform rendering of text, inline objects, and decorations
+    /// such as underlines.
+    /// </summary>
+    class TextRenderer1 : public TextRenderer
+    {
+    public:
+        typedef TextRenderer Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextRenderer1, TextRenderer, IDWriteTextRenderer1, IDWriteTextRenderer )
+
+        /// <summary>
+        /// IDWriteTextLayout::Draw calls this function to instruct the client to
+        /// render a run of glyphs.
+        /// </summary>
+        /// <param name="clientDrawingContext">The context passed to 
+        ///     IDWriteTextLayout::Draw.</param>
+        /// <param name="baselineOriginX">X-coordinate of the baseline.</param>
+        /// <param name="baselineOriginY">Y-coordinate of the baseline.</param>
+        /// <param name="orientationAngle">Orientation of the glyph run.</param>
+        /// <param name="measuringMode">Specifies measuring method for glyphs in
+        ///     the run. Renderer implementations may choose different rendering
+        ///     modes for given measuring methods, but best results are seen when
+        ///     the rendering mode matches the corresponding measuring mode:
+        ///     DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL for DWRITE_MEASURING_MODE_NATURAL
+        ///     DWRITE_RENDERING_MODE_CLEARTYPE_GDI_CLASSIC for DWRITE_MEASURING_MODE_GDI_CLASSIC
+        ///     DWRITE_RENDERING_MODE_CLEARTYPE_GDI_NATURAL for DWRITE_MEASURING_MODE_GDI_NATURAL
+        /// </param>
+        /// <param name="glyphRun">The glyph run to draw.</param>
+        /// <param name="glyphRunDescription">Properties of the characters 
+        ///     associated with this run.</param>
+        /// <param name="clientDrawingEffect">The drawing effect set in
+        ///     IDWriteTextLayout::SetDrawingEffect.</param>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        /// <remarks>
+        /// If a non-identity orientation is passed, the glyph run should be
+        /// rotated around the given baseline x and y coordinates. The function
+        /// IDWriteAnalyzer2::GetGlyphOrientationTransform will return the
+        /// necessary transform for you, which can be combined with any existing
+        /// world transform on the drawing context.
+        /// </remarks>
+        void DrawGlyphRun( _In_opt_ void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_GLYPH_ORIENTATION_ANGLE orientationAngle, DWRITE_MEASURING_MODE measuringMode, _In_ DWRITE_GLYPH_RUN const* glyphRun, _In_ DWRITE_GLYPH_RUN_DESCRIPTION const* glyphRunDescription, _In_opt_ IUnknown* clientDrawingEffect ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->DrawGlyphRun( clientDrawingContext, baselineOriginX, baselineOriginY, orientationAngle, measuringMode, glyphRun, glyphRunDescription, clientDrawingEffect );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// IDWriteTextLayout::Draw calls this function to instruct the client to draw
+        /// an underline.
+        /// </summary>
+        /// <param name="clientDrawingContext">The context passed to 
+        /// IDWriteTextLayout::Draw.</param>
+        /// <param name="baselineOriginX">X-coordinate of the baseline.</param>
+        /// <param name="baselineOriginY">Y-coordinate of the baseline.</param>
+        /// <param name="orientationAngle">Orientation of the underline.</param>
+        /// <param name="underline">Underline logical information.</param>
+        /// <param name="clientDrawingEffect">The drawing effect set in
+        ///     IDWriteTextLayout::SetDrawingEffect.</param>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        /// <remarks>
+        /// A single underline can be broken into multiple calls, depending on
+        /// how the formatting changes attributes. If font sizes/styles change
+        /// within an underline, the thickness and offset will be averaged
+        /// weighted according to characters.
+        ///
+        /// To get the correct top coordinate of the underline rect, add
+        /// underline::offset to the baseline's Y. Otherwise the underline will
+        /// be immediately under the text. The x coordinate will always be passed
+        /// as the left side, regardless of text directionality. This simplifies
+        /// drawing and reduces the problem of round-off that could potentially
+        /// cause gaps or a double stamped alpha blend. To avoid alpha overlap,
+        /// round the end points to the nearest device pixel.
+        /// </remarks>
+        void DrawUnderline( _In_opt_ void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_GLYPH_ORIENTATION_ANGLE orientationAngle, _In_ DWRITE_UNDERLINE const* underline, _In_opt_ IUnknown* clientDrawingEffect ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->DrawUnderline( clientDrawingContext, baselineOriginX, baselineOriginY, orientationAngle, underline, clientDrawingEffect );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// IDWriteTextLayout::Draw calls this function to instruct the client to draw
+        /// a strikethrough.
+        /// </summary>
+        /// <param name="clientDrawingContext">The context passed to 
+        /// IDWriteTextLayout::Draw.</param>
+        /// <param name="baselineOriginX">X-coordinate of the baseline.</param>
+        /// <param name="baselineOriginY">Y-coordinate of the baseline.</param>
+        /// <param name="orientationAngle">Orientation of the strikethrough.</param>
+        /// <param name="strikethrough">Strikethrough logical information.</param>
+        /// <param name="clientDrawingEffect">The drawing effect set in
+        ///     IDWriteTextLayout::SetDrawingEffect.</param>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        /// <remarks>
+        /// A single strikethrough can be broken into multiple calls, depending on
+        /// how the formatting changes attributes. Strikethrough is not averaged
+        /// across font sizes/styles changes.
+        /// To get the correct top coordinate of the strikethrough rect,
+        /// add strikethrough::offset to the baseline's Y.
+        /// Like underlines, the x coordinate will always be passed as the left side,
+        /// regardless of text directionality.
+        /// </remarks>
+        void DrawStrikethrough( _In_opt_ void* clientDrawingContext, FLOAT baselineOriginX, FLOAT baselineOriginY, DWRITE_GLYPH_ORIENTATION_ANGLE orientationAngle, _In_ DWRITE_STRIKETHROUGH const* strikethrough, _In_opt_ IUnknown* clientDrawingEffect ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->DrawStrikethrough( clientDrawingContext, baselineOriginX, baselineOriginY, orientationAngle, strikethrough, clientDrawingEffect );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// IDWriteTextLayout::Draw calls this application callback when it needs to
+        /// draw an inline object.
+        /// </summary>
+        /// <param name="clientDrawingContext">The context passed to
+        ///     IDWriteTextLayout::Draw.</param>
+        /// <param name="originX">X-coordinate at the top-left corner of the
+        ///     inline object.</param>
+        /// <param name="originY">Y-coordinate at the top-left corner of the
+        ///     inline object.</param>
+        /// <param name="orientationAngle">Orientation of the inline object.</param>
+        /// <param name="inlineObject">The object set using IDWriteTextLayout::SetInlineObject.</param>
+        /// <param name="isSideways">The object should be drawn on its side.</param>
+        /// <param name="isRightToLeft">The object is in an right-to-left context
+        ///     and should be drawn flipped.</param>
+        /// <param name="clientDrawingEffect">The drawing effect set in
+        ///     IDWriteTextLayout::SetDrawingEffect.</param>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        /// <remarks>
+        /// The right-to-left flag is a hint to draw the appropriate visual for
+        /// that reading direction. For example, it would look strange to draw an
+        /// arrow pointing to the right to indicate a submenu. The sideways flag
+        /// similarly hints that the object is drawn in a different orientation.
+        /// If a non-identity orientation is passed, the top left of the inline
+        /// object should be rotated around the given x and y coordinates.
+        /// IDWriteAnalyzer2::GetGlyphOrientationTransform returns the necessary
+        /// transform for this.
+        /// </remarks>
+        void DrawInlineObject( _In_opt_ void* clientDrawingContext, FLOAT originX, FLOAT originY, DWRITE_GLYPH_ORIENTATION_ANGLE orientationAngle, _In_ IDWriteInlineObject* inlineObject, BOOL isSideways, BOOL isRightToLeft, _In_opt_ IUnknown* clientDrawingEffect ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->DrawInlineObject( clientDrawingContext, originX, originY, orientationAngle, inlineObject, isSideways, isRightToLeft, clientDrawingEffect );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        using Base::DrawGlyphRun;
+        using Base::DrawUnderline;
+        using Base::DrawStrikethrough;
+        using Base::DrawInlineObject;
+
+
+    };
+
+
+    class FontFallback;
+
+    /// <summary>
+    /// The format of text used for text layout.
+    /// </summary>
+    /// <remarks>
+    /// This object may not be thread-safe and it may carry the state of text format change.
+    /// </remarks>
+    class TextFormat1 : public TextFormat
+    {
+    public:
+        typedef TextFormat Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextFormat1, TextFormat, IDWriteTextFormat1, IDWriteTextFormat )
+
+        /// <summary>
+        /// Set the preferred orientation of glyphs when using a vertical reading direction.
+        /// </summary>
+        /// <param name="glyphOrientation">
+        /// Preferred glyph orientation.
+        /// </param>
+        void SetVerticalGlyphOrientation( DWRITE_VERTICAL_GLYPH_ORIENTATION glyphOrientation ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->SetVerticalGlyphOrientation( glyphOrientation );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Set the preferred orientation of glyphs when using a vertical reading direction.
+        /// </summary>
+        /// <param name="glyphOrientation">
+        /// Preferred glyph orientation.
+        /// </param>
+        void SetVerticalGlyphOrientation( DirectWrite::VerticalGlyphOrientation glyphOrientation ) const
+        {
+            SetVerticalGlyphOrientation( static_cast< DWRITE_VERTICAL_GLYPH_ORIENTATION >( glyphOrientation ) );
+        }
+
+        /// <summary>
+        /// Get the preferred orientation of glyphs when using a vertical reading
+        /// direction.
+        /// </summary>
+        DWRITE_VERTICAL_GLYPH_ORIENTATION GetVerticalGlyphOrientation( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetVerticalGlyphOrientation( );
+        }
+
+
+        /// <summary>
+        /// Get the preferred orientation of glyphs when using a vertical reading
+        /// direction.
+        /// </summary>
+        DirectWrite::VerticalGlyphOrientation VerticalGlyphOrientation( ) const
+        {
+            return static_cast< DirectWrite::VerticalGlyphOrientation >( GetVerticalGlyphOrientation( ) );
+        }
+
+
+        /// <summary>
+        /// Set whether or not the last word on the last line is wrapped.
+        /// </summary>
+        /// <param name="isLastLineWrappingEnabled">Line wrapping option.</param>
+        void SetLastLineWrapping( bool isLastLineWrappingEnabled ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->SetLastLineWrapping( isLastLineWrappingEnabled? TRUE : FALSE );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Get whether or not the last word on the last line is wrapped.
+        /// </summary>
+        bool GetLastLineWrapping( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetLastLineWrapping( );
+        }
+
+        /// <summary>
+        /// Set how the glyphs align to the edges the margin. Default behavior is
+        /// to align glyphs using their default glyphs metrics which include side
+        /// bearings.
+        /// </summary>
+        /// <param name="opticalAlignment">
+        /// Optical alignment option.
+        /// </param>
+        void SetOpticalAlignment( DWRITE_OPTICAL_ALIGNMENT opticalAlignment ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->SetOpticalAlignment( opticalAlignment );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Set how the glyphs align to the edges the margin. Default behavior is
+        /// to align glyphs using their default glyphs metrics which include side
+        /// bearings.
+        /// </summary>
+        /// <param name="opticalAlignment">
+        /// Optical alignment option.
+        /// </param>
+        void SetOpticalAlignment( DirectWrite::OpticalAlignment opticalAlignment ) const
+        {
+            SetOpticalAlignment( static_cast< DWRITE_OPTICAL_ALIGNMENT >( opticalAlignment ) );
+        }
+
+
+
+        /// <summary>
+        /// Get how the glyphs align to the edges the margin.
+        /// </summary>
+        DWRITE_OPTICAL_ALIGNMENT GetOpticalAlignment( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetOpticalAlignment( );
+        }
+
+        /// <summary>
+        /// Get how the glyphs align to the edges the margin.
+        /// </summary>
+        DirectWrite::OpticalAlignment OpticalAlignment( ) const
+        {
+            return static_cast< DirectWrite::OpticalAlignment >( GetOpticalAlignment( ) );
+        }
+
+
+        /// <summary>
+        /// Apply a custom font fallback onto layout. If none is specified,
+        /// layout uses the system fallback list.
+        /// </summary>
+        /// <param name="fontFallback">Custom font fallback created from
+        ///     IDWriteFontFallbackBuilder::CreateFontFallback or from
+        ///     IDWriteFactory2::GetSystemFontFallback.</param>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        void SetFontFallback( IDWriteFontFallback* fontFallback ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->SetFontFallback( fontFallback );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface ); 
+        }
+
+        /// <summary>
+        /// Get the current font fallback object.
+        /// </summary>
+        void GetFontFallback( __out IDWriteFontFallback** fontFallback ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetFontFallback( fontFallback );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Get the current font fallback object.
+        /// </summary>
+        inline FontFallback GetFontFallback( ) const;
+
+    };
+
+    /// <summary>
+    /// The text layout interface represents a block of text after it has
+    /// been fully analyzed and formatted.
+    ///
+    /// All coordinates are in device independent pixels (DIPs).
+    /// </summary>
+    class TextLayout2 : public TextLayout1
+    {
+    public:
+        typedef TextLayout1 Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextLayout2, TextLayout1, IDWriteTextLayout2, IDWriteTextLayout1 )
+
+        /// <summary>
+        /// GetMetrics retrieves overall metrics for the formatted string.
+        /// </summary>
+        /// <param name="textMetrics">The returned metrics.</param>
+        /// <remarks>
+        /// Drawing effects like underline and strikethrough do not contribute
+        /// to the text size, which is essentially the sum of advance widths and
+        /// line heights. Additionally, visible swashes and other graphic
+        /// adornments may extend outside the returned width and height.
+        /// </remarks>
+        void GetMetrics( _Out_ DWRITE_TEXT_METRICS1* textMetrics ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetMetrics( textMetrics );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// GetMetrics retrieves overall metrics for the formatted string.
+        /// </summary>
+        /// <param name="textMetrics">The returned metrics.</param>
+        /// <remarks>
+        /// Drawing effects like underline and strikethrough do not contribute
+        /// to the text size, which is essentially the sum of advance widths and
+        /// line heights. Additionally, visible swashes and other graphic
+        /// adornments may extend outside the returned width and height.
+        /// </remarks>
+        void GetMetrics( _Out_ DWRITE_TEXT_METRICS1& textMetrics ) const
+        {
+            GetMetrics( &textMetrics );
+        }
+
+        /// <summary>
+        /// GetMetrics retrieves overall metrics for the formatted string.
+        /// </summary>
+        /// <param name="textMetrics">The returned metrics.</param>
+        /// <remarks>
+        /// Drawing effects like underline and strikethrough do not contribute
+        /// to the text size, which is essentially the sum of advance widths and
+        /// line heights. Additionally, visible swashes and other graphic
+        /// adornments may extend outside the returned width and height.
+        /// </remarks>
+        TextMetrics1 GetMetrics( ) const
+        {
+            TextMetrics1 textMetrics;
+            GetMetrics( &textMetrics );
+            return textMetrics;
+        }
+
+        using Base::GetMetrics;
+
+
+
+
+        /// <summary>
+        /// Set the preferred orientation of glyphs when using a vertical reading direction.
+        /// </summary>
+        /// <param name="glyphOrientation">
+        /// Preferred glyph orientation.
+        /// </param>
+        void SetVerticalGlyphOrientation( DWRITE_VERTICAL_GLYPH_ORIENTATION glyphOrientation ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->SetVerticalGlyphOrientation( glyphOrientation );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Set the preferred orientation of glyphs when using a vertical reading direction.
+        /// </summary>
+        /// <param name="glyphOrientation">
+        /// Preferred glyph orientation.
+        /// </param>
+        void SetVerticalGlyphOrientation( VerticalGlyphOrientation glyphOrientation )  const
+        {
+            SetVerticalGlyphOrientation( static_cast< DWRITE_VERTICAL_GLYPH_ORIENTATION >( glyphOrientation ) );
+        }
+
+
+        /// <summary>
+        /// Get the preferred orientation of glyphs when using a vertical reading
+        /// direction.
+        /// </summary>
+        DWRITE_VERTICAL_GLYPH_ORIENTATION GetVerticalGlyphOrientation( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetVerticalGlyphOrientation( );
+        }
+
+        /// <summary>
+        /// Get the preferred orientation of glyphs when using a vertical reading
+        /// direction.
+        /// </summary>
+        DirectWrite::VerticalGlyphOrientation VerticalGlyphOrientation( ) const
+        {
+            return static_cast< DirectWrite::VerticalGlyphOrientation >( GetVerticalGlyphOrientation( ) );
+        }
+
+
+        /// <summary>
+        /// Set whether or not the last word on the last line is wrapped.
+        /// </summary>
+        /// <param name="isLastLineWrappingEnabled">Line wrapping option.</param>
+        /// <returns>
+        /// Standard HRESULT error code.
+        /// </returns>
+        void SetLastLineWrapping( bool isLastLineWrappingEnabled ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->SetLastLineWrapping( isLastLineWrappingEnabled? TRUE : FALSE );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Get whether or not the last word on the last line is wrapped.
+        /// </summary>
+        bool GetLastLineWrapping( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetLastLineWrapping( ) ? true : false;
+        }
+
+        /// <summary>
+        /// Set how the glyphs align to the edges the margin. Default behavior is
+        /// to align glyphs using their default glyphs metrics which include side
+        /// bearings.
+        /// </summary>
+        /// <param name="opticalAlignment">
+        /// Optical alignment option.
+        /// </param>
+        void SetOpticalAlignment( DWRITE_OPTICAL_ALIGNMENT opticalAlignment ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->SetOpticalAlignment( opticalAlignment );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Set how the glyphs align to the edges the margin. Default behavior is
+        /// to align glyphs using their default glyphs metrics which include side
+        /// bearings.
+        /// </summary>
+        /// <param name="opticalAlignment">
+        /// Optical alignment option.
+        /// </param>
+        void SetOpticalAlignment(  OpticalAlignment opticalAlignment ) const
+        {
+            SetOpticalAlignment( static_cast< DWRITE_OPTICAL_ALIGNMENT >( opticalAlignment ) );
+        }
+
+
+        /// <summary>
+        /// Get how the glyphs align to the edges the margin.
+        /// </summary>
+        DWRITE_OPTICAL_ALIGNMENT GetOpticalAlignment( ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            return pInterface->GetOpticalAlignment( );
+        }
+
+        /// <summary>
+        /// Get how the glyphs align to the edges the margin.
+        /// </summary>
+        DirectWrite::OpticalAlignment OpticalAlignment( ) const
+        {
+            return static_cast< DirectWrite::OpticalAlignment >( GetOpticalAlignment( ) );
+        }
+
+
+        /// <summary>
+        /// Apply a custom font fallback onto layout. If none is specified,
+        /// layout uses the system fallback list.
+        /// </summary>
+        /// <param name="fontFallback">
+        /// Custom font fallback created from IDWriteFontFallbackBuilder::CreateFontFallback or
+        /// IDWriteFactory2::GetSystemFontFallback.
+        /// </param>
+        void SetFontFallback( IDWriteFontFallback* fontFallback ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->SetFontFallback( fontFallback );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Get the current font fallback object.
+        /// </summary>
+        void GetFontFallback( __out IDWriteFontFallback** fontFallback ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetFontFallback( fontFallback );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        inline FontFallback GetFontFallback( ) const;
+
+
+    };
+
+
+    /// <summary>
+    /// The text analyzer interface represents a set of application-defined
+    /// callbacks that perform rendering of text, inline objects, and decorations
+    /// such as underlines.
+    /// </summary>
+    class TextAnalyzer2 : public TextAnalyzer1
+    {
+    public:
+        typedef TextAnalyzer1 Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( TextAnalyzer2, TextAnalyzer1, IDWriteTextAnalyzer2, IDWriteTextAnalyzer1 )
+
+        /// <summary>
+        /// Returns 2x3 transform matrix for the respective angle to draw the glyph run or other object.
+        /// </summary>
+        /// <param name="glyphOrientationAngle">
+        /// The angle reported to one of the application callbacks, including 
+        /// IDWriteTextAnalysisSink1::SetGlyphOrientation and IDWriteTextRenderer1::Draw*.
+        /// </param>
+        /// <param name="isSideways">
+        /// Whether the run's glyphs are sideways or not.
+        /// </param>
+        /// <param name="originX">
+        /// X origin of the element, be it a glyph run or underline or other.
+        /// </param>
+        /// <param name="originY">
+        /// Y origin of the element, be it a glyph run or underline or other.
+        /// </param>
+        /// <param name="transform">
+        /// Returned transform.
+        /// </param>
+        /// <remarks>
+        /// This rotates around the given origin x and y, returning a translation component
+        /// such that the glyph run, text decoration, or inline object is drawn with the
+        /// right orientation at the expected coordinate.
+        /// </remarks>
+        template<typename GlyphOrientationAngleT>
+            requires std::is_same_v<GlyphOrientationAngleT, GlyphOrientationAngle> || std::is_same_v<GlyphOrientationAngleT, DWRITE_GLYPH_ORIENTATION_ANGLE>
+        void GetGlyphOrientationTransform( GlyphOrientationAngleT glyphOrientationAngle, bool isSideways, FLOAT originX, FLOAT originY, _Out_ DWRITE_MATRIX* transform ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetGlyphOrientationTransform( static_cast< DWRITE_GLYPH_ORIENTATION_ANGLE >( glyphOrientationAngle ), isSideways?TRUE:FALSE, originX, originY, transform );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Returns 2x3 transform matrix for the respective angle to draw the glyph run or other object.
+        /// </summary>
+        /// <param name="glyphOrientationAngle">
+        /// The angle reported to one of the application callbacks, including 
+        /// IDWriteTextAnalysisSink1::SetGlyphOrientation and IDWriteTextRenderer1::Draw*.
+        /// </param>
+        /// <param name="isSideways">
+        /// Whether the run's glyphs are sideways or not.
+        /// </param>
+        /// <param name="originX">
+        /// X origin of the element, be it a glyph run or underline or other.
+        /// </param>
+        /// <param name="originY">
+        /// Y origin of the element, be it a glyph run or underline or other.
+        /// </param>
+        /// <param name="transform">
+        /// Returned transform.
+        /// </param>
+        /// <remarks>
+        /// This rotates around the given origin x and y, returning a translation component
+        /// such that the glyph run, text decoration, or inline object is drawn with the
+        /// right orientation at the expected coordinate.
+        /// </remarks>
+        template<typename GlyphOrientationAngleT>
+            requires std::is_same_v<GlyphOrientationAngleT, GlyphOrientationAngle> || std::is_same_v<GlyphOrientationAngleT, DWRITE_GLYPH_ORIENTATION_ANGLE>
+        void GetGlyphOrientationTransform( GlyphOrientationAngleT glyphOrientationAngle, bool isSideways, FLOAT originX, FLOAT originY, _Out_ DWRITE_MATRIX& transform ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetGlyphOrientationTransform( static_cast< DWRITE_GLYPH_ORIENTATION_ANGLE >( glyphOrientationAngle ), isSideways ? TRUE : FALSE, originX, originY, &transform );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+
+        /// <summary>
+        /// Returns 2x3 transform matrix for the respective angle to draw the glyph run or other object.
+        /// </summary>
+        /// <param name="glyphOrientationAngle">
+        /// The angle reported to one of the application callbacks, including 
+        /// IDWriteTextAnalysisSink1::SetGlyphOrientation and IDWriteTextRenderer1::Draw*.
+        /// </param>
+        /// <param name="isSideways">
+        /// Whether the run's glyphs are sideways or not.
+        /// </param>
+        /// <param name="originX">
+        /// X origin of the element, be it a glyph run or underline or other.
+        /// </param>
+        /// <param name="originY">
+        /// Y origin of the element, be it a glyph run or underline or other.
+        /// </param>
+        /// <returns>
+        /// The transform matrix.
+        /// </returns>
+        /// <remarks>
+        /// This rotates around the given origin x and y, returning a translation component
+        /// such that the glyph run, text decoration, or inline object is drawn with the
+        /// right orientation at the expected coordinate.
+        /// </remarks>
+        template<typename GlyphOrientationAngleT>
+            requires std::is_same_v<GlyphOrientationAngleT, GlyphOrientationAngle> || std::is_same_v<GlyphOrientationAngleT, DWRITE_GLYPH_ORIENTATION_ANGLE>
+        Matrix GetGlyphOrientationTransform( GlyphOrientationAngleT glyphOrientationAngle, bool isSideways, FLOAT originX, FLOAT originY ) const
+        {
+            Matrix transform;
+            GetGlyphOrientationTransform( glyphOrientationAngle, isSideways, originX, originY, &transform );
+            return transform;
+        }
+
+        /// <summary>
+        /// Returns a list of typographic feature tags for the given script and language.
+        /// </summary>
+        /// <typeparam name="FontFeatureTagT">
+        /// The type of the font feature tag, which can be either FontFeatureTag or DWRITE_FONT_FEATURE_TAG.
+        /// </typeparam>
+        /// <param name="fontFace">
+        /// The font face to get features from.
+        /// </param>
+        /// <param name="scriptAnalysis">
+        /// Script analysis result from AnalyzeScript.
+        /// </param>
+        /// <param name="localeName">
+        /// The locale to use when selecting the feature, such en-us or ja-jp.
+        /// </param>
+        /// <param name="maxTagCount">
+        /// Maximum tag count.
+        /// </param>
+        /// <param name="actualTagCount">
+        /// Actual tag count. If greater than maxTagCount, E_NOT_SUFFICIENT_BUFFER is returned, 
+        /// and the call should be retried with a larger buffer.
+        /// </param>
+        /// <param name="tags">
+        /// Feature tag list.
+        /// </param>
+        template<typename FontFeatureTagT = FontFeatureTag>
+            requires std::is_same_v<FontFeatureTagT, FontFeatureTag> || std::is_same_v<FontFeatureTagT, DWRITE_FONT_FEATURE_TAG>
+        void GetTypographicFeatures( IDWriteFontFace* fontFace, DWRITE_SCRIPT_ANALYSIS scriptAnalysis, _In_opt_z_ WCHAR const* localeName, UINT32 maxTagCount, _Out_ UINT32* actualTagCount, _Out_writes_( maxTagCount ) FontFeatureTagT* tags ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->GetTypographicFeatures( fontFace, scriptAnalysis, localeName, maxTagCount, actualTagCount, reinterpret_cast< DWRITE_FONT_FEATURE_TAG* >( tags ) );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Returns a list of typographic feature tags for the given script and language.
+        /// </summary>
+        /// <typeparam name="FontFeatureTagT">
+        /// The type of the font feature tag, which can be either FontFeatureTag or DWRITE_FONT_FEATURE_TAG.
+        /// </typeparam>
+        /// <param name="fontFace">
+        /// The font face to get features from.
+        /// </param>
+        /// <param name="scriptAnalysis">
+        /// Script analysis result from AnalyzeScript.
+        /// </param>
+        /// <param name="localeName">
+        /// The locale to use when selecting the feature, such en-us or ja-jp.
+        /// </param>
+        /// <param name="maxTagCount">
+        /// Maximum tag count.
+        /// </param>
+        /// <param name="actualTagCount">
+        /// Actual tag count. If greater than maxTagCount, E_NOT_SUFFICIENT_BUFFER is returned, 
+        /// and the call should be retried with a larger buffer.
+        /// </param>
+        /// <param name="tags">
+        /// Feature tag list.
+        /// </param>
+        template<typename FontFeatureTagT = FontFeatureTag>
+            requires std::is_same_v<FontFeatureTagT, FontFeatureTag> || std::is_same_v<FontFeatureTagT, DWRITE_FONT_FEATURE_TAG>
+        void GetTypographicFeatures( const FontFace& fontFace, DWRITE_SCRIPT_ANALYSIS scriptAnalysis, _In_opt_z_ WCHAR const* localeName, UINT32 maxTagCount, _Out_ UINT32* actualTagCount, _Out_writes_( maxTagCount ) FontFeatureTagT* tags ) const
+        {
+            GetTypographicFeatures( fontFace.GetInterfacePointer<IDWriteFontFace>(), scriptAnalysis, localeName, maxTagCount, actualTagCount, reinterpret_cast< DWRITE_FONT_FEATURE_TAG* >( tags ) );
+        }
+
+
+        /// <summary>
+        /// Returns a list of typographic feature tags for the given script and language.
+        /// </summary>
+        /// <typeparam name="FontFeatureTagT">
+        /// The type of the font feature tag, which can be either FontFeatureTag or DWRITE_FONT_FEATURE_TAG.
+        /// </typeparam>
+        /// <param name="fontFace">
+        /// The font face to get features from.
+        /// </param>
+        /// <param name="scriptAnalysis">
+        /// Script analysis result from AnalyzeScript.
+        /// </param>
+        /// <param name="localeName">
+        /// The locale to use when selecting the feature, such en-us or ja-jp.
+        /// </param>
+        /// <returns>
+        /// A vector of typographic feature tags.
+        /// </returns>
+        template<typename FontFeatureTagT = FontFeatureTag>
+            requires std::is_same_v<FontFeatureTagT, FontFeatureTag> || std::is_same_v<FontFeatureTagT, DWRITE_FONT_FEATURE_TAG>
+        std::vector<FontFeatureTagT> GetTypographicFeatures( IDWriteFontFace* fontFace, DWRITE_SCRIPT_ANALYSIS scriptAnalysis, _In_opt_z_ WCHAR const* localeName ) const
+        {
+            UINT32 actualTagCount = 0;
+            GetTypographicFeatures( fontFace, scriptAnalysis, localeName, 0, &actualTagCount, nullptr );
+            std::vector<FontFeatureTagT> tags( actualTagCount );
+            GetTypographicFeatures( fontFace, scriptAnalysis, localeName, actualTagCount, &actualTagCount, reinterpret_cast< DWRITE_FONT_FEATURE_TAG* >( tags.data( ) ) );
+            return tags;
+        }
+
+        /// <summary>
+        /// Returns a list of typographic feature tags for the given script and language.
+        /// </summary>
+        /// <typeparam name="FontFeatureTagT">
+        /// The type of the font feature tag, which can be either FontFeatureTag or DWRITE_FONT_FEATURE_TAG.
+        /// </typeparam>
+        /// <param name="fontFace">
+        /// The font face to get features from.
+        /// </param>
+        /// <param name="scriptAnalysis">
+        /// Script analysis result from AnalyzeScript.
+        /// </param>
+        /// <param name="localeName">
+        /// The locale to use when selecting the feature, such en-us or ja-jp.
+        /// </param>
+        /// <returns>
+        /// A vector of typographic feature tags.
+        /// </returns>
+        template<typename FontFeatureTagT = FontFeatureTag>
+            requires std::is_same_v<FontFeatureTagT, FontFeatureTag> || std::is_same_v<FontFeatureTagT, DWRITE_FONT_FEATURE_TAG>
+        std::vector<FontFeatureTagT> GetTypographicFeatures( const FontFace& fontFace, DWRITE_SCRIPT_ANALYSIS scriptAnalysis, _In_opt_z_ WCHAR const* localeName ) const
+        {
+            return GetTypographicFeatures<FontFeatureTagT>( fontFace.GetInterfacePointer<IDWriteFontFace>( ), scriptAnalysis, localeName );
+        }
+
+
+        /// <summary>
+        /// Returns an array of which glyphs are affected by a given feature.
+        /// </summary>
+        /// <typeparam name="FontFeatureTagT">
+        /// The type of the font feature tag, which can be either FontFeatureTag or DWRITE_FONT_FEATURE_TAG.
+        /// </typeparam>
+        /// <param name="fontFace">
+        /// The font face to read glyph information from.
+        /// </param>
+        /// <param name="scriptAnalysis">
+        /// Script analysis result from AnalyzeScript.
+        /// </param>
+        /// <param name="localeName">
+        /// The locale to use when selecting the feature, such en-us or ja-jp.
+        /// </param>
+        /// <param name="featureTag">
+        /// OpenType feature name to use, which may be one of the FontFeatureTag/DWRITE_FONT_FEATURE_TAG values or a custom feature using DWRITE_MAKE_OPENTYPE_TAG.
+        /// </param>
+        /// <param name="glyphCount">
+        /// Number of glyph indices to check.
+        /// </param>
+        /// <param name="glyphIndices">
+        /// Glyph indices to check for feature application.
+        /// </param>
+        /// <param name="featureApplies">
+        /// Output of which glyphs are affected by the feature, where for each glyph affected, the respective array index will be 1. The result is returned per-glyph without regard to neighboring context of adjacent glyphs.
+        /// </param>
+        /// </remarks>
+        template<typename FontFeatureTagT = FontFeatureTag>
+            requires std::is_same_v<FontFeatureTagT, FontFeatureTag> || std::is_same_v<FontFeatureTagT, DWRITE_FONT_FEATURE_TAG>
+        void CheckTypographicFeature( IDWriteFontFace* fontFace, DWRITE_SCRIPT_ANALYSIS scriptAnalysis, _In_opt_z_ WCHAR const* localeName, FontFeatureTagT featureTag, UINT32 glyphCount, _In_reads_( glyphCount ) UINT16 const* glyphIndices, _Out_writes_( glyphCount ) UINT8* featureApplies ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CheckTypographicFeature( fontFace, scriptAnalysis, localeName, static_cast< DWRITE_FONT_FEATURE_TAG >( featureTag ), glyphCount, glyphIndices, featureApplies );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+
+        /// <summary>
+        /// Returns an array of which glyphs are affected by a given feature.
+        /// </summary>
+        /// <typeparam name="FontFeatureTagT">
+        /// The type of the font feature tag, which can be either FontFeatureTag or DWRITE_FONT_FEATURE_TAG.
+        /// </typeparam>
+        /// <param name="fontFace">
+        /// The font face to read glyph information from.
+        /// </param>
+        /// <param name="scriptAnalysis">
+        /// Script analysis result from AnalyzeScript.
+        /// </param>
+        /// <param name="localeName">
+        /// The locale to use when selecting the feature, such en-us or ja-jp.
+        /// </param>
+        /// <param name="featureTag">
+        /// OpenType feature name to use, which may be one of the FontFeatureTag/DWRITE_FONT_FEATURE_TAG values or a custom feature using DWRITE_MAKE_OPENTYPE_TAG.
+        /// </param>
+        /// <param name="glyphCount">
+        /// Number of glyph indices to check.
+        /// </param>
+        /// <param name="glyphIndices">
+        /// Glyph indices to check for feature application.
+        /// </param>
+        /// <param name="featureApplies">
+        /// Output of which glyphs are affected by the feature, where for each glyph affected, the respective array index will be 1. The result is returned per-glyph without regard to neighboring context of adjacent glyphs.
+        /// </param>
+        /// </remarks>
+        template<typename FontFeatureTagT = FontFeatureTag>
+            requires std::is_same_v<FontFeatureTagT, FontFeatureTag> || std::is_same_v<FontFeatureTagT, DWRITE_FONT_FEATURE_TAG>
+        void CheckTypographicFeature( const FontFace& fontFace, DWRITE_SCRIPT_ANALYSIS scriptAnalysis, _In_opt_z_ WCHAR const* localeName, FontFeatureTagT featureTag, UINT32 glyphCount, _In_reads_( glyphCount ) UINT16 const* glyphIndices, _Out_writes_( glyphCount ) UINT8* featureApplies ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CheckTypographicFeature( fontFace, scriptAnalysis, localeName, static_cast< DWRITE_FONT_FEATURE_TAG >( featureTag ), glyphCount, glyphIndices, featureApplies );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        using Base::GetGlyphOrientationTransform;
+
+    };
+
+
+    struct MappedCharactersData
+    {
+        UInt32 mappedLength = 0;
+        float scale = 1.f;
+        Font mappedFont;
+
+    };
+
+
+    /// <summary>
+    /// A font fallback definition used for mapping characters to fonts capable of
+    /// supporting them.
+    /// </summary>
+    class FontFallback : public Unknown
+    {
+    public:
+        typedef Unknown Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFallback, Unknown, IDWriteFontFallback, IUnknown )
+
+        /// <summary>
+        /// Determines an appropriate font to use to render the range of text.
+        /// </summary>
+        /// <param name="source">
+        /// The text source implementation holds the text and locale.
+        /// </param>
+        /// <param name="textLength">
+        /// Length of the text to analyze.
+        /// </param>
+        /// <param name="baseFontCollection">
+        /// Default font collection to use.
+        /// </param>
+        /// <param name="baseFamilyName">
+        /// Family name of the base font. If you pass null, no matching will be done against the family.
+        /// </param>
+        /// <param name="baseWeight">
+        /// Desired weight.
+        /// </param>
+        /// <param name="baseStyle">
+        /// Desired style.
+        /// </param>
+        /// <param name="baseStretch">
+        /// Desired stretch.
+        /// </param>
+        /// <param name="mappedLength">
+        /// Length of text mapped to the mapped font.
+        /// <para>
+        /// This will always be less or equal to the input text length and
+        /// greater than zero (if the text length is non-zero) so that the
+        /// caller advances at least one character each call.
+        /// </para>
+        /// </param>
+        /// <param name="mappedFont">
+        /// The font that should be used to render the first mappedLength characters 
+        /// of the text. If it returns NULL, then no known font can render the text, 
+        /// and mappedLength is the number of unsupported characters to skip.
+        /// </param>
+        /// <param name="scale">
+        /// Scale factor to multiply the em size of the returned font by.
+        /// </param>
+        void MapCharacters( IDWriteTextAnalysisSource* analysisSource, UINT32 textPosition, UINT32 textLength, _In_opt_ IDWriteFontCollection* baseFontCollection, _In_opt_z_ wchar_t const* baseFamilyName, DWRITE_FONT_WEIGHT baseWeight, DWRITE_FONT_STYLE baseStyle, DWRITE_FONT_STRETCH baseStretch, _Out_range_( 0, textLength ) UINT32* mappedLength, _COM_Outptr_result_maybenull_ IDWriteFont** mappedFont, _Out_ FLOAT* scale ) const
+        {
+            auto pInterface = GetInterface( );
+            auto hr = pInterface->MapCharacters( analysisSource, textPosition, textLength, baseFontCollection, baseFamilyName, baseWeight, baseStyle, baseStretch, mappedLength, mappedFont, scale );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        MappedCharactersData MapCharacters( IDWriteTextAnalysisSource* analysisSource, UINT32 textPosition, UINT32 textLength, _In_opt_ IDWriteFontCollection* baseFontCollection, _In_opt_z_ wchar_t const* baseFamilyName, DWRITE_FONT_WEIGHT baseWeight, DWRITE_FONT_STYLE baseStyle, DWRITE_FONT_STRETCH baseStretch ) const
+        {
+            UInt32 mappedLength{};
+            IDWriteFont* mappedFont = nullptr;
+            FLOAT scale = 1.f;
+            MapCharacters( analysisSource, textPosition, textLength, baseFontCollection, baseFamilyName, baseWeight, baseStyle, baseStretch, &mappedLength, &mappedFont, &scale );
+            return MappedCharactersData{mappedLength, scale, Font( mappedFont ) };
+        }
+
+
+    };
+
+
+    inline FontFallback TextFormat1::GetFontFallback( ) const
+    {
+        IDWriteFontFallback* fontFallback = nullptr;
+        GetFontFallback( &fontFallback );
+        return FontFallback( fontFallback );
+    }
+
+    inline FontFallback TextLayout2::GetFontFallback( ) const
+    {
+        IDWriteFontFallback* fontFallback = nullptr;
+        GetFontFallback( &fontFallback );
+        return FontFallback( fontFallback );
+    }
+
+
+
+
+    /// <summary>
+    /// Builder used to create a font fallback definition by appending a series of
+    /// fallback mappings, followed by a creation call.
+    /// </summary>
+    /// <remarks>
+    /// This object may not be thread-safe.
+    /// </remarks>
+    class FontFallbackBuilder : public Unknown
+    {
+    public:
+        typedef Unknown Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFallbackBuilder, Unknown, IDWriteFontFallbackBuilder, IUnknown )
+
+
+        /// <summary>
+        /// Appends a single mapping to the list. Call this once for each additional mapping.
+        /// </summary>
+        /// <param name="ranges">Unicode ranges that apply to this mapping.</param>
+        /// <param name="rangesCount">Number of Unicode ranges.</param>
+        /// <param name="localeName">Locale of the context (e.g. document locale).</param>
+        /// <param name="baseFamilyName">Base family name to match against, if applicable.</param>
+        /// <param name="fontCollection">Explicit font collection for this mapping (optional).</param>
+        /// <param name="targetFamilyNames">List of target family name strings.</param>
+        /// <param name="targetFamilyNamesCount">Number of target family names.</param>
+        /// <param name="scale">Scale factor to multiply the result target font by.</param>
+        void AddMapping( _In_reads_( rangesCount ) DWRITE_UNICODE_RANGE const* ranges, UINT32 rangesCount, _In_reads_( targetFamilyNamesCount ) WCHAR const** targetFamilyNames, UINT32 targetFamilyNamesCount, _In_opt_ IDWriteFontCollection* fontCollection = NULL, _In_opt_z_ WCHAR const* localeName = NULL, _In_opt_z_ WCHAR const* baseFamilyName = NULL, FLOAT scale = 1.0f ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->AddMapping( ranges, rangesCount, targetFamilyNames, targetFamilyNamesCount, fontCollection, localeName, baseFamilyName, scale );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+
+        /// <summary>
+        /// Appends all the mappings from an existing font fallback object.
+        /// </summary>
+        /// <param name="fontFallback">
+        /// Font fallback to read mappings from.
+        /// </param>
+        void AddMappings( IDWriteFontFallback* fontFallback ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->AddMappings( fontFallback );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+        /// <summary>
+        /// Appends all the mappings from an existing font fallback object.
+        /// </summary>
+        /// <param name="fontFallback">
+        /// Font fallback to read mappings from.
+        /// </param>
+        void AddMappings( const FontFallback& fontFallback ) const
+        {
+            AddMappings( fontFallback.GetInterfacePointer<IDWriteFontFallback>( ) );
+        }
+
+
+        /// <summary>
+        /// Creates the finalized fallback object from the mappings added.
+        /// </summary>
+        /// <param name="fontFallback">Created fallback list.</param>
+        void CreateFontFallback( _COM_Outptr_ IDWriteFontFallback** fontFallback ) const
+        {
+            InterfaceType* pInterface = GetInterface( );
+            auto hr = pInterface->CreateFontFallback( fontFallback );
+            HCC_COM_CHECK_HRESULT2( hr, pInterface );
+        }
+
+
+        /// <summary>
+        /// Creates the finalized fallback object from the mappings added.
+        /// </summary>
+        FontFallback CreateFontFallback( ) const
+        {
+            IDWriteFontFallback* fontFallback = nullptr;
+            CreateFontFallback( &fontFallback );
+            return FontFallback( fontFallback );
+        }   
+
+    };
+
+
+    /// <summary>
+    /// The IDWriteFont interface represents a physical font in a font collection.
+    /// </summary>
+    class Font2 : public Font1
+    {
+    public:
+        typedef Font1 Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( Font2, Font1, IDWriteFont2, IDWriteFont1 )
+
+
+
+    };
+
+
+    /// <summary>
+    /// The interface that represents an absolute reference to a font face.
+    /// It contains font face type, appropriate file references and face identification data.
+    /// Various font data such as metrics, names and glyph outlines is obtained from IDWriteFontFace.
+    /// </summary>
+    class FontFace2 : public FontFace1
+    {
+    public:
+        typedef FontFace1 Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( FontFace2, FontFace1, IDWriteFontFace2, IDWriteFontFace1 )
+
+    };
+
+
+    /// <summary>
+    /// Represents a color glyph run. The IDWriteFactory2::TranslateColorGlyphRun
+    /// method returns an ordered collection of color glyph runs, which can be
+    /// layered on top of each other to produce a color representation of the
+    /// given base glyph run.
+    /// </summary>
+    struct ColorGlyphRun : public DWRITE_COLOR_GLYPH_RUN
+    {
+        using Base = DWRITE_COLOR_GLYPH_RUN;
+
+        ColorGlyphRun( )
+            : Base{}
+        {}
+    };
+
+    /// <summary>
+    /// Enumerator for an ordered collection of color glyph runs.
+    /// </summary>
+    class ColorGlyphRunEnumerator : public Unknown
+    {
+    public:
+        typedef Unknown Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( ColorGlyphRunEnumerator, Unknown, IDWriteColorGlyphRunEnumerator, IUnknown )
+
+    };
+
+
+    /// <summary>
+    /// The interface that represents text rendering settings for glyph rasterization and filtering.
+    /// </summary>
+    class RenderingParams2 : public RenderingParams1
+    {
+    public:
+        typedef RenderingParams1 Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( RenderingParams2, RenderingParams1, IDWriteRenderingParams2, IDWriteRenderingParams1 )
+
+    };
+
+
+    /// <summary>
+    /// The root factory interface for all DWrite objects.
+    /// </summary>
+    class Factory2 : public Factory1
+    {
+    public:
+        typedef Factory1 Base;
+
+        COMMON_GRAPHICS_STANDARD_METHODS_IMPL( Factory2, Factory1, IDWriteFactory2, IDWriteFactory1 )
+
+    };
+
+
+
+
 
 
 

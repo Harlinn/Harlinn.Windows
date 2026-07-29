@@ -751,7 +751,7 @@ BOOST_AUTO_TEST_CASE( OctahedralVectorEncodeDecodeTest1 )
         Vector3f::Simd v = pbrto::SampleUniformSphere( u );
 
         pbrto::OctahedralVector ov( v );
-        pbrto::Vector3f v2 = pbrto::Vector3f( ov );
+        pbrto::Vector3f v2 = pbrto::Vector3f::Simd( ov );
 
         BOOST_CHECK_GT( ScalarLength( v2 ), .999f );
         BOOST_CHECK_LT( ScalarLength( v2 ), 1.001f );
